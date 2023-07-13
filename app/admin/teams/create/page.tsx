@@ -62,7 +62,7 @@ export default function TeamsCreatePage() {
       <div className='mb-3 flex flex-wrap gap-3'>
         {/* Back */}
         <Link
-          href='/teams'
+          href='.'
           replace
           className='bg-white h-9 rounded-md shadow-md p-2 flex items-center hover:-translate-y-1 transition-all duration-300'
         >

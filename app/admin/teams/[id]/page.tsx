@@ -86,8 +86,7 @@ export default function TeamsIdPage(props: PageProps) {
       <div className='mb-3 flex flex-wrap gap-3'>
         {/* Back */}
         <Link
-          href='/teams'
-          replace
+          href='.'
           className='bg-white h-9 rounded-md shadow-md p-2 flex items-center hover:-translate-y-1 transition-all duration-300'
         >
           <FontAwesomeIcon icon={faArrowLeft} width={22} height={22} className='mr-1' />

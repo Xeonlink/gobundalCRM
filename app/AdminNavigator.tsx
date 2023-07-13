@@ -4,7 +4,7 @@ import IcoLogo from "@/public/icons/logo.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendar, faCalendarDays } from "@fortawesome/free-regular-svg-icons";
 
-export function RootNavigator() {
+export function AdminNavigator() {
   return (
     <div className='mb-3 flex gap-3 flex-wrap'>
       <Link

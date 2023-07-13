@@ -98,7 +98,7 @@ export default function TeamsPage() {
 
         {/* Cratet New Team */}
         <Link
-          href='/teams/create'
+          href='teams/create'
           className='h-9 bg-white rounded-md shadow-md hover:-translate-y-1 transition-all duration-300 flex items-center px-2 gap-2'
         >
           <FontAwesomeIcon icon={faPeopleGroup} width={22} height={22} />
@@ -110,7 +110,7 @@ export default function TeamsPage() {
         {teams.data?.data.map((team) => (
           <Link
             key={team.id}
-            href={`/teams/${team.id}?date=${date.format("YYYY-MM-DD")}`}
+            href={`teams/${team.id}?date=${date.format("YYYY-MM-DD")}`}
             className='bg-white rounded-md shadow-md hover:-translate-y-1 transition-all duration-300 p-4 gap-2'
           >
             <ol className='flex items-center gap-2 mb-3'>
