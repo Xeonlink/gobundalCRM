@@ -1,7 +1,7 @@
 "use client";
 
 import { RawTeam, Team, postTeam } from "@/api/teams";
-import { toHyphenPhone } from "@/utils/utils";
+import { toHyphenPhone } from "@/extra/utils";
 import { faFloppyDisk } from "@fortawesome/free-solid-svg-icons";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

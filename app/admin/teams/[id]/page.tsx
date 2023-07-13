@@ -1,8 +1,8 @@
 "use client";
 
-import { PageProps } from "@/.next/types/app/teams/[id]/page";
 import { Team, deleteTeam, getTeam, updateTeam } from "@/api/teams";
-import { toHyphenPhone } from "@/utils/utils";
+import { PageProps } from "@/extra/type";
+import { toHyphenPhone } from "@/extra/utils";
 import { faFloppyDisk, faTrashCan } from "@fortawesome/free-regular-svg-icons";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
