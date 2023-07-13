@@ -85,10 +85,7 @@ export default function TeamsIdPage(props: PageProps) {
       {/* Toolbar */}
       <div className='mb-3 flex flex-wrap gap-3'>
         {/* Back */}
-        <Link
-          href='.'
-          className='bg-white h-9 rounded-md shadow-md p-2 flex items-center hover:-translate-y-1 transition-all duration-300'
-        >
+        <Link href='.' className='bg-white rounded-md shadow-md px-3 py-2'>
           <FontAwesomeIcon icon={faArrowLeft} width={22} height={22} className='mr-1' />
           <span>뒤로가기</span>
         </Link>
@@ -97,18 +94,12 @@ export default function TeamsIdPage(props: PageProps) {
         <span className='flex-1'></span>
 
         {/* Delete */}
-        <button
-          className='bg-white h-9 rounded-md shadow-md p-2 flex items-center hover:-translate-y-1 transition-all duration-300'
-          onClick={onDeleteClick}
-        >
+        <button className='bg-white rounded-md shadow-md px-3 py-2' onClick={onDeleteClick}>
           <FontAwesomeIcon icon={faTrashCan} width={22} height={22} className='mr-1' />
           <span>삭제</span>
         </button>
         {/* Update */}
-        <button
-          className='bg-white h-9 rounded-md shadow-md p-2 flex items-center hover:-translate-y-1 transition-all duration-300'
-          onClick={onSaveClick}
-        >
+        <button className='bg-white rounded-md shadow-md px-3 py-2' onClick={onSaveClick}>
           <FontAwesomeIcon icon={faFloppyDisk} width={22} height={22} className='mr-1' />
           <span>저장</span>
         </button>

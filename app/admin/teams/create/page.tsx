@@ -61,11 +61,7 @@ export default function TeamsCreatePage() {
       {/* Toolbar */}
       <div className='mb-3 flex flex-wrap gap-3'>
         {/* Back */}
-        <Link
-          href='.'
-          replace
-          className='bg-white h-9 rounded-md shadow-md p-2 flex items-center hover:-translate-y-1 transition-all duration-300'
-        >
+        <Link href='.' replace className='m-box px-3 py-2 m-hover'>
           <FontAwesomeIcon icon={faArrowLeft} width={22} height={22} className='mr-1' />
           <span>뒤로가기</span>
         </Link>
@@ -74,10 +70,7 @@ export default function TeamsCreatePage() {
         <span className='flex-1'></span>
 
         {/* Save */}
-        <button
-          className='bg-white h-9 rounded-md shadow-md p-2 flex items-center hover:-translate-y-1 transition-all duration-300'
-          onClick={onSaveClick}
-        >
+        <button className='m-box px-3 py-2 m-hover' onClick={onSaveClick}>
           <FontAwesomeIcon icon={faFloppyDisk} width={22} height={22} className='mr-1' />
           <span>저장</span>
         </button>
@@ -85,7 +78,7 @@ export default function TeamsCreatePage() {
 
       {/* Form */}
       <div className='w-96 max-w-full m-auto flex flex-col items-start shadow-2xl p-3 rounded-md'>
-        <label htmlFor='leaderName' className='bg-white rounded-md shadow-md px-3 py-1 mb-1'>
+        <label htmlFor='leaderName' className='m-box px-3 py-1 mb-1'>
           이름
         </label>
         <input
@@ -94,10 +87,10 @@ export default function TeamsCreatePage() {
           value={team.leaderName}
           onChange={onLeaderNameChange}
           placeholder='홍길동'
-          className='bg-white rounded-md shadow-md px-3 py-1 mb-3 w-full'
+          className='m-box px-3 py-1 mb-3 w-full'
         />
 
-        <label htmlFor='leaderPhone' className='bg-white rounded-md shadow-md px-3 py-1 mb-1'>
+        <label htmlFor='leaderPhone' className='m-box px-3 py-1 mb-1'>
           전화번호
         </label>
         <input
@@ -106,10 +99,10 @@ export default function TeamsCreatePage() {
           value={team.leaderPhone}
           onChange={onLeaderPhoneChange}
           placeholder='010-xxxx-xxxx'
-          className='bg-white rounded-md shadow-md px-3 py-1 mb-3 w-full'
+          className='m-box px-3 py-1 mb-3 w-full'
         />
 
-        <label htmlFor='coupon' className='bg-white rounded-md shadow-md px-3 py-1 mb-1'>
+        <label htmlFor='coupon' className='m-box px-3 py-1 mb-1'>
           쿠폰사
         </label>
         <input
@@ -118,10 +111,10 @@ export default function TeamsCreatePage() {
           value={team.coupon}
           onChange={onCouponChange}
           placeholder='쿠폰사'
-          className='bg-white rounded-md shadow-md px-3 py-1 mb-3 w-full'
+          className='m-box px-3 py-1 mb-3 w-full'
         />
 
-        <label htmlFor='population' className='bg-white rounded-md shadow-md px-3 py-1 mb-1'>
+        <label htmlFor='population' className='m-box px-3 py-1 mb-1'>
           인원수
         </label>
         <input
@@ -130,7 +123,7 @@ export default function TeamsCreatePage() {
           value={team.population}
           onChange={onPopulationChange}
           placeholder='인원수'
-          className='bg-white rounded-md shadow-md px-3 py-1 w-full'
+          className='m-box px-3 py-1 w-full'
         />
       </div>
     </main>

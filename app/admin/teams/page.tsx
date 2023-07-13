@@ -1,7 +1,12 @@
 "use client";
 
 import { faCalendarDays } from "@fortawesome/free-regular-svg-icons";
-import { faArrowsRotate, faPeopleGroup } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowsRotate,
+  faCirclePlus,
+  faPeopleGroup,
+  faPlus,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import dayjs from "dayjs";
@@ -37,10 +42,7 @@ export default function TeamsPage() {
       {/* Toolbar */}
       <div className='flex flex-wrap items-center gap-3 mb-3'>
         {/* 오늘 날짜로 재검색 */}
-        <button
-          className='h-9 bg-white rounded-md shadow-md hover:-translate-y-1 transition-all duration-300 flex items-center px-2'
-          onClick={onTodayClick}
-        >
+        <button className='bg-white rounded-md shadow-md m-hover px-3 py-2' onClick={onTodayClick}>
           <FontAwesomeIcon
             icon={faCalendarDays}
             width={20}
@@ -51,9 +53,9 @@ export default function TeamsPage() {
         </button>
 
         {/* 해당 날짜로 검색 */}
-        <div className='h-9 bg-white rounded-md shadow-md flex items-center'>
+        <div className='bg-white rounded-md shadow-md'>
           <select
-            className='h-full bg-white rounded-md hover:-translate-y-1 transition-all duration-300 flex items-center px-2 marker:gone text-center'
+            className='bg-white rounded-md m-hover inline-flex items-center px-2 marker:gone text-center px-3 py-2'
             value={date.year()}
             onChange={onYearChange}
           >
@@ -63,7 +65,7 @@ export default function TeamsPage() {
           </select>
           <span className='text-gray-200'>|</span>
           <select
-            className='h-full bg-white rounded-md hover:-translate-y-1 transition-all duration-300 flex items-center px-2 marker:gone text-center'
+            className='bg-white rounded-md m-hover inline-flex items-center px-2 marker:gone text-center px-3 py-2'
             defaultValue={date.month()}
             onChange={onMonthChange}
           >
@@ -75,7 +77,7 @@ export default function TeamsPage() {
           </select>
           <span className='text-gray-200'>|</span>
           <select
-            className='h-full bg-white rounded-md hover:-translate-y-1 transition-all duration-300 flex items-center px-2 marker:gone text-center'
+            className='bg-white rounded-md m-hover inline-flex items-center px-2 marker:gone text-center px-3 py-2'
             value={date.date()}
             onChange={onDateChange}
           >
@@ -89,19 +91,16 @@ export default function TeamsPage() {
 
         {/* Refresh */}
         <button
-          className='h-9 bg-white rounded-md shadow-md hover:-translate-y-1 transition-all duration-300 flex items-center px-2 gap-1'
+          className='bg-white rounded-md shadow-md m-hover px-3 py-2'
           onClick={() => teams.refetch()}
         >
-          <FontAwesomeIcon icon={faArrowsRotate} width={17} height={17} />
+          <FontAwesomeIcon icon={faArrowsRotate} width={17} height={17} className='mr-1' />
           <span>새로고침</span>
         </button>
 
         {/* Cratet New Team */}
-        <Link
-          href='teams/create'
-          className='h-9 bg-white rounded-md shadow-md hover:-translate-y-1 transition-all duration-300 flex items-center px-2 gap-2'
-        >
-          <FontAwesomeIcon icon={faPeopleGroup} width={22} height={22} />
+        <Link href='teams/create' className='bg-white rounded-md shadow-md m-hover px-3 py-2'>
+          <FontAwesomeIcon icon={faPlus} width={24} height={24} />
           <span>팀 만들기</span>
         </Link>
       </div>
@@ -111,9 +110,9 @@ export default function TeamsPage() {
           <Link
             key={team.id}
             href={`teams/${team.id}?date=${date.format("YYYY-MM-DD")}`}
-            className='bg-white rounded-md shadow-md hover:-translate-y-1 transition-all duration-300 p-4 gap-2'
+            className='bg-white rounded-md shadow-md m-hover p-4 gapx-3 py-2'
           >
-            <ol className='flex items-center gap-2 mb-3'>
+            <ol className='flex items-center gapx-3 py-2 mb-3'>
               {team.isApproved ? (
                 <li className='rounded-full bg-orange-200 w-3 h-3'></li>
               ) : (

@@ -67,7 +67,14 @@ export default function LoginPage() {
 
   return (
     <div className='w-96 max-w-full m-auto'>
-      <Image src={IcoLogo} alt='gobundal-logo' width={250} height={250} className='m-auto my-8' />
+      <Image
+        src={IcoLogo}
+        alt='gobundal-logo'
+        width={250}
+        height={250}
+        placeholder='blur'
+        className='m-auto my-8'
+      />
       <form className='w-80 p-4 max-w-full m-auto relative' onSubmit={(e) => e.preventDefault()}>
         <label htmlFor='username' className='pl-3 block mb-2'>
           <FontAwesomeIcon
