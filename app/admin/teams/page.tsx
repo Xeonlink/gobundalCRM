@@ -13,8 +13,10 @@ import dayjs from "dayjs";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getTeams } from "@/api/teams";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function TeamsPage() {
+  const auth = useAuth();
   const [date, setDate] = useState(dayjs());
   const teams = useQuery({
     queryKey: ["teams", date.format("YYYY-MM-DD")],
@@ -37,8 +39,10 @@ export default function TeamsPage() {
     setDate(dayjs());
   };
 
+  auth.setKickDest("/login");
+
   return (
-    <main>
+    <main className='p-3'>
       {/* Toolbar */}
       <div className='flex flex-wrap items-center gap-3 mb-3'>
         {/* 오늘 날짜로 재검색 */}
@@ -55,7 +59,7 @@ export default function TeamsPage() {
         {/* 해당 날짜로 검색 */}
         <div className='bg-white rounded-md shadow-md'>
           <select
-            className='bg-white rounded-md m-hover inline-flex items-center px-2 marker:gone text-center px-3 py-2'
+            className='bg-white rounded-md m-hover inline-flex items-center marker:gone text-center px-3 py-2'
             value={date.year()}
             onChange={onYearChange}
           >
@@ -65,7 +69,7 @@ export default function TeamsPage() {
           </select>
           <span className='text-gray-200'>|</span>
           <select
-            className='bg-white rounded-md m-hover inline-flex items-center px-2 marker:gone text-center px-3 py-2'
+            className='bg-white rounded-md m-hover inline-flex items-center marker:gone text-center px-3 py-2'
             defaultValue={date.month()}
             onChange={onMonthChange}
           >
@@ -77,7 +81,7 @@ export default function TeamsPage() {
           </select>
           <span className='text-gray-200'>|</span>
           <select
-            className='bg-white rounded-md m-hover inline-flex items-center px-2 marker:gone text-center px-3 py-2'
+            className='bg-white rounded-md m-hover inline-flex items-center marker:gone text-center px-3 py-2'
             value={date.date()}
             onChange={onDateChange}
           >

@@ -24,14 +24,17 @@
   .m-hover {
     @apply hover:-translate-y-1 transition-all duration-300;
   }
-
-  .line-h-16 {
-    line-height: 4rem;
-  }
 }
 
 .shake {
   animation: shake 300ms;
+}
+.invalid\:shake:invalid {
+  animation: shake 300ms;
+}
+
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none;
 }
 
 @keyframes shake {
@@ -50,4 +53,17 @@
   100% {
     transform: translateX(0);
   }
+}
+
+/**
+ * Modal -------------------------------------
+ */
+.modal-container {
+  @apply absolute top-0 left-0 w-screen h-screen flex;
+}
+
+.modal-body {
+  background: rgba(255, 255, 255, 0.2);
+  @apply w-80 h-96 m-auto rounded-xl overflow-hidden backdrop-blur-sm
+    shadow-xl;
 }

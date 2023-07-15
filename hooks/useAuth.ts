@@ -1,4 +1,6 @@
 import { AuthenticationDetails, CognitoUser, CognitoUserPool } from "amazon-cognito-identity-js";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef } from "react";
 
 const Pool = new CognitoUserPool({
   UserPoolId: "ap-northeast-2_wF9NpLgF9",
@@ -25,8 +27,20 @@ const signUp = (Username: string, Password: string) =>
   });
 
 export function useAuth() {
+  const kickTo = useRef<string | null>(null);
+  const navigate = useRouter();
   const user = Pool.getCurrentUser();
   const isSignIn = user !== null;
 
-  return { signIn, signUp, isSignIn, user };
+  const setKickDest = (path: string) => {
+    kickTo.current = path;
+  };
+
+  useEffect(() => {
+    if (isSignIn) return;
+    if (kickTo.current === null) return;
+    navigate.push(kickTo.current);
+  }, []);
+
+  return { signIn, signUp, isSignIn, user, setKickDest };
 }

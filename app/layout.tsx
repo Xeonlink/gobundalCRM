@@ -1,9 +1,11 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { AdminNavigator } from "./AdminNavigator";
+import { AdminNavigator } from "../components/AdminNavigator";
 import { ReactQueryProvider } from "@/components/ReactQueryProvider";
 import { PropsWithChildren } from "react";
+import { ModalPlacer } from "@/components/ModalPlacer";
+import { ModalProvider } from "@/components/ModalProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,9 +20,12 @@ export default function RootLayout(props: PropsWithChildren) {
   return (
     <html lang='en'>
       <body
-        className={`${inter.className} bg-gradient-to-b from-orange-200 to-green-200 w-screen min-h-screen p-3`}
+        className={`${inter.className} bg-gradient-to-b from-orange-200 to-green-200 w-screen min-h-screen`}
       >
-        <ReactQueryProvider>{children}</ReactQueryProvider>
+        <ModalProvider>
+          <ReactQueryProvider>{children}</ReactQueryProvider>
+          <ModalPlacer />
+        </ModalProvider>
       </body>
     </html>
   );
