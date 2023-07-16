@@ -1,8 +1,4 @@
-import axios from "axios";
-
-const axiosTeams = axios.create({
-  baseURL: "https://u3n88nffni.execute-api.ap-northeast-2.amazonaws.com/prod",
-});
+import { GetResponse, apiRoot } from "./utils";
 
 export interface Team {
   date: string;
@@ -15,64 +11,40 @@ export interface Team {
   isLeave: boolean;
 }
 
-type TeamsGetResponse = {
-  data: Team[];
-};
+export type RawTeam = Omit<Team, "date" | "id">;
 
 export async function getTeams(date: string) {
-  const res = await axiosTeams.get<TeamsGetResponse>("/teams", {
-    params: {
-      date,
-    },
-  });
-
+  const uri = `/teams`;
+  const config = { params: { date } };
+  const res = await apiRoot.get<GetResponse<Team>>(uri, config);
   return res.data;
 }
 
-export type RawTeam = Omit<Team, "date" | "id" | "isApproved" | "isLeave">;
-
 export async function postTeam(team: RawTeam) {
-  const res = await axiosTeams.post("/teams", team);
+  const uri = `/teams`;
+  const body = team;
+  const res = await apiRoot.post(uri, body);
   return res.data;
 }
 
 export async function getTeam(date: string, id: string) {
-  const res = await axiosTeams.get<Team>(`/teams/${id}`, {
-    params: {
-      date,
-    },
-  });
-
+  const uri = `/teams/${id}`;
+  const config = { params: { date } };
+  const res = await apiRoot.get<Team>(uri, config);
   return res.data;
 }
 
-export async function updateTeam(team: Team) {
-  const date = team.date;
-  const id = team.id;
-  const subTeam: Omit<Team, "date" | "id"> = {
-    leaderName: team.leaderName,
-    leaderPhone: team.leaderPhone,
-    coupon: team.coupon,
-    isApproved: team.isApproved,
-    isLeave: team.isLeave,
-    population: team.population,
-  };
-
-  const res = await axiosTeams.patch(`/teams/${id}`, subTeam, {
-    params: {
-      date,
-    },
-  });
-
+export async function updateTeam(date: string, id: string, partialRawTeam: Partial<RawTeam>) {
+  const uri = `/teams/${id}`;
+  const body = partialRawTeam;
+  const config = { params: { date } };
+  const res = await apiRoot.patch(uri, body, config);
   return res.data;
 }
 
 export async function deleteTeam(date: string, id: string) {
-  const res = await axiosTeams.delete(`/teams/${id}`, {
-    params: {
-      date,
-    },
-  });
-
+  const uri = `/teams/${id}`;
+  const config = { params: { date } };
+  const res = await apiRoot.delete(uri, config);
   return res.data;
 }

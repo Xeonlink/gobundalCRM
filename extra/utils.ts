@@ -7,7 +7,3 @@ export function toHyphenPhone(str: string): string {
     .join("-")
     .replace(/-*$/g, "")!;
 }
-
-export const cloneDeep = <T extends object>(data: T): T => {
-  return JSON.parse(JSON.stringify(data));
-};

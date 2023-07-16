@@ -8,8 +8,8 @@ import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
-import { usePathname, useRouter, useSelectedLayoutSegment } from "next/navigation";
-import { useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function TeamsIdPage(props: PageProps) {
   const { params, searchParams } = props;
@@ -24,10 +24,10 @@ export default function TeamsIdPage(props: PageProps) {
   });
 
   const update = useMutation({
-    mutationFn: () => updateTeam({ ...team.data!, ...changes }),
+    mutationFn: () => updateTeam(team?.data?.date!, team?.data?.id!, changes),
     onSuccess: () => {
       queryClient.invalidateQueries(["teams", team.data?.date]);
-      navigate.replace("/teams");
+      navigate.back();
     },
   });
 
@@ -35,7 +35,7 @@ export default function TeamsIdPage(props: PageProps) {
     mutationFn: () => deleteTeam(team.data?.date!, team.data?.id!),
     onSuccess: () => {
       queryClient.invalidateQueries(["teams", team.data?.date]);
-      navigate.replace("/teams");
+      navigate.back();
     },
   });
 
@@ -81,7 +81,7 @@ export default function TeamsIdPage(props: PageProps) {
   };
 
   return (
-    <main>
+    <main className='p-3'>
       {/* Toolbar */}
       <div className='mb-3 flex flex-wrap gap-3'>
         {/* Back */}

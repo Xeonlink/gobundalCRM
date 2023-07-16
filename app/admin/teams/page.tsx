@@ -1,19 +1,14 @@
 "use client";
 
-import { faCalendarDays } from "@fortawesome/free-regular-svg-icons";
-import {
-  faArrowsRotate,
-  faCirclePlus,
-  faPeopleGroup,
-  faPlus,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Link from "next/link";
-import dayjs from "dayjs";
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { getTeams } from "@/api/teams";
 import { useAuth } from "@/hooks/useAuth";
+import { faCalendarDays } from "@fortawesome/free-regular-svg-icons";
+import { faArrowsRotate, faPlus, faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useQuery } from "@tanstack/react-query";
+import dayjs from "dayjs";
+import Link from "next/link";
+import { useState } from "react";
 
 export default function TeamsPage() {
   const auth = useAuth();
@@ -109,32 +104,44 @@ export default function TeamsPage() {
         </Link>
       </div>
 
-      <div className='teams-grid gap-3'>
-        {teams.data?.data.map((team) => (
-          <Link
-            key={team.id}
-            href={`teams/${team.id}?date=${date.format("YYYY-MM-DD")}`}
-            className='bg-white rounded-md shadow-md m-hover p-4 gapx-3 py-2'
-          >
-            <ol className='flex items-center gapx-3 py-2 mb-3'>
-              {team.isApproved ? (
-                <li className='rounded-full bg-orange-200 w-3 h-3'></li>
-              ) : (
-                <li className='rounded-full bg-orange-500 w-3 h-3'></li>
-              )}
-              {team.isLeave ? (
-                <li className='rounded-full bg-green-500 w-3 h-3'></li>
-              ) : (
-                <li className='rounded-full bg-green-200 w-3 h-3'></li>
-              )}
-            </ol>
-            <div className='text-2xl font-bold mb-1'>{team.leaderName}</div>
-            <div className='mb-1'>{team.leaderPhone}</div>
-            <div className='mb-1'>{team.coupon}</div>
-            <div>{team.population}명</div>
-          </Link>
-        ))}
-      </div>
+      {teams.isLoading ? (
+        <div className='text-center h-10'>
+          <FontAwesomeIcon
+            icon={faSpinner}
+            width={30}
+            height={30}
+            className='animate-spin inline-block'
+          />
+          {/* 로딩중... */}
+        </div>
+      ) : (
+        <div className='teams-grid gap-3'>
+          {teams.data?.data.map((team) => (
+            <Link
+              key={team.id}
+              href={`teams/${team.id}?date=${date.format("YYYY-MM-DD")}`}
+              className='bg-white rounded-md shadow-md m-hover p-4'
+            >
+              <ol className='flex items-center gap-1 py-2'>
+                {team.isApproved ? (
+                  <li className='rounded-full bg-orange-200 w-3 h-3'></li>
+                ) : (
+                  <li className='rounded-full bg-orange-500 w-3 h-3'></li>
+                )}
+                {team.isLeave ? (
+                  <li className='rounded-full bg-green-500 w-3 h-3'></li>
+                ) : (
+                  <li className='rounded-full bg-green-200 w-3 h-3'></li>
+                )}
+              </ol>
+              <div className='text-2xl font-bold mb-1'>{team.leaderName}</div>
+              <div className='mb-1'>{team.leaderPhone}</div>
+              <div className='mb-1'>{team.coupon}</div>
+              <div>{team.population}명</div>
+            </Link>
+          ))}
+        </div>
+      )}
     </main>
   );
 }

@@ -1,9 +1,10 @@
-import { cloneDeep } from "@/extra/utils";
 import { useReducer, useState } from "react";
 
-export type Reducer<S = any, P = any> = (state: S, payload: P) => S | void;
+export type Reducer<S = any, P = any> = (state: S, payload?: P) => S | void;
 export type Reducers<S = any> = { [K: string]: Reducer<S> };
-export type Dispatcher<R extends Reducer> = (payload: Parameters<R>[1]) => void;
+export type Dispatcher<R extends Reducer> = Parameters<R>[1] extends undefined
+  ? () => void
+  : (payload: Parameters<R>[1]) => void;
 export type Dispatchers<RS extends Reducers> = { [Type in keyof RS]: Dispatcher<RS[Type]> };
 
 /**
@@ -70,3 +71,7 @@ export function useTypeSafeReducer<S extends object, RS extends Reducers<S>>(
 
   return [state, actions] as const;
 }
+
+const cloneDeep = <T extends object>(data: T): T => {
+  return JSON.parse(JSON.stringify(data));
+};

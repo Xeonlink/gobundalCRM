@@ -19,13 +19,15 @@ export default function TeamsCreatePage() {
     leaderPhone: "",
     coupon: "",
     population: 1,
+    isApproved: false,
+    isLeave: false,
   });
 
   const createTeam = useMutation({
     mutationFn: () => postTeam(team),
     onSuccess: () => {
       queryClient.invalidateQueries(["teams"]);
-      navigate.push("/teams");
+      navigate.back();
     },
   });
 
@@ -57,7 +59,7 @@ export default function TeamsCreatePage() {
   };
 
   return (
-    <main>
+    <main className='p-3'>
       {/* Toolbar */}
       <div className='mb-3 flex flex-wrap gap-3'>
         {/* Back */}

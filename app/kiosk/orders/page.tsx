@@ -1,10 +1,12 @@
 "use client";
 
+import { RawOrder, postOrder } from "@/api/orders";
 import { PageProps } from "@/extra/type";
-import { Order } from "@/api/orders";
-import { useTypeSafeReducer } from "@/hooks/useTypeSafeReducer";
 import { toHyphenPhone } from "@/extra/utils";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useToggle } from "@/hooks/useToggle";
+import { useTypeSafeReducer } from "@/hooks/useTypeSafeReducer";
+import ImgInitialEx from "@/public/images/initial_ex.png";
+import { faCircleQuestion } from "@fortawesome/free-regular-svg-icons";
 import {
   faAddressCard,
   faBox,
@@ -16,17 +18,15 @@ import {
   faPaperPlane,
   faSignature,
   faSignsPost,
+  faSpinner,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
-import { faCircleQuestion } from "@fortawesome/free-regular-svg-icons";
-import { useModal } from "@/hooks/useModal";
-import { SenderInfoDialog } from "./SenderInfoDialog";
-import { useToggle } from "@/hooks/useToggle";
-import { useState } from "react";
-import ImgInitialEx from "@/public/images/initial_ex.png";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useMutation } from "@tanstack/react-query";
 import Image from "next/image";
+import { useState } from "react";
 
-const defaultOrder: Omit<Order, "date" | "id"> = {
+const defaultOrder: RawOrder = {
   senderName: "",
   senderPhone: "",
   receiverName: "",
@@ -56,8 +56,8 @@ export default function KioskOrderPage(_: PageProps) {
     onReceiverPhoneChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
       state.receiverPhone = toHyphenPhone(e.target.value);
     },
-    receiverAddress: (state, value) => {
-      state.receiverAddress = value;
+    onReceiverAddressChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
+      state.receiverAddress = e.target.value;
     },
     onReceiverAddressDetailChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
       state.receiverAddressDetail = e.target.value;
@@ -67,6 +67,9 @@ export default function KioskOrderPage(_: PageProps) {
     },
     onInitialChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
       state.initial = e.target.value;
+    },
+    reset: (_) => {
+      return defaultOrder;
     },
   });
 
@@ -78,27 +81,39 @@ export default function KioskOrderPage(_: PageProps) {
     setSameAsSender(e.target.value === "true");
   };
 
-  const isSenderNameValid = order.senderName.length > 0;
-  const isSenderPhoneValid = order.senderPhone.length > 0;
-  const isReceiverNameValid = order.receiverName.length > 0;
-  const isReceiverPhoneValid = order.receiverPhone.length > 0;
-  const isReceiverAddressValid = order.receiverAddress.length > 0;
-  const isReceiverAddressDetailValid = order.receiverAddressDetail.length > 0;
-  const isProductNameValid = order.productName !== "상품을 선택해주세요.";
-  const isInitialValid = order.initial.length > 0;
-  const isRegistBtnValid =
-    isSenderNameValid &&
-    isSenderPhoneValid &&
-    isReceiverNameValid &&
-    isReceiverPhoneValid &&
-    isReceiverAddressValid &&
-    isReceiverAddressDetailValid &&
-    isProductNameValid &&
-    isInitialValid;
+  const finalOrder: RawOrder = {
+    ...order,
+    receiverName: sameAsSender ? order.senderName : order.receiverName,
+    receiverPhone: sameAsSender ? order.senderPhone : order.receiverPhone,
+    productName: order.productName === "기타" ? extraProductName : order.productName,
+  };
+
+  const validity = {
+    senderName: finalOrder.senderName.length > 0,
+    senderPhone: finalOrder.senderPhone.length > 0,
+    receiverName: finalOrder.receiverName.length > 0,
+    receiverPhone: finalOrder.receiverPhone.length > 0,
+    receiverAddress: finalOrder.receiverAddress.length > 0,
+    receiverAddressDetail: finalOrder.receiverAddressDetail.length > 0,
+    productName: finalOrder.productName !== "상품을 선택해주세요.",
+    initial: finalOrder.initial.length > 0,
+  };
+
+  const isRegistBtnValid = Object.values(validity).every((v) => v);
+
+  const createOrder = useMutation({
+    mutationFn: () => postOrder(finalOrder),
+    onSuccess: () => {
+      alert("배송정보 등록이 완료되었습니다.");
+      orderActions.reset();
+      setExtraProductName("");
+      setSameAsSender(false);
+    },
+  });
 
   return (
     <div className='p-3 m-auto max-w-full'>
-      <h1 className='text-3xl text-center py-8 font-bold'>송 장</h1>
+      <h1 className='text-3xl text-center py-8 font-bold'>택배 정보</h1>
 
       <form action='' onSubmit={(e) => e.preventDefault()}>
         <div className='flex gap-3 justify-evenly flex-wrap items-start'>
@@ -125,7 +140,7 @@ export default function KioskOrderPage(_: PageProps) {
               }`}
             >
               <span className='mb-4'>
-                실제 송장에는 필요하지 않으나, <br />
+                실제 배송정보에는 필요하지 않으나, <br />
                 택배사고 발생 시 연락을 위해 <br />
                 입력해주세요.
               </span>
@@ -153,8 +168,9 @@ export default function KioskOrderPage(_: PageProps) {
               id='sender-name'
               type='text'
               placeholder='홍길동'
-              className='m-box px-3 py-1 mb-3 w-full invalid:shake invalid:border-red-300 invalid:border-2'
-              defaultValue={order.senderName}
+              className='m-box px-3 py-1 mb-3 w-full input-invalid disabled:opacity-40'
+              disabled={createOrder.isLoading}
+              value={order.senderName}
               onChange={orderActions.onSenderNameChange}
               required
             />
@@ -172,7 +188,8 @@ export default function KioskOrderPage(_: PageProps) {
               id='sender-phone'
               type='tel'
               placeholder='010-xxxx-xxxx'
-              className='m-box px-3 py-1 mb-3 w-full invalid:shake invalid:border-red-300 invalid:border-2'
+              className='m-box px-3 py-1 mb-3 w-full input-invalid disabled:opacity-40'
+              disabled={createOrder.isLoading}
               value={order.senderPhone}
               onChange={orderActions.onSenderPhoneChange}
               required
@@ -203,8 +220,9 @@ export default function KioskOrderPage(_: PageProps) {
             <select
               name='same-as-sender'
               id='same-as-sender'
-              className='m-box px-3 py-1 mb-3 w-full'
-              defaultValue='false'
+              className='m-box px-3 py-1 mb-3 w-full disabled:opacity-40'
+              disabled={createOrder.isLoading}
+              value='false'
               onChange={onSameAsSenderChange}
             >
               <option value='true'>동일함</option>
@@ -224,11 +242,11 @@ export default function KioskOrderPage(_: PageProps) {
               id='receiver-name'
               type='text'
               placeholder='홍길동'
-              className='m-box px-3 py-1 mb-3 w-full invalid:shake invalid:border-red-300 invalid:border-2 disabled:opacity-40'
+              className='m-box px-3 py-1 mb-3 w-full input-invalid disabled:opacity-40'
+              disabled={sameAsSender || createOrder.isLoading}
               value={sameAsSender ? order.senderName : order.receiverName}
               onChange={orderActions.onReceiverNameChange}
               required
-              disabled={sameAsSender}
             />
 
             <label htmlFor='receiver-phone' className='block mb-1 pl-2'>
@@ -243,11 +261,12 @@ export default function KioskOrderPage(_: PageProps) {
             <input
               id='receiver-phone'
               type='text'
-              className='m-box px-3 py-1 mb-3 w-full invalid:shake invalid:border-red-300 invalid:border-2 disabled:opacity-40'
+              placeholder='010-xxxx-xxxx'
+              className='m-box px-3 py-1 mb-3 w-full input-invalid disabled:opacity-40'
+              disabled={sameAsSender || createOrder.isLoading}
               value={sameAsSender ? order.senderPhone : order.receiverPhone}
               onChange={orderActions.onReceiverPhoneChange}
               required
-              disabled={sameAsSender}
             />
 
             <label htmlFor='receiver-address' className='block mb-1 pl-2'>
@@ -263,7 +282,10 @@ export default function KioskOrderPage(_: PageProps) {
               id='receiver-address'
               type='text'
               placeholder='남원월산로74번길 42'
-              className='m-box px-3 py-1 mb-3 w-full invalid:shake invalid:border-red-300 invalid:border-2'
+              className='m-box px-3 py-1 mb-3 w-full input-invalid disabled:opacity-40'
+              disabled={createOrder.isLoading}
+              value={order.receiverAddress}
+              onChange={orderActions.onReceiverAddressChange}
               required
             />
 
@@ -280,8 +302,9 @@ export default function KioskOrderPage(_: PageProps) {
               id='receiver-address-detail'
               type='text'
               placeholder='단독주택, 1층 101호, ...'
-              className='m-box px-3 py-1 mb-3 w-full invalid:shake invalid:border-red-300 invalid:border-2'
-              defaultValue={order.receiverAddressDetail}
+              className='m-box px-3 py-1 mb-3 w-full input-invalid disabled:opacity-40'
+              disabled={createOrder.isLoading}
+              value={order.receiverAddressDetail}
               onChange={orderActions.onReceiverAddressDetailChange}
               required
             />
@@ -306,7 +329,7 @@ export default function KioskOrderPage(_: PageProps) {
               <span className='mb-4'>
                 묶음 배송은 10kg까지만 가능합니다. <br />
                 배송해야할 상품이 많은 경우, <br />
-                송장을 나눠서 작성하셔야합니다. <br />
+                배송정보을 나눠서 작성하셔야합니다. <br />
               </span>
               <button className='m-box px-3 py-1 m-hover' onClick={productInfo.toggle}>
                 <FontAwesomeIcon
@@ -353,11 +376,13 @@ export default function KioskOrderPage(_: PageProps) {
             <select
               name='product-name'
               id='product-name'
-              className={`m-box px-3 py-1 mb-3 w-full ${
-                isProductNameValid ? "" : "shake border-red-300 border-2"
+              className={`m-box px-3 py-1 mb-3 w-full disabled:opacity-40 ${
+                validity.productName ? "" : "shake border-red-300 border-2"
               }`}
-              defaultValue={order.productName}
+              disabled={createOrder.isLoading}
+              value={order.productName}
               onChange={orderActions.onProductNameChange}
+              required
             >
               <option value='상품을 선택해주세요.'>상품을 선택해주세요.</option>
               <option value='체험귤 5kg'>체험귤 5kg</option>
@@ -370,8 +395,9 @@ export default function KioskOrderPage(_: PageProps) {
                 id='product-name'
                 type='text'
                 placeholder='귤5kg, 귤10kg, 귤5kg x 2, ...'
-                className='m-box px-3 py-1 mb-3 w-full invalid:shake invalid:border-red-300 invalid:border-2'
-                defaultValue={extraProductName}
+                className='m-box px-3 py-1 mb-3 w-full input-invalid disabled:opacity-40'
+                disabled={createOrder.isLoading}
+                value={extraProductName}
                 onChange={onExtraProductNameChange}
                 required
               />
@@ -396,8 +422,9 @@ export default function KioskOrderPage(_: PageProps) {
               id='initial'
               type='text'
               placeholder='HGD, love you, 하트모양, ...'
-              className='m-box px-3 py-1 mb-3 w-full invalid:shake invalid:border-red-300 invalid:border-2'
-              defaultValue={order.initial}
+              className='m-box px-3 py-1 mb-3 w-full input-invalid disabled:opacity-40'
+              disabled={createOrder.isLoading}
+              value={order.initial}
               onChange={orderActions.onInitialChange}
               required
             />
@@ -406,7 +433,6 @@ export default function KioskOrderPage(_: PageProps) {
               alt='귤 상자에 자신만의 이니셜이 그려져있는 사진'
               className='rounded-md max-w-full'
               width={250}
-              height={158}
               placeholder='blur'
             />
           </fieldset>
@@ -414,16 +440,27 @@ export default function KioskOrderPage(_: PageProps) {
 
         <div className='mb-10 text-center'>
           <button
+            type='button'
             className='m-box py-1 mb-3 w-56 max-w-full disabled:opacity-40'
-            disabled={!isRegistBtnValid}
+            disabled={!isRegistBtnValid || createOrder.isLoading}
+            onClick={() => createOrder.mutate()}
           >
-            <FontAwesomeIcon
-              icon={faAddressCard}
-              width={20}
-              height={20}
-              className='mr-2 opacity-75'
-            />
-            <span>송장 등록</span>
+            {createOrder.isLoading ? (
+              <FontAwesomeIcon
+                icon={faSpinner}
+                width={20}
+                height={20}
+                className='mr-2 opacity-75 animate-spin'
+              />
+            ) : (
+              <FontAwesomeIcon
+                icon={faAddressCard}
+                width={20}
+                height={20}
+                className='mr-2 opacity-75'
+              />
+            )}
+            <span>{createOrder.isLoading ? "배송정보 등록중..." : "배송정보 등록"}</span>
           </button>
         </div>
       </form>
