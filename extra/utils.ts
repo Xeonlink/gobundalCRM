@@ -1,3 +1,5 @@
+import { EmptyObject } from "./type";
+
 export function toHyphenPhone(str: string): string {
   return str
     .match(/\d*/g)
@@ -7,3 +9,11 @@ export function toHyphenPhone(str: string): string {
     .join("-")
     .replace(/-*$/g, "")!;
 }
+export const serializeSearchParams = <T extends EmptyObject>(searchParams: T) => {
+  return (
+    "?" +
+    Object.entries(searchParams)
+      .map((entry) => entry.join("="))
+      .join("&")
+  );
+};

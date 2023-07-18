@@ -14,7 +14,7 @@ import {
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 
-export function AdminNavigator() {
+export function AdminNavbar() {
   const path = usePathname();
   const auth = useAuth();
 
@@ -70,7 +70,7 @@ export function AdminNavigator() {
           <span>팀 관리</span>
         </Link>
 
-        <Link href='/kiosk/orders' className='m-box m-hover px-3 py-2'>
+        <Link href='/admin/orders' className='m-box m-hover px-3 py-2'>
           <FontAwesomeIcon
             icon={faReceipt}
             width={20}

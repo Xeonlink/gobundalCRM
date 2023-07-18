@@ -1,8 +1,7 @@
 "use client";
 
-import { getOrders } from "@/api/orders";
-import { useAuth } from "@/hooks/useAuth";
-import { useTypeSafeReducer } from "@/hooks/useTypeSafeReducer";
+import { Order, deleteOrders, getOrders } from "@/api/orders";
+import { PageProps } from "@/extra/type";
 import { faCalendarDays } from "@fortawesome/free-regular-svg-icons";
 import {
   faArrowsRotate,
@@ -10,80 +9,123 @@ import {
   faPlus,
   faSpinner,
   faTable,
+  faTrashCan,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
-type ViewStyle = "table" | "card";
-type SelectChangeEvent = React.ChangeEvent<HTMLSelectElement>;
+type SearchParams = {
+  date: `${string}-${string}-${string}`;
+  view: "card" | "table";
+};
 
-export default function OrdersPage() {
-  const auth = useAuth();
-  auth.setKickDest("/login");
+const th = (className: TemplateStringsArray) => {
+  return `m-box py-1 shadow-none ${className.join(" ")}`;
+};
 
-  const [viewStyle, setViewStyle] = useState<ViewStyle>("table");
-  const [date, dateActions] = useTypeSafeReducer(
-    dayjs(),
-    {
-      onYearChange: (state, e: SelectChangeEvent) => state.year(+e.target.value),
-      onMonthChange: (state, e: SelectChangeEvent) => state.month(+e.target.value),
-      onDateChange: (state, e: SelectChangeEvent) => state.date(+e.target.value),
-      onTodayClick: (_) => dayjs(),
-    },
-    (date) => dayjs(date)
-  );
+export default function OrdersPage(props: PageProps<any, SearchParams>) {
+  const { searchParams } = props;
+  const { date = dayjs().format("YYYY-MM-DD"), view = "table" } = searchParams;
+  const [year, month, day] = date.split("-");
+
+  const navigate = useRouter();
+  const queryClient = useQueryClient();
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   const orders = useQuery({
-    queryKey: ["orders", date.format("YYYY-MM-DD")],
-    queryFn: () => getOrders(date.format("YYYY-MM-DD")),
+    queryKey: ["orders", date],
+    queryFn: () => getOrders(date),
   });
+  const batchDeleteOrders = useMutation({
+    mutationFn: () => deleteOrders(date, selectedIds),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["orders", date]);
+      setSelectedIds([]);
+    },
+  });
+
+  const onYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    navigate.replace(`orders?date=${e.target.value}-${month}-${day}&view=${view}`);
+  };
+  const onMonthChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    navigate.replace(`orders?date=${year}-${`0${e.target.value}`.slice(-2)}-${day}&view=${view}`);
+  };
+  const onDayChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    navigate.replace(`orders?date=${year}-${month}-${`0${e.target.value}`.slice(-2)}&view=${view}`);
+  };
+  const onViewStyleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    navigate.replace(`orders?date=${date}&view=${e.target.value}`);
+  };
+
+  const onItemClick = (id: string) => (e: React.MouseEvent<HTMLElement>) => {
+    if (e.ctrlKey || e.metaKey) {
+      if (selectedIds.includes(id)) {
+        setSelectedIds((prev) => prev.filter((selectedId) => selectedId !== id));
+      } else {
+        setSelectedIds((prev) => [...prev, id]);
+      }
+    } else {
+      setSelectedIds([id]);
+    }
+  };
+
+  const gotoOrderPage = (orderId: string) => {
+    navigate.push(`orders/${orderId}?date=${date}`);
+  };
+
+  const onDeleteClick = () => {
+    if (selectedIds.length === 0) return;
+    if (!confirm("정말로 삭제하시겠습니까?")) return;
+    batchDeleteOrders.mutate();
+  };
 
   return (
     <main className='p-3'>
       {/* Toolbar */}
       <div className='flex flex-wrap items-center gap-3 mb-3'>
         {/* 오늘 날짜로 재검색 */}
-        <button className='m-box m-hover px-3 py-2' onClick={dateActions.onTodayClick}>
-          <FontAwesomeIcon
-            icon={faCalendarDays}
-            width={20}
-            height={20}
-            className='mr-1 opacity-75'
-          />
+        <Link
+          href={`orders?date=${dayjs().format("YYYY-MM-DD")}&view=${view}`}
+          className='m-box m-hover px-3 py-2'
+        >
+          <FontAwesomeIcon icon={faCalendarDays} width={20} height={20} className='mr-1' />
           <span>오늘</span>
-        </button>
+        </Link>
 
         {/* 해당 날짜로 검색 */}
-        <div className='m-box'>
+        <fieldset className='m-box'>
           <select
-            className='bg-white rounded-md m-hover inline-flex items-center marker:gone text-center px-3 py-2'
-            value={date.year()}
-            onChange={dateActions.onYearChange}
+            className='bg-white rounded-md m-hover text-center appearance-none px-3 py-2'
+            value={+year}
+            onChange={onYearChange}
           >
-            <option value={2023}>2023년</option>
-            <option value={2024}>2024년</option>
-            <option value={2025}>2025년</option>
+            {[2023, 2024, 2025].map((year) => (
+              <option key={year} value={year}>
+                {year}년
+              </option>
+            ))}
           </select>
           <span className='text-gray-200'>|</span>
           <select
-            className='bg-white rounded-md m-hover inline-flex items-center marker:gone text-center px-3 py-2'
-            defaultValue={date.month()}
-            onChange={dateActions.onMonthChange}
+            className='bg-white rounded-md m-hover text-center appearance-none px-3 py-2'
+            value={+month}
+            onChange={onMonthChange}
           >
             {new Array(12).fill(0).map((_, index) => (
-              <option key={index} value={index}>
+              <option key={index} value={index + 1}>
                 {index + 1}월
               </option>
             ))}
           </select>
           <span className='text-gray-200'>|</span>
           <select
-            className='bg-white rounded-md m-hover inline-flex items-center marker:gone text-center px-3 py-2'
-            value={date.date()}
-            onChange={dateActions.onDateChange}
+            className='bg-white rounded-md m-hover text-center appearance-none px-3 py-2'
+            value={+day}
+            onChange={onDayChange}
           >
             {new Array(31).fill(0).map((_, index) => (
               <option key={index} value={index + 1}>
@@ -91,7 +133,7 @@ export default function OrdersPage() {
               </option>
             ))}
           </select>
-        </div>
+        </fieldset>
 
         {/* Refresh */}
         <button type='button' className='m-box m-hover px-3 py-2' onClick={() => orders.refetch()}>
@@ -101,48 +143,43 @@ export default function OrdersPage() {
 
         {/* Change ViewStyle */}
         <select
-          className='m-box m-hover px-3 py-2'
-          defaultValue={viewStyle}
-          onChange={(e) => setViewStyle(e.target.value as ViewStyle)}
+          className='m-box m-hover px-3 py-2 appearance-none text-center'
+          value={view}
+          onChange={onViewStyleChange}
         >
-          <option value='table'>
-            <FontAwesomeIcon icon={faTable} width={17} height={17} className='mr-1 inline-block' />
-            <span>표로 보기</span>
-          </option>
-          <option value='card'>
-            <FontAwesomeIcon
-              icon={faCreditCard}
-              width={17}
-              height={17}
-              className='mr-1 inline-block'
-            />
-            <span>카드로 보기</span>
-          </option>
+          <option value='table'>표로 보기</option>
+          <option value='card'>카드로 보기</option>
         </select>
 
         {/* Cratet New Order */}
         <Link href='orders/create' className='m-box m-hover px-3 py-2'>
-          <FontAwesomeIcon icon={faPlus} width={24} height={24} />
+          <FontAwesomeIcon icon={faPlus} width={24} height={24} className='mr-1' />
           <span>송장 작성하기</span>
         </Link>
+
+        {/* Delete */}
+        <button className='m-box m-hover px-3 py-2' onClick={onDeleteClick}>
+          <FontAwesomeIcon icon={faTrashCan} width={22} height={22} className='mr-1' />
+          <span>선택삭제</span>
+        </button>
       </div>
 
-      {viewStyle === "table" ? (
+      {view === "table" ? (
         <table className='w-full orders-table-grid gap-1'>
           <thead className='contents'>
             <tr className='contents'>
-              <th className='col-span-2 m-box px-2 py-1 bg-orange-100'>보내는 사람</th>
-              <th className='col-span-3 m-box px-2 py-1 bg-green-100'>받는 사람</th>
-              <th className='col-span-2 m-box px-2 py-1 bg-blue-100'>상품정보</th>
+              <th className={th`col-span-2 bg-orange-100`}>보내는 사람</th>
+              <th className={th`col-span-3 bg-green-100`}>받는 사람</th>
+              <th className={th`col-span-2 bg-blue-100`}>상품정보</th>
             </tr>
             <tr className='contents'>
-              <th className='m-box px-2 py-1 bg-orange-50'>이름</th>
-              <th className='m-box px-2 py-1 bg-orange-50'>전화번호</th>
-              <th className='m-box px-2 py-1 bg-green-50'>이름</th>
-              <th className='m-box px-2 py-1 bg-green-50'>전화번호</th>
-              <th className='m-box px-2 py-1 bg-green-50'>주소</th>
-              <th className='m-box px-2 py-1 bg-blue-50'>상품명</th>
-              <th className='m-box px-2 py-1 bg-blue-50'>이니셜</th>
+              <th className={th`bg-orange-50`}>이름</th>
+              <th className={th`bg-orange-50`}>전화번호</th>
+              <th className={th`bg-green-50`}>이름</th>
+              <th className={th`bg-green-50`}>전화번호</th>
+              <th className={th`bg-green-50`}>주소</th>
+              <th className={th`bg-blue-50`}>상품명</th>
+              <th className={th`bg-blue-50`}>이니셜</th>
             </tr>
           </thead>
           <tbody className='contents'>
@@ -154,66 +191,35 @@ export default function OrdersPage() {
               </tr>
             ) : (
               orders.data?.data.map((order) => (
-                <tr key={order.id} className='contents'>
-                  <td className='text-center m-box px-2 py-1 bg-transparent'>{order.senderName}</td>
-                  <td className='text-center m-box px-2 py-1 bg-transparent'>
-                    {order.senderPhone}
-                  </td>
-                  <td className='text-center m-box px-2 py-1 bg-transparent'>
-                    {order.receiverName}
-                  </td>
-                  <td className='text-center m-box px-2 py-1 bg-transparent'>
-                    {order.receiverPhone}
-                  </td>
-                  <td className='m-box px-2 py-1 bg-transparent'>
-                    {order.receiverAddress}, {order.receiverAddressDetail}
-                  </td>
-                  <td className='text-center m-box px-2 py-1 bg-transparent'>
-                    {order.productName}
-                  </td>
-                  <td className='text-center m-box px-2 py-1 bg-transparent'>{order.initial}</td>
-                </tr>
+                <OrderTableRaw
+                  key={order.id}
+                  order={order}
+                  isSelected={selectedIds.includes(order.id)}
+                  onClick={onItemClick(order.id)}
+                  onDoubleClick={() => gotoOrderPage(order.id)}
+                />
               ))
             )}
           </tbody>
         </table>
       ) : null}
 
-      {viewStyle === "card" ? (
-        <div className='orders-card-grid gap-3'>
+      {view === "card" ? (
+        <ol className='orders-card-grid gap-3'>
           {orders.isLoading ? (
             <LoadingSpinner />
           ) : (
             orders.data?.data?.map((order) => (
-              <Link
+              <OrderCard
                 key={order.id}
-                href={`order/${order.id}?date=${date.format("YYYY-MM-DD")}`}
-                className='m-box m-hover overflow-hidden p-2 bg-white bg-opacity-40'
-              >
-                <div className='bg-orange-200 mb-2 p-2 rounded-md'>
-                  <span className='text-lg font-bold'>{order.senderName}</span>
-                  &nbsp;
-                  <span>{order.senderPhone}</span>
-                </div>
-                {/* <div className='saperator border-b-2 my-2 border-white'></div> */}
-                <div className='bg-green-200 mb-2 p-2 rounded-md'>
-                  <span className='text-lg font-bold'>{order.receiverName}</span>
-                  &nbsp;
-                  <span>{order.receiverPhone}</span>
-                  <div>
-                    {order.receiverAddress}, {order.receiverAddressDetail}
-                  </div>
-                </div>
-
-                {/* <div className='saperator border-b-2 my-3'></div> */}
-                <div className='bg-blue-200 p-2 rounded-md'>
-                  <div className='font-bold'>{order.productName}</div>
-                  <div>{order.initial}</div>
-                </div>
-              </Link>
+                order={order}
+                isSelected={selectedIds.includes(order.id)}
+                onClick={onItemClick(order.id)}
+                onDoubleClick={() => gotoOrderPage(order.id)}
+              />
             ))
           )}
-        </div>
+        </ol>
       ) : null}
     </main>
   );
@@ -230,5 +236,87 @@ function LoadingSpinner() {
       />
       {/* 로딩중... */}
     </div>
+  );
+}
+
+type OrderItemProps = {
+  order: Order;
+  isSelected: boolean;
+  onClick: (e: React.MouseEvent<HTMLElement>) => void;
+  onDoubleClick: (e: React.MouseEvent<HTMLElement>) => void;
+};
+
+function OrderCard(props: OrderItemProps) {
+  const { order, isSelected, onClick, onDoubleClick } = props;
+  return (
+    <li
+      key={order.id}
+      className='m-box m-hover overflow-hidden p-2 bg-transparent aria-selected:bg-white aria-selected:bg-opacity-70'
+      aria-selected={isSelected}
+      onClick={onClick}
+      onDoubleClick={onDoubleClick}
+    >
+      <div className='bg-orange-200 mb-2 p-2 rounded-md'>
+        <span className='text-lg font-bold'>{order.senderName}</span>
+        &nbsp;
+        <span>{order.senderPhone}</span>
+      </div>
+      {/* <div className='saperator border-b-2 my-2 border-white'></div> */}
+      <div className='bg-green-200 mb-2 p-2 rounded-md'>
+        <span className='text-lg font-bold'>{order.receiverName}</span>
+        &nbsp;
+        <span>{order.receiverPhone}</span>
+        <div>
+          {order.receiverAddress}, {order.receiverAddressDetail}
+        </div>
+      </div>
+
+      {/* <div className='saperator border-b-2 my-3'></div> */}
+      <div className='bg-blue-200 p-2 rounded-md'>
+        <div className='font-bold'>{order.productName}</div>
+        <div>{order.initial}</div>
+      </div>
+    </li>
+  );
+}
+
+function OrderTableRaw(props: OrderItemProps) {
+  const { order, isSelected, onClick, onDoubleClick } = props;
+
+  const td = (className: TemplateStringsArray) => {
+    return `text-center py-1 px-2 rounded-md aria-selected:bg-white aria-selected:bg-opacity-70 ${className.join(
+      " "
+    )}`;
+  };
+
+  return (
+    <tr
+      key={order.id}
+      className='contents cursor-pointer'
+      onClick={onClick}
+      onDoubleClick={onDoubleClick}
+    >
+      <td className={td``} aria-selected={isSelected}>
+        {order.senderName}
+      </td>
+      <td className={td``} aria-selected={isSelected}>
+        {order.senderPhone}
+      </td>
+      <td className={td``} aria-selected={isSelected}>
+        {order.receiverName}
+      </td>
+      <td className={td``} aria-selected={isSelected}>
+        {order.receiverPhone}
+      </td>
+      <td className={td`text-start`} aria-selected={isSelected}>
+        {order.receiverAddress}, {order.receiverAddressDetail}
+      </td>
+      <td className={td``} aria-selected={isSelected}>
+        {order.productName}
+      </td>
+      <td className={td``} aria-selected={isSelected}>
+        {order.initial}
+      </td>
+    </tr>
   );
 }

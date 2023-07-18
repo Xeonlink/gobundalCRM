@@ -1,13 +1,14 @@
 import { PropsWithChildren } from "react";
-import { AdminNavigator } from "../../components/AdminNavigator";
+import { AdminNavbar } from "../../components/AdminNavbar";
+import { RouteGuard } from "@/components/RouteGuard";
 
 export default function AdminLayout(props: PropsWithChildren) {
   const { children } = props;
 
   return (
-    <>
-      <AdminNavigator />
+    <RouteGuard>
+      <AdminNavbar />
       {children}
-    </>
+    </RouteGuard>
   );
 }

@@ -47,8 +47,10 @@ export default function LoginPage() {
     auth //
       .signIn(credentials.username, credentials.password)
       .then(() => naviate.replace("/"))
-      .catch((res) => setStatus(res.code))
-      .finally(() => setIsLoading(false));
+      .catch((res) => {
+        setStatus(res.code);
+        setIsLoading(false);
+      });
   };
 
   const onSignUpClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -89,12 +91,11 @@ export default function LoginPage() {
           type='text'
           id='username'
           placeholder='id'
-          className={`m-box px-3 py-1 w-full mb-3 disabled:opacity-40 ${
-            credentials.username === "" ? "shake border-red-300 border-2" : null
-          }`}
+          className='input'
           defaultValue={credentials.username}
           onChange={actions.setUsername}
           disabled={isLoading}
+          required
           autoCapitalize='off'
           autoComplete='off'
           autoFocus
@@ -112,12 +113,11 @@ export default function LoginPage() {
           type='password'
           id='password'
           placeholder='password'
-          className={`m-box px-3 py-1 w-full mb-3 disabled:opacity-40 ${
-            credentials.password === "" ? "shake border-red-300 border-2" : null
-          }`}
+          className='input'
           defaultValue={credentials.password}
           onChange={actions.setPassword}
           disabled={isLoading}
+          required
           autoCapitalize='off'
           autoComplete='off'
         />
@@ -125,10 +125,10 @@ export default function LoginPage() {
         {/* Message Container */}
         <ul className='w-full mb-3 pl-1'>
           {status === "UserNotConfirmedException" ? (
-            <Message message='승인되지 않은 사용자 입니다.' />
+            <Message negative message='승인되지 않은 사용자 입니다.' />
           ) : null}
           {status === "UsernameExistsException" ? (
-            <Message message='이미 존재하는 사용자 입니다.' />
+            <Message negative message='이미 존재하는 사용자 입니다.' />
           ) : null}
           {status === "RequestSignUpSuccess" ? (
             <Message positive message='가입요청이 완료되었습니다.' />
@@ -138,7 +138,7 @@ export default function LoginPage() {
         {/* Submit Buttons */}
         <div className='flex flex-row-reverse justify-between mb-2'>
           <button
-            className='m-box px-3 py-1 disabled:opacity-40 disabled:cursor-default'
+            className='m-box px-3 py-1 disabled:opacity-40'
             onClick={onSignInClick}
             disabled={isSignInButtonDisabled}
           >
@@ -162,7 +162,7 @@ export default function LoginPage() {
           </button>
 
           <button
-            className='m-box px-3 py-1 disabled:opacity-40 disabled:cursor-default'
+            className='m-box px-3 py-1 disabled:opacity-40'
             onClick={onSignUpClick}
             disabled={isSignUpButtonDisabled}
           >
@@ -190,10 +190,10 @@ export default function LoginPage() {
   );
 }
 
-function Message(props: { positive?: boolean; message: string }) {
-  const { positive, message } = props;
+function Message(props: { positive?: boolean; negative?: boolean; message: string }) {
+  const { positive, negative, message } = props;
 
-  if (positive) {
+  if (positive || !negative) {
     return (
       <li>
         <FontAwesomeIcon

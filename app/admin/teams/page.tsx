@@ -11,7 +11,6 @@ import Link from "next/link";
 import { useState } from "react";
 
 export default function TeamsPage() {
-  const auth = useAuth();
   const [date, setDate] = useState(dayjs());
   const teams = useQuery({
     queryKey: ["teams", date.format("YYYY-MM-DD")],
@@ -33,8 +32,6 @@ export default function TeamsPage() {
   const onTodayClick = () => {
     setDate(dayjs());
   };
-
-  auth.setKickDest("/login");
 
   return (
     <main className='p-3'>

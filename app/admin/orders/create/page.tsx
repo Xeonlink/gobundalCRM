@@ -3,7 +3,6 @@
 import { RawOrder, postOrder } from "@/api/orders";
 import { BlurInfo } from "@/components/BlurInfo";
 import { CheckBox } from "@/components/CheckBox";
-import { PageProps } from "@/extra/type";
 import { toHyphenPhone } from "@/extra/utils";
 import { usePostCodePopup } from "@/hooks/usePostCodePopup";
 import { useToggle } from "@/hooks/useToggle";
@@ -11,23 +10,25 @@ import { useTypeSafeReducer } from "@/hooks/useTypeSafeReducer";
 import ImgInitialEx from "@/public/images/initial_ex.png";
 import { faCircleQuestion } from "@fortawesome/free-regular-svg-icons";
 import {
-  faAddressCard,
+  faArrowLeft,
   faBox,
   faBoxesStacked,
   faBuilding,
   faEquals,
+  faFloppyDisk,
   faMobileScreenButton,
   faNotEqual,
+  faNotdef,
   faPaperPlane,
   faSignature,
   faSignsPost,
-  faSpinner,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useMutation } from "@tanstack/react-query";
 import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { useDaumPostcodePopup } from "react-daum-postcode";
 
 const defaultOrder: RawOrder = {
   senderName: "",
@@ -40,16 +41,13 @@ const defaultOrder: RawOrder = {
   initial: "",
 };
 
-export default function KioskOrderPage(_: PageProps) {
-  const postCodePopup = usePostCodePopup({
-    onComplete: (data) => {
-      orderActions.setReceiverAddress(data.roadAddress);
-    },
-  });
+export default function OrdersCreatePage() {
+  const navigate = useRouter();
   const senderInfo = useToggle(false);
   const initialInfo = useToggle(false);
   const productInfo = useToggle(false);
   const sameAsSender = useToggle(false);
+
   const [extraProductName, setExtraProductName] = useState("");
   const [order, orderActions] = useTypeSafeReducer(defaultOrder, {
     onSenderNameChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
@@ -109,17 +107,73 @@ export default function KioskOrderPage(_: PageProps) {
     mutationFn: () => postOrder(finalOrder),
     onSuccess: () => {
       alert("배송정보 등록이 완료되었습니다.");
-      orderActions.reset();
-      setExtraProductName("");
-      sameAsSender.off();
-      scrollTo(0, 0);
+      clearForm();
     },
   });
 
-  return (
-    <div className='p-3 m-auto max-w-full'>
-      <h1 className='text-3xl text-center py-8 font-bold'>택배 정보</h1>
+  const postCodePopup = usePostCodePopup({
+    onComplete: (data) => {
+      orderActions.setReceiverAddress(data.roadAddress);
+    },
+  });
 
+  const clearForm = () => {
+    orderActions.reset();
+    setExtraProductName("");
+    sameAsSender.off();
+  };
+
+  const clearity = {
+    senderName: finalOrder.senderName === defaultOrder.senderName,
+    senderPhone: finalOrder.senderPhone === defaultOrder.senderPhone,
+    receiverName: finalOrder.receiverName === defaultOrder.receiverName,
+    receiverPhone: finalOrder.receiverPhone === defaultOrder.receiverPhone,
+    receiverAddress: finalOrder.receiverAddress === defaultOrder.receiverAddress,
+    receiverAddressDetail: finalOrder.receiverAddressDetail === defaultOrder.receiverAddressDetail,
+    productName: finalOrder.productName === defaultOrder.productName,
+    initial: finalOrder.initial === defaultOrder.initial,
+    sameAsSender: sameAsSender.isOn === false,
+  };
+
+  const isCleared = Object.values(clearity).every((v) => v);
+
+  return (
+    <main className='p-3'>
+      {/* Toolbar */}
+      <div className='mb-3 flex flex-wrap gap-3'>
+        {/* Back */}
+        <button type='button' className='m-box px-3 py-2 m-hover' onClick={navigate.back}>
+          <FontAwesomeIcon icon={faArrowLeft} width={22} height={22} className='mr-1' />
+          <span>뒤로가기</span>
+        </button>
+
+        {/* Expander */}
+        <span className='flex-1'></span>
+
+        {/* Clear */}
+        <button
+          type='button'
+          className='m-box px-3 py-2 m-hover disabled:opacity-40'
+          disabled={isCleared}
+          onClick={clearForm}
+        >
+          <FontAwesomeIcon icon={faNotdef} width={22} height={22} rotation={90} className='mr-1' />
+          <span>초기화</span>
+        </button>
+
+        {/* Save */}
+        <button
+          type='button'
+          className='m-box px-3 py-2 m-hover disabled:opacity-40'
+          disabled={!isRegistBtnValid || createOrder.isLoading}
+          onClick={() => createOrder.mutate()}
+        >
+          <FontAwesomeIcon icon={faFloppyDisk} width={22} height={22} className='mr-1' />
+          <span>저장</span>
+        </button>
+      </div>
+
+      {/* Form */}
       <form action='' onSubmit={(e) => e.preventDefault()}>
         <div className='flex gap-3 justify-evenly flex-wrap items-start'>
           <fieldset className='w-80 shadow-md rounded-md p-3 mb-10 relative'>
@@ -393,33 +447,7 @@ export default function KioskOrderPage(_: PageProps) {
             />
           </fieldset>
         </div>
-
-        <div className='mb-10 text-center'>
-          <button
-            type='button'
-            className='rounded-md bg-white py-2 mb-3 w-56 max-w-full disabled:opacity-40 shadow-md'
-            disabled={!isRegistBtnValid || createOrder.isLoading}
-            onClick={() => createOrder.mutate()}
-          >
-            {createOrder.isLoading ? (
-              <FontAwesomeIcon
-                icon={faSpinner}
-                width={20}
-                height={20}
-                className='mr-2 opacity-75 animate-spin'
-              />
-            ) : (
-              <FontAwesomeIcon
-                icon={faAddressCard}
-                width={20}
-                height={20}
-                className='mr-2 opacity-75'
-              />
-            )}
-            <span>{createOrder.isLoading ? "배송정보 등록중..." : "배송정보 등록"}</span>
-          </button>
-        </div>
       </form>
-    </div>
+    </main>
   );
 }

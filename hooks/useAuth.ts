@@ -1,3 +1,5 @@
+"use client";
+
 import {
   AuthenticationDetails,
   CognitoUser,
@@ -5,17 +7,30 @@ import {
   CognitoUserSession,
   GetSessionOptions,
 } from "amazon-cognito-identity-js";
-import { useRouter } from "next/navigation";
-import { useEffect, useRef } from "react";
 
 const Pool = new CognitoUserPool({
   UserPoolId: "ap-northeast-2_Wjnw7DGvA",
   ClientId: "3nc2928u8ld638p4un2h5k14gn",
+  /**
+   * Storage는 로그인 정보를 저장하는 곳이다.
+   * getCurrentUser를 호출하면, 해당 스토리지를 검사한다.
+   * 지정하지 않을 경우, localStorage에 저장한다.
+   */
+  Storage: sessionStorage,
 });
 
 const signIn = (Username: string, Password: string) =>
   new Promise((resolve, reject) => {
-    const user = new CognitoUser({ Username, Pool });
+    /**
+     * CognitoUser는 로그인한 유저의 정보를 담고있다.
+     * Storage옵션을 지정하여, 로그인 정보를 저장할 장소를 선택할 수 있다.
+     * 지정하지 않을 경우, localStorage에 저장한다.
+     */
+    const user = new CognitoUser({
+      Username,
+      Pool,
+      Storage: sessionStorage,
+    });
     const authDetails = new AuthenticationDetails({ Username, Password });
 
     user.authenticateUser(authDetails, {
@@ -68,20 +83,8 @@ export const getIdToken = async () => {
 };
 
 export function useAuth() {
-  const kickTo = useRef<string | null>(null);
-  const navigate = useRouter();
   const user = Pool.getCurrentUser();
   const isSignIn = user !== null;
 
-  const setKickDest = (path: string) => {
-    kickTo.current = path;
-  };
-
-  useEffect(() => {
-    if (isSignIn) return;
-    if (kickTo.current === null) return;
-    navigate.push(kickTo.current);
-  }, []);
-
-  return { signIn, signUp, isSignIn, user, setKickDest, getSession };
+  return { signIn, signUp, isSignIn, user, getSession };
 }
