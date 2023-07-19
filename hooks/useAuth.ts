@@ -16,7 +16,7 @@ const Pool = new CognitoUserPool({
    * getCurrentUser를 호출하면, 해당 스토리지를 검사한다.
    * 지정하지 않을 경우, localStorage에 저장한다.
    */
-  Storage: sessionStorage,
+  // Storage: sessionStorage,
 });
 
 const signIn = (Username: string, Password: string) =>
@@ -29,7 +29,7 @@ const signIn = (Username: string, Password: string) =>
     const user = new CognitoUser({
       Username,
       Pool,
-      Storage: sessionStorage,
+      // Storage: sessionStorage,
     });
     const authDetails = new AuthenticationDetails({ Username, Password });
 

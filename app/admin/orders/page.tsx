@@ -158,7 +158,7 @@ export default function OrdersPage(props: PageProps<any, SearchParams>) {
         </Link>
 
         {/* Delete */}
-        <button className='m-box m-hover px-3 py-2' onClick={onDeleteClick}>
+        <button type='button' className='m-box m-hover px-3 py-2' onClick={onDeleteClick}>
           <FontAwesomeIcon icon={faTrashCan} width={22} height={22} className='mr-1' />
           <span>선택삭제</span>
         </button>
