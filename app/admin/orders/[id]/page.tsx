@@ -3,7 +3,7 @@
 import { Order, RawOrder, getOrder, postOrder, updateOrder } from "@/api/orders";
 import { BlurInfo } from "@/components/BlurInfo";
 import { CheckBox } from "@/components/CheckBox";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
 import { PageProps } from "@/extra/type";
 import { toHyphenPhone } from "@/extra/utils";
 import { usePostCodePopup } from "@/hooks/usePostCodePopup";
@@ -136,7 +136,7 @@ export default function OrdersCreatePage(props: PageProps<Params, SearchParams>)
       <div className='mb-3 flex flex-wrap gap-3'>
         {/* Back */}
         <button type='button' className='btn px-3 py-2' onClick={navigate.back}>
-          <FontAwesomeIcon icon={faArrowLeft} width={22} height={22} />
+          <FaIcon icon={faArrowLeft} width={22} height={22} />
           &nbsp; 뒤로가기
         </button>
 
@@ -145,7 +145,7 @@ export default function OrdersCreatePage(props: PageProps<Params, SearchParams>)
 
         {/* Clear */}
         <button type='button' className='btn px-3 py-2' disabled={isCleared} onClick={clearForm}>
-          <FontAwesomeIcon icon={faNotdef} width={22} height={22} rotation={90} />
+          <FaIcon icon={faNotdef} width={22} height={22} rotation={90} />
           &nbsp; 초기화
         </button>
 
@@ -156,7 +156,7 @@ export default function OrdersCreatePage(props: PageProps<Params, SearchParams>)
           disabled={!isRegistBtnValid || updateOrderReq.isLoading}
           onClick={() => updateOrderReq.mutate()}
         >
-          <FontAwesomeIcon icon={faFloppyDisk} width={22} height={22} />
+          <FaIcon icon={faFloppyDisk} width={22} height={22} />
           &nbsp; 저장
         </button>
       </div>
@@ -166,13 +166,9 @@ export default function OrdersCreatePage(props: PageProps<Params, SearchParams>)
         <div className='flex gap-3 justify-evenly flex-wrap items-start'>
           <fieldset className='w-80 shadow-md rounded-md p-3 mb-10 relative'>
             <legend className='btn text-lg px-2 py-2 bg-transparent' onClick={senderInfo.toggle}>
-              <FontAwesomeIcon icon={faPaperPlane} staticSize={15} className='mr-2 opacity-75' />
+              <FaIcon icon={faPaperPlane} staticSize={15} className='mr-2 opacity-75' />
               <span>보내는 사람</span>
-              <FontAwesomeIcon
-                icon={faCircleQuestion}
-                staticSize={16}
-                className='ml-2 opacity-75'
-              />
+              <FaIcon icon={faCircleQuestion} staticSize={16} className='ml-2 opacity-75' />
             </legend>
 
             <BlurInfo open={senderInfo.isOn} closeFn={senderInfo.toggle}>
@@ -182,7 +178,7 @@ export default function OrdersCreatePage(props: PageProps<Params, SearchParams>)
             </BlurInfo>
 
             <label htmlFor='sender-name' className='block mb-1 pl-2'>
-              <FontAwesomeIcon icon={faSignature} staticSize={20} className='mr-1 opacity-75' />
+              <FaIcon icon={faSignature} staticSize={20} className='mr-1 opacity-75' />
               <span>이름</span>
             </label>
             <input
@@ -197,7 +193,7 @@ export default function OrdersCreatePage(props: PageProps<Params, SearchParams>)
             />
 
             <label htmlFor='sender-phone' className='block mb-1 pl-2'>
-              <FontAwesomeIcon
+              <FaIcon
                 icon={faMobileScreenButton}
                 width={20}
                 height={20}
@@ -219,7 +215,7 @@ export default function OrdersCreatePage(props: PageProps<Params, SearchParams>)
 
           <fieldset className='w-80 shadow-md rounded-md p-3 mb-10'>
             <legend className='text-lg shadow-md rounded-md px-2 py-2'>
-              <FontAwesomeIcon
+              <FaIcon
                 icon={faPaperPlane}
                 width={15}
                 height={15}
@@ -230,12 +226,7 @@ export default function OrdersCreatePage(props: PageProps<Params, SearchParams>)
             </legend>
 
             <label htmlFor='same-as-sender' className='block mb-1 pl-2'>
-              <FontAwesomeIcon
-                icon={faPaperPlane}
-                width={15}
-                height={15}
-                className='mr-2 opacity-75'
-              />
+              <FaIcon icon={faPaperPlane} width={15} height={15} className='mr-2 opacity-75' />
               <span>보내는 사람과</span>
             </label>
             <CheckBox
@@ -247,12 +238,7 @@ export default function OrdersCreatePage(props: PageProps<Params, SearchParams>)
             />
 
             <label htmlFor='receiver-name' className='block mb-1 pl-2'>
-              <FontAwesomeIcon
-                icon={faSignature}
-                width={20}
-                height={20}
-                className='mr-1 opacity-75'
-              />
+              <FaIcon icon={faSignature} width={20} height={20} className='mr-1 opacity-75' />
               <span>이름</span>
             </label>
             <input
@@ -267,7 +253,7 @@ export default function OrdersCreatePage(props: PageProps<Params, SearchParams>)
             />
 
             <label htmlFor='receiver-phone' className='block mb-1 pl-2'>
-              <FontAwesomeIcon
+              <FaIcon
                 icon={faMobileScreenButton}
                 width={20}
                 height={20}
@@ -287,12 +273,7 @@ export default function OrdersCreatePage(props: PageProps<Params, SearchParams>)
             />
 
             <label htmlFor='receiver-address' className='block mb-1 pl-2'>
-              <FontAwesomeIcon
-                icon={faSignsPost}
-                width={20}
-                height={20}
-                className='mr-1 opacity-75'
-              />
+              <FaIcon icon={faSignsPost} width={20} height={20} className='mr-1 opacity-75' />
               <span>주소</span>
             </label>
             <input
@@ -307,12 +288,7 @@ export default function OrdersCreatePage(props: PageProps<Params, SearchParams>)
             />
 
             <label htmlFor='receiver-address-detail' className='block mb-1 pl-2'>
-              <FontAwesomeIcon
-                icon={faBuilding}
-                width={20}
-                height={20}
-                className='mr-1 opacity-75'
-              />
+              <FaIcon icon={faBuilding} width={20} height={20} className='mr-1 opacity-75' />
               <span>상세주소</span>
             </label>
             <input
@@ -329,12 +305,7 @@ export default function OrdersCreatePage(props: PageProps<Params, SearchParams>)
 
           <fieldset className='w-80 shadow-md rounded-md p-3 mb-10 relative'>
             <legend className='text-lg shadow-md rounded-md px-2 py-2'>
-              <FontAwesomeIcon
-                icon={faBoxesStacked}
-                width={18}
-                height={18}
-                className='mr-2 opacity-75'
-              />
+              <FaIcon icon={faBoxesStacked} width={18} height={18} className='mr-2 opacity-75' />
               <span>배송물품</span>
             </legend>
 
@@ -351,14 +322,9 @@ export default function OrdersCreatePage(props: PageProps<Params, SearchParams>)
             </BlurInfo>
 
             <label className='block mb-1 pl-2' onClick={productInfo.toggle}>
-              <FontAwesomeIcon icon={faBox} width={20} height={20} className='mr-1 opacity-75' />
+              <FaIcon icon={faBox} width={20} height={20} className='mr-1 opacity-75' />
               상품종류
-              <FontAwesomeIcon
-                icon={faCircleQuestion}
-                width={20}
-                height={20}
-                className='ml-1 opacity-75'
-              />
+              <FaIcon icon={faCircleQuestion} width={20} height={20} className='ml-1 opacity-75' />
             </label>
             <select
               name='product-name'
@@ -391,19 +357,9 @@ export default function OrdersCreatePage(props: PageProps<Params, SearchParams>)
             ) : null}
 
             <label className='block mb-1 pl-2' onClick={initialInfo.toggle}>
-              <FontAwesomeIcon
-                icon={faSignature}
-                width={20}
-                height={20}
-                className='mr-1 opacity-75'
-              />
+              <FaIcon icon={faSignature} width={20} height={20} className='mr-1 opacity-75' />
               <span>이니셜</span>
-              <FontAwesomeIcon
-                icon={faCircleQuestion}
-                width={20}
-                height={20}
-                className='ml-1 opacity-75'
-              />
+              <FaIcon icon={faCircleQuestion} width={20} height={20} className='ml-1 opacity-75' />
             </label>
             <input
               id='initial'

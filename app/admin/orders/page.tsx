@@ -7,7 +7,7 @@ import { PageProps } from "@/extra/type";
 import IcoExcel from "@/public/icons/excel.png";
 import { faCalendarDays } from "@fortawesome/free-regular-svg-icons";
 import { faArrowsRotate, faPlus, faSpinner, faTrashCan } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import Image from "next/image";
@@ -107,8 +107,8 @@ export default function OrdersPage(props: PageProps<any, SearchParams>) {
           href={`orders?date=${dayjs().format("YYYY-MM-DD")}&view=${view}`}
           className='btn px-3 py-2'
         >
-          <FontAwesomeIcon icon={faCalendarDays} width={20} height={20} className='mr-1' />
-          <span>오늘</span>
+          <FaIcon icon={faCalendarDays} fontSize={20} />
+          &nbsp;오늘
         </Link>
 
         {/* 해당 날짜로 검색 */}
@@ -152,7 +152,7 @@ export default function OrdersPage(props: PageProps<any, SearchParams>) {
 
         {/* Refresh */}
         <button type='button' className='btn px-3 py-2' onClick={() => orders.refetch()}>
-          <FontAwesomeIcon icon={faArrowsRotate} width={17} height={17} />
+          <FaIcon icon={faArrowsRotate} width={17} height={17} />
           &nbsp;새로고침
         </button>
 
@@ -168,13 +168,13 @@ export default function OrdersPage(props: PageProps<any, SearchParams>) {
 
         {/* Cratet New Order */}
         <Link href='orders/create' className='btn px-3 py-2'>
-          <FontAwesomeIcon icon={faPlus} width={20} height={20} />
+          <FaIcon icon={faPlus} fontSize={20} />
           &nbsp;송장 작성하기
         </Link>
 
         {/* Delete */}
         <button type='button' className='btn px-3 py-2' onClick={onDeleteClick}>
-          <FontAwesomeIcon icon={faTrashCan} width={20} height={20} />
+          <FaIcon icon={faTrashCan} fontSize={20} />
           &nbsp;선택삭제
         </button>
 

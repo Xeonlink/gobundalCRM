@@ -2,7 +2,7 @@
 
 import IcoLogo from "@/public/icons/logo.png";
 import { faArrowRightToBracket, faPeopleGroup, faReceipt } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -31,17 +31,12 @@ export function AdminNavbar() {
         <div className='saperator text-white'>|</div>
 
         <Link href='/kiosk/teams' className='m-box m-hover px-3 py-2'>
-          <FontAwesomeIcon
-            icon={faPeopleGroup}
-            width={20}
-            height={20}
-            className='align-middle mr-2'
-          />
+          <FaIcon icon={faPeopleGroup} width={20} height={20} className='align-middle mr-2' />
           <span>팀 키오스크</span>
         </Link>
 
         <Link href='/kiosk/orders' className='m-box m-hover px-3 py-2'>
-          <FontAwesomeIcon
+          <FaIcon
             icon={faReceipt}
             width={20}
             height={20}
@@ -53,17 +48,12 @@ export function AdminNavbar() {
         <div className='saperator text-white'>|</div>
 
         <Link href='/admin/teams' className='m-box m-hover px-3 py-2'>
-          <FontAwesomeIcon
-            icon={faPeopleGroup}
-            width={20}
-            height={20}
-            className='align-middle mr-2'
-          />
+          <FaIcon icon={faPeopleGroup} width={20} height={20} className='align-middle mr-2' />
           <span>팀 관리</span>
         </Link>
 
         <Link href='/admin/orders' className='m-box m-hover px-3 py-2'>
-          <FontAwesomeIcon
+          <FaIcon
             icon={faReceipt}
             width={20}
             height={20}
@@ -75,7 +65,7 @@ export function AdminNavbar() {
         <div className='saperator text-white'>|</div>
 
         <Link href='/login' className='m-box m-hover px-3 py-2'>
-          <FontAwesomeIcon
+          <FaIcon
             icon={faArrowRightToBracket}
             width={20}
             height={20}

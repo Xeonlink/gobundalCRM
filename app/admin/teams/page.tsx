@@ -4,7 +4,7 @@ import { getTeams } from "@/api/teams";
 import { useAuth } from "@/hooks/useAuth";
 import { faCalendarDays } from "@fortawesome/free-regular-svg-icons";
 import { faArrowsRotate, faPlus, faSpinner } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
 import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import Link from "next/link";
@@ -39,12 +39,7 @@ export default function TeamsPage() {
       <div className='flex flex-wrap items-center gap-3 mb-3'>
         {/* 오늘 날짜로 재검색 */}
         <button className='btn px-3 py-2' onClick={onTodayClick}>
-          <FontAwesomeIcon
-            icon={faCalendarDays}
-            width={20}
-            height={20}
-            className='mr-1 opacity-75'
-          />
+          <FaIcon icon={faCalendarDays} width={20} height={20} className='mr-1 opacity-75' />
           <span>오늘</span>
         </button>
 
@@ -87,25 +82,20 @@ export default function TeamsPage() {
 
         {/* Refresh */}
         <button className='m-box m-hover px-3 py-2' onClick={() => teams.refetch()}>
-          <FontAwesomeIcon icon={faArrowsRotate} width={17} height={17} className='mr-1' />
+          <FaIcon icon={faArrowsRotate} width={17} height={17} className='mr-1' />
           <span>새로고침</span>
         </button>
 
         {/* Cratet New Team */}
         <Link href='teams/create' className='m-box m-hover px-3 py-2'>
-          <FontAwesomeIcon icon={faPlus} width={24} height={24} />
+          <FaIcon icon={faPlus} width={24} height={24} />
           <span>팀 만들기</span>
         </Link>
       </div>
 
       {teams.isLoading ? (
         <div className='text-center h-10'>
-          <FontAwesomeIcon
-            icon={faSpinner}
-            width={30}
-            height={30}
-            className='animate-spin inline-block'
-          />
+          <FaIcon icon={faSpinner} width={30} height={30} className='animate-spin inline-block' />
           {/* 로딩중... */}
         </div>
       ) : (

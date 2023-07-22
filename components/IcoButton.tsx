@@ -1,6 +1,6 @@
 import { findIconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { IconDefinition } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
 import Image, { StaticImageData } from "next/image";
 import { ButtonHTMLAttributes, DetailedHTMLProps } from "react";
 
@@ -35,7 +35,7 @@ export function IcoButton(props: Props) {
         />
       ) : null}
       {isIconDefinition(icon) ? (
-        <FontAwesomeIcon icon={icon} width={actualIconSize[0]} height={actualIconSize[1]} />
+        <FaIcon icon={icon} width={actualIconSize[0]} height={actualIconSize[1]} />
       ) : null}
       &nbsp;
       <span>{text}</span>

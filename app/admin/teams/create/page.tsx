@@ -4,7 +4,7 @@ import { RawTeam, Team, postTeam } from "@/api/teams";
 import { toHyphenPhone } from "@/extra/utils";
 import { faFloppyDisk } from "@fortawesome/free-solid-svg-icons";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -64,7 +64,7 @@ export default function TeamsCreatePage() {
       <div className='mb-3 flex flex-wrap gap-3'>
         {/* Back */}
         <Link href='.' replace className='m-box px-3 py-2 m-hover'>
-          <FontAwesomeIcon icon={faArrowLeft} width={22} height={22} className='mr-1' />
+          <FaIcon icon={faArrowLeft} width={22} height={22} className='mr-1' />
           <span>뒤로가기</span>
         </Link>
 
@@ -73,7 +73,7 @@ export default function TeamsCreatePage() {
 
         {/* Save */}
         <button className='m-box px-3 py-2 m-hover' onClick={onSaveClick}>
-          <FontAwesomeIcon icon={faFloppyDisk} width={22} height={22} className='mr-1' />
+          <FaIcon icon={faFloppyDisk} width={22} height={22} className='mr-1' />
           <span>저장</span>
         </button>
       </div>

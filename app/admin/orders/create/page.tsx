@@ -23,7 +23,7 @@ import {
   faSignature,
   faSignsPost,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
 import { useMutation } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
@@ -143,7 +143,7 @@ export default function OrdersCreatePage() {
       <div className='mb-3 flex flex-wrap gap-3'>
         {/* Back */}
         <button type='button' className='m-box px-3 py-2 m-hover' onClick={navigate.back}>
-          <FontAwesomeIcon icon={faArrowLeft} width={22} height={22} className='mr-1' />
+          <FaIcon icon={faArrowLeft} width={22} height={22} className='mr-1' />
           <span>뒤로가기</span>
         </button>
 
@@ -157,7 +157,7 @@ export default function OrdersCreatePage() {
           disabled={isCleared}
           onClick={clearForm}
         >
-          <FontAwesomeIcon icon={faNotdef} width={22} height={22} rotation={90} className='mr-1' />
+          <FaIcon icon={faNotdef} width={22} height={22} rotation={90} className='mr-1' />
           <span>초기화</span>
         </button>
 
@@ -168,7 +168,7 @@ export default function OrdersCreatePage() {
           disabled={!isRegistBtnValid || createOrder.isLoading}
           onClick={() => createOrder.mutate()}
         >
-          <FontAwesomeIcon icon={faFloppyDisk} width={22} height={22} className='mr-1' />
+          <FaIcon icon={faFloppyDisk} width={22} height={22} className='mr-1' />
           <span>저장</span>
         </button>
       </div>
@@ -178,19 +178,9 @@ export default function OrdersCreatePage() {
         <div className='flex gap-3 justify-evenly flex-wrap items-start'>
           <fieldset className='w-80 shadow-md rounded-md p-3 mb-10 relative'>
             <legend className='text-lg shadow-md rounded-md px-2 py-2' onClick={senderInfo.toggle}>
-              <FontAwesomeIcon
-                icon={faPaperPlane}
-                width={15}
-                height={15}
-                className='mr-2 opacity-75'
-              />
+              <FaIcon icon={faPaperPlane} width={15} height={15} className='mr-2 opacity-75' />
               <span>보내는 사람</span>
-              <FontAwesomeIcon
-                icon={faCircleQuestion}
-                width={16}
-                height={16}
-                className='ml-2 opacity-75'
-              />
+              <FaIcon icon={faCircleQuestion} width={16} height={16} className='ml-2 opacity-75' />
             </legend>
 
             <BlurInfo open={senderInfo.isOn} closeFn={senderInfo.toggle}>
@@ -200,12 +190,7 @@ export default function OrdersCreatePage() {
             </BlurInfo>
 
             <label htmlFor='sender-name' className='block mb-1 pl-2'>
-              <FontAwesomeIcon
-                icon={faSignature}
-                width={20}
-                height={20}
-                className='mr-1 opacity-75'
-              />
+              <FaIcon icon={faSignature} width={20} height={20} className='mr-1 opacity-75' />
               <span>이름</span>
             </label>
             <input
@@ -220,7 +205,7 @@ export default function OrdersCreatePage() {
             />
 
             <label htmlFor='sender-phone' className='block mb-1 pl-2'>
-              <FontAwesomeIcon
+              <FaIcon
                 icon={faMobileScreenButton}
                 width={20}
                 height={20}
@@ -242,7 +227,7 @@ export default function OrdersCreatePage() {
 
           <fieldset className='w-80 shadow-md rounded-md p-3 mb-10'>
             <legend className='text-lg shadow-md rounded-md px-2 py-2'>
-              <FontAwesomeIcon
+              <FaIcon
                 icon={faPaperPlane}
                 width={15}
                 height={15}
@@ -253,12 +238,7 @@ export default function OrdersCreatePage() {
             </legend>
 
             <label htmlFor='same-as-sender' className='block mb-1 pl-2'>
-              <FontAwesomeIcon
-                icon={faPaperPlane}
-                width={15}
-                height={15}
-                className='mr-2 opacity-75'
-              />
+              <FaIcon icon={faPaperPlane} width={15} height={15} className='mr-2 opacity-75' />
               <span>보내는 사람과</span>
             </label>
             <CheckBox
@@ -270,12 +250,7 @@ export default function OrdersCreatePage() {
             />
 
             <label htmlFor='receiver-name' className='block mb-1 pl-2'>
-              <FontAwesomeIcon
-                icon={faSignature}
-                width={20}
-                height={20}
-                className='mr-1 opacity-75'
-              />
+              <FaIcon icon={faSignature} width={20} height={20} className='mr-1 opacity-75' />
               <span>이름</span>
             </label>
             <input
@@ -290,7 +265,7 @@ export default function OrdersCreatePage() {
             />
 
             <label htmlFor='receiver-phone' className='block mb-1 pl-2'>
-              <FontAwesomeIcon
+              <FaIcon
                 icon={faMobileScreenButton}
                 width={20}
                 height={20}
@@ -310,12 +285,7 @@ export default function OrdersCreatePage() {
             />
 
             <label htmlFor='receiver-address' className='block mb-1 pl-2'>
-              <FontAwesomeIcon
-                icon={faSignsPost}
-                width={20}
-                height={20}
-                className='mr-1 opacity-75'
-              />
+              <FaIcon icon={faSignsPost} width={20} height={20} className='mr-1 opacity-75' />
               <span>주소</span>
             </label>
             <input
@@ -330,12 +300,7 @@ export default function OrdersCreatePage() {
             />
 
             <label htmlFor='receiver-address-detail' className='block mb-1 pl-2'>
-              <FontAwesomeIcon
-                icon={faBuilding}
-                width={20}
-                height={20}
-                className='mr-1 opacity-75'
-              />
+              <FaIcon icon={faBuilding} width={20} height={20} className='mr-1 opacity-75' />
               <span>상세주소</span>
             </label>
             <input
@@ -352,12 +317,7 @@ export default function OrdersCreatePage() {
 
           <fieldset className='w-80 shadow-md rounded-md p-3 mb-10 relative'>
             <legend className='text-lg shadow-md rounded-md px-2 py-2'>
-              <FontAwesomeIcon
-                icon={faBoxesStacked}
-                width={18}
-                height={18}
-                className='mr-2 opacity-75'
-              />
+              <FaIcon icon={faBoxesStacked} width={18} height={18} className='mr-2 opacity-75' />
               <span>배송물품</span>
             </legend>
 
@@ -374,14 +334,9 @@ export default function OrdersCreatePage() {
             </BlurInfo>
 
             <label className='block mb-1 pl-2' onClick={productInfo.toggle}>
-              <FontAwesomeIcon icon={faBox} width={20} height={20} className='mr-1 opacity-75' />
+              <FaIcon icon={faBox} width={20} height={20} className='mr-1 opacity-75' />
               상품종류
-              <FontAwesomeIcon
-                icon={faCircleQuestion}
-                width={20}
-                height={20}
-                className='ml-1 opacity-75'
-              />
+              <FaIcon icon={faCircleQuestion} width={20} height={20} className='ml-1 opacity-75' />
             </label>
             <select
               name='product-name'
@@ -414,19 +369,9 @@ export default function OrdersCreatePage() {
             ) : null}
 
             <label className='block mb-1 pl-2' onClick={initialInfo.toggle}>
-              <FontAwesomeIcon
-                icon={faSignature}
-                width={20}
-                height={20}
-                className='mr-1 opacity-75'
-              />
+              <FaIcon icon={faSignature} width={20} height={20} className='mr-1 opacity-75' />
               <span>이니셜</span>
-              <FontAwesomeIcon
-                icon={faCircleQuestion}
-                width={20}
-                height={20}
-                className='ml-1 opacity-75'
-              />
+              <FaIcon icon={faCircleQuestion} width={20} height={20} className='ml-1 opacity-75' />
             </label>
             <input
               id='initial'

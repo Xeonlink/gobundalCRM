@@ -1,11 +1,11 @@
-import { FontAwesomeIcon, FontAwesomeIconProps } from "@fortawesome/react-fontawesome";
+import { FontAwesomeIcon as FaIcon, FaIconProps } from "@fortawesome/react-fontawesome";
 
 type CheckBoxProps = {
   checked: boolean;
   "aria-diabled": boolean;
   toggleFn: () => void;
-  trueIcon?: FontAwesomeIconProps["icon"];
-  falseIcon?: FontAwesomeIconProps["icon"];
+  trueIcon?: FaIconProps["icon"];
+  falseIcon?: FaIconProps["icon"];
 };
 
 export function CheckBox(props: CheckBoxProps) {
@@ -20,7 +20,7 @@ export function CheckBox(props: CheckBoxProps) {
         onClick={toggleFn}
       >
         {!!trueIcon ? (
-          <FontAwesomeIcon icon={trueIcon} width={20} height={20} className='mr-1 opacity-75' />
+          <FaIcon icon={trueIcon} width={20} height={20} className='mr-1 opacity-75' />
         ) : null}
         <span>동일함</span>
       </button>
@@ -31,7 +31,7 @@ export function CheckBox(props: CheckBoxProps) {
         onClick={toggleFn}
       >
         {!!falseIcon ? (
-          <FontAwesomeIcon icon={falseIcon} width={20} height={20} className='mr-1 opacity-75' />
+          <FaIcon icon={falseIcon} width={20} height={20} className='mr-1 opacity-75' />
         ) : null}
         <span>동일하지 않음</span>
       </button>

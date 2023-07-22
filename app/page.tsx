@@ -10,7 +10,7 @@ import {
   faReceipt,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -29,7 +29,7 @@ export default function RootPage() {
       <main className='m-auto w-96 max-w-full root-page-grid gap-3'>
         {!isSignIn ? (
           <Link href='login' className='m-box p-3 text-center m-hover'>
-            <FontAwesomeIcon
+            <FaIcon
               icon={faArrowRightToBracket}
               width={20}
               height={20}
@@ -39,7 +39,7 @@ export default function RootPage() {
           </Link>
         ) : (
           <button className='m-box p-3 text-center m-hover' onClick={onSignOutClick}>
-            <FontAwesomeIcon
+            <FaIcon
               icon={faArrowRightToBracket}
               width={20}
               height={20}
@@ -55,7 +55,7 @@ export default function RootPage() {
         <div className='saperator col-span-2 h-10'></div>
 
         <div className='col-span-2 text-center'>
-          <FontAwesomeIcon
+          <FaIcon
             icon={faBoxesPacking}
             width={20}
             height={20}
@@ -64,7 +64,7 @@ export default function RootPage() {
           <span>키오스크</span>
         </div>
         <Link href='kiosk/teams' className='m-box p-3 text-center m-hover'>
-          <FontAwesomeIcon
+          <FaIcon
             icon={faPeopleGroup}
             width={22}
             height={22}
@@ -73,7 +73,7 @@ export default function RootPage() {
           <span>팀 키오스크</span>
         </Link>
         <Link href='kiosk/orders' className='m-box p-3 text-center m-hover'>
-          <FontAwesomeIcon
+          <FaIcon
             icon={faReceipt}
             width={20}
             height={20}
@@ -85,7 +85,7 @@ export default function RootPage() {
         <div className='saperator col-span-2 h-10'></div>
 
         <div className='col-span-2 text-center'>
-          <FontAwesomeIcon
+          <FaIcon
             icon={faIdCard}
             width={23}
             height={23}
@@ -98,7 +98,7 @@ export default function RootPage() {
           onClick={() => navigate.push("/admin/teams")}
           disabled={!isSignIn}
         >
-          <FontAwesomeIcon
+          <FaIcon
             icon={faPeopleGroup}
             width={22}
             height={22}
@@ -111,7 +111,7 @@ export default function RootPage() {
           onClick={() => navigate.push("/admin/orders")}
           disabled={!isSignIn}
         >
-          <FontAwesomeIcon
+          <FaIcon
             icon={faReceipt}
             width={20}
             height={20}
@@ -124,12 +124,7 @@ export default function RootPage() {
           onClick={() => navigate.push("/admin/products")}
           disabled={!isSignIn}
         >
-          <FontAwesomeIcon
-            icon={faBox}
-            width={19}
-            height={19}
-            className='align-middle inline-block mr-2'
-          />
+          <FaIcon icon={faBox} width={19} height={19} className='align-middle inline-block mr-2' />
           <span>상품 관리</span>
         </button>
         <button
@@ -137,12 +132,7 @@ export default function RootPage() {
           onClick={() => navigate.push("/admin/customers")}
           disabled={!isSignIn}
         >
-          <FontAwesomeIcon
-            icon={faUser}
-            width={19}
-            height={19}
-            className='align-middle inline-block mr-2'
-          />
+          <FaIcon icon={faUser} width={19} height={19} className='align-middle inline-block mr-2' />
           <span>고객 관리</span>
         </button>
       </main>

@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import IcoLogo from "@/public/icons/logo_transparent.png";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowRightToBracket,
   faKey,
@@ -83,7 +83,7 @@ export default function LoginPage() {
       />
       <form className='w-80 p-4 max-w-full m-auto relative' onSubmit={(e) => e.preventDefault()}>
         <label htmlFor='username' className='pl-3 block mb-2'>
-          <FontAwesomeIcon
+          <FaIcon
             icon={faSignature}
             width={20}
             height={20}
@@ -105,12 +105,7 @@ export default function LoginPage() {
           autoFocus
         />
         <label htmlFor='password' className='pl-3 block mb-2'>
-          <FontAwesomeIcon
-            icon={faKey}
-            width={17}
-            height={17}
-            className='align-middle inline-block mr-2'
-          />
+          <FaIcon icon={faKey} width={17} height={17} className='align-middle inline-block mr-2' />
           <span>비밀번호</span>
         </label>
         <input
@@ -147,14 +142,14 @@ export default function LoginPage() {
             disabled={isSignInButtonDisabled}
           >
             {!isLoading ? (
-              <FontAwesomeIcon
+              <FaIcon
                 icon={faArrowRightToBracket}
                 width={19}
                 height={19}
                 className='align-middle inline-block mr-2'
               />
             ) : (
-              <FontAwesomeIcon
+              <FaIcon
                 icon={faSpinner}
                 width={19}
                 height={19}
@@ -171,14 +166,14 @@ export default function LoginPage() {
             disabled={isSignUpButtonDisabled}
           >
             {!isLoading ? (
-              <FontAwesomeIcon
+              <FaIcon
                 icon={faUserPlus}
                 width={19}
                 height={19}
                 className='align-middle inline-block mr-2'
               />
             ) : (
-              <FontAwesomeIcon
+              <FaIcon
                 icon={faSpinner}
                 width={19}
                 height={19}
@@ -200,7 +195,7 @@ function Message(props: { positive?: boolean; negative?: boolean; message: strin
   if (positive || !negative) {
     return (
       <li>
-        <FontAwesomeIcon
+        <FaIcon
           icon={faCircleCheck}
           width={28}
           height={28}
@@ -212,7 +207,7 @@ function Message(props: { positive?: boolean; negative?: boolean; message: strin
   } else {
     return (
       <li>
-        <FontAwesomeIcon
+        <FaIcon
           icon={faCircleXmark}
           width={28}
           height={28}
