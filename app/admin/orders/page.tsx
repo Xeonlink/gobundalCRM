@@ -107,7 +107,7 @@ export default function OrdersPage(props: PageProps<any, SearchParams>) {
           href={`orders?date=${dayjs().format("YYYY-MM-DD")}&view=${view}`}
           className='btn px-3 py-2'
         >
-          <FaIcon icon={faCalendarDays} fontSize={20} />
+          <FaIcon icon={faCalendarDays} />
           &nbsp;오늘
         </Link>
 
@@ -152,7 +152,7 @@ export default function OrdersPage(props: PageProps<any, SearchParams>) {
 
         {/* Refresh */}
         <button type='button' className='btn px-3 py-2' onClick={() => orders.refetch()}>
-          <FaIcon icon={faArrowsRotate} width={17} height={17} />
+          <FaIcon icon={faArrowsRotate} />
           &nbsp;새로고침
         </button>
 
@@ -168,13 +168,13 @@ export default function OrdersPage(props: PageProps<any, SearchParams>) {
 
         {/* Cratet New Order */}
         <Link href='orders/create' className='btn px-3 py-2'>
-          <FaIcon icon={faPlus} fontSize={20} />
+          <FaIcon icon={faPlus} />
           &nbsp;송장 작성하기
         </Link>
 
         {/* Delete */}
         <button type='button' className='btn px-3 py-2' onClick={onDeleteClick}>
-          <FaIcon icon={faTrashCan} fontSize={20} />
+          <FaIcon icon={faTrashCan} />
           &nbsp;선택삭제
         </button>
 
