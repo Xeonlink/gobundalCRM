@@ -12,7 +12,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useTypeSafeReducer } from "@/hooks/useTypeSafeReducer";
 import { useAuth } from "@/hooks/useAuth";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { faCircleCheck, faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "next/navigation";
 
@@ -66,6 +66,10 @@ export default function LoginPage() {
   const isPasswordValid = credentials.password !== "";
   const isSignUpButtonDisabled = !isUsernameValid || !isPasswordValid || isLoading;
   const isSignInButtonDisabled = !isUsernameValid || !isPasswordValid || isLoading;
+
+  useEffect(() => {
+    auth.user?.signOut();
+  }, []);
 
   return (
     <div className='w-96 max-w-full m-auto'>

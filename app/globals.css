@@ -24,6 +24,11 @@
 }
 
 @layer components {
+  .btn {
+    @apply bg-white rounded-md shadow-md transition-all duration-300;
+    @apply hover:-translate-y-1;
+    @apply active:scale-75;
+  }
   .m-box {
     @apply bg-white rounded-md shadow-md;
   }

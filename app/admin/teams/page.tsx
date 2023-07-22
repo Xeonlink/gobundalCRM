@@ -38,7 +38,7 @@ export default function TeamsPage() {
       {/* Toolbar */}
       <div className='flex flex-wrap items-center gap-3 mb-3'>
         {/* 오늘 날짜로 재검색 */}
-        <button className='bg-white rounded-md shadow-md m-hover px-3 py-2' onClick={onTodayClick}>
+        <button className='btn px-3 py-2' onClick={onTodayClick}>
           <FontAwesomeIcon
             icon={faCalendarDays}
             width={20}
@@ -49,9 +49,9 @@ export default function TeamsPage() {
         </button>
 
         {/* 해당 날짜로 검색 */}
-        <div className='bg-white rounded-md shadow-md'>
+        <div className='m-box'>
           <select
-            className='bg-white rounded-md m-hover inline-flex items-center marker:gone text-center px-3 py-2'
+            className='bg-white rounded-md m-hover inline-flex items-center marker:gone text-center px-3 py-2 appearance-none'
             value={date.year()}
             onChange={onYearChange}
           >
@@ -61,7 +61,7 @@ export default function TeamsPage() {
           </select>
           <span className='text-gray-200'>|</span>
           <select
-            className='bg-white rounded-md m-hover inline-flex items-center marker:gone text-center px-3 py-2'
+            className='bg-white rounded-md m-hover inline-flex items-center marker:gone text-center px-3 py-2 appearance-none'
             defaultValue={date.month()}
             onChange={onMonthChange}
           >
@@ -73,7 +73,7 @@ export default function TeamsPage() {
           </select>
           <span className='text-gray-200'>|</span>
           <select
-            className='bg-white rounded-md m-hover inline-flex items-center marker:gone text-center px-3 py-2'
+            className='bg-white rounded-md m-hover inline-flex items-center marker:gone text-center px-3 py-2 appearance-none'
             value={date.date()}
             onChange={onDateChange}
           >
@@ -86,16 +86,13 @@ export default function TeamsPage() {
         </div>
 
         {/* Refresh */}
-        <button
-          className='bg-white rounded-md shadow-md m-hover px-3 py-2'
-          onClick={() => teams.refetch()}
-        >
+        <button className='m-box m-hover px-3 py-2' onClick={() => teams.refetch()}>
           <FontAwesomeIcon icon={faArrowsRotate} width={17} height={17} className='mr-1' />
           <span>새로고침</span>
         </button>
 
         {/* Cratet New Team */}
-        <Link href='teams/create' className='bg-white rounded-md shadow-md m-hover px-3 py-2'>
+        <Link href='teams/create' className='m-box m-hover px-3 py-2'>
           <FontAwesomeIcon icon={faPlus} width={24} height={24} />
           <span>팀 만들기</span>
         </Link>
@@ -117,7 +114,7 @@ export default function TeamsPage() {
             <Link
               key={team.id}
               href={`teams/${team.id}?date=${date.format("YYYY-MM-DD")}`}
-              className='bg-white rounded-md shadow-md m-hover p-4'
+              className='m-box m-hover p-4'
             >
               <ol className='flex items-center gap-1 py-2'>
                 {team.isApproved ? (

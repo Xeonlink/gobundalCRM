@@ -2,21 +2,17 @@
 
 import { Order, deleteOrders, getOrders } from "@/api/orders";
 import { PageProps } from "@/extra/type";
+import IcoExcel from "@/public/icons/excel.png";
 import { faCalendarDays } from "@fortawesome/free-regular-svg-icons";
-import {
-  faArrowsRotate,
-  faCreditCard,
-  faPlus,
-  faSpinner,
-  faTable,
-  faTrashCan,
-} from "@fortawesome/free-solid-svg-icons";
+import { faArrowsRotate, faPlus, faSpinner, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+import * as XlSX from "xlsx";
 
 type SearchParams = {
   date: `${string}-${string}-${string}`;
@@ -81,6 +77,16 @@ export default function OrdersPage(props: PageProps<any, SearchParams>) {
     if (selectedIds.length === 0) return;
     if (!confirm("정말로 삭제하시겠습니까?")) return;
     batchDeleteOrders.mutate();
+  };
+
+  const onExcelDownloadClick = () => {
+    if (orders.data?.data === undefined) return;
+
+    const fileName = `${dayjs().format("YYYY-MM-DD")} 주문.xlsx`;
+    const sheet = XlSX.utils.json_to_sheet(orders.data?.data);
+    const book = XlSX.utils.book_new();
+    XlSX.utils.book_append_sheet(book, sheet, "Sheet1");
+    XlSX.writeFile(book, fileName);
   };
 
   return (
@@ -161,6 +167,18 @@ export default function OrdersPage(props: PageProps<any, SearchParams>) {
         <button type='button' className='m-box m-hover px-3 py-2' onClick={onDeleteClick}>
           <FontAwesomeIcon icon={faTrashCan} width={22} height={22} className='mr-1' />
           <span>선택삭제</span>
+        </button>
+
+        {/* 엑셀로 다운로드하기 */}
+        <button type='button' className='m-box m-hover px-3 py-2' onClick={onExcelDownloadClick}>
+          <Image
+            src={IcoExcel}
+            alt='excel_icon'
+            width={21}
+            height={21}
+            className='inline-block align-text-bottom mr-2'
+          />
+          <span>엑셀로 변환</span>
         </button>
       </div>
 

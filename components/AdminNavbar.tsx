@@ -1,22 +1,14 @@
 "use client";
 
+import IcoLogo from "@/public/icons/logo.png";
+import { faArrowRightToBracket, faPeopleGroup, faReceipt } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import Link from "next/link";
-import IcoLogo from "@/public/icons/logo.png";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCalendar, faCalendarDays } from "@fortawesome/free-regular-svg-icons";
-import {
-  faArrowRightToBracket,
-  faPeopleGroup,
-  faReceipt,
-  faSignature,
-} from "@fortawesome/free-solid-svg-icons";
 import { usePathname } from "next/navigation";
-import { useAuth } from "@/hooks/useAuth";
 
 export function AdminNavbar() {
   const path = usePathname();
-  const auth = useAuth();
 
   const isDashboard = path.startsWith("/admin/dashboard");
   const isTeams = path.startsWith("/admin/teams");
@@ -82,11 +74,7 @@ export function AdminNavbar() {
 
         <div className='saperator text-white'>|</div>
 
-        <Link
-          href='/login'
-          className='m-box m-hover px-3 py-2'
-          onClick={() => auth.user?.signOut()}
-        >
+        <Link href='/login' className='m-box m-hover px-3 py-2'>
           <FontAwesomeIcon
             icon={faArrowRightToBracket}
             width={20}

@@ -8,14 +8,10 @@ export function RouteGuard(props: PropsWithChildren) {
   const navigate = useRouter();
   const { isSignIn } = useAuth();
 
-  useEffect(() => {
-    if (isSignIn) return;
-    navigate.push("/login");
-  }, []);
-
-  if (isSignIn) {
-    return props.children;
-  } else {
-    return null;
+  if (!isSignIn) {
+    navigate.replace("/login");
+    return <div></div>;
   }
+
+  return props.children;
 }
