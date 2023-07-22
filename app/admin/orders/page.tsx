@@ -1,6 +1,7 @@
 "use client";
 
 import { Order, deleteOrders, getOrders } from "@/api/orders";
+import { IcoButton } from "@/components/IcoButton";
 import { PageProps } from "@/extra/type";
 import IcoExcel from "@/public/icons/excel.png";
 import { faCalendarDays } from "@fortawesome/free-regular-svg-icons";
@@ -96,7 +97,7 @@ export default function OrdersPage(props: PageProps<any, SearchParams>) {
         {/* 오늘 날짜로 재검색 */}
         <Link
           href={`orders?date=${dayjs().format("YYYY-MM-DD")}&view=${view}`}
-          className='m-box m-hover px-3 py-2'
+          className='btn px-3 py-2'
         >
           <FontAwesomeIcon icon={faCalendarDays} width={20} height={20} className='mr-1' />
           <span>오늘</span>
@@ -142,14 +143,14 @@ export default function OrdersPage(props: PageProps<any, SearchParams>) {
         </fieldset>
 
         {/* Refresh */}
-        <button type='button' className='m-box m-hover px-3 py-2' onClick={() => orders.refetch()}>
+        <button type='button' className='btn px-3 py-2' onClick={() => orders.refetch()}>
           <FontAwesomeIcon icon={faArrowsRotate} width={17} height={17} className='mr-1' />
           <span>새로고침</span>
         </button>
 
         {/* Change ViewStyle */}
         <select
-          className='m-box m-hover px-3 py-2 appearance-none text-center'
+          className='btn px-3 py-2 appearance-none text-center'
           value={view}
           onChange={onViewStyleChange}
         >
@@ -158,19 +159,19 @@ export default function OrdersPage(props: PageProps<any, SearchParams>) {
         </select>
 
         {/* Cratet New Order */}
-        <Link href='orders/create' className='m-box m-hover px-3 py-2'>
+        <Link href='orders/create' className='btn px-3 py-2'>
           <FontAwesomeIcon icon={faPlus} width={24} height={24} className='mr-1' />
           <span>송장 작성하기</span>
         </Link>
 
         {/* Delete */}
-        <button type='button' className='m-box m-hover px-3 py-2' onClick={onDeleteClick}>
+        <button type='button' className='btn px-3 py-2' onClick={onDeleteClick}>
           <FontAwesomeIcon icon={faTrashCan} width={22} height={22} className='mr-1' />
           <span>선택삭제</span>
         </button>
 
         {/* 엑셀로 다운로드하기 */}
-        <button type='button' className='m-box m-hover px-3 py-2' onClick={onExcelDownloadClick}>
+        <button type='button' className='btn px-3 py-2' onClick={onExcelDownloadClick}>
           <Image
             src={IcoExcel}
             alt='excel_icon'
@@ -180,6 +181,18 @@ export default function OrdersPage(props: PageProps<any, SearchParams>) {
           />
           <span>엑셀로 변환</span>
         </button>
+
+        {/* 엑셀로 다운로드하기 */}
+        <IcoButton
+          iconType='image'
+          icon={IcoExcel}
+          iconSize={[21, 21]}
+          gap={2}
+          alt='excel_icon'
+          text='엑셀로 변환'
+          onClick={onExcelDownloadClick}
+          className='px-3 py-2'
+        />
       </div>
 
       {view === "table" ? (
