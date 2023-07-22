@@ -3,19 +3,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image, { StaticImageData } from "next/image";
 import { ButtonHTMLAttributes, DetailedHTMLProps } from "react";
 
-type Icon = {
-  size: [number, number];
-} & {
-  type: "image";
-  alt: string;
-  self: StaticImageData;
-} & {
-  type: "faIcon";
-  self: IconDefinition;
-};
-
 type Props = DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement> & {
-  iconSize: [number, number];
+  iconSize?: [number, number] | number;
   gap?: number;
   iconClass?: string;
   text?: string;
@@ -31,15 +20,10 @@ type Props = DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButt
       }
   );
 
-type AdvancedProps = DetailedHTMLProps<
-  ButtonHTMLAttributes<HTMLButtonElement>,
-  HTMLButtonElement
-> & {
-  icon: Icon;
-};
-
 export function IcoButton(props: Props) {
   const { iconSize, text, iconType, gap, icon, iconClass, ...btnProps } = props;
+
+  const actualIconSize = Array.isArray(iconSize) ? iconSize : [iconSize, iconSize];
 
   return (
     <button type='button' {...btnProps} className={`btn ${btnProps.className}`}>
@@ -47,16 +31,16 @@ export function IcoButton(props: Props) {
         <Image
           src={icon}
           alt={props.alt}
-          width={iconSize[0]}
-          height={iconSize[1]}
+          width={actualIconSize[0]}
+          height={actualIconSize[1]}
           className={`inline-block align-text-bottom mr-${gap} ${iconClass}`}
         />
       ) : null}
       {iconType === "faIcon" ? (
         <FontAwesomeIcon
           icon={icon}
-          width={iconSize[0]}
-          height={iconSize[1]}
+          width={actualIconSize[0]}
+          height={actualIconSize[1]}
           className={iconClass}
         />
       ) : null}

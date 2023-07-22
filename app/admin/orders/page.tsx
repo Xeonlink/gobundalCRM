@@ -181,18 +181,6 @@ export default function OrdersPage(props: PageProps<any, SearchParams>) {
           />
           <span>엑셀로 변환</span>
         </button>
-
-        {/* 엑셀로 다운로드하기 */}
-        <IcoButton
-          iconType='image'
-          icon={IcoExcel}
-          iconSize={[21, 21]}
-          gap={2}
-          alt='excel_icon'
-          text='엑셀로 변환'
-          onClick={onExcelDownloadClick}
-          className='px-3 py-2'
-        />
       </div>
 
       {view === "table" ? (
