@@ -27,11 +27,17 @@
 }
 
 @layer components {
+  .field {
+    @apply mb-3 last-of-type:mb-0;
+  }
+  .label {
+    @apply block mb-1 pl-2;
+  }
   .btn {
-    @apply bg-white rounded-md shadow-md transition-all duration-300 appearance-none;
-    @apply hover:-translate-y-1;
-    @apply active:scale-75;
-    @apply disabled:opacity-40;
+    @apply bg-white rounded-md shadow-md transition-all duration-300 text-center cursor-pointer;
+    @apply hover:-translate-y-1 disabled:hover:-translate-y-0;
+    @apply active:scale-75 disabled:active:scale-100;
+    @apply disabled:opacity-40 disabled:cursor-auto;
   }
   .m-box {
     @apply bg-white rounded-md shadow-md;
@@ -40,15 +46,8 @@
     @apply hover:-translate-y-1 transition-all duration-300;
   }
   .input {
-    @apply input-box input-invalid input-disabled;
-  }
-  .input-box {
-    @apply rounded-md bg-white px-3 py-2 mb-3 w-full;
-  }
-  .input-invalid {
+    @apply rounded-md bg-white px-3 py-2 w-full;
     @apply invalid:shake invalid:shadow-inset-2 invalid:shadow-red-300;
-  }
-  .input-disabled {
     @apply disabled:opacity-40;
   }
 }

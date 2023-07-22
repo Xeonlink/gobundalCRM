@@ -16,9 +16,8 @@ export function BlurInfo(props: PropsWithChildren<BlurInfoProps>) {
       aria-hidden={!open}
     >
       <span className='mb-4'>{children}</span>
-      <button type='button' className='m-box px-3 py-2 m-hover' onClick={closeFn}>
-        <FaIcon icon={faXmark} width={15} height={15} className='mr-1 opacity-75' />
-        <span>닫기</span>
+      <button type='button' className='btn px-3 py-2' onClick={closeFn}>
+        <FaIcon icon={faXmark} /> 닫기
       </button>
     </div>
   );

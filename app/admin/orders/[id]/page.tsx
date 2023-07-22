@@ -1,9 +1,8 @@
 "use client";
 
-import { Order, RawOrder, getOrder, postOrder, updateOrder } from "@/api/orders";
+import { Order, getOrder, updateOrder } from "@/api/orders";
 import { BlurInfo } from "@/components/BlurInfo";
 import { CheckBox } from "@/components/CheckBox";
-import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
 import { PageProps } from "@/extra/type";
 import { toHyphenPhone } from "@/extra/utils";
 import { usePostCodePopup } from "@/hooks/usePostCodePopup";
@@ -25,9 +24,9 @@ import {
   faSignature,
   faSignsPost,
 } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -165,10 +164,10 @@ export default function OrdersCreatePage(props: PageProps<Params, SearchParams>)
       <form action='' onSubmit={(e) => e.preventDefault()}>
         <div className='flex gap-3 justify-evenly flex-wrap items-start'>
           <fieldset className='w-80 shadow-md rounded-md p-3 mb-10 relative'>
-            <legend className='btn text-lg px-2 py-2 bg-transparent' onClick={senderInfo.toggle}>
-              <FaIcon icon={faPaperPlane} staticSize={15} className='mr-2 opacity-75' />
-              <span>보내는 사람</span>
-              <FaIcon icon={faCircleQuestion} staticSize={16} className='ml-2 opacity-75' />
+            <legend className='btn text-lg bg-transparent px-2 py-2' onClick={senderInfo.toggle}>
+              <FaIcon icon={faPaperPlane} fontSize={16} />
+              &nbsp;보내는 사람&nbsp;
+              <FaIcon icon={faCircleQuestion} fontSize={16} />
             </legend>
 
             <BlurInfo open={senderInfo.isOn} closeFn={senderInfo.toggle}>
@@ -177,136 +176,140 @@ export default function OrdersCreatePage(props: PageProps<Params, SearchParams>)
               입력해주세요.
             </BlurInfo>
 
-            <label htmlFor='sender-name' className='block mb-1 pl-2'>
-              <FaIcon icon={faSignature} staticSize={20} className='mr-1 opacity-75' />
-              <span>이름</span>
-            </label>
-            <input
-              id='sender-name'
-              type='text'
-              placeholder='홍길동'
-              className='rounded-md px-3 py-2 mb-3 w-full input-invalid disabled:opacity-40'
-              disabled={updateOrderReq.isLoading}
-              value={partialOrder.senderName}
-              onChange={changeActions.onSenderNameChange}
-              required
-            />
-
-            <label htmlFor='sender-phone' className='block mb-1 pl-2'>
-              <FaIcon
-                icon={faMobileScreenButton}
-                width={20}
-                height={20}
-                className='mr-1 opacity-75'
+            <div className='field'>
+              <label htmlFor='sender-name' className='label'>
+                <FaIcon icon={faSignature} /> 이름
+              </label>
+              <input
+                id='sender-name'
+                type='text'
+                placeholder='홍길동'
+                className='input'
+                disabled={updateOrderReq.isLoading}
+                value={partialOrder.senderName}
+                onChange={changeActions.onSenderNameChange}
+                required
               />
-              <span>전화번호</span>
-            </label>
-            <input
-              id='sender-phone'
-              type='tel'
-              placeholder='010-xxxx-xxxx'
-              className='input'
-              disabled={updateOrderReq.isLoading}
-              value={partialOrder.senderPhone}
-              onChange={changeActions.onSenderPhoneChange}
-              required
-            />
+            </div>
+
+            <div className='field'>
+              <label htmlFor='sender-phone' className='label'>
+                <FaIcon icon={faMobileScreenButton} /> 전화번호
+              </label>
+              <input
+                id='sender-phone'
+                type='tel'
+                placeholder='010-xxxx-xxxx'
+                className='input'
+                disabled={updateOrderReq.isLoading}
+                value={partialOrder.senderPhone}
+                onChange={changeActions.onSenderPhoneChange}
+                required
+              />
+            </div>
           </fieldset>
 
           <fieldset className='w-80 shadow-md rounded-md p-3 mb-10'>
-            <legend className='text-lg shadow-md rounded-md px-2 py-2'>
-              <FaIcon
-                icon={faPaperPlane}
-                width={15}
-                height={15}
-                rotation={90}
-                className='mr-2 opacity-75'
-              />
-              <span>받는 사람</span>
+            <legend className='text-lg m-box p-2 text-center bg-transparent'>
+              <FaIcon icon={faPaperPlane} fontSize={16} /> 받는 사람
             </legend>
 
-            <label htmlFor='same-as-sender' className='block mb-1 pl-2'>
-              <FaIcon icon={faPaperPlane} width={15} height={15} className='mr-2 opacity-75' />
-              <span>보내는 사람과</span>
-            </label>
-            <CheckBox
-              aria-diabled={updateOrderReq.isLoading}
-              checked={sameAsSender.isOn}
-              toggleFn={sameAsSender.toggle}
-              trueIcon={faEquals}
-              falseIcon={faNotEqual}
-            />
+            <div className='field'>
+              <label htmlFor='same-as-sender' className='label'>
+                <FaIcon icon={faPaperPlane} /> 보내는 사람과
+              </label>
+              <div
+                className='flex gap-3 disabled:opacity-40 mb-3'
+                aria-disabled={updateOrderReq.isLoading}
+              >
+                <button
+                  type='button'
+                  className='btn w-full shadow-none p-2'
+                  disabled={sameAsSender.isOn}
+                  onClick={sameAsSender.toggle}
+                >
+                  <FaIcon icon={faEquals} /> 동일
+                </button>
+                <button
+                  type='button'
+                  className='btn w-full shadow-none p-2'
+                  disabled={!sameAsSender.isOn}
+                  onClick={sameAsSender.toggle}
+                >
+                  <FaIcon icon={faNotEqual} /> 동일하지 않음
+                </button>
+              </div>
+            </div>
 
-            <label htmlFor='receiver-name' className='block mb-1 pl-2'>
-              <FaIcon icon={faSignature} width={20} height={20} className='mr-1 opacity-75' />
-              <span>이름</span>
-            </label>
-            <input
-              id='receiver-name'
-              type='text'
-              placeholder='홍길동'
-              className='input'
-              disabled={sameAsSender.isOn || updateOrderReq.isLoading}
-              value={sameAsSender.isOn ? partialOrder.senderName : partialOrder.receiverName}
-              onChange={changeActions.onReceiverNameChange}
-              required
-            />
-
-            <label htmlFor='receiver-phone' className='block mb-1 pl-2'>
-              <FaIcon
-                icon={faMobileScreenButton}
-                width={20}
-                height={20}
-                className='mr-1 opacity-75'
+            <div className='field'>
+              <label htmlFor='receiver-name' className='label'>
+                <FaIcon icon={faSignature} /> 이름
+              </label>
+              <input
+                id='receiver-name'
+                type='text'
+                placeholder='홍길동'
+                className='input'
+                disabled={sameAsSender.isOn || updateOrderReq.isLoading}
+                value={sameAsSender.isOn ? partialOrder.senderName : partialOrder.receiverName}
+                onChange={changeActions.onReceiverNameChange}
+                required
               />
-              <span>전화번호</span>
-            </label>
-            <input
-              id='receiver-phone'
-              type='text'
-              placeholder='010-xxxx-xxxx'
-              className='input'
-              disabled={sameAsSender.isOn || updateOrderReq.isLoading}
-              value={sameAsSender.isOn ? partialOrder.senderPhone : partialOrder.receiverPhone}
-              onChange={changeActions.onReceiverPhoneChange}
-              required
-            />
+            </div>
 
-            <label htmlFor='receiver-address' className='block mb-1 pl-2'>
-              <FaIcon icon={faSignsPost} width={20} height={20} className='mr-1 opacity-75' />
-              <span>주소</span>
-            </label>
-            <input
-              id='receiver-address'
-              type='text'
-              placeholder='남원월산로74번길 42'
-              className='input'
-              disabled={updateOrderReq.isLoading}
-              value={partialOrder.receiverAddress}
-              onClick={postCodePopup.show}
-              required
-            />
+            <div className='field'>
+              <label htmlFor='receiver-phone' className='label'>
+                <FaIcon icon={faMobileScreenButton} /> 전화번호
+              </label>
+              <input
+                id='receiver-phone'
+                type='text'
+                placeholder='010-xxxx-xxxx'
+                className='input'
+                disabled={sameAsSender.isOn || updateOrderReq.isLoading}
+                value={sameAsSender.isOn ? partialOrder.senderPhone : partialOrder.receiverPhone}
+                onChange={changeActions.onReceiverPhoneChange}
+                required
+              />
+            </div>
 
-            <label htmlFor='receiver-address-detail' className='block mb-1 pl-2'>
-              <FaIcon icon={faBuilding} width={20} height={20} className='mr-1 opacity-75' />
-              <span>상세주소</span>
-            </label>
-            <input
-              id='receiver-address-detail'
-              type='text'
-              placeholder='단독주택, 1층 101호, ...'
-              className='input'
-              disabled={updateOrderReq.isLoading}
-              value={partialOrder.receiverAddressDetail}
-              onChange={changeActions.onReceiverAddressDetailChange}
-              required
-            />
+            <div className='field'>
+              <label htmlFor='receiver-address' className='label'>
+                <FaIcon icon={faSignsPost} /> 주소
+              </label>
+              <input
+                id='receiver-address'
+                type='text'
+                placeholder='남원월산로74번길 42'
+                className='input'
+                disabled={updateOrderReq.isLoading}
+                value={partialOrder.receiverAddress}
+                onChange={() => {}}
+                onClick={postCodePopup.show}
+                required
+              />
+            </div>
+
+            <div className='field'>
+              <label htmlFor='receiver-address-detail' className='label'>
+                <FaIcon icon={faBuilding} /> 상세주소
+              </label>
+              <input
+                id='receiver-address-detail'
+                type='text'
+                placeholder='단독주택, 1층 101호, ...'
+                className='input'
+                disabled={updateOrderReq.isLoading}
+                value={partialOrder.receiverAddressDetail}
+                onChange={changeActions.onReceiverAddressDetailChange}
+                required
+              />
+            </div>
           </fieldset>
 
           <fieldset className='w-80 shadow-md rounded-md p-3 mb-10 relative'>
-            <legend className='text-lg shadow-md rounded-md px-2 py-2'>
-              <FaIcon icon={faBoxesStacked} width={18} height={18} className='mr-2 opacity-75' />
-              <span>배송물품</span>
+            <legend className='text-lg m-box p-2 text-center bg-transparent'>
+              <FaIcon icon={faBoxesStacked} /> 배송물품
             </legend>
 
             <BlurInfo open={productInfo.isOn} closeFn={productInfo.toggle}>
@@ -321,63 +324,69 @@ export default function OrdersCreatePage(props: PageProps<Params, SearchParams>)
               박스에 이니셜을 적어주세요. <br />
             </BlurInfo>
 
-            <label className='block mb-1 pl-2' onClick={productInfo.toggle}>
-              <FaIcon icon={faBox} width={20} height={20} className='mr-1 opacity-75' />
-              상품종류
-              <FaIcon icon={faCircleQuestion} width={20} height={20} className='ml-1 opacity-75' />
-            </label>
-            <select
-              name='product-name'
-              id='product-name'
-              className={`rounded-md bg-white px-3 py-2 mb-3 w-full disabled:opacity-40 ${
-                validity.productName ? "" : "shake border-red-300 border-2"
-              }`}
-              disabled={updateOrderReq.isLoading}
-              value={partialOrder.productName}
-              onChange={changeActions.onProductNameChange}
-              required
-            >
-              <option value='상품을 선택해주세요.'>상품을 선택해주세요.</option>
-              <option value='체험귤 5kg'>체험귤 5kg</option>
-              <option value='체험귤 10kg'>체험귤 10kg</option>
-              <option value='체험귤 5kg x 2'>체험귤 5kg x 2</option>
-              <option value='기타'>기타</option>
-            </select>
-            {partialOrder.productName === "기타" ? (
-              <input
+            <div className='field'>
+              <label
+                className='btn label bg-transparent shadow-none text-start'
+                onClick={productInfo.toggle}
+              >
+                <FaIcon icon={faBox} /> 상품선택 <FaIcon icon={faCircleQuestion} />
+              </label>
+              <select
+                name='product-name'
                 id='product-name'
-                type='text'
-                placeholder='귤5kg, 귤10kg, 귤5kg x 2, ...'
-                className='input'
+                className={`rounded-md bg-white px-3 py-2 mb-3 w-full disabled:opacity-40 ${
+                  validity.productName ? "" : "shake border-red-300 border-2"
+                }`}
                 disabled={updateOrderReq.isLoading}
-                value={extraProductName}
-                onChange={onExtraProductNameChange}
+                value={partialOrder.productName}
+                onChange={changeActions.onProductNameChange}
+                required
+              >
+                <option value='상품을 선택해주세요.'>상품을 선택해주세요.</option>
+                <option value='체험귤 5kg'>체험귤 5kg</option>
+                <option value='체험귤 10kg'>체험귤 10kg</option>
+                <option value='체험귤 5kg x 2'>체험귤 5kg x 2</option>
+                <option value='기타'>기타</option>
+              </select>
+              {partialOrder.productName === "기타" ? (
+                <input
+                  id='product-name'
+                  type='text'
+                  placeholder='귤5kg, 귤10kg, 귤5kg x 2, ...'
+                  className='input'
+                  disabled={updateOrderReq.isLoading}
+                  value={extraProductName}
+                  onChange={onExtraProductNameChange}
+                  required
+                />
+              ) : null}
+            </div>
+
+            <div className='field'>
+              <label
+                className='btn label bg-transparent shadow-none text-start'
+                onClick={initialInfo.toggle}
+              >
+                <FaIcon icon={faSignature} /> 이니셜 <FaIcon icon={faCircleQuestion} />
+              </label>
+              <input
+                id='initial'
+                type='text'
+                placeholder='HGD, love you, 하트모양, ...'
+                className='input mb-2'
+                disabled={updateOrderReq.isLoading}
+                value={partialOrder.initial}
+                onChange={changeActions.onInitialChange}
                 required
               />
-            ) : null}
-
-            <label className='block mb-1 pl-2' onClick={initialInfo.toggle}>
-              <FaIcon icon={faSignature} width={20} height={20} className='mr-1 opacity-75' />
-              <span>이니셜</span>
-              <FaIcon icon={faCircleQuestion} width={20} height={20} className='ml-1 opacity-75' />
-            </label>
-            <input
-              id='initial'
-              type='text'
-              placeholder='HGD, love you, 하트모양, ...'
-              className='input'
-              disabled={updateOrderReq.isLoading}
-              value={partialOrder.initial}
-              onChange={changeActions.onInitialChange}
-              required
-            />
-            <Image
-              src={ImgInitialEx}
-              alt='귤 상자에 자신만의 이니셜이 그려져있는 사진'
-              className='rounded-md max-w-full'
-              width={250}
-              placeholder='blur'
-            />
+              <Image
+                src={ImgInitialEx}
+                alt='귤 상자에 자신만의 이니셜이 그려져있는 사진'
+                className='rounded-md max-w-full'
+                width={250}
+                placeholder='blur'
+              />
+            </div>
           </fieldset>
         </div>
       </form>

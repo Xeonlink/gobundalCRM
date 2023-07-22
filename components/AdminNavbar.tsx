@@ -6,6 +6,7 @@ import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { ImgIcon } from "./ImgIcon";
 
 export function AdminNavbar() {
   const path = usePathname();
@@ -17,14 +18,7 @@ export function AdminNavbar() {
     <div className='overflow-x-scroll shadow-lg p-3 scrollbar-hidden'>
       <div className='w-max flex gap-3 items-center'>
         <Link href='/dashboard' className='btn px-3 py-2'>
-          <Image
-            src={IcoLogo}
-            alt='gobundal_logo'
-            width={24}
-            height={24}
-            className='mr-1 inline-block align-middle'
-          />
-          <span>대시보드</span>
+          <ImgIcon src={IcoLogo} alt='gobundal_logo' fontSize={20} /> 대시보드
         </Link>
 
         <div className='saperator text-white'>|</div>
