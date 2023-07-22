@@ -2,6 +2,7 @@
 
 import { Order, deleteOrders, getOrders } from "@/api/orders";
 import { IcoButton } from "@/components/IcoButton";
+import { IcoLink } from "@/components/IcoLink";
 import { PageProps } from "@/extra/type";
 import IcoExcel from "@/public/icons/excel.png";
 import { faCalendarDays } from "@fortawesome/free-regular-svg-icons";
@@ -10,9 +11,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import Image from "next/image";
-import Link from "next/link";
+import Link, { LinkProps } from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { Suspense, useState } from "react";
 import * as XlSX from "xlsx";
 
 type SearchParams = {
@@ -22,6 +23,12 @@ type SearchParams = {
 
 const th = (className: TemplateStringsArray) => {
   return `m-box py-1 shadow-none ${className.join(" ")}`;
+};
+
+const td = (className: TemplateStringsArray) => {
+  return `text-center py-1 px-2 rounded-md aria-selected:bg-white aria-selected:bg-opacity-70 transition-all ${className.join(
+    " "
+  )}`;
 };
 
 export default function OrdersPage(props: PageProps<any, SearchParams>) {
@@ -36,6 +43,7 @@ export default function OrdersPage(props: PageProps<any, SearchParams>) {
   const orders = useQuery({
     queryKey: ["orders", date],
     queryFn: () => getOrders(date),
+    suspense: true,
   });
   const batchDeleteOrders = useMutation({
     mutationFn: () => deleteOrders(date, selectedIds),
@@ -144,8 +152,8 @@ export default function OrdersPage(props: PageProps<any, SearchParams>) {
 
         {/* Refresh */}
         <button type='button' className='btn px-3 py-2' onClick={() => orders.refetch()}>
-          <FontAwesomeIcon icon={faArrowsRotate} width={17} height={17} className='mr-1' />
-          <span>새로고침</span>
+          <FontAwesomeIcon icon={faArrowsRotate} width={17} height={17} />
+          &nbsp;새로고침
         </button>
 
         {/* Change ViewStyle */}
@@ -160,26 +168,26 @@ export default function OrdersPage(props: PageProps<any, SearchParams>) {
 
         {/* Cratet New Order */}
         <Link href='orders/create' className='btn px-3 py-2'>
-          <FontAwesomeIcon icon={faPlus} width={24} height={24} className='mr-1' />
-          <span>송장 작성하기</span>
+          <FontAwesomeIcon icon={faPlus} width={20} height={20} />
+          &nbsp;송장 작성하기
         </Link>
 
         {/* Delete */}
         <button type='button' className='btn px-3 py-2' onClick={onDeleteClick}>
-          <FontAwesomeIcon icon={faTrashCan} width={22} height={22} className='mr-1' />
-          <span>선택삭제</span>
+          <FontAwesomeIcon icon={faTrashCan} width={20} height={20} />
+          &nbsp;선택삭제
         </button>
 
         {/* 엑셀로 다운로드하기 */}
         <button type='button' className='btn px-3 py-2' onClick={onExcelDownloadClick}>
           <Image
             src={IcoExcel}
-            alt='excel_icon'
-            width={21}
-            height={21}
-            className='inline-block align-text-bottom mr-2'
+            alt='엑셀로 변환'
+            width={20}
+            height={20}
+            className='inline-block align-text-bottom'
           />
-          <span>엑셀로 변환</span>
+          &nbsp;엑셀로 변환
         </button>
       </div>
 
@@ -202,140 +210,55 @@ export default function OrdersPage(props: PageProps<any, SearchParams>) {
             </tr>
           </thead>
           <tbody className='contents'>
-            {orders.isLoading ? (
-              <tr className='contents'>
-                <td className='grid-cols-7'>
-                  <LoadingSpinner />
+            {orders.data?.data.map((order) => (
+              <tr
+                key={order.id}
+                className='contents cursor-pointer order-table__tr'
+                onClick={onItemClick(order.id)}
+                onDoubleClick={() => gotoOrderPage(order.id)}
+                aria-selected={selectedIds.includes(order.id)}
+              >
+                <td className={td``}>{order.senderName}</td>
+                <td className={td``}>{order.senderPhone}</td>
+                <td className={td``}>{order.receiverName}</td>
+                <td className={td``}>{order.receiverPhone}</td>
+                <td className={td`text-start`}>
+                  {order.receiverAddress}, {order.receiverAddressDetail}
                 </td>
+                <td className={td``}>{order.productName}</td>
+                <td className={td``}>{order.initial}</td>
               </tr>
-            ) : (
-              orders.data?.data.map((order) => (
-                <OrderTableRaw
-                  key={order.id}
-                  order={order}
-                  isSelected={selectedIds.includes(order.id)}
-                  onClick={onItemClick(order.id)}
-                  onDoubleClick={() => gotoOrderPage(order.id)}
-                />
-              ))
-            )}
+            ))}
           </tbody>
         </table>
       ) : null}
 
       {view === "card" ? (
         <ol className='orders-card-grid gap-3'>
-          {orders.isLoading ? (
-            <LoadingSpinner />
-          ) : (
-            orders.data?.data?.map((order) => (
-              <OrderCard
-                key={order.id}
-                order={order}
-                isSelected={selectedIds.includes(order.id)}
-                onClick={onItemClick(order.id)}
-                onDoubleClick={() => gotoOrderPage(order.id)}
-              />
-            ))
-          )}
+          {orders.data?.data?.map((order) => (
+            <li
+              key={order.id}
+              className='btn p-2 bg-transparent aria-selected:bg-white aria-selected:bg-opacity-70 active:scale-90'
+              aria-selected={selectedIds.includes(order.id)}
+              onClick={onItemClick(order.id)}
+              onDoubleClick={() => gotoOrderPage(order.id)}
+            >
+              <p className='bg-orange-200 mb-2 p-2 rounded-md'>
+                <b className='text-lg'>{order.senderName}</b>&nbsp;{order.senderPhone}
+              </p>
+              <p className='bg-green-200 mb-2 p-2 rounded-md'>
+                <b className='text-lg'>{order.receiverName}</b>&nbsp;{order.receiverPhone} <br />
+                {order.receiverAddress}, {order.receiverAddressDetail}
+              </p>
+              <p className='bg-blue-200 p-2 rounded-md'>
+                <b>{order.productName}</b>&nbsp;
+                <br />
+                {order.initial}
+              </p>
+            </li>
+          ))}
         </ol>
       ) : null}
     </main>
-  );
-}
-
-function LoadingSpinner() {
-  return (
-    <div className='text-center h-10'>
-      <FontAwesomeIcon
-        icon={faSpinner}
-        width={30}
-        height={30}
-        className='animate-spin inline-block'
-      />
-      {/* 로딩중... */}
-    </div>
-  );
-}
-
-type OrderItemProps = {
-  order: Order;
-  isSelected: boolean;
-  onClick: (e: React.MouseEvent<HTMLElement>) => void;
-  onDoubleClick: (e: React.MouseEvent<HTMLElement>) => void;
-};
-
-function OrderCard(props: OrderItemProps) {
-  const { order, isSelected, onClick, onDoubleClick } = props;
-  return (
-    <li
-      key={order.id}
-      className='m-box m-hover overflow-hidden p-2 bg-transparent aria-selected:bg-white aria-selected:bg-opacity-70'
-      aria-selected={isSelected}
-      onClick={onClick}
-      onDoubleClick={onDoubleClick}
-    >
-      <div className='bg-orange-200 mb-2 p-2 rounded-md'>
-        <span className='text-lg font-bold'>{order.senderName}</span>
-        &nbsp;
-        <span>{order.senderPhone}</span>
-      </div>
-      {/* <div className='saperator border-b-2 my-2 border-white'></div> */}
-      <div className='bg-green-200 mb-2 p-2 rounded-md'>
-        <span className='text-lg font-bold'>{order.receiverName}</span>
-        &nbsp;
-        <span>{order.receiverPhone}</span>
-        <div>
-          {order.receiverAddress}, {order.receiverAddressDetail}
-        </div>
-      </div>
-
-      {/* <div className='saperator border-b-2 my-3'></div> */}
-      <div className='bg-blue-200 p-2 rounded-md'>
-        <div className='font-bold'>{order.productName}</div>
-        <div>{order.initial}</div>
-      </div>
-    </li>
-  );
-}
-
-function OrderTableRaw(props: OrderItemProps) {
-  const { order, isSelected, onClick, onDoubleClick } = props;
-
-  const td = (className: TemplateStringsArray) => {
-    return `text-center py-1 px-2 rounded-md aria-selected:bg-white aria-selected:bg-opacity-70 ${className.join(
-      " "
-    )}`;
-  };
-
-  return (
-    <tr
-      key={order.id}
-      className='contents cursor-pointer'
-      onClick={onClick}
-      onDoubleClick={onDoubleClick}
-    >
-      <td className={td``} aria-selected={isSelected}>
-        {order.senderName}
-      </td>
-      <td className={td``} aria-selected={isSelected}>
-        {order.senderPhone}
-      </td>
-      <td className={td``} aria-selected={isSelected}>
-        {order.receiverName}
-      </td>
-      <td className={td``} aria-selected={isSelected}>
-        {order.receiverPhone}
-      </td>
-      <td className={td`text-start`} aria-selected={isSelected}>
-        {order.receiverAddress}, {order.receiverAddressDetail}
-      </td>
-      <td className={td``} aria-selected={isSelected}>
-        {order.productName}
-      </td>
-      <td className={td``} aria-selected={isSelected}>
-        {order.initial}
-      </td>
-    </tr>
   );
 }

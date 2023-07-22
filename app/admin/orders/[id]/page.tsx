@@ -3,6 +3,7 @@
 import { Order, RawOrder, getOrder, postOrder, updateOrder } from "@/api/orders";
 import { BlurInfo } from "@/components/BlurInfo";
 import { CheckBox } from "@/components/CheckBox";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { PageProps } from "@/extra/type";
 import { toHyphenPhone } from "@/extra/utils";
 import { usePostCodePopup } from "@/hooks/usePostCodePopup";
@@ -24,7 +25,6 @@ import {
   faSignature,
   faSignsPost,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
@@ -79,6 +79,7 @@ export default function OrdersCreatePage(props: PageProps<Params, SearchParams>)
   const order = useQuery({
     queryKey: ["orders", date, id],
     queryFn: () => getOrder(date, id),
+    suspense: true,
   });
 
   const partialOrder: Partial<Order> = {
@@ -134,34 +135,29 @@ export default function OrdersCreatePage(props: PageProps<Params, SearchParams>)
       {/* Toolbar */}
       <div className='mb-3 flex flex-wrap gap-3'>
         {/* Back */}
-        <button type='button' className='m-box px-3 py-2 m-hover' onClick={navigate.back}>
-          <FontAwesomeIcon icon={faArrowLeft} width={22} height={22} className='mr-1' />
-          <span>뒤로가기</span>
+        <button type='button' className='btn px-3 py-2' onClick={navigate.back}>
+          <FontAwesomeIcon icon={faArrowLeft} width={22} height={22} />
+          &nbsp; 뒤로가기
         </button>
 
         {/* Expander */}
         <span className='flex-1'></span>
 
         {/* Clear */}
-        <button
-          type='button'
-          className='m-box px-3 py-2 m-hover disabled:opacity-40'
-          disabled={isCleared}
-          onClick={clearForm}
-        >
-          <FontAwesomeIcon icon={faNotdef} width={22} height={22} rotation={90} className='mr-1' />
-          <span>초기화</span>
+        <button type='button' className='btn px-3 py-2' disabled={isCleared} onClick={clearForm}>
+          <FontAwesomeIcon icon={faNotdef} width={22} height={22} rotation={90} />
+          &nbsp; 초기화
         </button>
 
         {/* Save */}
         <button
           type='button'
-          className='m-box px-3 py-2 m-hover disabled:opacity-40'
+          className='btn px-3 py-2'
           disabled={!isRegistBtnValid || updateOrderReq.isLoading}
           onClick={() => updateOrderReq.mutate()}
         >
-          <FontAwesomeIcon icon={faFloppyDisk} width={22} height={22} className='mr-1' />
-          <span>저장</span>
+          <FontAwesomeIcon icon={faFloppyDisk} width={22} height={22} />
+          &nbsp; 저장
         </button>
       </div>
 
@@ -169,18 +165,12 @@ export default function OrdersCreatePage(props: PageProps<Params, SearchParams>)
       <form action='' onSubmit={(e) => e.preventDefault()}>
         <div className='flex gap-3 justify-evenly flex-wrap items-start'>
           <fieldset className='w-80 shadow-md rounded-md p-3 mb-10 relative'>
-            <legend className='text-lg shadow-md rounded-md px-2 py-2' onClick={senderInfo.toggle}>
-              <FontAwesomeIcon
-                icon={faPaperPlane}
-                width={15}
-                height={15}
-                className='mr-2 opacity-75'
-              />
+            <legend className='btn text-lg px-2 py-2 bg-transparent' onClick={senderInfo.toggle}>
+              <FontAwesomeIcon icon={faPaperPlane} staticSize={15} className='mr-2 opacity-75' />
               <span>보내는 사람</span>
               <FontAwesomeIcon
                 icon={faCircleQuestion}
-                width={16}
-                height={16}
+                staticSize={16}
                 className='ml-2 opacity-75'
               />
             </legend>
@@ -192,12 +182,7 @@ export default function OrdersCreatePage(props: PageProps<Params, SearchParams>)
             </BlurInfo>
 
             <label htmlFor='sender-name' className='block mb-1 pl-2'>
-              <FontAwesomeIcon
-                icon={faSignature}
-                width={20}
-                height={20}
-                className='mr-1 opacity-75'
-              />
+              <FontAwesomeIcon icon={faSignature} staticSize={20} className='mr-1 opacity-75' />
               <span>이름</span>
             </label>
             <input

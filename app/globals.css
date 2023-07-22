@@ -16,6 +16,9 @@
   display: grid;
   grid-template-columns: repeat(7, auto);
 }
+.order-table__tr[aria-selected="true"] > td {
+  @apply opacity-70 bg-white;
+}
 
 .root-page-grid {
   display: grid;
@@ -28,6 +31,7 @@
     @apply bg-white rounded-md shadow-md transition-all duration-300 appearance-none;
     @apply hover:-translate-y-1;
     @apply active:scale-75;
+    @apply disabled:opacity-40;
   }
   .m-box {
     @apply bg-white rounded-md shadow-md;

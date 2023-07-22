@@ -36,7 +36,7 @@ export async function getOrder(date: string, id: string) {
   return res.data;
 }
 
-export async function updateOrder(date: string, id: string, rawOrder: RawOrder) {
+export async function updateOrder(date: string, id: string, rawOrder: Partial<Order>) {
   const uri = `/orders/${id}`;
   const body = rawOrder;
   const config = { params: { date } };
