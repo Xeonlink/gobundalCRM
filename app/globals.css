@@ -2,11 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-.teams-grid {
+.teams-card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
 }
-
+.teams-table-grid {
+  display: grid;
+  grid-template-columns: repeat(6, auto);
+}
 .orders-card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));

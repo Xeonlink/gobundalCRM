@@ -69,7 +69,7 @@ export default function LoginPage() {
 
   useEffect(() => {
     auth.user?.signOut();
-  }, []);
+  }, [auth.user]);
 
   return (
     <div className='w-96 max-w-full m-auto'>

@@ -1,11 +1,10 @@
-import "./globals.css";
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import { AdminNavbar } from "../components/AdminNavbar";
-import { ReactQueryProvider } from "@/components/ReactQueryProvider";
-import { PropsWithChildren } from "react";
 import { ModalPlacer } from "@/components/ModalPlacer";
 import { ModalProvider } from "@/components/ModalProvider";
+import { ReactQueryProvider } from "@/components/ReactQueryProvider";
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import { PropsWithChildren } from "react";
+import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 

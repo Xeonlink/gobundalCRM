@@ -48,3 +48,10 @@ export async function deleteTeam(date: string, id: string) {
   const res = await apiRoot.delete(uri, config);
   return res.data;
 }
+
+export async function deleteTeams(date: string, ids: string[]) {
+  const uri = `/teams`;
+  const config = { params: { date, ids: JSON.stringify(ids) } };
+  const res = await apiRoot.delete(uri, config);
+  return res.data;
+}
