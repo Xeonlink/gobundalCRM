@@ -1,8 +1,6 @@
 "use client";
 
 import { getTeams } from "@/api/teams";
-import { TeamDialog } from "@/components/TeamDialog";
-import { useAuth } from "@/hooks/useAuth";
 import { useModal } from "@/hooks/useModal";
 import { faCalendarDays } from "@fortawesome/free-regular-svg-icons";
 import { faArrowsRotate, faPlus, faSpinner } from "@fortawesome/free-solid-svg-icons";
@@ -13,11 +11,11 @@ import Link from "next/link";
 import { useState } from "react";
 
 export default function TeamsPage() {
-  const { modalCtrl } = useModal();
   const [date, setDate] = useState(dayjs());
   const teams = useQuery({
     queryKey: ["teams", date.format("YYYY-MM-DD")],
     queryFn: () => getTeams(date.format("YYYY-MM-DD")),
+    suspense: true,
   });
 
   const onYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -42,8 +40,7 @@ export default function TeamsPage() {
       <div className='flex flex-wrap items-center gap-3 mb-3'>
         {/* 오늘 날짜로 재검색 */}
         <button className='btn px-3 py-2' onClick={onTodayClick}>
-          <FaIcon icon={faCalendarDays} width={20} height={20} className='mr-1 opacity-75' />
-          <span>오늘</span>
+          <FaIcon icon={faCalendarDays} /> 오늘
         </button>
 
         {/* 해당 날짜로 검색 */}
@@ -84,58 +81,43 @@ export default function TeamsPage() {
         </div>
 
         {/* Refresh */}
-        <button className='m-box m-hover px-3 py-2' onClick={() => teams.refetch()}>
-          <FaIcon icon={faArrowsRotate} width={17} height={17} className='mr-1' />
-          <span>새로고침</span>
+        <button className='btn px-3 py-2' onClick={() => teams.refetch()}>
+          <FaIcon icon={faArrowsRotate} /> 새로고침
         </button>
 
         {/* Cratet New Team */}
-        <Link
-          href='teams/create'
-          className='m-box m-hover px-3 py-2'
-          // onClick={(e) => {
-          //   e.preventDefault();
-          //   modalCtrl.open(<TeamDialog mode='CREATE' />);
-          // }}
-        >
-          <FaIcon icon={faPlus} width={24} height={24} />
-          <span>팀 만들기</span>
+        <Link href='teams/create' className='btn px-3 py-2'>
+          <FaIcon icon={faPlus} /> 팀 만들기
         </Link>
       </div>
 
-      {teams.isLoading ? (
-        <div className='text-center h-10'>
-          <FaIcon icon={faSpinner} width={30} height={30} className='animate-spin inline-block' />
-          {/* 로딩중... */}
-        </div>
-      ) : (
-        <div className='teams-grid gap-3'>
-          {teams.data?.data.map((team) => (
-            <Link
-              key={team.id}
-              href={`teams/${team.id}?date=${date.format("YYYY-MM-DD")}`}
-              className='m-box m-hover p-4'
-            >
-              <ol className='flex items-center gap-1 py-2'>
-                {team.isApproved ? (
-                  <li className='rounded-full bg-orange-200 w-3 h-3'></li>
-                ) : (
-                  <li className='rounded-full bg-orange-500 w-3 h-3'></li>
-                )}
-                {team.isLeave ? (
-                  <li className='rounded-full bg-green-500 w-3 h-3'></li>
-                ) : (
-                  <li className='rounded-full bg-green-200 w-3 h-3'></li>
-                )}
-              </ol>
-              <div className='text-2xl font-bold mb-1'>{team.leaderName}</div>
-              <div className='mb-1'>{team.leaderPhone}</div>
-              <div className='mb-1'>{team.coupon}</div>
-              <div>{team.population}명</div>
-            </Link>
-          ))}
-        </div>
-      )}
+      <div className='teams-grid gap-3'>
+        {teams.data?.data.map((team) => (
+          <Link
+            key={team.id}
+            href={`teams/${team.id}?date=${date.format("YYYY-MM-DD")}`}
+            className='btn text-start p-3'
+          >
+            <ol className='flex items-center gap-1 py-2'>
+              <li
+                className='rounded-full bg-orange-200 aria-disabled:bg-orange-500 w-3 h-3'
+                aria-disabled={!team.isApproved}
+              />
+              <li
+                className='rounded-full bg-green-200 aria-disabled:bg-green-500 w-3 h-3'
+                aria-disabled={team.isLeave}
+              />
+            </ol>
+            <b className='text-2xl '>{team.leaderName}</b>
+            <br />
+            {team.leaderPhone}
+            <br />
+            {team.coupon}
+            <br />
+            {team.population}명
+          </Link>
+        ))}
+      </div>
     </main>
   );
 }

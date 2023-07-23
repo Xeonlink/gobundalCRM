@@ -132,7 +132,11 @@ export default function TeamsCreatePage() {
         </button>
 
         {/* Save */}
-        <button className='btn px-3 py-2' onClick={() => createTeam.mutate()} disabled={!isValid}>
+        <button
+          className='btn px-3 py-2'
+          onClick={() => createTeam.mutate()}
+          disabled={!isValid || createTeam.isLoading}
+        >
           {createTeam.isLoading ? (
             <>
               <FaIcon icon={faSpinner} className='animate-spin' /> 저장중...

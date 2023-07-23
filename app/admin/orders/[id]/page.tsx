@@ -100,10 +100,6 @@ export default function OrdersCreatePage(props: PageProps<Params, SearchParams>)
     },
   });
 
-  const clearForm = () => {
-    changeActions.reset();
-  };
-
   const clearity = {
     senderName: partialOrder.senderName === order.data?.senderName,
     senderPhone: partialOrder.senderPhone === order.data?.senderPhone,
@@ -135,17 +131,20 @@ export default function OrdersCreatePage(props: PageProps<Params, SearchParams>)
       <div className='mb-3 flex flex-wrap gap-3'>
         {/* Back */}
         <button type='button' className='btn px-3 py-2' onClick={navigate.back}>
-          <FaIcon icon={faArrowLeft} width={22} height={22} />
-          &nbsp; 뒤로가기
+          <FaIcon icon={faArrowLeft} /> 뒤로가기
         </button>
 
         {/* Expander */}
         <span className='flex-1'></span>
 
         {/* Clear */}
-        <button type='button' className='btn px-3 py-2' disabled={isCleared} onClick={clearForm}>
-          <FaIcon icon={faNotdef} width={22} height={22} rotation={90} />
-          &nbsp; 초기화
+        <button
+          type='button'
+          className='btn px-3 py-2'
+          disabled={isCleared}
+          onClick={changeActions.reset}
+        >
+          <FaIcon icon={faNotdef} rotation={90} /> 초기화
         </button>
 
         {/* Save */}
@@ -155,8 +154,7 @@ export default function OrdersCreatePage(props: PageProps<Params, SearchParams>)
           disabled={!isRegistBtnValid || updateOrderReq.isLoading}
           onClick={() => updateOrderReq.mutate()}
         >
-          <FaIcon icon={faFloppyDisk} width={22} height={22} />
-          &nbsp; 저장
+          <FaIcon icon={faFloppyDisk} /> 저장
         </button>
       </div>
 
@@ -284,7 +282,7 @@ export default function OrdersCreatePage(props: PageProps<Params, SearchParams>)
                 className='input'
                 disabled={updateOrderReq.isLoading}
                 value={partialOrder.receiverAddress}
-                onChange={() => {}}
+                onChange={postCodePopup.show}
                 onClick={postCodePopup.show}
                 required
               />

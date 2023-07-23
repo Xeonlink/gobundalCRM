@@ -21,6 +21,7 @@ import {
   faPaperPlane,
   faSignature,
   faSignsPost,
+  faSpinner,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
 import { useMutation } from "@tanstack/react-query";
@@ -104,8 +105,7 @@ export default function OrdersCreatePage() {
   const createOrder = useMutation({
     mutationFn: () => postOrder(finalOrder),
     onSuccess: () => {
-      alert("배송정보 등록이 완료되었습니다.");
-      clearForm();
+      navigate.back();
     },
   });
 
@@ -141,8 +141,7 @@ export default function OrdersCreatePage() {
       <div className='mb-3 flex flex-wrap gap-3'>
         {/* Back */}
         <button type='button' className='m-box px-3 py-2 m-hover' onClick={navigate.back}>
-          <FaIcon icon={faArrowLeft} width={22} height={22} className='mr-1' />
-          <span>뒤로가기</span>
+          <FaIcon icon={faArrowLeft} /> 뒤로가기
         </button>
 
         {/* Expander */}
@@ -152,11 +151,10 @@ export default function OrdersCreatePage() {
         <button
           type='button'
           className='m-box px-3 py-2 m-hover disabled:opacity-40'
-          disabled={isCleared}
+          disabled={isCleared || createOrder.isLoading}
           onClick={clearForm}
         >
-          <FaIcon icon={faNotdef} width={22} height={22} rotation={90} className='mr-1' />
-          <span>초기화</span>
+          <FaIcon icon={faNotdef} rotation={90} /> 초기화
         </button>
 
         {/* Save */}
@@ -166,8 +164,15 @@ export default function OrdersCreatePage() {
           disabled={!isRegistBtnValid || createOrder.isLoading}
           onClick={() => createOrder.mutate()}
         >
-          <FaIcon icon={faFloppyDisk} width={22} height={22} className='mr-1' />
-          <span>저장</span>
+          {createOrder.isLoading ? (
+            <>
+              <FaIcon icon={faSpinner} className='animate-spin' /> 저장중...
+            </>
+          ) : (
+            <>
+              <FaIcon icon={faFloppyDisk} /> 저장
+            </>
+          )}
         </button>
       </div>
 
@@ -295,7 +300,7 @@ export default function OrdersCreatePage() {
                 className='input'
                 disabled={createOrder.isLoading}
                 value={order.receiverAddress}
-                onChange={() => {}}
+                onChange={postCodePopup.show}
                 onClick={postCodePopup.show}
                 required
               />

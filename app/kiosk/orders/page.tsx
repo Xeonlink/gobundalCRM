@@ -241,7 +241,7 @@ export default function KioskOrderPage(_: PageProps) {
                 className='input'
                 disabled={createOrder.isLoading}
                 value={order.receiverAddress}
-                onChange={() => {}}
+                onChange={postCodePopup.show}
                 onClick={postCodePopup.show}
                 required
               />
