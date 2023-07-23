@@ -86,7 +86,7 @@ export default function TeamsPage() {
         </button>
 
         {/* Cratet New Team */}
-        <Link href='teams/create' className='btn px-3 py-2'>
+        <Link href='/admin/teams/create' className='btn px-3 py-2'>
           <FaIcon icon={faPlus} /> 팀 만들기
         </Link>
       </div>
@@ -95,7 +95,7 @@ export default function TeamsPage() {
         {teams.data?.data.map((team) => (
           <Link
             key={team.id}
-            href={`teams/${team.id}?date=${date.format("YYYY-MM-DD")}`}
+            href={`/admin/teams/${team.id}?date=${date.format("YYYY-MM-DD")}`}
             className='btn text-start p-3'
           >
             <ol className='flex items-center gap-1 py-2'>
