@@ -3,6 +3,7 @@
 import { Team, deleteTeam, getTeam, patchTeam } from "@/api/teams";
 import { PageProps } from "@/extra/type";
 import { toHyphenPhone } from "@/extra/utils";
+import { useAuth } from "@/hooks/useAuth";
 import { useTypeSafeReducer } from "@/hooks/useTypeSafeReducer";
 import {
   faArrowLeft,
@@ -26,6 +27,9 @@ export default function TeamsIdPage(props: PageProps) {
   const { params, searchParams } = props;
 
   const navigate = useRouter();
+  const auth = useAuth({
+    unAuthorized: () => navigate.push("/login"),
+  });
   const queryClient = useQueryClient();
   const [changes, chnageActions] = useTypeSafeReducer({} as Partial<Team>, {
     onLeaderNameChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,6 +62,7 @@ export default function TeamsIdPage(props: PageProps) {
     queryKey: ["teams", searchParams.date, params.id],
     queryFn: () => getTeam(searchParams.date, params.id),
     suspense: true,
+    enabled: auth.isSignIn,
   });
   const updateTeam = useMutation({
     mutationFn: () => patchTeam(team?.data?.date!, team?.data?.id!, changes),

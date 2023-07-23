@@ -3,6 +3,7 @@
 import { deleteTeams, getTeams } from "@/api/teams";
 import { ImgIcon } from "@/components/ImgIcon";
 import { PageProps } from "@/extra/type";
+import { useAuth } from "@/hooks/useAuth";
 import IcoExcel from "@/public/icons/excel.png";
 import { faCalendarDays } from "@fortawesome/free-regular-svg-icons";
 import { faArrowsRotate, faPlus, faTrashCan } from "@fortawesome/free-solid-svg-icons";
@@ -35,6 +36,9 @@ export default function TeamsPage(props: PageProps<any, SearchParams>) {
   const [year, month, day] = date.split("-");
 
   const navigate = useRouter();
+  const auth = useAuth({
+    unAuthorized: () => navigate.push("/login"),
+  });
   const queryClient = useQueryClient();
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 

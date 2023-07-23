@@ -5,6 +5,7 @@ import { BlurInfo } from "@/components/BlurInfo";
 import { CheckBox } from "@/components/CheckBox";
 import { PageProps } from "@/extra/type";
 import { toHyphenPhone } from "@/extra/utils";
+import { useAuth } from "@/hooks/useAuth";
 import { usePostCodePopup } from "@/hooks/usePostCodePopup";
 import { useToggle } from "@/hooks/useToggle";
 import { useTypeSafeReducer } from "@/hooks/useTypeSafeReducer";
@@ -39,6 +40,9 @@ export default function OrdersCreatePage(props: PageProps<Params, SearchParams>)
     searchParams: { date },
   } = props;
   const navigate = useRouter();
+  const auth = useAuth({
+    unAuthorized: () => navigate.push("/login"),
+  });
   const senderInfo = useToggle(false);
   const initialInfo = useToggle(false);
   const productInfo = useToggle(false);
@@ -79,6 +83,7 @@ export default function OrdersCreatePage(props: PageProps<Params, SearchParams>)
     queryKey: ["orders", date, id],
     queryFn: () => getOrder(date, id),
     suspense: true,
+    enabled: auth.isSignIn,
   });
 
   const partialOrder: Partial<Order> = {

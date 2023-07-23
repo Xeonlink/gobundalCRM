@@ -7,6 +7,8 @@ import {
   CognitoUserSession,
   GetSessionOptions,
 } from "amazon-cognito-identity-js";
+import { redirect, useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 const Pool = new CognitoUserPool({
   UserPoolId: "ap-northeast-2_Wjnw7DGvA",
@@ -82,9 +84,20 @@ export const getIdToken = async () => {
   }
 };
 
-export function useAuth() {
+type AuthOptions = {
+  unAuthorized?: () => void;
+};
+
+export function useAuth(options: AuthOptions = {}) {
+  const { unAuthorized } = options;
   const user = Pool.getCurrentUser();
   const isSignIn = user !== null;
 
-  return { signIn, signUp, isSignIn, user, getSession };
+  useEffect(() => {
+    if (!isSignIn) {
+      unAuthorized?.();
+    }
+  }, [isSignIn]);
+
+  return { signIn, signUp, user, isSignIn, getSession };
 }

@@ -3,6 +3,7 @@
 import { deleteOrders, getOrders } from "@/api/orders";
 import { ImgIcon } from "@/components/ImgIcon";
 import { PageProps } from "@/extra/type";
+import { useAuth } from "@/hooks/useAuth";
 import IcoExcel from "@/public/icons/excel.png";
 import { faCalendarDays } from "@fortawesome/free-regular-svg-icons";
 import { faArrowsRotate, faPlus, faTrashCan } from "@fortawesome/free-solid-svg-icons";
@@ -10,8 +11,8 @@ import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import { redirect, useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 import * as XlSX from "xlsx";
 
 type SearchParams = {
@@ -35,6 +36,9 @@ export default function OrdersPage(props: PageProps<any, SearchParams>) {
   const [year, month, day] = date.split("-");
 
   const navigate = useRouter();
+  const auth = useAuth({
+    unAuthorized: () => navigate.push("/login"),
+  });
   const queryClient = useQueryClient();
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
@@ -42,6 +46,7 @@ export default function OrdersPage(props: PageProps<any, SearchParams>) {
     queryKey: ["orders", date],
     queryFn: () => getOrders(date),
     suspense: true,
+    enabled: auth.isSignIn,
   });
   const batchDeleteOrders = useMutation({
     mutationFn: () => deleteOrders(date, selectedIds),

@@ -3,6 +3,7 @@
 import { RawOrder, postOrder } from "@/api/orders";
 import { BlurInfo } from "@/components/BlurInfo";
 import { toHyphenPhone } from "@/extra/utils";
+import { useAuth } from "@/hooks/useAuth";
 import { usePostCodePopup } from "@/hooks/usePostCodePopup";
 import { useToggle } from "@/hooks/useToggle";
 import { useTypeSafeReducer } from "@/hooks/useTypeSafeReducer";
@@ -42,6 +43,9 @@ const defaultOrder: RawOrder = {
 
 export default function OrdersCreatePage() {
   const navigate = useRouter();
+  const auth = useAuth({
+    unAuthorized: () => navigate.push("/login"),
+  });
   const senderInfo = useToggle(false);
   const initialInfo = useToggle(false);
   const productInfo = useToggle(false);

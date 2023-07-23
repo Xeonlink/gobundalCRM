@@ -2,6 +2,7 @@
 
 import { RawTeam, postTeam } from "@/api/teams";
 import { toHyphenPhone } from "@/extra/utils";
+import { useAuth } from "@/hooks/useAuth";
 import { useTypeSafeReducer } from "@/hooks/useTypeSafeReducer";
 import {
   faArrowLeft,
@@ -33,6 +34,9 @@ const defaultTeam: RawTeam = {
 
 export default function TeamsCreatePage() {
   const navigate = useRouter();
+  const auth = useAuth({
+    unAuthorized: () => navigate.push("/login"),
+  });
   const queryClient = useQueryClient();
 
   const [team, teamActions] = useTypeSafeReducer(defaultTeam, {
