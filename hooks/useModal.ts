@@ -14,5 +14,5 @@ export function useModal() {
     setModals((prev) => prev.filter((modal) => modal.key !== key));
   };
 
-  return { open, close };
+  return { modalCtrl: { open, close } };
 }

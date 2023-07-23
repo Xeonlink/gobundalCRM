@@ -34,7 +34,7 @@ export async function getTeam(date: string, id: string) {
   return res.data;
 }
 
-export async function updateTeam(date: string, id: string, partialRawTeam: Partial<RawTeam>) {
+export async function patchTeam(date: string, id: string, partialRawTeam: Partial<RawTeam>) {
   const uri = `/teams/${id}`;
   const body = partialRawTeam;
   const config = { params: { date } };

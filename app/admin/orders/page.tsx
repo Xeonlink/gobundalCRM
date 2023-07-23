@@ -191,6 +191,7 @@ export default function OrdersPage(props: PageProps<any, SearchParams>) {
                 className='contents cursor-pointer order-table__tr'
                 onClick={onItemClick(order.id)}
                 onDoubleClick={() => gotoOrderPage(order.id)}
+                onTouchEnd={() => gotoOrderPage(order.id)}
                 aria-selected={selectedIds.includes(order.id)}
               >
                 <td className={td``}>{order.senderName}</td>
@@ -213,17 +214,21 @@ export default function OrdersPage(props: PageProps<any, SearchParams>) {
           {orders.data?.data?.map((order) => (
             <li
               key={order.id}
-              className='btn p-2 bg-transparent aria-selected:bg-white aria-selected:bg-opacity-70 active:scale-90'
+              className='btn p-2 bg-transparent aria-selected:bg-white aria-selected:bg-opacity-70 active:scale-90 text-start'
               aria-selected={selectedIds.includes(order.id)}
               onClick={onItemClick(order.id)}
               onDoubleClick={() => gotoOrderPage(order.id)}
             >
-              <p className='bg-orange-200 mb-2 p-2 rounded-md'>{order.senderPhone}</p>
+              <p className='bg-orange-200 mb-2 p-2 rounded-md'>
+                <b className='text-lg'>{order.senderName}</b> {order.senderPhone}
+              </p>
               <p className='bg-green-200 mb-2 p-2 rounded-md'>
+                <b className='text-lg'>{order.receiverName}</b>&nbsp;
                 {order.receiverPhone} <br />
                 {order.receiverAddress}, {order.receiverAddressDetail}
               </p>
               <p className='bg-blue-200 p-2 rounded-md'>
+                <b className='text-lg'>{order.productName}</b>
                 <br />
                 {order.initial}
               </p>

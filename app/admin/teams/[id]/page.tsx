@@ -1,6 +1,6 @@
 "use client";
 
-import { Team, deleteTeam, getTeam, updateTeam } from "@/api/teams";
+import { Team, deleteTeam, getTeam, patchTeam } from "@/api/teams";
 import { PageProps } from "@/extra/type";
 import { toHyphenPhone } from "@/extra/utils";
 import { faFloppyDisk, faTrashCan } from "@fortawesome/free-regular-svg-icons";
@@ -24,7 +24,7 @@ export default function TeamsIdPage(props: PageProps) {
   });
 
   const update = useMutation({
-    mutationFn: () => updateTeam(team?.data?.date!, team?.data?.id!, changes),
+    mutationFn: () => patchTeam(team?.data?.date!, team?.data?.id!, changes),
     onSuccess: () => {
       queryClient.invalidateQueries(["teams", team.data?.date]);
       navigate.back();

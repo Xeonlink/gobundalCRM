@@ -1,26 +1,30 @@
 "use client";
 
 import { RawTeam, postTeam } from "@/api/teams";
+import { ModalProps } from "@/extra/type";
 import { toHyphenPhone } from "@/extra/utils";
+import { useModal } from "@/hooks/useModal";
 import { useTypeSafeReducer } from "@/hooks/useTypeSafeReducer";
 import {
-  faArrowLeft,
   faBuilding,
   faDoorClosed,
   faDoorOpen,
   faFloppyDisk,
   faMobileScreenButton,
-  faNotdef,
   faPeopleGroup,
   faSignature,
-  faSpinner,
   faThumbsDown,
   faThumbsUp,
+  faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+
+type Props = {
+  mode: "CREATE" | "EDIT";
+  onClose?: () => void;
+  onSave?: () => void;
+};
 
 const defaultTeam: RawTeam = {
   leaderName: "",
@@ -31,8 +35,8 @@ const defaultTeam: RawTeam = {
   isLeave: false,
 };
 
-export default function TeamsCreatePage() {
-  const navigate = useRouter();
+export function TeamDialog(props: ModalProps<Props>) {
+  const { closeSelf, onSave, onClose, ref, mode } = props;
   const queryClient = useQueryClient();
 
   const [team, teamActions] = useTypeSafeReducer(defaultTeam, {
@@ -57,18 +61,20 @@ export default function TeamsCreatePage() {
     toggleIsLeave: (state) => {
       state.isLeave = !state.isLeave;
     },
-    reset: (state) => {
-      return defaultTeam;
-    },
   });
 
   const createTeam = useMutation({
     mutationFn: () => postTeam(team),
     onSuccess: () => {
       queryClient.invalidateQueries(["teams"]);
-      navigate.back();
+      closeSelf?.();
     },
   });
+
+  const onSaveClick = (_: React.MouseEvent<HTMLButtonElement>) => {
+    onSave?.();
+    createTeam.mutate();
+  };
 
   const validity = {
     leaderName: team.leaderName !== "",
@@ -78,77 +84,11 @@ export default function TeamsCreatePage() {
   };
   const isValid = Object.values(validity).every((v) => v);
 
-  const clearity = {
-    leaderName: team.leaderName === defaultTeam.leaderName,
-    leaderPhone: team.leaderPhone === defaultTeam.leaderPhone,
-    coupon: team.coupon === defaultTeam.coupon,
-    population: team.population === defaultTeam.population,
-    isApproved: team.isApproved === defaultTeam.isApproved,
-    isLeave: team.isLeave === defaultTeam.isLeave,
-  };
-  const isCleared = Object.values(clearity).every((v) => v);
-
-  // useShortcut(
-  //   "ctrl+s",
-  //   (e) => {
-  //     e.preventDefault();
-  //     if (!isValid) return;
-  //     createTeam.mutate();
-  //   },
-  //   [isValid]
-  // );
-
-  // useShortcut(
-  //   "meta+s",
-  //   (e) => {
-  //     e.preventDefault();
-  //     if (!isValid) return;
-  //     createTeam.mutate();
-  //   },
-  //   [isValid]
-  // );
-
   return (
-    <main className='p-3'>
-      {/* Toolbar */}
-      <div className='mb-3 flex flex-wrap gap-3'>
-        {/* Back */}
-        <Link href='.' replace className='btn px-3 py-2'>
-          <FaIcon icon={faArrowLeft} /> 뒤로가기
-        </Link>
-
-        {/* Expander */}
-        <span className='flex-1'></span>
-
-        {/* Clear */}
-        <button
-          type='button'
-          className='btn px-3 py-2'
-          disabled={isCleared}
-          onClick={teamActions.reset}
-        >
-          <FaIcon icon={faNotdef} rotation={90} />
-          &nbsp;초기화
-        </button>
-
-        {/* Save */}
-        <button className='btn px-3 py-2' onClick={() => createTeam.mutate()} disabled={!isValid}>
-          {createTeam.isLoading ? (
-            <>
-              <FaIcon icon={faSpinner} className='animate-spin' /> 저장중...
-            </>
-          ) : (
-            <>
-              <FaIcon icon={faFloppyDisk} /> 저장
-            </>
-          )}
-        </button>
-      </div>
-
-      {/* Form */}
-      <form className='w-80 m-auto'>
-        <fieldset className='shadow-md rounded-lg p-3 mb-6 relative'>
-          <legend className='btn bg-transparent px-2 py-2'>
+    <dialog ref={ref} className='dialog'>
+      <form method='dialog'>
+        <fieldset className='rounded-lg p-3 mb-6 relative bg-gradient-to-b from-orange-200 to-green-200'>
+          <legend className='btn bg-transparent px-2 py-2 bg-white'>
             <FaIcon icon={faPeopleGroup} fontSize={16} /> 팀 생성
           </legend>
 
@@ -163,7 +103,6 @@ export default function TeamsCreatePage() {
               className='input'
               value={team.leaderName}
               onChange={teamActions.onLeaderNameChange}
-              disabled={createTeam.isLoading}
               required
             />
           </div>
@@ -179,7 +118,6 @@ export default function TeamsCreatePage() {
               className='input'
               value={team.leaderPhone}
               onChange={teamActions.onLeaderPhoneChange}
-              disabled={createTeam.isLoading}
               required
             />
           </div>
@@ -193,7 +131,6 @@ export default function TeamsCreatePage() {
               type='text'
               value={team.coupon}
               onChange={teamActions.onCouponChange}
-              disabled={createTeam.isLoading}
               placeholder='쿠폰사'
               className='input'
               required
@@ -209,7 +146,6 @@ export default function TeamsCreatePage() {
               type='number'
               value={team.population}
               onChange={teamActions.onPopulationChange}
-              disabled={createTeam.isLoading}
               placeholder='인원수'
               className='input'
             />
@@ -219,10 +155,7 @@ export default function TeamsCreatePage() {
             <label htmlFor='is-approved' className='label'>
               <FaIcon icon={team.isApproved ? faThumbsUp : faThumbsDown} /> 쿠폰이 승인되었습니까?
             </label>
-            <div
-              className='flex gap-3 aria-disabled:opacity-40 m-auto'
-              aria-disabled={createTeam.isLoading}
-            >
+            <div className='flex gap-3 disabled:opacity-40 m-auto'>
               <button
                 type='button'
                 className='btn w-full shadow-none p-2'
@@ -246,10 +179,7 @@ export default function TeamsCreatePage() {
             <label htmlFor='is-approved' className='label'>
               <FaIcon icon={team.isLeave ? faDoorOpen : faDoorClosed} /> 손님이 체험장을 나갔습니까?
             </label>
-            <div
-              className='flex gap-3 aria-disabled:opacity-40 m-auto'
-              aria-disabled={createTeam.isLoading}
-            >
+            <div className='flex gap-3 disabled:opacity-40 m-auto'>
               <button
                 type='button'
                 className='btn w-full shadow-none p-2'
@@ -269,7 +199,16 @@ export default function TeamsCreatePage() {
             </div>
           </div>
         </fieldset>
+
+        <div className='flex gap-3 disabled:opacity-40 w-64 max-w-full m-auto'>
+          <button className='btn w-full p-2' onClick={closeSelf}>
+            <FaIcon icon={faXmark} /> close
+          </button>
+          <button className='btn w-full p-2' onClick={onSaveClick} disabled={!isValid}>
+            <FaIcon icon={faFloppyDisk} /> save
+          </button>
+        </div>
       </form>
-    </main>
+    </dialog>
   );
 }

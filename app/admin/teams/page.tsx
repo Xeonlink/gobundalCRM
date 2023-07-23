@@ -1,7 +1,9 @@
 "use client";
 
 import { getTeams } from "@/api/teams";
+import { TeamDialog } from "@/components/TeamDialog";
 import { useAuth } from "@/hooks/useAuth";
+import { useModal } from "@/hooks/useModal";
 import { faCalendarDays } from "@fortawesome/free-regular-svg-icons";
 import { faArrowsRotate, faPlus, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
@@ -11,6 +13,7 @@ import Link from "next/link";
 import { useState } from "react";
 
 export default function TeamsPage() {
+  const { modalCtrl } = useModal();
   const [date, setDate] = useState(dayjs());
   const teams = useQuery({
     queryKey: ["teams", date.format("YYYY-MM-DD")],
@@ -87,7 +90,14 @@ export default function TeamsPage() {
         </button>
 
         {/* Cratet New Team */}
-        <Link href='teams/create' className='m-box m-hover px-3 py-2'>
+        <Link
+          href='teams/create'
+          className='m-box m-hover px-3 py-2'
+          // onClick={(e) => {
+          //   e.preventDefault();
+          //   modalCtrl.open(<TeamDialog mode='CREATE' />);
+          // }}
+        >
           <FaIcon icon={faPlus} width={24} height={24} />
           <span>팀 만들기</span>
         </Link>

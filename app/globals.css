@@ -27,6 +27,9 @@
 }
 
 @layer components {
+  .dialog {
+    @apply w-80 max-w-full max-h-screen animate-scaleTo1 bg-transparent backdrop:bg-transparent p-0 outline-none backdrop:bg-black backdrop:opacity-30;
+  }
   .field {
     @apply mb-3 last-of-type:mb-0;
   }
@@ -68,6 +71,9 @@
   .shadow-inset-2 {
     box-shadow: inset 0 0 0 2px var(--tw-shadow-color);
   }
+  .animate-scaleTo1 {
+    animation: scaleTo1 200ms linear 1;
+  }
 }
 
 @keyframes shake {
@@ -88,15 +94,11 @@
   }
 }
 
-/**
- * Modal -------------------------------------
- */
-.modal-container {
-  @apply absolute top-0 left-0 w-screen h-screen flex;
-}
-
-.modal-body {
-  background: rgba(255, 255, 255, 0.2);
-  @apply w-80 h-96 m-auto rounded-xl overflow-hidden backdrop-blur-sm
-    shadow-xl;
+@keyframes scaleTo1 {
+  0% {
+    transform: scale(0.5);
+  }
+  100% {
+    transform: scale(1);
+  }
 }

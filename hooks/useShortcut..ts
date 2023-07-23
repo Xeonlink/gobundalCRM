@@ -1,6 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-export function useShortcut(shortcut: string, callback: (e: KeyboardEvent) => void) {
+export function useShortcut(
+  shortcut: string,
+  callback: (e: KeyboardEvent) => void,
+  deps: any[] = []
+) {
   useEffect(() => {
     const shortcutHandler = (e: KeyboardEvent) => {
       const keys = shortcut
@@ -14,7 +18,7 @@ export function useShortcut(shortcut: string, callback: (e: KeyboardEvent) => vo
       if (keysSet.delete("shift") !== e.shiftKey) return;
       if (keysSet.delete("meta") !== e.metaKey) return;
       const last = keysSet.values().next();
-      if (!last.done) return;
+      if (last.done) return;
       if (last.value !== e.key) return;
       callback(e);
     };
@@ -23,5 +27,5 @@ export function useShortcut(shortcut: string, callback: (e: KeyboardEvent) => vo
     return () => {
       window.removeEventListener("keydown", shortcutHandler);
     };
-  }, []);
+  }, deps);
 }

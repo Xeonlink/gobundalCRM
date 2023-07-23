@@ -23,8 +23,10 @@ export default function RootLayout(props: PropsWithChildren) {
         className={`${inter.className} bg-gradient-to-b from-orange-200 to-green-200 w-screen min-h-screen`}
       >
         <ModalProvider>
-          <ReactQueryProvider>{children}</ReactQueryProvider>
-          <ModalPlacer />
+          <ReactQueryProvider>
+            {children}
+            <ModalPlacer />
+          </ReactQueryProvider>
         </ModalProvider>
       </body>
     </html>
