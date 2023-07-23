@@ -21,14 +21,15 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 export default function TeamsIdPage(props: PageProps) {
   const { params, searchParams } = props;
 
   const navigate = useRouter();
+  const path = usePathname();
   const auth = useAuth({
-    unAuthorized: () => navigate.push("/login"),
+    unAuthorized: () => navigate.push(`/login?url=${path}`),
   });
   const queryClient = useQueryClient();
   const [changes, chnageActions] = useTypeSafeReducer({} as Partial<Team>, {
@@ -140,8 +141,8 @@ export default function TeamsIdPage(props: PageProps) {
 
       {/* Form */}
       <form className='w-80 m-auto'>
-        <fieldset className='shadow-md rounded-lg p-3 mb-6 relative'>
-          <legend className='btn bg-transparent px-2 py-2'>
+        <fieldset className='fieldset'>
+          <legend className='btn bg-transparent p-2'>
             <FaIcon icon={faPeopleGroup} fontSize={16} /> 팀 생성
           </legend>
 

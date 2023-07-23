@@ -21,7 +21,7 @@ import {
 import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 const defaultTeam: RawTeam = {
   leaderName: "",
@@ -34,8 +34,9 @@ const defaultTeam: RawTeam = {
 
 export default function TeamsCreatePage() {
   const navigate = useRouter();
+  const path = usePathname();
   const auth = useAuth({
-    unAuthorized: () => navigate.push("/login"),
+    unAuthorized: () => navigate.push(`/login?url=${path}`),
   });
   const queryClient = useQueryClient();
 
@@ -155,8 +156,8 @@ export default function TeamsCreatePage() {
 
       {/* Form */}
       <form className='w-80 m-auto'>
-        <fieldset className='shadow-md rounded-lg p-3 mb-6 relative'>
-          <legend className='btn bg-transparent px-2 py-2'>
+        <fieldset className='fieldset'>
+          <legend className='btn bg-transparent p-2'>
             <FaIcon icon={faPeopleGroup} fontSize={16} /> 팀 생성
           </legend>
 

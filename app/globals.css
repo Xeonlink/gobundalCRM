@@ -30,6 +30,9 @@
 }
 
 @layer components {
+  .fieldset {
+    @apply shadow-md rounded-lg p-3 mb-6 relative w-72;
+  }
   .dialog {
     @apply w-80 max-w-full max-h-screen animate-scaleTo1 bg-transparent backdrop:bg-transparent p-0 outline-none backdrop:bg-black backdrop:opacity-30;
   }

@@ -87,8 +87,8 @@ export function TeamDialog(props: ModalProps<Props>) {
   return (
     <dialog ref={ref} className='dialog'>
       <form method='dialog'>
-        <fieldset className='rounded-lg p-3 mb-6 relative bg-gradient-to-b from-orange-200 to-green-200'>
-          <legend className='btn bg-transparent px-2 py-2 bg-white'>
+        <fieldset className='fieldset bg-gradient-to-b from-orange-200 to-green-200'>
+          <legend className='btn bg-transparent p-2 bg-white'>
             <FaIcon icon={faPeopleGroup} fontSize={16} /> 팀 생성
           </legend>
 

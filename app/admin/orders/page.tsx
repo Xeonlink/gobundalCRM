@@ -11,7 +11,7 @@ import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import Link from "next/link";
-import { redirect, useRouter } from "next/navigation";
+import { redirect, useParams, usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import * as XlSX from "xlsx";
 
@@ -36,8 +36,9 @@ export default function OrdersPage(props: PageProps<any, SearchParams>) {
   const [year, month, day] = date.split("-");
 
   const navigate = useRouter();
+  const path = usePathname();
   const auth = useAuth({
-    unAuthorized: () => navigate.push("/login"),
+    unAuthorized: () => navigate.push(`/login?url=${path}`),
   });
   const queryClient = useQueryClient();
   const [selectedIds, setSelectedIds] = useState<string[]>([]);

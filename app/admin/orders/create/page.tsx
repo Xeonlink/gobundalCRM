@@ -27,7 +27,7 @@ import {
 import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
 import { useMutation } from "@tanstack/react-query";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 
 const defaultOrder: RawOrder = {
@@ -43,8 +43,9 @@ const defaultOrder: RawOrder = {
 
 export default function OrdersCreatePage() {
   const navigate = useRouter();
+  const path = usePathname();
   const auth = useAuth({
-    unAuthorized: () => navigate.push("/login"),
+    unAuthorized: () => navigate.push(`/login?url=${path}`),
   });
   const senderInfo = useToggle(false);
   const initialInfo = useToggle(false);
@@ -183,8 +184,8 @@ export default function OrdersCreatePage() {
       {/* Form */}
       <form action='' onSubmit={(e) => e.preventDefault()}>
         <div className='flex gap-3 justify-evenly flex-wrap items-start'>
-          <fieldset className='w-80 shadow-md rounded-md p-3 mb-10 relative'>
-            <legend className='btn text-lg bg-transparent px-2 py-2' onClick={senderInfo.toggle}>
+          <fieldset className='fieldset'>
+            <legend className='btn text-lg bg-transparent p-2' onClick={senderInfo.toggle}>
               <FaIcon icon={faPaperPlane} fontSize={16} />
               &nbsp;보내는 사람&nbsp;
               <FaIcon icon={faCircleQuestion} fontSize={16} />
@@ -229,7 +230,7 @@ export default function OrdersCreatePage() {
             </div>
           </fieldset>
 
-          <fieldset className='w-80 shadow-md rounded-md p-3 mb-10'>
+          <fieldset className='fieldset'>
             <legend className='text-lg m-box p-2 text-center bg-transparent'>
               <FaIcon icon={faPaperPlane} fontSize={16} /> 받는 사람
             </legend>
@@ -327,7 +328,7 @@ export default function OrdersCreatePage() {
             </div>
           </fieldset>
 
-          <fieldset className='w-80 shadow-md rounded-md p-3 mb-10 relative'>
+          <fieldset className='fieldset'>
             <legend className='text-lg m-box p-2 text-center bg-transparent'>
               <FaIcon icon={faBoxesStacked} /> 배송물품
             </legend>

@@ -11,7 +11,7 @@ import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import * as XlSX from "xlsx";
 
@@ -36,8 +36,9 @@ export default function TeamsPage(props: PageProps<any, SearchParams>) {
   const [year, month, day] = date.split("-");
 
   const navigate = useRouter();
+  const patht = usePathname();
   const auth = useAuth({
-    unAuthorized: () => navigate.push("/login"),
+    unAuthorized: () => navigate.push(`/login?url=${patht}`),
   });
   const queryClient = useQueryClient();
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -46,6 +47,7 @@ export default function TeamsPage(props: PageProps<any, SearchParams>) {
     queryKey: ["teams", date],
     queryFn: () => getTeams(date),
     suspense: true,
+    enabled: auth.isSignIn,
   });
   const batchDeleteOrders = useMutation({
     mutationFn: () => deleteTeams(date, selectedIds),
