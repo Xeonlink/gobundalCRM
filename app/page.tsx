@@ -94,7 +94,7 @@ export default function RootPage() {
         </div>
         <button
           className={`m-box p-3 text-center ${isSignIn ? "m-hover" : "opacity-40 cursor-default"}`}
-          onClick={() => navigate.push("/admin/teams")}
+          onClick={() => navigate.push("teams")}
           disabled={!isSignIn}
         >
           <FaIcon
@@ -107,7 +107,7 @@ export default function RootPage() {
         </button>
         <button
           className={`m-box p-3 text-center ${isSignIn ? "m-hover" : "opacity-40 cursor-default"}`}
-          onClick={() => navigate.push("/admin/orders")}
+          onClick={() => navigate.push("orders")}
           disabled={!isSignIn}
         >
           <FaIcon
@@ -120,7 +120,7 @@ export default function RootPage() {
         </button>
         <button
           className={`m-box p-3 text-center ${isSignIn ? "m-hover" : "opacity-40 cursor-default"}`}
-          onClick={() => navigate.push("/admin/products")}
+          onClick={() => navigate.push("products")}
           disabled={!isSignIn}
         >
           <FaIcon icon={faBox} width={19} height={19} className='align-middle inline-block mr-2' />
@@ -128,7 +128,7 @@ export default function RootPage() {
         </button>
         <button
           className={`m-box p-3 text-center ${isSignIn ? "m-hover" : "opacity-40 cursor-default"}`}
-          onClick={() => navigate.push("/admin/customers")}
+          onClick={() => navigate.push("customers")}
           disabled={!isSignIn}
         >
           <FaIcon icon={faUser} width={19} height={19} className='align-middle inline-block mr-2' />

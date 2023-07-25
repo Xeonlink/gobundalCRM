@@ -35,10 +35,7 @@ const signIn = (Username: string, Password: string) =>
     const authDetails = new AuthenticationDetails({ Username, Password });
 
     user.authenticateUser(authDetails, {
-      onSuccess: (data) => {
-        console.log(data);
-        resolve(data);
-      },
+      onSuccess: (data) => resolve(data),
       onFailure: (err) => reject(err),
     });
   });

@@ -108,7 +108,7 @@ export default function TeamsPage(props: PageProps<any, SearchParams>) {
       <div className='flex flex-wrap items-center gap-3 mb-3'>
         {/* 오늘 날짜로 재검색 */}
         <Link
-          href={`/admin/teams?date=${dayjs().format("YYYY-MM-DD")}&view=${view}`}
+          href={`teams?date=${dayjs().format("YYYY-MM-DD")}&view=${view}`}
           className='btn px-3 py-2'
         >
           <FaIcon icon={faCalendarDays} /> 오늘
@@ -157,7 +157,7 @@ export default function TeamsPage(props: PageProps<any, SearchParams>) {
         </select>
 
         {/* Cratet New Team */}
-        <Link href='/admin/teams/create' className='btn px-3 py-2'>
+        <Link href='teams/create' className='btn px-3 py-2'>
           <FaIcon icon={faPlus} /> 팀 만들기
         </Link>
 
