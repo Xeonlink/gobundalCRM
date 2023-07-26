@@ -41,7 +41,7 @@ export default function Page(props: PageProps<any, SearchParams>) {
   const { url = "/admin/orders" } = searchParams;
 
   const naviate = useRouter();
-  useAuth();
+  const auth = useAuth();
   const [status, setStatus] = useState<Status>("NoError");
 
   const [credentials, actions] = useTypeSafeReducer(defaultCredentials, {
