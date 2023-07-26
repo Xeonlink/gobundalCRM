@@ -1,5 +1,6 @@
 "use client";
 
+import { QueryOptions } from "@/extra/type";
 import {
   AuthenticationDetails,
   CognitoUser,
@@ -7,6 +8,7 @@ import {
   CognitoUserSession,
   GetSessionOptions,
 } from "amazon-cognito-identity-js";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 const Pool = new CognitoUserPool({
@@ -85,13 +87,15 @@ type AuthOptions = {
 };
 
 export function useAuth(options: AuthOptions = {}) {
-  const { unAuthorized } = options;
   const user = Pool.getCurrentUser();
   const isSignIn = user !== null;
 
+  const path = usePathname();
+  const navigate = useRouter();
+
   useEffect(() => {
     if (!isSignIn) {
-      unAuthorized?.();
+      navigate.push(`/login?url=${path}`);
     }
   }, []);
 

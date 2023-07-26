@@ -1,6 +1,6 @@
 "use client";
 
-import { RawProduct, postProduct } from "@/api/products";
+import { RawProduct, useCreateProduct } from "@/api/products";
 import { Input } from "@/components/Input";
 import { useAuth } from "@/hooks/useAuth";
 import { useTypeSafeReducer } from "@/hooks/useTypeSafeReducer";
@@ -20,7 +20,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 const defaultProduct: RawProduct = {
   enabled: false,
@@ -32,13 +32,9 @@ const defaultProduct: RawProduct = {
 };
 
 export default function Page() {
+  useAuth();
   const navigate = useRouter();
-  const path = usePathname();
   const queryClient = useQueryClient();
-  const auth = useAuth({
-    unAuthorized: () => navigate.push(`/login?url=${path}`),
-  });
-
   const [product, productActions] = useTypeSafeReducer(defaultProduct, {
     toggleEnabled: (state) => {
       state.enabled = !state.enabled;
@@ -92,12 +88,8 @@ export default function Page() {
   };
   const isValid = Object.values(validity).every((v) => v);
 
-  const createProduct = useMutation({
-    mutationFn: () => postProduct(product),
-    onSuccess: () => {
-      queryClient.invalidateQueries(["products"]);
-      navigate.back();
-    },
+  const createProduct = useCreateProduct(product, {
+    onSuccess: () => navigate.back(),
   });
 
   const clearForm = () => {

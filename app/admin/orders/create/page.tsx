@@ -1,6 +1,6 @@
 "use client";
 
-import { RawOrder, postOrder } from "@/api/orders";
+import { RawOrder, useCreateOrder } from "@/api/orders";
 import { BlurInfo } from "@/components/BlurInfo";
 import { toHyphenPhone } from "@/extra/utils";
 import { useAuth } from "@/hooks/useAuth";
@@ -27,7 +27,7 @@ import {
 import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
 import { useMutation } from "@tanstack/react-query";
 import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const defaultOrder: RawOrder = {
@@ -42,16 +42,12 @@ const defaultOrder: RawOrder = {
 };
 
 export default function Page() {
+  useAuth();
   const navigate = useRouter();
-  const path = usePathname();
-  const auth = useAuth({
-    unAuthorized: () => navigate.push(`/login?url=${path}`),
-  });
   const senderInfo = useToggle(false);
   const initialInfo = useToggle(false);
   const productInfo = useToggle(false);
   const sameAsSender = useToggle(false);
-
   const [extraProductName, setExtraProductName] = useState("");
   const [order, orderActions] = useTypeSafeReducer(defaultOrder, {
     onSenderNameChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
@@ -107,11 +103,8 @@ export default function Page() {
 
   const isRegistBtnValid = Object.values(validity).every((v) => v);
 
-  const createOrder = useMutation({
-    mutationFn: () => postOrder(finalOrder),
-    onSuccess: () => {
-      navigate.back();
-    },
+  const createOrder = useCreateOrder(finalOrder, {
+    onSuccess: () => navigate.back(),
   });
 
   const postCodePopup = usePostCodePopup({

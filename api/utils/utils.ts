@@ -1,5 +1,7 @@
+import { MutateOption, QueryOptions } from "@/extra/type";
 import { getIdToken } from "@/hooks/useAuth";
 import axios from "axios";
+import { useAutoInvalidateMutation } from "./useAutoInvalidateMutation";
 
 export const apiRoot = (() => {
   const apiBase = axios.create({

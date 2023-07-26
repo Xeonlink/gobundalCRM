@@ -1,6 +1,6 @@
 "use client";
 
-import { RawOrder, postOrder } from "@/api/orders";
+import { RawOrder, useCreateOrder } from "@/api/orders";
 import { getProducts } from "@/api/products";
 import { BlurInfo } from "@/components/BlurInfo";
 import { PageProps } from "@/extra/type";
@@ -111,7 +111,7 @@ export default function Page(_: PageProps) {
   const isRegistBtnValid = Object.values(validity).every((v) => v);
 
   const createOrder = useMutation({
-    mutationFn: () => postOrder(finalOrder),
+    mutationFn: () => useCreateOrder(finalOrder),
     onSuccess: () => {
       alert("배송정보 등록이 완료되었습니다.");
       orderActions.reset();

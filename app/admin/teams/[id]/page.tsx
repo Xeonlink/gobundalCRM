@@ -1,6 +1,6 @@
 "use client";
 
-import { Team, deleteTeam, getTeam, patchTeam } from "@/api/teams";
+import { Team, useDeleteTeam, useTeam, useUpdateTeam } from "@/api/teams";
 import { PageProps } from "@/extra/type";
 import { toHyphenPhone } from "@/extra/utils";
 import { useAuth } from "@/hooks/useAuth";
@@ -20,18 +20,17 @@ import {
   faTrashCan,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
-export default function Page(props: PageProps) {
-  const { params, searchParams } = props;
+type SearchParams = { date: `${string}-${string}-${string}` };
+type Params = { id: string };
 
+export default function Page(props: PageProps<Params, SearchParams>) {
+  const { params, searchParams: query } = props;
+
+  useAuth();
   const navigate = useRouter();
-  const path = usePathname();
-  const auth = useAuth({
-    unAuthorized: () => navigate.push(`/login?url=${path}`),
-  });
-  const queryClient = useQueryClient();
+  const team = useTeam(query.date, params.id);
   const [changes, chnageActions] = useTypeSafeReducer({} as Partial<Team>, {
     onLeaderNameChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
       state.leaderName = e.target.value;
@@ -59,25 +58,11 @@ export default function Page(props: PageProps) {
     },
   });
 
-  const team = useQuery({
-    queryKey: ["teams", searchParams.date, params.id],
-    queryFn: () => getTeam(searchParams.date, params.id),
-    suspense: true,
-    enabled: auth.isSignIn,
+  const updateTeam = useUpdateTeam(query.date, params.id, changes, {
+    onSuccess: () => navigate.back(),
   });
-  const updateTeam = useMutation({
-    mutationFn: () => patchTeam(team?.data?.date!, team?.data?.id!, changes),
-    onSuccess: () => {
-      queryClient.invalidateQueries(["teams", team.data?.date]);
-      navigate.back();
-    },
-  });
-  const eraseTeam = useMutation({
-    mutationFn: () => deleteTeam(team.data?.date!, team.data?.id!),
-    onSuccess: () => {
-      queryClient.invalidateQueries(["teams", team.data?.date]);
-      navigate.back();
-    },
+  const eraseTeam = useDeleteTeam(query.date, params.id, {
+    onSuccess: () => navigate.back(),
   });
 
   const finalTeam: Partial<Team> = {

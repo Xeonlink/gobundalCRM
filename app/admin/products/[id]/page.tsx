@@ -1,6 +1,6 @@
 "use client";
 
-import { Product, getProduct, patchProduct } from "@/api/products";
+import { Product, useProduct, useUpdateProduct } from "@/api/products";
 import { Input } from "@/components/Input";
 import { PageProps } from "@/extra/type";
 import { useAuth } from "@/hooks/useAuth";
@@ -20,28 +20,18 @@ import {
   faWon,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { usePathname, useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 
 type Params = { id: string };
 
 export default function Page(props: PageProps<Params>) {
-  const {
-    params: { id },
-  } = props;
+  const { params } = props;
+
+  useAuth();
   const navigate = useRouter();
-  const path = usePathname();
   const queryClient = useQueryClient();
-  const auth = useAuth({
-    unAuthorized: () => navigate.push(`/login?url=${path}`),
-  });
-
-  const product = useQuery({
-    queryKey: ["products", id],
-    queryFn: () => getProduct(id),
-    suspense: true,
-  });
-
+  const product = useProduct(params.id);
   const [changes, changeActions] = useTypeSafeReducer({} as Partial<Product>, {
     toggleEnabled: (state) => {
       state.enabled = !state.enabled;
@@ -114,12 +104,8 @@ export default function Page(props: PageProps<Params>) {
   };
   const isCleared = Object.values(clearity).every((v) => v);
 
-  const updateProduct = useMutation({
-    mutationFn: () => patchProduct(id, changes),
-    onSuccess: () => {
-      queryClient.invalidateQueries(["products"]);
-      navigate.back();
-    },
+  const updateProduct = useUpdateProduct(params.id, changes, {
+    onSuccess: () => navigate.back(),
   });
 
   return (

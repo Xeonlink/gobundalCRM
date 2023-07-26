@@ -1,16 +1,15 @@
 "use client";
 
-import { deleteProducts, getProducts } from "@/api/products";
+import { useDeleteProducts, useProducts } from "@/api/products";
 import { ImgIcon } from "@/components/ImgIcon";
 import { PageProps } from "@/extra/type";
 import { useAuth } from "@/hooks/useAuth";
 import IcoExcel from "@/public/icons/excel.png";
 import { faArrowsRotate, faInfinity, faPlus, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import * as XlSX from "xlsx";
 
@@ -33,26 +32,12 @@ export default function Page(props: PageProps<any, SearchParams>) {
   const { searchParams } = props;
   const { view = "table" } = searchParams;
 
+  useAuth();
   const navigate = useRouter();
-  const path = usePathname();
-  const auth = useAuth({
-    unAuthorized: () => navigate.push(`/login?url=${path}`),
-  });
-  const queryClient = useQueryClient();
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
-
-  const products = useQuery({
-    queryKey: ["products"],
-    queryFn: () => getProducts(),
-    suspense: true,
-    enabled: auth.isSignIn,
-  });
-  const eraseProducts = useMutation({
-    mutationFn: () => deleteProducts(selectedIds),
-    onSuccess: () => {
-      queryClient.invalidateQueries(["products"]);
-      setSelectedIds([]);
-    },
+  const products = useProducts();
+  const deleteProducts = useDeleteProducts(selectedIds, {
+    onSuccess: () => setSelectedIds([]),
   });
 
   const onViewStyleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -78,7 +63,7 @@ export default function Page(props: PageProps<any, SearchParams>) {
   const onDeleteClick = () => {
     if (selectedIds.length === 0) return;
     if (!confirm("정말로 삭제하시겠습니까?")) return;
-    eraseProducts.mutate();
+    deleteProducts.mutate();
   };
 
   const onExcelDownloadClick = () => {
@@ -174,7 +159,7 @@ export default function Page(props: PageProps<any, SearchParams>) {
       ) : null}
 
       {view === "card" ? (
-        <ol className='orders-card-grid gap-3'>
+        <ol className='product-card-grid gap-3'>
           {products.data?.data?.map((item) => (
             <li
               key={item.id}
@@ -184,12 +169,14 @@ export default function Page(props: PageProps<any, SearchParams>) {
               onDoubleClick={() => gotoItemPage(item.id)}
             >
               <p className='bg-orange-200 mb-2 p-2 rounded-md'>
-                <b className='text-lg'>{item.name}</b> {item.price}
+                <b className='text-lg'>{item.name}</b> <br />
+                {item.price.toLocaleString() + "원"} <br />
+                {item.salePrice.toLocaleString() + "원"} <br />
+                {item.remain < 0 ? <FaIcon icon={faInfinity} /> : item.remain}
               </p>
               <p className='bg-green-200 mb-2 p-2 rounded-md'>
-                <b className='text-lg'>{item.salePrice}</b>&nbsp;
-                {item.remain} <br />
-                {item.isSale}, {item.enabled}
+                할인중 {item.isSale ? "O" : "X"} <br />
+                활성화 {item.enabled ? "O" : "X"}
               </p>
             </li>
           ))}

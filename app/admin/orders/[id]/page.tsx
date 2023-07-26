@@ -1,6 +1,6 @@
 "use client";
 
-import { Order, getOrder, patchOrder } from "@/api/orders";
+import { Order, useOrder, useUpdateOrder } from "@/api/orders";
 import { BlurInfo } from "@/components/BlurInfo";
 import { PageProps } from "@/extra/type";
 import { toHyphenPhone } from "@/extra/utils";
@@ -25,29 +25,24 @@ import {
   faSignsPost,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 type Params = { id: string };
 type SearchParams = { date: string };
 
 export default function Page(props: PageProps<Params, SearchParams>) {
-  const {
-    params: { id },
-    searchParams: { date },
-  } = props;
+  const { params, searchParams } = props;
+
+  useAuth();
   const navigate = useRouter();
-  const path = usePathname();
-  const auth = useAuth({
-    unAuthorized: () => navigate.push(`/login?url=${path}`),
-  });
+  const order = useOrder(searchParams.date, params.id);
   const senderInfo = useToggle(false);
   const initialInfo = useToggle(false);
   const productInfo = useToggle(false);
   const sameAsSender = useToggle(false);
-
   const [extraProductName, setExtraProductName] = useState("");
   const [changes, changeActions] = useTypeSafeReducer({} as Partial<Order>, {
     onSenderNameChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
@@ -79,21 +74,12 @@ export default function Page(props: PageProps<Params, SearchParams>) {
     },
   });
 
-  const order = useQuery({
-    queryKey: ["orders", date, id],
-    queryFn: () => getOrder(date, id),
-    suspense: true,
-    enabled: auth.isSignIn,
-  });
-
   const partialOrder: Partial<Order> = {
     ...order.data,
     ...changes,
   };
 
-  const updateOrder = useMutation({
-    mutationFn: () => patchOrder(date, id, partialOrder),
-  });
+  const updateOrder = useUpdateOrder(searchParams.date, params.id, partialOrder);
 
   const onExtraProductNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setExtraProductName(e.target.value);
