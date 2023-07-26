@@ -30,7 +30,7 @@ const td = (className: TemplateStringsArray) => {
   )}`;
 };
 
-export default function OrdersPage(props: PageProps<any, SearchParams>) {
+export default function Page(props: PageProps<any, SearchParams>) {
   const { searchParams } = props;
   const { date = dayjs().format("YYYY-MM-DD"), view = "table" } = searchParams;
   const [year, month, day] = date.split("-");
@@ -103,12 +103,12 @@ export default function OrdersPage(props: PageProps<any, SearchParams>) {
   };
 
   return (
-    <main className='p-3'>
+    <main className='p-3 h-full flex-1'>
       {/* Toolbar */}
       <div className='flex flex-wrap items-center gap-3 mb-3'>
         {/* 오늘 날짜로 재검색 */}
         <Link
-          href={`/admin/orders?date=${dayjs().format("YYYY-MM-DD")}&view=${view}`}
+          href={`orders?date=${dayjs().format("YYYY-MM-DD")}&view=${view}`}
           className='btn px-3 py-2'
         >
           <FaIcon icon={faCalendarDays} /> 오늘
@@ -157,7 +157,7 @@ export default function OrdersPage(props: PageProps<any, SearchParams>) {
         </select>
 
         {/* Cratet New Order */}
-        <Link href='/admin/orders/create' className='btn px-3 py-2'>
+        <Link href='orders/create' className='btn px-3 py-2'>
           <FaIcon icon={faPlus} /> 송장 작성하기
         </Link>
 

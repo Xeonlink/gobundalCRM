@@ -5,6 +5,9 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { PropsWithChildren } from "react";
 import "./globals.css";
+import "@fortawesome/fontawesome-svg-core/styles.css";
+import { config } from "@fortawesome/fontawesome-svg-core";
+config.autoAddCss = false;
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,7 +22,7 @@ export default function RootLayout(props: PropsWithChildren) {
   return (
     <html lang='en'>
       <body
-        className={`${inter.className} bg-gradient-to-b from-orange-200 to-green-200 w-screen min-h-screen`}
+        className={`${inter.className} bg-gradient-to-b from-orange-200 to-green-200 flex h-screen`}
       >
         <ModalProvider>
           <ReactQueryProvider>

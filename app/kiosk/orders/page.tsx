@@ -38,7 +38,7 @@ const defaultOrder: RawOrder = {
   initial: "",
 };
 
-export default function KioskOrderPage(_: PageProps) {
+export default function Page(_: PageProps) {
   const postCodePopup = usePostCodePopup({
     onComplete: (data) => {
       orderActions.setReceiverAddress(data.roadAddress);

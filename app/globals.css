@@ -22,6 +22,10 @@
 .order-table__tr[aria-selected="true"] > td {
   @apply opacity-70 bg-white;
 }
+.product-table-grid {
+  display: grid;
+  grid-template-columns: repeat(6, auto);
+}
 
 .root-page-grid {
   display: grid;
@@ -37,7 +41,7 @@
     @apply w-80 max-w-full max-h-screen animate-scaleTo1 bg-transparent backdrop:bg-transparent p-0 outline-none backdrop:bg-black backdrop:opacity-30;
   }
   .field {
-    @apply mb-3 last-of-type:mb-0;
+    @apply mb-3 last-of-type:mb-0 relative;
   }
   .label {
     @apply block mb-1 pl-2;
@@ -58,6 +62,9 @@
     @apply rounded-md bg-white px-3 py-2 w-full;
     @apply invalid:shake invalid:shadow-inset-2 invalid:shadow-red-300;
     @apply disabled:opacity-40;
+  }
+  .input-invalid {
+    @apply shake shadow-inset-2 shadow-red-300;
   }
 }
 

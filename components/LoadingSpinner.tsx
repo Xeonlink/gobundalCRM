@@ -6,6 +6,6 @@ export function LoadingSpinner() {
     <div className='text-center h-10'>
       <FaIcon icon={faSpinner} width={30} height={30} className='animate-spin inline-block' />
       {/* 로딩중... */}
-    </div>
+    </main>
   );
 }
