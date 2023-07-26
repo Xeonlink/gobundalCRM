@@ -223,9 +223,9 @@ export default function Page(props: PageProps<any, SearchParams>) {
       ) : null}
 
       {view === "card" ? (
-        <div className='teams-card-grid gap-3'>
+        <ol className='teams-card-grid gap-3'>
           {teams.data?.data.map((team) => (
-            <button
+            <li
               key={team.id}
               className='btn text-start p-3'
               aria-selected={selectedIds.includes(team.id)}
@@ -251,9 +251,9 @@ export default function Page(props: PageProps<any, SearchParams>) {
               {team.coupon}
               <br />
               {team.population}명
-            </button>
+            </li>
           ))}
-        </div>
+        </ol>
       ) : null}
     </main>
   );

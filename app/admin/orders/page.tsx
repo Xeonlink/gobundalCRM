@@ -11,8 +11,8 @@ import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import Link from "next/link";
-import { redirect, useParams, usePathname, useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import React, { useState } from "react";
 import * as XlSX from "xlsx";
 
 type SearchParams = {
@@ -216,9 +216,9 @@ export default function Page(props: PageProps<any, SearchParams>) {
       ) : null}
 
       {view === "card" ? (
-        <div className='orders-card-grid gap-3'>
+        <ol className='orders-card-grid gap-3'>
           {orders.data?.data?.map((item) => (
-            <button
+            <li
               key={item.id}
               className='btn p-2 bg-transparent aria-selected:bg-white aria-selected:bg-opacity-70 active:scale-90 text-start'
               aria-selected={selectedIds.includes(item.id)}
@@ -238,9 +238,9 @@ export default function Page(props: PageProps<any, SearchParams>) {
                 <br />
                 {item.initial}
               </p>
-            </button>
+            </li>
           ))}
-        </div>
+        </ol>
       ) : null}
     </main>
   );

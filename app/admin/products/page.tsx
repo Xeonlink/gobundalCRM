@@ -176,9 +176,9 @@ export default function Page(props: PageProps<any, SearchParams>) {
       ) : null}
 
       {view === "card" ? (
-        <div className='orders-card-grid gap-3'>
+        <ol className='orders-card-grid gap-3'>
           {products.data?.data?.map((item) => (
-            <button
+            <li
               key={item.id}
               className='btn p-2 bg-transparent aria-selected:bg-white aria-selected:bg-opacity-70 active:scale-90 text-start'
               aria-selected={selectedIds.includes(item.id)}
@@ -193,9 +193,9 @@ export default function Page(props: PageProps<any, SearchParams>) {
                 {item.remain} <br />
                 {item.isSale}, {item.enabled}
               </p>
-            </button>
+            </li>
           ))}
-        </div>
+        </ol>
       ) : null}
     </main>
   );
