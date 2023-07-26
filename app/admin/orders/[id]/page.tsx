@@ -1,6 +1,6 @@
 "use client";
 
-import { Order, getOrder, updateOrder } from "@/api/orders";
+import { Order, useOrder, useUpdateOrder } from "@/api/orders";
 import { BlurInfo } from "@/components/BlurInfo";
 import { PageProps } from "@/extra/type";
 import { toHyphenPhone } from "@/extra/utils";
@@ -25,29 +25,24 @@ import {
   faSignsPost,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 type Params = { id: string };
 type SearchParams = { date: string };
 
 export default function Page(props: PageProps<Params, SearchParams>) {
-  const {
-    params: { id },
-    searchParams: { date },
-  } = props;
+  const { params, searchParams } = props;
+
+  useAuth();
   const navigate = useRouter();
-  const path = usePathname();
-  const auth = useAuth({
-    unAuthorized: () => navigate.push(`/login?url=${path}`),
-  });
+  const order = useOrder(searchParams.date, params.id);
   const senderInfo = useToggle(false);
   const initialInfo = useToggle(false);
   const productInfo = useToggle(false);
   const sameAsSender = useToggle(false);
-
   const [extraProductName, setExtraProductName] = useState("");
   const [changes, changeActions] = useTypeSafeReducer({} as Partial<Order>, {
     onSenderNameChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
@@ -79,21 +74,12 @@ export default function Page(props: PageProps<Params, SearchParams>) {
     },
   });
 
-  const order = useQuery({
-    queryKey: ["orders", date, id],
-    queryFn: () => getOrder(date, id),
-    suspense: true,
-    enabled: auth.isSignIn,
-  });
-
   const partialOrder: Partial<Order> = {
     ...order.data,
     ...changes,
   };
 
-  const updateOrderReq = useMutation({
-    mutationFn: () => updateOrder(date, id, partialOrder),
-  });
+  const updateOrder = useUpdateOrder(searchParams.date, params.id, partialOrder);
 
   const onExtraProductNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setExtraProductName(e.target.value);
@@ -156,8 +142,8 @@ export default function Page(props: PageProps<Params, SearchParams>) {
         <button
           type='button'
           className='btn px-3 py-2'
-          disabled={!isRegistBtnValid || updateOrderReq.isLoading}
-          onClick={() => updateOrderReq.mutate()}
+          disabled={!isRegistBtnValid || updateOrder.isLoading}
+          onClick={() => updateOrder.mutate()}
         >
           <FaIcon icon={faFloppyDisk} /> 저장
         </button>
@@ -188,7 +174,7 @@ export default function Page(props: PageProps<Params, SearchParams>) {
                 type='text'
                 placeholder='홍길동'
                 className='input'
-                disabled={updateOrderReq.isLoading}
+                disabled={updateOrder.isLoading}
                 value={partialOrder.senderName}
                 onChange={changeActions.onSenderNameChange}
                 required
@@ -204,7 +190,7 @@ export default function Page(props: PageProps<Params, SearchParams>) {
                 type='tel'
                 placeholder='010-xxxx-xxxx'
                 className='input'
-                disabled={updateOrderReq.isLoading}
+                disabled={updateOrder.isLoading}
                 value={partialOrder.senderPhone}
                 onChange={changeActions.onSenderPhoneChange}
                 required
@@ -223,7 +209,7 @@ export default function Page(props: PageProps<Params, SearchParams>) {
               </label>
               <div
                 className='flex gap-3 disabled:opacity-40 mb-3'
-                aria-disabled={updateOrderReq.isLoading}
+                aria-disabled={updateOrder.isLoading}
               >
                 <button
                   type='button'
@@ -253,7 +239,7 @@ export default function Page(props: PageProps<Params, SearchParams>) {
                 type='text'
                 placeholder='홍길동'
                 className='input'
-                disabled={sameAsSender.isOn || updateOrderReq.isLoading}
+                disabled={sameAsSender.isOn || updateOrder.isLoading}
                 value={sameAsSender.isOn ? partialOrder.senderName : partialOrder.receiverName}
                 onChange={changeActions.onReceiverNameChange}
                 required
@@ -269,7 +255,7 @@ export default function Page(props: PageProps<Params, SearchParams>) {
                 type='text'
                 placeholder='010-xxxx-xxxx'
                 className='input'
-                disabled={sameAsSender.isOn || updateOrderReq.isLoading}
+                disabled={sameAsSender.isOn || updateOrder.isLoading}
                 value={sameAsSender.isOn ? partialOrder.senderPhone : partialOrder.receiverPhone}
                 onChange={changeActions.onReceiverPhoneChange}
                 required
@@ -285,7 +271,7 @@ export default function Page(props: PageProps<Params, SearchParams>) {
                 type='text'
                 placeholder='남원월산로74번길 42'
                 className='input'
-                disabled={updateOrderReq.isLoading}
+                disabled={updateOrder.isLoading}
                 value={partialOrder.receiverAddress}
                 onChange={postCodePopup.show}
                 onClick={postCodePopup.show}
@@ -302,7 +288,7 @@ export default function Page(props: PageProps<Params, SearchParams>) {
                 type='text'
                 placeholder='단독주택, 1층 101호, ...'
                 className='input'
-                disabled={updateOrderReq.isLoading}
+                disabled={updateOrder.isLoading}
                 value={partialOrder.receiverAddressDetail}
                 onChange={changeActions.onReceiverAddressDetailChange}
                 required
@@ -340,7 +326,7 @@ export default function Page(props: PageProps<Params, SearchParams>) {
                 className={`rounded-md bg-white px-3 py-2 mb-3 w-full disabled:opacity-40 ${
                   validity.productName ? "" : "shake border-red-300 border-2"
                 }`}
-                disabled={updateOrderReq.isLoading}
+                disabled={updateOrder.isLoading}
                 value={partialOrder.productName}
                 onChange={changeActions.onProductNameChange}
                 required
@@ -357,7 +343,7 @@ export default function Page(props: PageProps<Params, SearchParams>) {
                   type='text'
                   placeholder='귤5kg, 귤10kg, 귤5kg x 2, ...'
                   className='input'
-                  disabled={updateOrderReq.isLoading}
+                  disabled={updateOrder.isLoading}
                   value={extraProductName}
                   onChange={onExtraProductNameChange}
                   required
@@ -377,7 +363,7 @@ export default function Page(props: PageProps<Params, SearchParams>) {
                 type='text'
                 placeholder='HGD, love you, 하트모양, ...'
                 className='input mb-2'
-                disabled={updateOrderReq.isLoading}
+                disabled={updateOrder.isLoading}
                 value={partialOrder.initial}
                 onChange={changeActions.onInitialChange}
                 required

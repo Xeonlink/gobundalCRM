@@ -1,6 +1,6 @@
 "use client";
 
-import { deleteOrders, getOrders } from "@/api/orders";
+import { useDeleteOrders, useOrders } from "@/api/orders";
 import { ImgIcon } from "@/components/ImgIcon";
 import { PageProps } from "@/extra/type";
 import { useAuth } from "@/hooks/useAuth";
@@ -8,10 +8,10 @@ import IcoExcel from "@/public/icons/excel.png";
 import { faCalendarDays } from "@fortawesome/free-regular-svg-icons";
 import { faArrowsRotate, faPlus, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import * as XlSX from "xlsx";
 
@@ -35,26 +35,12 @@ export default function Page(props: PageProps<any, SearchParams>) {
   const { date = dayjs().format("YYYY-MM-DD"), view = "table" } = searchParams;
   const [year, month, day] = date.split("-");
 
+  useAuth();
   const navigate = useRouter();
-  const path = usePathname();
-  const auth = useAuth({
-    unAuthorized: () => navigate.push(`/login?url=${path}`),
-  });
-  const queryClient = useQueryClient();
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
-
-  const orders = useQuery({
-    queryKey: ["orders", date],
-    queryFn: () => getOrders(date),
-    suspense: true,
-    enabled: auth.isSignIn,
-  });
-  const batchDeleteOrders = useMutation({
-    mutationFn: () => deleteOrders(date, selectedIds),
-    onSuccess: () => {
-      queryClient.invalidateQueries(["orders", date]);
-      setSelectedIds([]);
-    },
+  const orders = useOrders(date);
+  const eraseOrders = useDeleteOrders(date, selectedIds, {
+    onSuccess: () => setSelectedIds([]),
   });
 
   const onYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -89,7 +75,7 @@ export default function Page(props: PageProps<any, SearchParams>) {
   const onDeleteClick = () => {
     if (selectedIds.length === 0) return;
     if (!confirm("정말로 삭제하시겠습니까?")) return;
-    batchDeleteOrders.mutate();
+    eraseOrders.mutate();
   };
 
   const onExcelDownloadClick = () => {

@@ -26,6 +26,10 @@
   display: grid;
   grid-template-columns: repeat(6, auto);
 }
+.product-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+}
 
 .root-page-grid {
   display: grid;

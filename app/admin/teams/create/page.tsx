@@ -19,9 +19,8 @@ import {
   faThumbsUp,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 const defaultTeam: RawTeam = {
   leaderName: "",
@@ -33,13 +32,8 @@ const defaultTeam: RawTeam = {
 };
 
 export default function Page() {
+  useAuth();
   const navigate = useRouter();
-  const path = usePathname();
-  const auth = useAuth({
-    unAuthorized: () => navigate.push(`/login?url=${path}`),
-  });
-  const queryClient = useQueryClient();
-
   const [team, teamActions] = useTypeSafeReducer(defaultTeam, {
     onLeaderNameChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
       state.leaderName = e.target.value;
@@ -67,12 +61,8 @@ export default function Page() {
     },
   });
 
-  const createTeam = useMutation({
-    mutationFn: () => postTeam(team),
-    onSuccess: () => {
-      queryClient.invalidateQueries(["teams"]);
-      navigate.back();
-    },
+  const createTeam = postTeam(team, {
+    onSuccess: () => navigate.back(),
   });
 
   const validity = {

@@ -1,6 +1,7 @@
 "use client";
 
-import { RawOrder, postOrder } from "@/api/orders";
+import { RawOrder, useCreateOrder } from "@/api/orders";
+import { getProducts } from "@/api/products";
 import { BlurInfo } from "@/components/BlurInfo";
 import { PageProps } from "@/extra/type";
 import { toHyphenPhone } from "@/extra/utils";
@@ -23,7 +24,7 @@ import {
   faSpinner,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import { useState } from "react";
 
@@ -79,6 +80,12 @@ export default function Page(_: PageProps) {
     },
   });
 
+  const products = useQuery({
+    queryKey: ["products"],
+    queryFn: () => getProducts(),
+    suspense: true,
+  });
+
   const onExtraProductNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setExtraProductName(e.target.value);
   };
@@ -104,7 +111,7 @@ export default function Page(_: PageProps) {
   const isRegistBtnValid = Object.values(validity).every((v) => v);
 
   const createOrder = useMutation({
-    mutationFn: () => postOrder(finalOrder),
+    mutationFn: () => useCreateOrder(finalOrder),
     onSuccess: () => {
       alert("배송정보 등록이 완료되었습니다.");
       orderActions.reset();
@@ -300,9 +307,13 @@ export default function Page(_: PageProps) {
                 required
               >
                 <option value='상품을 선택해주세요.'>상품을 선택해주세요.</option>
-                <option value='체험귤 5kg'>체험귤 5kg</option>
-                <option value='체험귤 10kg'>체험귤 10kg</option>
-                <option value='체험귤 5kg x 2'>체험귤 5kg x 2</option>
+                {products.data?.data
+                  .filter((item) => item.enabled)
+                  .map((item) => (
+                    <option key={item.id} value={item.name}>
+                      {item.name}
+                    </option>
+                  ))}
                 <option value='기타'>기타</option>
               </select>
               {order.productName === "기타" ? (
