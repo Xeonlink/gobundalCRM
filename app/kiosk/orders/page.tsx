@@ -1,7 +1,7 @@
 "use client";
 
 import { RawOrder, useCreateOrder } from "@/api/orders";
-import { getProducts } from "@/api/products";
+import { useProducts } from "@/api/products";
 import { BlurInfo } from "@/components/BlurInfo";
 import { PageProps } from "@/extra/type";
 import { toHyphenPhone } from "@/extra/utils";
@@ -49,6 +49,7 @@ export default function Page(_: PageProps) {
   const initialInfo = useToggle(false);
   const productInfo = useToggle(false);
   const sameAsSender = useToggle(false);
+  const products = useProducts();
   const [extraProductName, setExtraProductName] = useState("");
   const [order, orderActions] = useTypeSafeReducer(defaultOrder, {
     onSenderNameChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
@@ -80,12 +81,6 @@ export default function Page(_: PageProps) {
     },
   });
 
-  const products = useQuery({
-    queryKey: ["products"],
-    queryFn: () => getProducts(),
-    suspense: true,
-  });
-
   const onExtraProductNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setExtraProductName(e.target.value);
   };
@@ -110,14 +105,16 @@ export default function Page(_: PageProps) {
 
   const isRegistBtnValid = Object.values(validity).every((v) => v);
 
-  const createOrder = useMutation({
-    mutationFn: () => useCreateOrder(finalOrder),
+  const createOrder = useCreateOrder(finalOrder, {
     onSuccess: () => {
       alert("배송정보 등록이 완료되었습니다.");
+      if (confirm("추가로 등록하시겠습니까?")) {
+        orderActions.onProductNameChange({ target: { value: "상품을 선택해주세요." } } as any);
+        return;
+      }
       orderActions.reset();
       setExtraProductName("");
       sameAsSender.off();
-      scrollTo(0, 0);
     },
   });
 

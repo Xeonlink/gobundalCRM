@@ -1,6 +1,6 @@
 "use client";
 
-import { RawTeam, postTeam } from "@/api/teams";
+import { RawTeam, useCreateTeam } from "@/api/teams";
 import { toHyphenPhone } from "@/extra/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { useTypeSafeReducer } from "@/hooks/useTypeSafeReducer";
@@ -61,7 +61,7 @@ export default function Page() {
     },
   });
 
-  const createTeam = postTeam(team, {
+  const createTeam = useCreateTeam(team, {
     onSuccess: () => navigate.back(),
   });
 

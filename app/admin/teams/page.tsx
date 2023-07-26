@@ -3,6 +3,7 @@
 import { useDeleteTeams, useTeams } from "@/api/teams";
 import { ImgIcon } from "@/components/ImgIcon";
 import { PageProps } from "@/extra/type";
+import { cls } from "@/extra/utils";
 import { useAuth } from "@/hooks/useAuth";
 import IcoExcel from "@/public/icons/excel.png";
 import { faCalendarDays } from "@fortawesome/free-regular-svg-icons";
@@ -209,33 +210,35 @@ export default function Page(props: PageProps<any, SearchParams>) {
 
       {view === "card" ? (
         <ol className='teams-card-grid gap-3'>
-          {teams.data?.data.map((team) => (
+          {teams.data?.data.map((item) => (
             <li
-              key={team.id}
-              className='btn text-start p-3'
-              aria-selected={selectedIds.includes(team.id)}
-              onClick={onItemClick(team.id)}
-              onDoubleClick={() => gotoItemPage(team.id)}
+              key={item.id}
+              className={cls("btn p-3 bg-opacity-50 active:scale-90 text-start", {
+                "bg-opacity-100": selectedIds.includes(item.id),
+              })}
+              aria-selected={selectedIds.includes(item.id)}
+              onClick={onItemClick(item.id)}
+              onDoubleClick={() => gotoItemPage(item.id)}
             >
               <ol className='flex items-center gap-1 py-2'>
-                {team.isApproved ? (
+                {item.isApproved ? (
                   <li className='rounded-full bg-orange-200 w-3 h-3' />
                 ) : (
                   <li className='rounded-full bg-orange-500 w-3 h-3' />
                 )}
-                {team.isLeave ? (
+                {item.isLeave ? (
                   <li className='rounded-full bg-green-200 w-3 h-3' />
                 ) : (
                   <li className='rounded-full bg-green-500 w-3 h-3' />
                 )}
               </ol>
-              <b className='text-2xl '>{team.leaderName}</b>
+              <b className='text-2xl '>{item.leaderName}</b>
               <br />
-              {team.leaderPhone}
+              {item.leaderPhone}
               <br />
-              {team.coupon}
+              {item.coupon}
               <br />
-              {team.population}명
+              {item.population}명
             </li>
           ))}
         </ol>

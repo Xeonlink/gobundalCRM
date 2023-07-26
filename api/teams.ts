@@ -34,11 +34,11 @@ export function useTeams(date: string, options?: QueryOptions<GetResponse<Team>>
   });
 }
 
-export function postTeam(rawTeam: Partial<RawTeam>, options?: MutateOption) {
+export function useCreateTeam(rawTeam: Partial<RawTeam>, options?: MutateOption) {
   const mutationFn = async () => {
     const uri = `/teams`;
     const body = rawTeam;
-    const res = await apiRoot.patch(uri, body);
+    const res = await apiRoot.post(uri, body);
     return res.data;
   };
 

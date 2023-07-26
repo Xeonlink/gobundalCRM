@@ -3,6 +3,7 @@
 import { useDeleteProducts, useProducts } from "@/api/products";
 import { ImgIcon } from "@/components/ImgIcon";
 import { PageProps } from "@/extra/type";
+import { cls } from "@/extra/utils";
 import { useAuth } from "@/hooks/useAuth";
 import IcoExcel from "@/public/icons/excel.png";
 import { faArrowsRotate, faInfinity, faPlus, faTrashCan } from "@fortawesome/free-solid-svg-icons";
@@ -163,8 +164,9 @@ export default function Page(props: PageProps<any, SearchParams>) {
           {products.data?.data?.map((item) => (
             <li
               key={item.id}
-              className='btn p-2 bg-transparent aria-selected:bg-white aria-selected:bg-opacity-70 active:scale-90 text-start'
-              aria-selected={selectedIds.includes(item.id)}
+              className={cls("btn p-2 bg-transparent active:scale-90 text-start", {
+                "bg-opacity-70 bg-white": selectedIds.includes(item.id),
+              })}
               onClick={onItemClick(item.id)}
               onDoubleClick={() => gotoItemPage(item.id)}
             >

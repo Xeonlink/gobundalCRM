@@ -1,6 +1,6 @@
 "use client";
 
-import { RawTeam, postTeam } from "@/api/teams";
+import { RawTeam, useCreateTeam } from "@/api/teams";
 import { ModalProps } from "@/extra/type";
 import { toHyphenPhone } from "@/extra/utils";
 import { useModal } from "@/hooks/useModal";
@@ -64,7 +64,7 @@ export function TeamDialog(props: ModalProps<Props>) {
   });
 
   const createTeam = useMutation({
-    mutationFn: () => postTeam(team),
+    mutationFn: () => useCreateTeam(team),
     onSuccess: () => {
       queryClient.invalidateQueries(["teams"]);
       closeSelf?.();

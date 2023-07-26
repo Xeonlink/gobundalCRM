@@ -3,6 +3,7 @@
 import { useDeleteOrders, useOrders } from "@/api/orders";
 import { ImgIcon } from "@/components/ImgIcon";
 import { PageProps } from "@/extra/type";
+import { cls } from "@/extra/utils";
 import { useAuth } from "@/hooks/useAuth";
 import IcoExcel from "@/public/icons/excel.png";
 import { faCalendarDays } from "@fortawesome/free-regular-svg-icons";
@@ -203,11 +204,12 @@ export default function Page(props: PageProps<any, SearchParams>) {
 
       {view === "card" ? (
         <ol className='orders-card-grid gap-3'>
-          {orders.data?.data?.map((item) => (
+          {orders.data?.data.map((item) => (
             <li
               key={item.id}
-              className='btn p-2 bg-transparent aria-selected:bg-white aria-selected:bg-opacity-70 active:scale-90 text-start'
-              aria-selected={selectedIds.includes(item.id)}
+              className={cls("btn p-2 bg-transparent active:scale-90 text-start", {
+                "bg-white bg-opacity-70": selectedIds.includes(item.id),
+              })}
               onClick={onItemClick(item.id)}
               onDoubleClick={() => gotoItemPage(item.id)}
             >

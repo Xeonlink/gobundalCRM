@@ -17,3 +17,16 @@ export const serializeSearchParams = <T extends EmptyObject>(searchParams: T) =>
       .join("&")
   );
 };
+
+export const cls = (className: string, optoinalClasses?: { [key: string]: boolean }) => {
+  return (
+    className +
+    " " +
+    (optoinalClasses
+      ? Object.entries(optoinalClasses)
+          .filter(([, value]) => value)
+          .map(([key]) => key)
+          .join(" ")
+      : "")
+  );
+};
