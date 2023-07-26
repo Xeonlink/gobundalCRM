@@ -29,9 +29,11 @@ export function AdminNavbar() {
 
   return (
     <nav
-      className={`overflow-x-scroll bg-black text-white bg-opacity-70 w-12 aria-expanded:w-40 transition-all duration-500 ${
+      className={`overflow-hidden bg-black text-white bg-opacity-70 w-12 aria-expanded:w-40 transition-all duration-500 ${
         shrink.isOn ? "w-12" : "w-40"
       } }`}
+      onMouseEnter={shrink.off}
+      onMouseLeave={shrink.on}
     >
       <div className='h-full flex flex-col p-2 gap-2'>
         <div className='text-center bg-orange-100 rounded-md bg-opacity-50 min-w'>

@@ -1,12 +1,10 @@
 "use client";
 
-import { deleteOrders, getOrders } from "@/api/orders";
 import { deleteProducts, getProducts } from "@/api/products";
 import { ImgIcon } from "@/components/ImgIcon";
 import { PageProps } from "@/extra/type";
 import { useAuth } from "@/hooks/useAuth";
 import IcoExcel from "@/public/icons/excel.png";
-import { faCalendarDays } from "@fortawesome/free-regular-svg-icons";
 import { faArrowsRotate, faInfinity, faPlus, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -162,7 +160,7 @@ export default function Page(props: PageProps<any, SearchParams>) {
                 </td>
                 <td className={td``}>{item.isSale ? "O" : "X"}</td>
                 <td className={td``}>
-                  {item.isSale ? "O" : "X"}
+                  {item.enabled ? "O" : "X"}
                   {/* {item.enabled ? (
                     <i className='inline-block rounded-full bg-green-500 w-3 h-3' />
                   ) : (

@@ -86,8 +86,8 @@ export default function Page() {
 
   const validity = {
     name: product.name !== "",
-    price: product.price > 0,
-    salePrice: product.salePrice > 0 && product.salePrice < product.price,
+    price: true,
+    salePrice: product.salePrice === 0 || product.salePrice < product.price,
     remain: product.remain >= -1,
   };
   const isValid = Object.values(validity).every((v) => v);
@@ -234,7 +234,6 @@ export default function Page() {
                 id='sale-price'
                 type='text'
                 placeholder='10,000원'
-                className='input'
                 disabled={createProduct.isLoading}
                 value={product.salePrice.toLocaleString()}
                 onChange={productActions.onSalePriceChange}
@@ -274,7 +273,6 @@ export default function Page() {
                 id='remain'
                 type='text'
                 placeholder='10,000개'
-                className='input'
                 disabled={createProduct.isLoading || product.remain === -1}
                 value={product.remain.toLocaleString()}
                 onChange={productActions.onRemainChange}
