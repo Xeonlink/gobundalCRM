@@ -36,7 +36,7 @@ type SearchParams = {
   url: string;
 };
 
-export default function LoginPage(props: PageProps<any, SearchParams>) {
+export default function Page(props: PageProps<any, SearchParams>) {
   const { searchParams } = props;
   const { url = "/admin/orders" } = searchParams;
 

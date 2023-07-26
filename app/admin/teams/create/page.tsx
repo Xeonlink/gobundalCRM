@@ -32,7 +32,7 @@ const defaultTeam: RawTeam = {
   isLeave: false,
 };
 
-export default function TeamsCreatePage() {
+export default function Page() {
   const navigate = useRouter();
   const path = usePathname();
   const auth = useAuth({
@@ -114,7 +114,7 @@ export default function TeamsCreatePage() {
   // );
 
   return (
-    <main className='p-3'>
+    <main className='p-3 h-full flex-1'>
       {/* Toolbar */}
       <div className='mb-3 flex flex-wrap gap-3'>
         {/* Back */}

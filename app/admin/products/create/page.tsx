@@ -8,6 +8,8 @@ import {
   faArrowLeft,
   faBoxes,
   faCoins,
+  faEye,
+  faEyeSlash,
   faFloppyDisk,
   faInfinity,
   faNotdef,
@@ -17,7 +19,7 @@ import {
   faWon,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { usePathname, useRouter } from "next/navigation";
 
 const defaultProduct: RawProduct = {
@@ -29,9 +31,10 @@ const defaultProduct: RawProduct = {
   remain: 0,
 };
 
-export default function ProductCreatePage() {
+export default function Page() {
   const navigate = useRouter();
   const path = usePathname();
+  const queryClient = useQueryClient();
   const auth = useAuth({
     unAuthorized: () => navigate.push(`/login?url=${path}`),
   });
@@ -92,6 +95,7 @@ export default function ProductCreatePage() {
   const createProduct = useMutation({
     mutationFn: () => postProduct(product),
     onSuccess: () => {
+      queryClient.invalidateQueries(["products"]);
       navigate.back();
     },
   });
@@ -111,7 +115,7 @@ export default function ProductCreatePage() {
   const isCleared = Object.values(clearity).every((v) => v);
 
   return (
-    <main className='p-3'>
+    <main className='p-3 h-full flex-1'>
       {/* Toolbar */}
       <div className='mb-3 flex flex-wrap gap-3'>
         {/* Back */}
@@ -278,6 +282,34 @@ export default function ProductCreatePage() {
                 invalid={!validity.remain}
               />
               <div className='absolute bottom-2 right-3'>개</div>
+            </div>
+
+            <div className='field'>
+              <label htmlFor='is-sale' className='label'>
+                <FaIcon icon={product.enabled ? faEye : faEyeSlash} /> 활성화 여부
+              </label>
+              <div
+                id='is-sale'
+                className='flex gap-3 aria-disabled:opacity-40 m-auto'
+                aria-disabled={createProduct.isLoading}
+              >
+                <button
+                  type='button'
+                  className='btn w-full shadow-none p-2'
+                  disabled={product.enabled}
+                  onClick={productActions.toggleEnabled}
+                >
+                  <FaIcon icon={faEye} /> 보여짐
+                </button>
+                <button
+                  type='button'
+                  className='btn w-full shadow-none p-2'
+                  disabled={!product.enabled}
+                  onClick={productActions.toggleEnabled}
+                >
+                  <FaIcon icon={faEyeSlash} /> 안보여짐
+                </button>
+              </div>
             </div>
           </fieldset>
         </div>

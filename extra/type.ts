@@ -17,3 +17,7 @@ export type ModalProps<T = {}> = T & {
   closeSelf?: () => void;
   ref?: (instance: HTMLDialogElement) => void;
 };
+
+export type PropsWithClassName<T = {}> = T & {
+  className?: string;
+};

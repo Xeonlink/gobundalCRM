@@ -3,9 +3,9 @@ import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
 
 export default function Loading() {
   return (
-    <div className='text-center h-10'>
-      <FaIcon icon={faSpinner} fontSize={20} className='animate-spin inline-block' />
+    <main className='text-center h-full flex-1 flex items-center justify-center'>
+      <FaIcon icon={faSpinner} fontSize={50} className='animate-spin' />
       {/* 로딩중... */}
-    </div>
+    </main>
   );
 }

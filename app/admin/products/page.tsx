@@ -31,7 +31,7 @@ const td = (className: TemplateStringsArray) => {
   )}`;
 };
 
-export default function ProductsPage(props: PageProps<any, SearchParams>) {
+export default function Page(props: PageProps<any, SearchParams>) {
   const { searchParams } = props;
   const { view = "table" } = searchParams;
 
@@ -94,17 +94,9 @@ export default function ProductsPage(props: PageProps<any, SearchParams>) {
   };
 
   return (
-    <main className='p-3'>
+    <main className='p-3 h-full flex-1'>
       {/* Toolbar */}
       <div className='flex flex-wrap items-center gap-3 mb-3'>
-        {/* 오늘 날짜로 재검색 */}
-        <Link
-          href={`orders?date=${dayjs().format("YYYY-MM-DD")}&view=${view}`}
-          className='btn px-3 py-2'
-        >
-          <FaIcon icon={faCalendarDays} /> 오늘
-        </Link>
-
         {/* Refresh */}
         <button type='button' className='btn px-3 py-2' onClick={() => products.refetch()}>
           <FaIcon icon={faArrowsRotate} /> 새로고침
@@ -163,24 +155,19 @@ export default function ProductsPage(props: PageProps<any, SearchParams>) {
                 aria-selected={selectedIds.includes(item.id)}
               >
                 <td className={td``}>{item.name}</td>
-                <td className={td``}>{item.price}</td>
-                <td className={td``}>{item.salePrice}</td>
+                <td className={td``}>{item.price.toLocaleString() + "원"}</td>
+                <td className={td``}>{item.salePrice.toLocaleString() + "원"}</td>
                 <td className={td``}>
                   {item.remain < 0 ? <FaIcon icon={faInfinity} /> : item.remain}
                 </td>
+                <td className={td``}>{item.isSale ? "O" : "X"}</td>
                 <td className={td``}>
-                  {item.isSale ? (
+                  {item.isSale ? "O" : "X"}
+                  {/* {item.enabled ? (
                     <i className='inline-block rounded-full bg-green-500 w-3 h-3' />
                   ) : (
                     <i className='inline-block rounded-full bg-orange-500 w-3 h-3' />
-                  )}
-                </td>
-                <td className={td``}>
-                  {item.enabled ? (
-                    <i className='inline-block rounded-full bg-green-500 w-3 h-3' />
-                  ) : (
-                    <i className='inline-block rounded-full bg-orange-500 w-3 h-3' />
-                  )}
+                  )} */}
                 </td>
               </tr>
             ))}

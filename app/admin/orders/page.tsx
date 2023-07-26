@@ -30,7 +30,7 @@ const td = (className: TemplateStringsArray) => {
   )}`;
 };
 
-export default function OrdersPage(props: PageProps<any, SearchParams>) {
+export default function Page(props: PageProps<any, SearchParams>) {
   const { searchParams } = props;
   const { date = dayjs().format("YYYY-MM-DD"), view = "table" } = searchParams;
   const [year, month, day] = date.split("-");
@@ -103,7 +103,7 @@ export default function OrdersPage(props: PageProps<any, SearchParams>) {
   };
 
   return (
-    <main className='p-3'>
+    <main className='p-3 h-full flex-1'>
       {/* Toolbar */}
       <div className='flex flex-wrap items-center gap-3 mb-3'>
         {/* 오늘 날짜로 재검색 */}

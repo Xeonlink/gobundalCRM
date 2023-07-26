@@ -23,7 +23,7 @@ import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { usePathname, useRouter } from "next/navigation";
 
-export default function TeamsIdPage(props: PageProps) {
+export default function Page(props: PageProps) {
   const { params, searchParams } = props;
 
   const navigate = useRouter();
@@ -106,7 +106,7 @@ export default function TeamsIdPage(props: PageProps) {
   const isLoading = updateTeam.isLoading || eraseTeam.isLoading;
 
   return (
-    <main className='p-3'>
+    <main className='p-3 h-full flex-1'>
       {/* Toolbar */}
       <div className='mb-3 flex flex-wrap gap-3'>
         {/* Back */}

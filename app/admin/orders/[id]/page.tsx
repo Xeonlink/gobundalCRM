@@ -33,7 +33,7 @@ import { useState } from "react";
 type Params = { id: string };
 type SearchParams = { date: string };
 
-export default function OrdersCreatePage(props: PageProps<Params, SearchParams>) {
+export default function Page(props: PageProps<Params, SearchParams>) {
   const {
     params: { id },
     searchParams: { date },
@@ -131,7 +131,7 @@ export default function OrdersCreatePage(props: PageProps<Params, SearchParams>)
   const isRegistBtnValid = Object.values(validity).every((v) => v) && !isCleared;
 
   return (
-    <main className='p-3'>
+    <main className='p-3 h-full flex-1'>
       {/* Toolbar */}
       <div className='mb-3 flex flex-wrap gap-3'>
         {/* Back */}

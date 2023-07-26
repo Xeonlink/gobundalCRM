@@ -41,7 +41,7 @@ const defaultOrder: RawOrder = {
   initial: "",
 };
 
-export default function OrdersCreatePage() {
+export default function Page() {
   const navigate = useRouter();
   const path = usePathname();
   const auth = useAuth({
@@ -141,7 +141,7 @@ export default function OrdersCreatePage() {
   const isCleared = Object.values(clearity).every((v) => v);
 
   return (
-    <main className='p-3'>
+    <main className='p-3 h-full flex-1'>
       {/* Toolbar */}
       <div className='mb-3 flex flex-wrap gap-3'>
         {/* Back */}

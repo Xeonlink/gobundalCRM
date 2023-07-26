@@ -14,7 +14,7 @@ import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-export default function RootPage() {
+export default function Page() {
   const navigate = useRouter();
   const { isSignIn, user } = useAuth();
 
