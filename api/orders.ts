@@ -5,16 +5,19 @@ import { useAutoInvalidateMutation } from "./utils/useAutoInvalidateMutation";
 import { GetResponse, apiRoot } from "./utils/utils";
 
 export interface Order {
-  date: string;
   id: string;
+  date: string;
   senderName: string;
   senderPhone: string;
+  sameAsSender: boolean;
   receiverName: string;
   receiverPhone: string;
   receiverAddress: string;
   receiverAddressDetail: string;
   productName: string;
-  initial: string;
+  productPrice: number;
+  quantity: number;
+  memo: string;
 }
 
 export type RawOrder = Omit<Order, "date" | "id">;
@@ -48,7 +51,6 @@ export function useCreateOrder(rawOrder: Partial<RawOrder>, options?: MutateOpti
 }
 
 export function useUpdateOrder(
-  date: string,
   id: string,
   partialRawOrder: Partial<RawOrder>,
   options?: MutateOption
@@ -56,46 +58,43 @@ export function useUpdateOrder(
   const mutationFn = async () => {
     const uri = `/orders/${id}`;
     const body = partialRawOrder;
-    const config = { params: { date } };
-    const res = await apiRoot.patch(uri, body, config);
+    const res = await apiRoot.patch(uri, body);
     return res.data;
   };
 
   return useAutoInvalidateMutation(["orders"], mutationFn, options);
 }
 
-export function useDeleteOrder(date: string, id: string, options?: MutateOption) {
+export function useDeleteOrder(id: string, options?: MutateOption) {
   const mutationFn = async () => {
     const uri = `/orders/${id}`;
-    const config = { params: { date } };
-    const res = await apiRoot.delete(uri, config);
+    const res = await apiRoot.delete(uri);
     return res.data;
   };
 
   return useAutoInvalidateMutation(["orders"], mutationFn, options);
 }
 
-export function useOrder(date: string, id: string, options?: QueryOptions<Order>) {
+export function useOrder(id: string, options?: QueryOptions<Order>) {
   const auth = useAuth();
 
   const queryFn = async () => {
     const uri = `/orders/${id}`;
-    const config = { params: { date } };
-    const res = await apiRoot.get<Order>(uri, config);
+    const res = await apiRoot.get<Order>(uri);
     return res.data;
   };
 
-  return useQuery(["orders", date, id], queryFn, {
+  return useQuery(["orders", id], queryFn, {
     suspense: true,
     enabled: auth.isSignIn,
     ...options,
   });
 }
 
-export function useDeleteOrders(date: string, ids: string[], options?: MutateOption) {
+export function useDeleteOrders(ids: string[], options?: MutateOption) {
   const mutationFn = async () => {
     const uri = `/orders`;
-    const config = { params: { date, ids: JSON.stringify(ids) } };
+    const config = { params: { ids: JSON.stringify(ids) } };
     const res = await apiRoot.delete(uri, config);
     return res.data;
   };

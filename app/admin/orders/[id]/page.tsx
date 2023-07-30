@@ -1,9 +1,12 @@
 "use client";
 
 import { Order, useOrder, useUpdateOrder } from "@/api/orders";
+import { useProducts } from "@/api/products";
 import { BlurInfo } from "@/components/BlurInfo";
+import { CheckBox } from "@/components/CheckBox";
+import { Input } from "@/components/Input";
 import { PageProps } from "@/extra/type";
-import { toHyphenPhone } from "@/extra/utils";
+import { cls, toHyphenPhone } from "@/extra/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { usePostCodePopup } from "@/hooks/usePostCodePopup";
 import { useToggle } from "@/hooks/useToggle";
@@ -38,52 +41,86 @@ export default function Page(props: PageProps<Params, SearchParams>) {
 
   useAuth();
   const navigate = useRouter();
-  const order = useOrder(searchParams.date, params.id);
+  const order = useOrder(params.id);
   const senderInfo = useToggle(false);
   const initialInfo = useToggle(false);
   const productInfo = useToggle(false);
   const sameAsSender = useToggle(false);
-  const [extraProductName, setExtraProductName] = useState("");
-  const [changes, changeActions] = useTypeSafeReducer({} as Partial<Order>, {
-    onSenderNameChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
-      state.senderName = e.target.value;
-    },
-    onSenderPhoneChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
-      state.senderPhone = toHyphenPhone(e.target.value);
-    },
-    onReceiverNameChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
-      state.receiverName = e.target.value;
-    },
-    onReceiverPhoneChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
-      state.receiverPhone = toHyphenPhone(e.target.value);
-    },
-    setReceiverAddress: (state, receiverAddress: string) => {
-      state.receiverAddress = receiverAddress;
-    },
-    onReceiverAddressDetailChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
-      state.receiverAddressDetail = e.target.value;
-    },
-    onProductNameChange: (state, e: React.ChangeEvent<HTMLSelectElement>) => {
-      state.productName = e.target.value;
-    },
-    onInitialChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
-      state.initial = e.target.value;
-    },
-    reset: (_) => {
-      return {};
-    },
-  });
+  const products = useProducts();
+  const [changes, changeActions] = useTypeSafeReducer(
+    { sameAsSender: order.data?.sameAsSender } as Partial<Order>,
+    {
+      onSenderNameChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.value === order.data?.senderName) {
+          delete state.senderName;
+          return;
+        }
+        state.senderName = e.target.value;
+      },
+      onSenderPhoneChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.value === order.data?.senderPhone) {
+          delete state.senderPhone;
+          return;
+        }
+        state.senderPhone = toHyphenPhone(e.target.value);
+      },
+      toggleSameAsSender: (state) => {
+        state.sameAsSender = !state.sameAsSender;
+      },
+      onReceiverNameChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.value === order.data?.receiverName) {
+          delete state.receiverName;
+          return;
+        }
+        state.receiverName = e.target.value;
+      },
+      onReceiverPhoneChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.value === order.data?.receiverPhone) {
+          delete state.receiverPhone;
+          return;
+        }
+        state.receiverPhone = toHyphenPhone(e.target.value);
+      },
+      setReceiverAddress: (state, receiverAddress: string) => {
+        if (receiverAddress === order.data?.receiverAddress) {
+          delete state.receiverAddress;
+          return;
+        }
+        state.receiverAddress = receiverAddress;
+      },
+      onReceiverAddressDetailChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.value === order.data?.receiverAddressDetail) {
+          delete state.receiverAddressDetail;
+          return;
+        }
+        state.receiverAddressDetail = e.target.value;
+      },
+      onProductNameChange: (state, e: React.ChangeEvent<HTMLSelectElement>) => {
+        if (e.target.value === order.data?.productName) {
+          delete state.productName;
+          return;
+        }
+        state.productName = e.target.value;
+      },
+      onMemoChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.value === order.data?.memo) {
+          delete state.memo;
+          return;
+        }
+        state.memo = e.target.value;
+      },
+      reset: (_) => {
+        return {};
+      },
+    }
+  );
 
   const partialOrder: Partial<Order> = {
     ...order.data,
     ...changes,
   };
 
-  const updateOrder = useUpdateOrder(searchParams.date, params.id, partialOrder);
-
-  const onExtraProductNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setExtraProductName(e.target.value);
-  };
+  const updateOrder = useUpdateOrder(params.id, partialOrder);
 
   const postCodePopup = usePostCodePopup({
     onComplete: (data) => {
@@ -91,17 +128,7 @@ export default function Page(props: PageProps<Params, SearchParams>) {
     },
   });
 
-  const clearity = {
-    senderName: partialOrder.senderName === order.data?.senderName,
-    senderPhone: partialOrder.senderPhone === order.data?.senderPhone,
-    receiverName: partialOrder.receiverName === order.data?.receiverName,
-    receiverPhone: partialOrder.receiverPhone === order.data?.receiverPhone,
-    receiverAddress: partialOrder.receiverAddress === order.data?.receiverAddress,
-    receiverAddressDetail: partialOrder.receiverAddressDetail === order.data?.receiverAddressDetail,
-    productName: partialOrder.productName === order.data?.productName,
-    initial: partialOrder.initial === order.data?.initial,
-  };
-  const isCleared = Object.values(clearity).every((v) => v);
+  const isCleared = Object.keys(changes).length === 0;
 
   const validity = {
     senderName: partialOrder.senderName?.length !== 0,
@@ -112,12 +139,11 @@ export default function Page(props: PageProps<Params, SearchParams>) {
     receiverAddressDetail: partialOrder.receiverAddressDetail?.length !== 0,
     productName:
       partialOrder.productName !== null && partialOrder.productName !== "상품을 선택해주세요.",
-    initial: partialOrder.initial?.length !== 0,
   };
   const isRegistBtnValid = Object.values(validity).every((v) => v) && !isCleared;
 
   return (
-    <main className='p-3 h-full flex-1'>
+    <main className='p-3 h-full flex-1 overflow-auto'>
       {/* Toolbar */}
       <div className='mb-3 flex flex-wrap gap-3'>
         {/* Back */}
@@ -207,38 +233,23 @@ export default function Page(props: PageProps<Params, SearchParams>) {
               <label htmlFor='same-as-sender' className='label'>
                 <FaIcon icon={faPaperPlane} /> 보내는 사람과
               </label>
-              <div
-                className='flex gap-3 disabled:opacity-40 mb-3'
-                aria-disabled={updateOrder.isLoading}
-              >
-                <button
-                  type='button'
-                  className='btn w-full shadow-none p-2'
-                  disabled={sameAsSender.isOn}
-                  onClick={sameAsSender.toggle}
-                >
-                  <FaIcon icon={faEquals} /> 동일
-                </button>
-                <button
-                  type='button'
-                  className='btn w-full shadow-none p-2'
-                  disabled={!sameAsSender.isOn}
-                  onClick={sameAsSender.toggle}
-                >
-                  <FaIcon icon={faNotEqual} /> 동일하지 않음
-                </button>
-              </div>
+              <CheckBox
+                checked={partialOrder.sameAsSender || false}
+                disable={updateOrder.isLoading}
+                toggleFn={changeActions.toggleSameAsSender}
+                trueElements={[<FaIcon icon={faEquals} />, " 동일"]}
+                falseElements={[<FaIcon icon={faNotEqual} />, " 동일하지 않음"]}
+              />
             </div>
 
             <div className='field'>
               <label htmlFor='receiver-name' className='label'>
                 <FaIcon icon={faSignature} /> 이름
               </label>
-              <input
+              <Input
                 id='receiver-name'
                 type='text'
                 placeholder='홍길동'
-                className='input'
                 disabled={sameAsSender.isOn || updateOrder.isLoading}
                 value={sameAsSender.isOn ? partialOrder.senderName : partialOrder.receiverName}
                 onChange={changeActions.onReceiverNameChange}
@@ -250,11 +261,10 @@ export default function Page(props: PageProps<Params, SearchParams>) {
               <label htmlFor='receiver-phone' className='label'>
                 <FaIcon icon={faMobileScreenButton} /> 전화번호
               </label>
-              <input
+              <Input
                 id='receiver-phone'
                 type='text'
                 placeholder='010-xxxx-xxxx'
-                className='input'
                 disabled={sameAsSender.isOn || updateOrder.isLoading}
                 value={sameAsSender.isOn ? partialOrder.senderPhone : partialOrder.receiverPhone}
                 onChange={changeActions.onReceiverPhoneChange}
@@ -266,11 +276,10 @@ export default function Page(props: PageProps<Params, SearchParams>) {
               <label htmlFor='receiver-address' className='label'>
                 <FaIcon icon={faSignsPost} /> 주소
               </label>
-              <input
+              <Input
                 id='receiver-address'
                 type='text'
                 placeholder='남원월산로74번길 42'
-                className='input'
                 disabled={updateOrder.isLoading}
                 value={partialOrder.receiverAddress}
                 onChange={postCodePopup.show}
@@ -283,11 +292,10 @@ export default function Page(props: PageProps<Params, SearchParams>) {
               <label htmlFor='receiver-address-detail' className='label'>
                 <FaIcon icon={faBuilding} /> 상세주소
               </label>
-              <input
+              <Input
                 id='receiver-address-detail'
                 type='text'
                 placeholder='단독주택, 1층 101호, ...'
-                className='input'
                 disabled={updateOrder.isLoading}
                 value={partialOrder.receiverAddressDetail}
                 onChange={changeActions.onReceiverAddressDetailChange}
@@ -307,12 +315,6 @@ export default function Page(props: PageProps<Params, SearchParams>) {
               배송정보을 나눠서 작성하셔야합니다. <br />
             </BlurInfo>
 
-            <BlurInfo open={initialInfo.isOn} closeFn={initialInfo.toggle}>
-              다른 손님의 택배와 구분하고, <br />
-              오배송을 줄이기 위해, <br />
-              박스에 이니셜을 적어주세요. <br />
-            </BlurInfo>
-
             <div className='field'>
               <label
                 className='btn label bg-transparent shadow-none text-start'
@@ -323,57 +325,34 @@ export default function Page(props: PageProps<Params, SearchParams>) {
               <select
                 name='product-name'
                 id='product-name'
-                className={`rounded-md bg-white px-3 py-2 mb-3 w-full disabled:opacity-40 ${
-                  validity.productName ? "" : "shake border-red-300 border-2"
-                }`}
+                className={cls("rounded-md bg-white px-3 py-2 w-full disabled:opacity-40", {
+                  "shake border-red-300 border-2": !validity.productName,
+                })}
                 disabled={updateOrder.isLoading}
                 value={partialOrder.productName}
                 onChange={changeActions.onProductNameChange}
                 required
               >
                 <option value='상품을 선택해주세요.'>상품을 선택해주세요.</option>
-                <option value='체험귤 5kg'>체험귤 5kg</option>
-                <option value='체험귤 10kg'>체험귤 10kg</option>
-                <option value='체험귤 5kg x 2'>체험귤 5kg x 2</option>
-                <option value='기타'>기타</option>
+                {products.data?.data.map((product) => (
+                  <option key={product.id} value={product.name}>
+                    {product.name}
+                  </option>
+                ))}
               </select>
-              {partialOrder.productName === "기타" ? (
-                <input
-                  id='product-name'
-                  type='text'
-                  placeholder='귤5kg, 귤10kg, 귤5kg x 2, ...'
-                  className='input'
-                  disabled={updateOrder.isLoading}
-                  value={extraProductName}
-                  onChange={onExtraProductNameChange}
-                  required
-                />
-              ) : null}
             </div>
 
             <div className='field'>
-              <label
-                className='btn label bg-transparent shadow-none text-start'
-                onClick={initialInfo.toggle}
-              >
-                <FaIcon icon={faSignature} /> 이니셜 <FaIcon icon={faCircleQuestion} />
+              <label id='memo' className='btn label bg-transparent shadow-none text-start'>
+                <FaIcon icon={faSignature} /> 메모 <FaIcon icon={faCircleQuestion} />
               </label>
-              <input
-                id='initial'
+              <Input
+                id='memo'
                 type='text'
-                placeholder='HGD, love you, 하트모양, ...'
-                className='input mb-2'
                 disabled={updateOrder.isLoading}
-                value={partialOrder.initial}
-                onChange={changeActions.onInitialChange}
+                value={partialOrder.memo}
+                onChange={changeActions.onMemoChange}
                 required
-              />
-              <Image
-                src={ImgInitialEx}
-                alt='귤 상자에 자신만의 이니셜이 그려져있는 사진'
-                className='rounded-md max-w-full'
-                width={250}
-                placeholder='blur'
               />
             </div>
           </fieldset>

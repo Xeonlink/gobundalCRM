@@ -74,7 +74,7 @@ export default function Page() {
   });
 
   return (
-    <main className='p-3 h-full flex-1'>
+    <main className='p-3 h-full flex-1 overflow-auto'>
       {/* Toolbar */}
       <div className='mb-3 flex flex-wrap gap-3'>
         {/* Back */}

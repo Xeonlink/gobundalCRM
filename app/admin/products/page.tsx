@@ -78,7 +78,7 @@ export default function Page(props: PageProps<any, SearchParams>) {
   };
 
   return (
-    <main className='p-3 h-full flex-1'>
+    <main className='p-3 h-full flex-1 overflow-auto'>
       {/* Toolbar */}
       <div className='flex flex-wrap items-center gap-3 mb-3'>
         {/* Refresh */}

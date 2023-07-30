@@ -28,6 +28,12 @@ export function AdminNavbar() {
   const path = usePathname();
   const shrink = useToggle(true);
 
+  const isDashboard = path.startsWith("/dashboard");
+  const isAdminTeams = path.startsWith("/admin/teams");
+  const isAdminOrders = path.startsWith("/admin/orders");
+  const isAdminProducts = path.startsWith("/admin/products");
+  const isAdminCustomers = path.startsWith("/admin/customers");
+
   return (
     <nav
       className={`overflow-hidden bg-black text-white bg-opacity-70 w-12 aria-expanded:w-40 transition-all duration-500 ${
@@ -42,7 +48,7 @@ export function AdminNavbar() {
         </div>
 
         <div className='expander flex-1 space-y-2 overflow-auto min-w-max scrollbar-hidden'>
-          <Link href='/dashboard' className={link``} aria-selected={path.startsWith("/dashboard")}>
+          <Link href='/dashboard' className={link``} aria-selected={isDashboard}>
             <FaIcon className='mr-2' width={20} icon={faChartLine} /> 대시보드
           </Link>
 
@@ -54,19 +60,19 @@ export function AdminNavbar() {
             <FaIcon className='mr-2' width={20} icon={faCartPlus} /> 송장 키오스크
           </Link>
 
-          <Link href='teams' className={link``} aria-selected={path.startsWith("/admin/teams")}>
+          <Link href='teams' className={link``} aria-selected={isAdminTeams}>
             <FaIcon className='mr-2' width={20} icon={faPeopleGroup} /> 팀 관리
           </Link>
 
-          <Link href='orders' className={link``}>
+          <Link href='orders' className={link``} aria-selected={isAdminOrders}>
             <FaIcon className='mr-2' width={20} icon={faReceipt} /> 주문 관리
           </Link>
 
-          <Link href='products' className={link``}>
+          <Link href='products' className={link``} aria-selected={isAdminProducts}>
             <FaIcon className='mr-2' width={20} icon={faCartShopping} /> 상품 관리
           </Link>
 
-          <Link href='customers' className={link``}>
+          <Link href='customers' className={link``} aria-selected={isAdminCustomers}>
             <FaIcon className='mr-2' width={20} icon={faPerson} /> 고객 관리
           </Link>
         </div>

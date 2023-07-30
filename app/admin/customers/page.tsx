@@ -81,7 +81,7 @@ export default function Page(props: PageProps<any, SearchParams>) {
   };
 
   return (
-    <main className='p-3 h-full flex-1'>
+    <main className='p-3 h-full flex-1 overflow-auto'>
       {/* Toolbar */}
       <div className='flex flex-wrap items-center gap-3 mb-3'>
         {/* Refresh */}
@@ -137,25 +137,21 @@ export default function Page(props: PageProps<any, SearchParams>) {
             </tr>
           </thead>
           <tbody className='contents'>
-            {items.data?.data.map((item) => {
-              const id = `${item.name}#${item.phone}`;
-
-              return (
-                <tr
-                  key={id}
-                  className='contents cursor-pointer order-table__tr'
-                  onClick={onItemClick(id)}
-                  onDoubleClick={() => gotoItemPage(id)}
-                  onTouchEnd={() => gotoItemPage(id)}
-                  aria-selected={selectedIds.includes(id)}
-                >
-                  <td className={td``}>{item.name}</td>
-                  <td className={td``}>{item.phone}</td>
-                  <td className={td`text-start`}>{item.address}</td>
-                  <td className={td`text-start`}>{item.addressDetail}</td>
-                </tr>
-              );
-            })}
+            {items.data?.data.map((item) => (
+              <tr
+                key={item.id}
+                className='contents cursor-pointer order-table__tr'
+                onClick={onItemClick(item.id)}
+                onDoubleClick={() => gotoItemPage(item.id)}
+                onTouchEnd={() => gotoItemPage(item.id)}
+                aria-selected={selectedIds.includes(item.id)}
+              >
+                <td className={td``}>{item.name}</td>
+                <td className={td``}>{item.phone}</td>
+                <td className={td`text-start`}>{item.address}</td>
+                <td className={td`text-start`}>{item.addressDetail}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
       ) : null}
