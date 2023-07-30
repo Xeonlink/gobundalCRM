@@ -1,0 +1,128 @@
+import { MutateOption, QueryOptions } from "@/extra/type";
+import { useAuth } from "@/hooks/useAuth";
+import { useQuery } from "@tanstack/react-query";
+import { useAutoInvalidateMutation } from "./utils/useAutoInvalidateMutation";
+import { GetResponse, apiRoot } from "./utils/utils";
+
+export interface Customer {
+  id: string;
+  name: string;
+  phone: string;
+  address: string;
+  addressDetail: string;
+}
+
+export type RawCustomer = Omit<Customer, "id">;
+
+export function useCustomers(options?: QueryOptions<GetResponse<Customer>>) {
+  const auth = useAuth();
+
+  const queryFn = async () => {
+    const uri = `/customers`;
+    const res = await apiRoot.get<GetResponse<Customer>>(uri);
+    return res.data;
+  };
+
+  return useQuery(["customers"], queryFn, {
+    suspense: true,
+    enabled: auth.isSignIn,
+    ...options,
+  });
+}
+
+export function useCustomersByName(name: string, options?: QueryOptions<GetResponse<Customer>>) {
+  const auth = useAuth();
+
+  const queryFn = async () => {
+    const uri = `/customers`;
+    const config = { params: { name } };
+    const res = await apiRoot.get<GetResponse<Customer>>(uri, config);
+    return res.data;
+  };
+
+  return useQuery(["customers", JSON.stringify({ name })], queryFn, {
+    enabled: auth.isSignIn && !!name,
+    ...options,
+  });
+}
+
+export function useCustomersByPhone(phone: string, options?: QueryOptions<GetResponse<Customer>>) {
+  const auth = useAuth();
+
+  const queryFn = async () => {
+    const uri = `/customers`;
+    const config = { params: { phone } };
+    const res = await apiRoot.get<GetResponse<Customer>>(uri, config);
+    return res.data;
+  };
+
+  return useQuery(["customers", JSON.stringify({ phone })], queryFn, {
+    suspense: true,
+    enabled: auth.isSignIn,
+    ...options,
+  });
+}
+
+export function useCreateCustomer(rawCustomer: RawCustomer, options?: MutateOption) {
+  const mutationFn = async () => {
+    const uri = `/customers`;
+    const body = rawCustomer;
+    const res = await apiRoot.post(uri, body);
+    return res.data;
+  };
+
+  return useAutoInvalidateMutation(["customers"], mutationFn, options);
+}
+
+export function useUpdateCustomer(
+  name: string,
+  phone: string,
+  partialCustomer: Partial<Customer>,
+  options?: MutateOption
+) {
+  const mutationFn = async () => {
+    const uri = `/customers/${name}#${phone}`;
+    const body = partialCustomer;
+    const res = await apiRoot.patch(uri, body);
+    return res.data;
+  };
+
+  return useAutoInvalidateMutation(["customers"], mutationFn, options);
+}
+
+export function useDeleteCustomer(name: string, phone: string, options?: MutateOption) {
+  const mutationFn = async () => {
+    const uri = `/customers/${name}#${phone}`;
+    const res = await apiRoot.delete(uri);
+    return res.data;
+  };
+
+  return useAutoInvalidateMutation(["customers"], mutationFn, options);
+}
+
+export function useCustomer(name: string, phone: string, options?: QueryOptions<Customer>) {
+  const auth = useAuth();
+
+  const queryFn = async () => {
+    const uri = `/customers/${name}#${phone}`;
+    const res = await apiRoot.get<Customer>(uri);
+    return res.data;
+  };
+
+  return useQuery(["customers", JSON.stringify({ name, phone })], queryFn, {
+    suspense: true,
+    enabled: auth.isSignIn,
+    ...options,
+  });
+}
+
+export function useDeleteCustomers(namePhones: string[], options?: MutateOption) {
+  const mutationFn = async () => {
+    const uri = `/customers`;
+    const config = { params: { ids: JSON.stringify(namePhones) } };
+    const res = await apiRoot.delete(uri, config);
+    return res.data;
+  };
+
+  return useAutoInvalidateMutation(["customers"], mutationFn, options);
+}

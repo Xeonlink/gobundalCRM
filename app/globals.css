@@ -30,6 +30,10 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
 }
+.customers-table-grid {
+  display: grid;
+  grid-template-columns: repeat(4, auto);
+}
 
 .root-page-grid {
   display: grid;

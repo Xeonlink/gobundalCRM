@@ -1,9 +1,12 @@
 "use client";
 
+import { useCustomersByName } from "@/api/customers";
 import { RawOrder, useCreateOrder } from "@/api/orders";
 import { BlurInfo } from "@/components/BlurInfo";
+import { Input } from "@/components/Input";
 import { toHyphenPhone } from "@/extra/utils";
 import { useAuth } from "@/hooks/useAuth";
+import { useDebounce } from "@/hooks/useDebounce";
 import { usePostCodePopup } from "@/hooks/usePostCodePopup";
 import { useToggle } from "@/hooks/useToggle";
 import { useTypeSafeReducer } from "@/hooks/useTypeSafeReducer";
@@ -25,7 +28,6 @@ import {
   faSpinner,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
-import { useMutation } from "@tanstack/react-query";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -78,6 +80,8 @@ export default function Page() {
       return defaultOrder;
     },
   });
+  const debouncedSenderName = useDebounce(order.senderName, 200);
+  const customers = useCustomersByName(debouncedSenderName);
 
   const onExtraProductNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setExtraProductName(e.target.value);
@@ -119,19 +123,7 @@ export default function Page() {
     sameAsSender.off();
   };
 
-  const clearity = {
-    senderName: finalOrder.senderName === defaultOrder.senderName,
-    senderPhone: finalOrder.senderPhone === defaultOrder.senderPhone,
-    receiverName: finalOrder.receiverName === defaultOrder.receiverName,
-    receiverPhone: finalOrder.receiverPhone === defaultOrder.receiverPhone,
-    receiverAddress: finalOrder.receiverAddress === defaultOrder.receiverAddress,
-    receiverAddressDetail: finalOrder.receiverAddressDetail === defaultOrder.receiverAddressDetail,
-    productName: finalOrder.productName === defaultOrder.productName,
-    initial: finalOrder.initial === defaultOrder.initial,
-    sameAsSender: sameAsSender.isOn === false,
-  };
-
-  const isCleared = Object.values(clearity).every((v) => v);
+  const isCleared = defaultOrder === order;
 
   return (
     <main className='p-3 h-full flex-1'>
@@ -194,11 +186,10 @@ export default function Page() {
               <label htmlFor='sender-name' className='label'>
                 <FaIcon icon={faSignature} /> 이름
               </label>
-              <input
+              <Input
                 id='sender-name'
                 type='text'
                 placeholder='홍길동'
-                className='input'
                 disabled={createOrder.isLoading}
                 value={order.senderName}
                 onChange={orderActions.onSenderNameChange}
@@ -210,16 +201,22 @@ export default function Page() {
               <label htmlFor='sender-phone' className='label'>
                 <FaIcon icon={faMobileScreenButton} /> 전화번호
               </label>
-              <input
+              <Input
                 id='sender-phone'
+                list='sender-phone-list'
                 type='tel'
                 placeholder='010-xxxx-xxxx'
-                className='input'
                 disabled={createOrder.isLoading}
                 value={order.senderPhone}
                 onChange={orderActions.onSenderPhoneChange}
                 required
               />
+              <datalist id='sender-phone-list'>
+                {customers?.data?.data?.map((customer) => {
+                  const id = `${customer.name}#${customer.phone}`;
+                  return <option key={id} value={customer.phone}></option>;
+                })}
+              </datalist>
             </div>
           </fieldset>
 

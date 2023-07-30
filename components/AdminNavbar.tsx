@@ -7,6 +7,7 @@ import {
   faCartShopping,
   faChartLine,
   faPeopleGroup,
+  faPerson,
   faReceipt,
   faRightLeft,
   faUserPlus,
@@ -63,6 +64,10 @@ export function AdminNavbar() {
 
           <Link href='products' className={link``}>
             <FaIcon className='mr-2' width={20} icon={faCartShopping} /> 상품 관리
+          </Link>
+
+          <Link href='customers' className={link``}>
+            <FaIcon className='mr-2' width={20} icon={faPerson} /> 고객 관리
           </Link>
         </div>
 

@@ -6,12 +6,12 @@ import { GetResponse, apiRoot } from "./utils/utils";
 
 export interface Product {
   id: string;
-  enabled: boolean;
   name: string;
   price: number;
   isSale: boolean;
   salePrice: number;
   remain: number;
+  enabled: boolean;
 }
 
 export type RawProduct = Omit<Product, "id">;
@@ -19,19 +19,17 @@ export type RawProduct = Omit<Product, "id">;
 export function useProducts(options?: QueryOptions<GetResponse<Product>>) {
   const auth = useAuth();
 
-  return useQuery(
-    ["products"],
-    async () => {
-      const uri = `/products`;
-      const res = await apiRoot.get<GetResponse<Product>>(uri);
-      return res.data;
-    },
-    {
-      suspense: true,
-      enabled: auth.isSignIn,
-      ...options,
-    }
-  );
+  const queryFn = async () => {
+    const uri = `/products`;
+    const res = await apiRoot.get<GetResponse<Product>>(uri);
+    return res.data;
+  };
+
+  return useQuery(["products"], queryFn, {
+    suspense: true,
+    enabled: auth.isSignIn,
+    ...options,
+  });
 }
 
 export function useCreateProduct(product: RawProduct, options?: MutateOption) {

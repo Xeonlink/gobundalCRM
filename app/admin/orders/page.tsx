@@ -1,5 +1,6 @@
 "use client";
 
+import { useCustomersByName } from "@/api/customers";
 import { useDeleteOrders, useOrders } from "@/api/orders";
 import { ImgIcon } from "@/components/ImgIcon";
 import { PageProps } from "@/extra/type";

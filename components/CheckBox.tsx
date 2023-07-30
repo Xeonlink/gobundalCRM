@@ -1,31 +1,25 @@
 "use client";
 
-import { IconDefinition } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
-
 type CheckBoxProps = {
   checked: boolean;
-  "aria-diabled": boolean;
+  disable: boolean;
   toggleFn: () => void;
-  trueIcon?: IconDefinition;
-  falseIcon?: IconDefinition;
-  trueText: string;
-  falseText: string;
+  trueElements: React.ReactNode[];
+  falseElements: React.ReactNode[];
 };
 
 export function CheckBox(props: CheckBoxProps) {
-  const { checked, toggleFn, trueIcon, falseIcon, trueText, falseText } = props;
+  const { checked, toggleFn, trueElements, falseElements: falseElement } = props;
 
   return (
-    <div className='flex gap-3 disabled:opacity-40 mb-3' aria-disabled={props["aria-diabled"]}>
+    <div className='flex gap-3 disabled:opacity-40 mb-3' aria-disabled={props.disable}>
       <button
         type='button'
         className='btn w-full shadow-none p-2'
         disabled={checked}
         onClick={toggleFn}
       >
-        {!!trueIcon ? <FaIcon icon={trueIcon} /> : null}
-        {trueText}
+        {trueElements}
       </button>
       <button
         type='button'
@@ -33,8 +27,7 @@ export function CheckBox(props: CheckBoxProps) {
         disabled={!checked}
         onClick={toggleFn}
       >
-        {!!falseIcon ? <FaIcon icon={falseIcon} /> : null}
-        {falseText}
+        {falseElement}
       </button>
     </div>
   );

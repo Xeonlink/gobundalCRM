@@ -9,6 +9,10 @@ export function Input(props: Props) {
 
   return (
     <input
+      autoComplete='off'
+      autoCorrect='off'
+      autoCapitalize='off'
+      spellCheck='false'
       {...rest}
       className={`input ${invalid ? "input-invalid" : ""} ${props.className ?? ""}`}
     />

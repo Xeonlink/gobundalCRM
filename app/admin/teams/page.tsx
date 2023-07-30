@@ -39,7 +39,7 @@ export default function Page(props: PageProps<any, SearchParams>) {
   const navigate = useRouter();
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const teams = useTeams(date);
-  const eraseTeams = useDeleteTeams(date, selectedIds, {
+  const eraseTeams = useDeleteTeams(selectedIds, {
     onSuccess: () => setSelectedIds([]),
   });
 

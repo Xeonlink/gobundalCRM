@@ -1,6 +1,8 @@
 "use client";
 
 import { RawTeam, useCreateTeam } from "@/api/teams";
+import { CheckBox } from "@/components/CheckBox";
+import { Input } from "@/components/Input";
 import { toHyphenPhone } from "@/extra/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { useTypeSafeReducer } from "@/hooks/useTypeSafeReducer";
@@ -73,36 +75,6 @@ export default function Page() {
   };
   const isValid = Object.values(validity).every((v) => v);
 
-  const clearity = {
-    leaderName: team.leaderName === defaultTeam.leaderName,
-    leaderPhone: team.leaderPhone === defaultTeam.leaderPhone,
-    coupon: team.coupon === defaultTeam.coupon,
-    population: team.population === defaultTeam.population,
-    isApproved: team.isApproved === defaultTeam.isApproved,
-    isLeave: team.isLeave === defaultTeam.isLeave,
-  };
-  const isCleared = Object.values(clearity).every((v) => v);
-
-  // useShortcut(
-  //   "ctrl+s",
-  //   (e) => {
-  //     e.preventDefault();
-  //     if (!isValid) return;
-  //     createTeam.mutate();
-  //   },
-  //   [isValid]
-  // );
-
-  // useShortcut(
-  //   "meta+s",
-  //   (e) => {
-  //     e.preventDefault();
-  //     if (!isValid) return;
-  //     createTeam.mutate();
-  //   },
-  //   [isValid]
-  // );
-
   return (
     <main className='p-3 h-full flex-1'>
       {/* Toolbar */}
@@ -119,7 +91,7 @@ export default function Page() {
         <button
           type='button'
           className='btn px-3 py-2'
-          disabled={isCleared}
+          disabled={team === defaultTeam}
           onClick={teamActions.reset}
         >
           <FaIcon icon={faNotdef} rotation={90} />
@@ -155,11 +127,10 @@ export default function Page() {
             <label htmlFor='leader-name' className='label'>
               <FaIcon icon={faSignature} /> 이름
             </label>
-            <input
+            <Input
               id='leader-name'
               type='text'
               placeholder='홍길동'
-              className='input'
               value={team.leaderName}
               onChange={teamActions.onLeaderNameChange}
               disabled={createTeam.isLoading}
@@ -171,11 +142,10 @@ export default function Page() {
             <label htmlFor='leader-phone' className='label'>
               <FaIcon icon={faMobileScreenButton} /> 전화번호
             </label>
-            <input
+            <Input
               id='leader-phone'
               type='tel'
               placeholder='010-xxxx-xxxx'
-              className='input'
               value={team.leaderPhone}
               onChange={teamActions.onLeaderPhoneChange}
               disabled={createTeam.isLoading}
@@ -187,14 +157,13 @@ export default function Page() {
             <label htmlFor='coupon' className='label'>
               <FaIcon icon={faBuilding} /> 쿠폰사
             </label>
-            <input
+            <Input
               id='coupon'
               type='text'
               value={team.coupon}
               onChange={teamActions.onCouponChange}
               disabled={createTeam.isLoading}
               placeholder='쿠폰사'
-              className='input'
               required
             />
           </div>
@@ -203,14 +172,13 @@ export default function Page() {
             <label htmlFor='population' className='label'>
               <FaIcon icon={faPeopleGroup} /> 인원수
             </label>
-            <input
+            <Input
               id='population'
               type='number'
               value={team.population}
               onChange={teamActions.onPopulationChange}
               disabled={createTeam.isLoading}
               placeholder='인원수'
-              className='input'
             />
           </div>
 
@@ -218,54 +186,26 @@ export default function Page() {
             <label htmlFor='is-approved' className='label'>
               <FaIcon icon={team.isApproved ? faThumbsUp : faThumbsDown} /> 쿠폰이 승인되었습니까?
             </label>
-            <div
-              className='flex gap-3 aria-disabled:opacity-40 m-auto'
-              aria-disabled={createTeam.isLoading}
-            >
-              <button
-                type='button'
-                className='btn w-full shadow-none p-2'
-                disabled={team.isApproved}
-                onClick={teamActions.toggleIsApproved}
-              >
-                <FaIcon icon={faThumbsUp} /> 승인완료
-              </button>
-              <button
-                type='button'
-                className='btn w-full shadow-none p-2'
-                disabled={!team.isApproved}
-                onClick={teamActions.toggleIsApproved}
-              >
-                <FaIcon icon={faThumbsDown} /> 승인대기
-              </button>
-            </div>
+            <CheckBox
+              disable={createTeam.isLoading}
+              checked={team.isApproved}
+              toggleFn={teamActions.toggleIsApproved}
+              trueElements={[<FaIcon icon={faThumbsUp} />, " 승인완료"]}
+              falseElements={[<FaIcon icon={faThumbsDown} />, " 승인대기"]}
+            />
           </div>
 
           <div className='field'>
             <label htmlFor='is-approved' className='label'>
               <FaIcon icon={team.isLeave ? faDoorOpen : faDoorClosed} /> 손님이 체험장을 나갔습니까?
             </label>
-            <div
-              className='flex gap-3 aria-disabled:opacity-40 m-auto'
-              aria-disabled={createTeam.isLoading}
-            >
-              <button
-                type='button'
-                className='btn w-full shadow-none p-2'
-                disabled={team.isLeave}
-                onClick={teamActions.toggleIsLeave}
-              >
-                <FaIcon icon={faDoorOpen} /> 나갔음
-              </button>
-              <button
-                type='button'
-                className='btn w-full shadow-none p-2'
-                disabled={!team.isLeave}
-                onClick={teamActions.toggleIsLeave}
-              >
-                <FaIcon icon={faDoorClosed} /> 나가지 않음
-              </button>
-            </div>
+            <CheckBox
+              disable={createTeam.isLoading}
+              checked={team.isLeave}
+              toggleFn={teamActions.toggleIsLeave}
+              trueElements={[<FaIcon icon={faDoorOpen} />, " 나갔음"]}
+              falseElements={[<FaIcon icon={faDoorClosed} />, " 나가지 않음"]}
+            />
           </div>
         </fieldset>
       </form>
