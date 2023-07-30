@@ -6,13 +6,12 @@ import { useProducts } from "@/api/products";
 import { BlurInfo } from "@/components/BlurInfo";
 import { CheckBox } from "@/components/CheckBox";
 import { Input } from "@/components/Input";
-import { cls, toHyphenPhone } from "@/extra/utils";
+import { toHyphenPhone } from "@/extra/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { useDebounce } from "@/hooks/useDebounce";
 import { usePostCodePopup } from "@/hooks/usePostCodePopup";
 import { useToggle } from "@/hooks/useToggle";
 import { useTypeSafeReducer } from "@/hooks/useTypeSafeReducer";
-import ImgInitialEx from "@/public/images/initial_ex.png";
 import { faCircleQuestion } from "@fortawesome/free-regular-svg-icons";
 import {
   faArrowLeft,
@@ -27,14 +26,14 @@ import {
   faNotEqual,
   faNotdef,
   faPaperPlane,
+  faPlus,
   faSignature,
   faSignsPost,
   faSpinner,
+  faTrashCan,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 
 const defaultOrder: RawOrder = {
   senderName: "",
@@ -44,9 +43,13 @@ const defaultOrder: RawOrder = {
   receiverPhone: "",
   receiverAddress: "",
   receiverAddressDetail: "",
-  productName: "상품을 선택해주세요.",
-  productPrice: 0,
-  quantity: 1,
+  products: [
+    {
+      name: "",
+      price: 0,
+      quantity: 1,
+    },
+  ],
   memo: "",
 };
 
@@ -54,8 +57,6 @@ export default function Page() {
   useAuth();
   const navigate = useRouter();
   const senderInfo = useToggle(false);
-  const initialInfo = useToggle(false);
-  const productInfo = useToggle(false);
   const [order, orderActions] = useTypeSafeReducer(defaultOrder, {
     onSenderNameChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
       state.senderName = e.target.value;
@@ -78,20 +79,27 @@ export default function Page() {
     onReceiverAddressDetailChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
       state.receiverAddressDetail = e.target.value;
     },
-    setProductName: (state, e: React.ChangeEvent<HTMLSelectElement>) => {
-      state.productName = e.target.value;
-    },
-    setProductPrice: (state, productPrice: number) => {
-      state.productPrice = productPrice;
-    },
-    onQuantityChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
-      if (e.target.value === "") {
-        state.quantity = 0;
-        return;
+    addProduct: (
+      state,
+      product: { name: string; price: number; quantity: number } = {
+        name: "",
+        price: 0,
+        quantity: 1,
       }
-      const newQuantity = parseInt(e.target.value.replaceAll(",", ""));
-      if (!newQuantity) return;
-      state.quantity = newQuantity;
+    ) => {
+      state.products.splice(0, 0, product);
+    },
+    removeProduct: (state, index: number) => {
+      state.products.splice(index, 1);
+    },
+    setProductName: (state, { index, name }: { index: number; name: string }) => {
+      state.products[index].name = name;
+    },
+    setProductPrice: (state, { index, price }: { index: number; price: number }) => {
+      state.products[index].price = price;
+    },
+    setQuantity: (state, { index, quantity }: { index: number; quantity: number }) => {
+      state.products[index].quantity = quantity;
     },
     onMemoChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
       state.memo = e.target.value;
@@ -107,7 +115,7 @@ export default function Page() {
   };
   const debouncedSenderName = useDebounce(order.senderName, 500);
   const customers = useCustomersByName(debouncedSenderName);
-  const products = useProducts();
+  const { data: products } = useProducts();
 
   const validity = {
     senderName: finalOrder.senderName.length > 0,
@@ -116,9 +124,9 @@ export default function Page() {
     receiverPhone: finalOrder.receiverPhone.length > 0,
     receiverAddress: finalOrder.receiverAddress.length > 0,
     receiverAddressDetail: finalOrder.receiverAddressDetail.length > 0,
-    productName: finalOrder.productName !== "상품을 선택해주세요.",
-    productPrice: finalOrder.productPrice > 0,
-    quantity: finalOrder.quantity > 0,
+    products:
+      finalOrder.products.length > 0 &&
+      finalOrder.products.every((p) => p.name.length > 0 && p.price > 0 && p.quantity > 0),
   };
   const isValid = Object.values(validity).every((v) => v);
 
@@ -132,7 +140,7 @@ export default function Page() {
   });
 
   return (
-    <main className='p-3 h-full flex-1 overflow-auto'>
+    <main className='p-3 h-full flex-1 overflow-auto flex flex-col'>
       {/* Toolbar */}
       <div className='mb-3 flex flex-wrap gap-3'>
         {/* Back */}
@@ -173,213 +181,275 @@ export default function Page() {
       </div>
 
       {/* Form */}
-      <form action='' onSubmit={(e) => e.preventDefault()}>
-        <div className='flex gap-3 justify-evenly flex-wrap items-start'>
-          <fieldset className='fieldset'>
-            <legend className='btn text-lg bg-transparent p-2' onClick={senderInfo.toggle}>
-              <FaIcon icon={faPaperPlane} fontSize={16} />
-              &nbsp;보내는 사람&nbsp;
-              <FaIcon icon={faCircleQuestion} fontSize={16} />
-            </legend>
+      <form
+        action=''
+        onSubmit={(e) => e.preventDefault()}
+        className='grid gap-2'
+        style={{
+          gridTemplateColumns: "18rem 18rem 1fr",
+          gridTemplateRows: "repeat(2, auto)",
+        }}
+      >
+        <fieldset className='fieldset row-span-2'>
+          <legend className='legend'>
+            <FaIcon icon={faBoxesStacked} /> 상품목록
+          </legend>
 
-            <BlurInfo open={senderInfo.isOn} closeFn={senderInfo.toggle}>
-              실제 배송정보에는 필요하지 않으나, <br />
-              택배사고 발생 시 연락을 위해 <br />
-              입력해주세요.
-            </BlurInfo>
-
-            <div className='field'>
-              <label htmlFor='sender-name' className='label'>
-                <FaIcon icon={faSignature} /> 이름
-              </label>
-              <Input
-                id='sender-name'
-                type='text'
-                placeholder='홍길동'
-                disabled={createOrder.isLoading}
-                value={order.senderName}
-                onChange={orderActions.onSenderNameChange}
-                required
-              />
-            </div>
-
-            <div className='field'>
-              <label htmlFor='sender-phone' className='label'>
-                <FaIcon icon={faMobileScreenButton} /> 전화번호
-              </label>
-              <Input
-                id='sender-phone'
-                list='sender-phone-list'
-                type='tel'
-                placeholder='010-xxxx-xxxx'
-                disabled={createOrder.isLoading}
-                value={order.senderPhone}
-                onChange={orderActions.onSenderPhoneChange}
-                required
-              />
-              <datalist id='sender-phone-list'>
-                {customers?.data?.data?.map((customer) => (
-                  <option key={customer.id} value={customer.phone}></option>
-                ))}
-              </datalist>
-            </div>
-          </fieldset>
-
-          <fieldset className='fieldset'>
-            <legend className='text-lg m-box p-2 text-center bg-transparent'>
-              <FaIcon icon={faPaperPlane} fontSize={16} /> 받는 사람
-            </legend>
-
-            <div className='field'>
-              <label htmlFor='same-as-sender' className='label'>
-                <FaIcon icon={faPaperPlane} /> 보내는 사람과
-              </label>
-              <CheckBox
-                checked={order.sameAsSender}
-                disable={createOrder.isLoading}
-                toggleFn={orderActions.toggleSameAsSender}
-                trueElements={[<FaIcon icon={faEquals} />, " 동일"]}
-                falseElements={[<FaIcon icon={faNotEqual} />, " 동일하지 않음"]}
-              />
-            </div>
-
-            <div className='field'>
-              <label htmlFor='receiver-name' className='label'>
-                <FaIcon icon={faSignature} /> 이름
-              </label>
-              <Input
-                id='receiver-name'
-                type='text'
-                placeholder='홍길동'
-                disabled={order.sameAsSender || createOrder.isLoading}
-                value={finalOrder.receiverName}
-                onChange={orderActions.onReceiverNameChange}
-                required
-              />
-            </div>
-
-            <div className='field'>
-              <label htmlFor='receiver-phone' className='label'>
-                <FaIcon icon={faMobileScreenButton} /> 전화번호
-              </label>
-              <Input
-                id='receiver-phone'
-                type='text'
-                placeholder='010-xxxx-xxxx'
-                disabled={order.sameAsSender || createOrder.isLoading}
-                value={finalOrder.receiverPhone}
-                onChange={orderActions.onReceiverPhoneChange}
-                required
-              />
-            </div>
-
-            <div className='field'>
-              <label htmlFor='receiver-address' className='label'>
-                <FaIcon icon={faSignsPost} /> 주소
-              </label>
-              <Input
-                id='receiver-address'
-                type='text'
-                placeholder='남원월산로74번길 42'
-                disabled={createOrder.isLoading}
-                value={order.receiverAddress}
-                onChange={postCodePopup.show}
-                onClick={postCodePopup.show}
-                required
-              />
-            </div>
-
-            <div className='field'>
-              <label htmlFor='receiver-address-detail' className='label'>
-                <FaIcon icon={faBuilding} /> 상세주소
-              </label>
-              <Input
-                id='receiver-address-detail'
-                type='text'
-                placeholder='단독주택, 1층 101호, ...'
-                disabled={createOrder.isLoading}
-                value={order.receiverAddressDetail}
-                onChange={orderActions.onReceiverAddressDetailChange}
-                required
-              />
-            </div>
-          </fieldset>
-
-          <fieldset className='fieldset'>
-            <legend className='text-lg m-box p-2 text-center bg-transparent'>
-              <FaIcon icon={faBoxesStacked} /> 배송물품
-            </legend>
-
-            <BlurInfo open={productInfo.isOn} closeFn={productInfo.toggle}>
-              묶음 배송은 10kg까지만 가능합니다. <br />
-              배송해야할 상품이 많은 경우, <br />
-              배송정보을 나눠서 작성하셔야합니다. <br />
-            </BlurInfo>
-
-            <BlurInfo open={initialInfo.isOn} closeFn={initialInfo.toggle}>
-              다른 손님의 택배와 구분하고, <br />
-              오배송을 줄이기 위해, <br />
-              박스에 이니셜을 적어주세요. <br />
-            </BlurInfo>
-
-            <div className='field'>
-              <label
-                className='btn label bg-transparent shadow-none text-start'
-                onClick={productInfo.toggle}
-              >
-                <FaIcon icon={faBox} /> 상품선택 <FaIcon icon={faCircleQuestion} />
-              </label>
-              <select
-                name='product-name'
-                id='product-name'
-                className={cls("rounded-md bg-white px-3 py-2 w-full disabled:opacity-40", {
-                  "shake border-red-300 border-2": !validity.productName,
-                })}
-                disabled={createOrder.isLoading}
-                value={order.productName}
-                onChange={orderActions.setProductName}
-                required
-              >
-                <option value='상품을 선택해주세요.'>상품을 선택해주세요.</option>
-                {products.data?.data.map((product) => (
-                  <option key={product.id} value={product.name}>
+          <table className='grid gap-1' style={{ gridTemplateColumns: "auto 5rem" }}>
+            <thead className='contents'>
+              <tr className='contents'>
+                <th className='font-normal w-full'>
+                  <FaIcon icon={faBox} /> 상품명
+                </th>
+                <th className='font-normal'>
+                  <FaIcon icon={faCoins} /> 가격(원)
+                </th>
+              </tr>
+            </thead>
+            <tbody className='contents'>
+              {products?.data.map((product, index) => (
+                <tr className='contents'>
+                  <td
+                    className='text-center btn p-2 shadow-none'
+                    onClick={() =>
+                      orderActions.addProduct({
+                        name: product.name,
+                        price: product.price,
+                        quantity: 1,
+                      })
+                    }
+                    // onDoubleClick={() => navigate.push("/admin/products/" + product.id)}
+                  >
                     {product.name}
-                  </option>
-                ))}
-              </select>
-            </div>
+                  </td>
+                  <td className='text-center btn p-2 shadow-none'>
+                    {product.price.toLocaleString()}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </fieldset>
 
-            <div className='field'>
-              <label htmlFor='sale-price' className='label'>
-                <FaIcon icon={faCoins} /> 가격
-              </label>
-              <Input
-                id='sale-price'
-                type='text'
-                disabled={true}
-                value={order.productPrice}
-                readOnly
-              />
-              <div className='absolute bottom-2 right-3'>원</div>
-            </div>
+        <fieldset className='fieldset'>
+          <legend className='legend' onClick={senderInfo.toggle}>
+            <FaIcon icon={faPaperPlane} fontSize={16} />
+            &nbsp;보내는 사람&nbsp;
+            <FaIcon icon={faCircleQuestion} fontSize={16} />
+          </legend>
 
-            <div className='field'>
-              <label htmlFor='sale-price' className='label'>
-                <FaIcon icon={faCalculator} /> 수량
-              </label>
-              <Input
-                id='sale-price'
-                type='text'
-                disabled={createOrder.isLoading}
-                value={order.quantity.toLocaleString()}
-                onChange={orderActions.onQuantityChange}
-                required
-                invalid={!validity.quantity}
-              />
-              <div className='absolute bottom-2 right-3'>개</div>
-            </div>
-          </fieldset>
-        </div>
+          <BlurInfo open={senderInfo.isOn} closeFn={senderInfo.toggle}>
+            실제 배송정보에는 필요하지 않으나, <br />
+            택배사고 발생 시 연락을 위해 <br />
+            입력해주세요.
+          </BlurInfo>
+
+          <div className='field'>
+            <label htmlFor='sender-name' className='label'>
+              <FaIcon icon={faSignature} /> 이름
+            </label>
+            <Input
+              id='sender-name'
+              type='text'
+              placeholder='홍길동'
+              disabled={createOrder.isLoading}
+              value={order.senderName}
+              onChange={orderActions.onSenderNameChange}
+              required
+            />
+          </div>
+
+          <div className='field'>
+            <label htmlFor='sender-phone' className='label'>
+              <FaIcon icon={faMobileScreenButton} /> 전화번호
+            </label>
+            <Input
+              id='sender-phone'
+              list='sender-phone-list'
+              type='tel'
+              placeholder='010-xxxx-xxxx'
+              disabled={createOrder.isLoading}
+              value={order.senderPhone}
+              onChange={orderActions.onSenderPhoneChange}
+              required
+            />
+            <datalist id='sender-phone-list'>
+              {customers?.data?.data?.map((customer) => (
+                <option key={customer.id} value={customer.phone}></option>
+              ))}
+            </datalist>
+          </div>
+        </fieldset>
+
+        <fieldset className='fieldset'>
+          <legend className='legend'>
+            <FaIcon icon={faBoxesStacked} /> 배송물품
+          </legend>
+
+          <table className='grid gap-1' style={{ gridTemplateColumns: "1fr repeat(3, auto)" }}>
+            <thead className='contents'>
+              <tr className='contents'>
+                <th className='font-normal'>
+                  <FaIcon icon={faBox} /> 상품명
+                </th>
+                <th className='font-normal'>
+                  <FaIcon icon={faCoins} /> 가격(원)
+                </th>
+                <th className='font-normal'>
+                  <FaIcon icon={faCalculator} /> 수량(개)
+                </th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody className='contents'>
+              {finalOrder.products.map((product, index, arr) => (
+                <tr className='contents'>
+                  <td className='text-center'>
+                    <Input
+                      id='product-name'
+                      list='product-name-list'
+                      type='text'
+                      className='text-center'
+                      disabled={createOrder.isLoading}
+                      value={product.name}
+                      onChange={(e) => orderActions.setProductName({ index, name: e.target.value })}
+                      invalid={product.name.length <= 0}
+                    />
+                  </td>
+                  <td className='relative'>
+                    <Input
+                      id='product-price'
+                      type='text'
+                      className='text-center w-28'
+                      value={product.price.toLocaleString()}
+                      onChange={(e) =>
+                        orderActions.setProductPrice({
+                          index,
+                          price: Number(e.target.value.replaceAll(",", "")),
+                        })
+                      }
+                    />
+                  </td>
+                  <td className='relative'>
+                    <Input
+                      id='product-quantity'
+                      type='text'
+                      className='text-center w-28'
+                      disabled={createOrder.isLoading}
+                      value={product.quantity.toLocaleString()}
+                      onChange={(e) =>
+                        orderActions.setQuantity({
+                          index,
+                          quantity: Number(e.target.value.replaceAll(",", "")) || 0,
+                        })
+                      }
+                      required
+                      invalid={product.quantity <= 0}
+                    />
+                  </td>
+                  <td>
+                    <button
+                      type='button'
+                      className='btn w-10 h-full shadow-none'
+                      onClick={() => orderActions.removeProduct(index)}
+                      disabled={createOrder.isLoading || arr.length === 1}
+                    >
+                      <FaIcon icon={faTrashCan} />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          <button
+            type='button'
+            className='btn mt-2 p-2 w-full shadow-none'
+            onClick={() => orderActions.addProduct(undefined)}
+          >
+            <FaIcon icon={faPlus} /> 추가하기
+          </button>
+        </fieldset>
+
+        <fieldset className='fieldset'>
+          <legend className='legend'>
+            <FaIcon icon={faPaperPlane} fontSize={16} /> 받는 사람
+          </legend>
+
+          <div className='field'>
+            <label htmlFor='same-as-sender' className='label'>
+              <FaIcon icon={faPaperPlane} /> 보내는 사람과
+            </label>
+            <CheckBox
+              checked={order.sameAsSender}
+              disable={createOrder.isLoading}
+              toggleFn={orderActions.toggleSameAsSender}
+              trueElements={[<FaIcon icon={faEquals} />, "같음"]}
+              falseElements={[<FaIcon icon={faNotEqual} />, " 같지 않음"]}
+            />
+          </div>
+
+          <div className='field'>
+            <label htmlFor='receiver-name' className='label'>
+              <FaIcon icon={faSignature} /> 이름
+            </label>
+            <Input
+              id='receiver-name'
+              type='text'
+              placeholder='홍길동'
+              disabled={order.sameAsSender || createOrder.isLoading}
+              value={finalOrder.receiverName}
+              onChange={orderActions.onReceiverNameChange}
+              required
+            />
+          </div>
+
+          <div className='field'>
+            <label htmlFor='receiver-phone' className='label'>
+              <FaIcon icon={faMobileScreenButton} /> 전화번호
+            </label>
+            <Input
+              id='receiver-phone'
+              type='text'
+              placeholder='010-xxxx-xxxx'
+              disabled={order.sameAsSender || createOrder.isLoading}
+              value={finalOrder.receiverPhone}
+              onChange={orderActions.onReceiverPhoneChange}
+              required
+            />
+          </div>
+
+          <div className='field'>
+            <label htmlFor='receiver-address' className='label'>
+              <FaIcon icon={faSignsPost} /> 주소
+            </label>
+            <Input
+              id='receiver-address'
+              type='text'
+              placeholder='남원월산로74번길 42'
+              disabled={createOrder.isLoading}
+              value={order.receiverAddress}
+              onChange={postCodePopup.show}
+              onClick={postCodePopup.show}
+              required
+            />
+          </div>
+
+          <div className='field'>
+            <label htmlFor='receiver-address-detail' className='label'>
+              <FaIcon icon={faBuilding} /> 상세주소
+            </label>
+            <Input
+              id='receiver-address-detail'
+              type='text'
+              placeholder='단독주택, 1층 101호, ...'
+              disabled={createOrder.isLoading}
+              value={order.receiverAddressDetail}
+              onChange={orderActions.onReceiverAddressDetailChange}
+              required
+            />
+          </div>
+        </fieldset>
       </form>
     </main>
   );

@@ -82,13 +82,13 @@ export default function Page(props: PageProps<any, SearchParams>) {
       {/* Toolbar */}
       <div className='flex flex-wrap items-center gap-3 mb-3'>
         {/* Refresh */}
-        <button type='button' className='btn px-3 py-2' onClick={() => products.refetch()}>
+        <button type='button' className='btn' onClick={() => products.refetch()}>
           <FaIcon icon={faArrowsRotate} /> 새로고침
         </button>
 
         {/* Change ViewStyle */}
         <select
-          className='btn px-3 py-2 appearance-none text-center'
+          className='btn appearance-none text-center'
           value={view}
           onChange={onViewStyleChange}
         >
@@ -97,17 +97,17 @@ export default function Page(props: PageProps<any, SearchParams>) {
         </select>
 
         {/* Cratet New Order */}
-        <Link href='products/create' className='btn px-3 py-2'>
+        <Link href='products/create' className='btn'>
           <FaIcon icon={faPlus} /> 상품 추가하기
         </Link>
 
         {/* Delete */}
-        <button type='button' className='btn px-3 py-2' onClick={onDeleteClick}>
+        <button type='button' className='btn' onClick={onDeleteClick}>
           <FaIcon icon={faTrashCan} /> 선택삭제
         </button>
 
         {/* 엑셀로 다운로드하기 */}
-        <button type='button' className='btn px-3 py-2' onClick={onExcelDownloadClick}>
+        <button type='button' className='btn' onClick={onExcelDownloadClick}>
           <ImgIcon src={IcoExcel} alt='엑셀로 변환' fontSize={20} /> 엑셀로 변환
         </button>
       </div>
@@ -116,16 +116,16 @@ export default function Page(props: PageProps<any, SearchParams>) {
         <table className='w-full product-table-grid gap-1'>
           <thead className='contents'>
             <tr className='contents'>
-              <th className={th`col-span-4 bg-orange-100`}>상품</th>
-              <th className={th`col-span-2 bg-green-100`}>상태</th>
+              <th className='th col-span-4 bg-orange-100'>상품</th>
+              <th className='th col-span-2 bg-green-100'>상태</th>
             </tr>
             <tr className='contents'>
-              <th className={th`bg-orange-50`}>이름</th>
-              <th className={th`bg-orange-50`}>가격</th>
-              <th className={th`bg-orange-50`}>할인가격</th>
-              <th className={th`bg-orange-50`}>재고</th>
-              <th className={th`bg-green-50`}>할인중</th>
-              <th className={th`bg-green-50`}>활성화</th>
+              <th className='th bg-orange-50'>이름</th>
+              <th className='th bg-orange-50'>가격</th>
+              <th className='th bg-orange-50'>할인가격</th>
+              <th className='th bg-orange-50'>재고</th>
+              <th className='th bg-green-50'>할인중</th>
+              <th className='th bg-green-50'>활성화</th>
             </tr>
           </thead>
           <tbody className='contents'>
@@ -138,14 +138,14 @@ export default function Page(props: PageProps<any, SearchParams>) {
                 onTouchEnd={() => gotoItemPage(item.id)}
                 aria-selected={selectedIds.includes(item.id)}
               >
-                <td className={td``}>{item.name}</td>
-                <td className={td``}>{item.price.toLocaleString() + "원"}</td>
-                <td className={td``}>{item.salePrice.toLocaleString() + "원"}</td>
-                <td className={td``}>
+                <td className='td'>{item.name}</td>
+                <td className='td'>{item.price.toLocaleString() + "원"}</td>
+                <td className='td'>{item.salePrice.toLocaleString() + "원"}</td>
+                <td className='td'>
                   {item.remain < 0 ? <FaIcon icon={faInfinity} /> : item.remain}
                 </td>
-                <td className={td``}>{item.isSale ? "O" : "X"}</td>
-                <td className={td``}>
+                <td className='td'>{item.isSale ? "O" : "X"}</td>
+                <td className='td'>
                   {item.enabled ? "O" : "X"}
                   {/* {item.enabled ? (
                     <i className='inline-block rounded-full bg-green-500 w-3 h-3' />

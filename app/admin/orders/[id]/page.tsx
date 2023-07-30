@@ -1,153 +1,138 @@
 "use client";
 
-import { Order, useOrder, useUpdateOrder } from "@/api/orders";
+import { useCustomersByName } from "@/api/customers";
+import { RawOrder, useCreateOrder, useOrder, useOrders } from "@/api/orders";
 import { useProducts } from "@/api/products";
 import { BlurInfo } from "@/components/BlurInfo";
 import { CheckBox } from "@/components/CheckBox";
 import { Input } from "@/components/Input";
 import { PageProps } from "@/extra/type";
-import { cls, toHyphenPhone } from "@/extra/utils";
+import { toHyphenPhone } from "@/extra/utils";
 import { useAuth } from "@/hooks/useAuth";
+import { useDebounce } from "@/hooks/useDebounce";
 import { usePostCodePopup } from "@/hooks/usePostCodePopup";
 import { useToggle } from "@/hooks/useToggle";
 import { useTypeSafeReducer } from "@/hooks/useTypeSafeReducer";
-import ImgInitialEx from "@/public/images/initial_ex.png";
 import { faCircleQuestion } from "@fortawesome/free-regular-svg-icons";
 import {
   faArrowLeft,
   faBox,
   faBoxesStacked,
   faBuilding,
+  faCalculator,
+  faCoins,
   faEquals,
   faFloppyDisk,
   faMobileScreenButton,
   faNotEqual,
   faNotdef,
   faPaperPlane,
+  faPlus,
   faSignature,
   faSignsPost,
+  faSpinner,
+  faTrashCan,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
-import { useMutation } from "@tanstack/react-query";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 
 type Params = { id: string };
-type SearchParams = { date: string };
 
-export default function Page(props: PageProps<Params, SearchParams>) {
-  const { params, searchParams } = props;
+export default function Page(props: PageProps<Params>) {
+  const { params } = props;
 
   useAuth();
   const navigate = useRouter();
-  const order = useOrder(params.id);
   const senderInfo = useToggle(false);
-  const initialInfo = useToggle(false);
-  const productInfo = useToggle(false);
-  const sameAsSender = useToggle(false);
-  const products = useProducts();
-  const [changes, changeActions] = useTypeSafeReducer(
-    { sameAsSender: order.data?.sameAsSender } as Partial<Order>,
-    {
-      onSenderNameChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.value === order.data?.senderName) {
-          delete state.senderName;
-          return;
-        }
-        state.senderName = e.target.value;
-      },
-      onSenderPhoneChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.value === order.data?.senderPhone) {
-          delete state.senderPhone;
-          return;
-        }
-        state.senderPhone = toHyphenPhone(e.target.value);
-      },
-      toggleSameAsSender: (state) => {
-        state.sameAsSender = !state.sameAsSender;
-      },
-      onReceiverNameChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.value === order.data?.receiverName) {
-          delete state.receiverName;
-          return;
-        }
-        state.receiverName = e.target.value;
-      },
-      onReceiverPhoneChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.value === order.data?.receiverPhone) {
-          delete state.receiverPhone;
-          return;
-        }
-        state.receiverPhone = toHyphenPhone(e.target.value);
-      },
-      setReceiverAddress: (state, receiverAddress: string) => {
-        if (receiverAddress === order.data?.receiverAddress) {
-          delete state.receiverAddress;
-          return;
-        }
-        state.receiverAddress = receiverAddress;
-      },
-      onReceiverAddressDetailChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.value === order.data?.receiverAddressDetail) {
-          delete state.receiverAddressDetail;
-          return;
-        }
-        state.receiverAddressDetail = e.target.value;
-      },
-      onProductNameChange: (state, e: React.ChangeEvent<HTMLSelectElement>) => {
-        if (e.target.value === order.data?.productName) {
-          delete state.productName;
-          return;
-        }
-        state.productName = e.target.value;
-      },
-      onMemoChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.value === order.data?.memo) {
-          delete state.memo;
-          return;
-        }
-        state.memo = e.target.value;
-      },
-      reset: (_) => {
-        return {};
-      },
-    }
-  );
-
-  const partialOrder: Partial<Order> = {
-    ...order.data,
-    ...changes,
+  const order = useOrder(params.id);
+  const [change, changeActions] = useTypeSafeReducer(order.data!, {
+    onSenderNameChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
+      state.senderName = e.target.value;
+    },
+    onSenderPhoneChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
+      state.senderPhone = toHyphenPhone(e.target.value);
+    },
+    toggleSameAsSender: (state) => {
+      state.sameAsSender = !state.sameAsSender;
+    },
+    onReceiverNameChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
+      state.receiverName = e.target.value;
+    },
+    onReceiverPhoneChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
+      state.receiverPhone = toHyphenPhone(e.target.value);
+    },
+    setReceiverAddress: (state, receiverAddress: string) => {
+      state.receiverAddress = receiverAddress;
+    },
+    onReceiverAddressDetailChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
+      state.receiverAddressDetail = e.target.value;
+    },
+    addProduct: (
+      state,
+      product: { name: string; price: number; quantity: number } = {
+        name: "",
+        price: 0,
+        quantity: 1,
+      }
+    ) => {
+      state.products.splice(0, 0, product);
+    },
+    removeProduct: (state, index: number) => {
+      state.products.splice(index, 1);
+    },
+    setProductName: (state, { index, name }: { index: number; name: string }) => {
+      state.products[index].name = name;
+    },
+    setProductPrice: (state, { index, price }: { index: number; price: number }) => {
+      state.products[index].price = price;
+    },
+    setQuantity: (state, { index, quantity }: { index: number; quantity: number }) => {
+      state.products[index].quantity = quantity;
+    },
+    onMemoChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
+      state.memo = e.target.value;
+    },
+    reset: (_) => {
+      return order.data!;
+    },
+  });
+  const finalOrder: RawOrder = {
+    ...change,
+    receiverName: change.sameAsSender ? change.senderName : change.receiverName,
+    receiverPhone: change.sameAsSender ? change.senderPhone : change.receiverPhone,
   };
+  const debouncedSenderName = useDebounce(change.senderName, 500);
+  const customers = useCustomersByName(debouncedSenderName);
+  const { data: products } = useProducts();
 
-  const updateOrder = useUpdateOrder(params.id, partialOrder);
+  const validity = {
+    senderName: finalOrder.senderName.length > 0,
+    senderPhone: finalOrder.senderPhone.length > 0,
+    receiverName: finalOrder.receiverName.length > 0,
+    receiverPhone: finalOrder.receiverPhone.length > 0,
+    receiverAddress: finalOrder.receiverAddress.length > 0,
+    receiverAddressDetail: finalOrder.receiverAddressDetail.length > 0,
+    products:
+      finalOrder.products.length > 0 &&
+      finalOrder.products.every((p) => p.name.length > 0 && p.price > 0 && p.quantity > 0),
+  };
+  const isValid = Object.values(validity).every((v) => v);
 
+  const createOrder = useCreateOrder(finalOrder, {
+    onSuccess: () => navigate.back(),
+  });
   const postCodePopup = usePostCodePopup({
     onComplete: (data) => {
       changeActions.setReceiverAddress(data.roadAddress);
     },
   });
 
-  const isCleared = Object.keys(changes).length === 0;
-
-  const validity = {
-    senderName: partialOrder.senderName?.length !== 0,
-    senderPhone: partialOrder.senderPhone?.length !== 0,
-    receiverName: partialOrder.receiverName?.length !== 0,
-    receiverPhone: partialOrder.receiverPhone?.length !== 0,
-    receiverAddress: partialOrder.receiverAddress?.length !== 0,
-    receiverAddressDetail: partialOrder.receiverAddressDetail?.length !== 0,
-    productName:
-      partialOrder.productName !== null && partialOrder.productName !== "상품을 선택해주세요.",
-  };
-  const isRegistBtnValid = Object.values(validity).every((v) => v) && !isCleared;
-
   return (
-    <main className='p-3 h-full flex-1 overflow-auto'>
+    <main className='p-3 h-full flex-1 overflow-auto flex flex-col'>
       {/* Toolbar */}
       <div className='mb-3 flex flex-wrap gap-3'>
         {/* Back */}
-        <button type='button' className='btn px-3 py-2' onClick={navigate.back}>
+        <button type='button' className='m-box px-3 py-2 m-hover' onClick={navigate.back}>
           <FaIcon icon={faArrowLeft} /> 뒤로가기
         </button>
 
@@ -157,9 +142,9 @@ export default function Page(props: PageProps<Params, SearchParams>) {
         {/* Clear */}
         <button
           type='button'
-          className='btn px-3 py-2'
-          disabled={isCleared}
-          onClick={changeActions.reset}
+          className='m-box px-3 py-2 m-hover disabled:opacity-40'
+          disabled={order.data === change || createOrder.isLoading}
+          onClick={() => changeActions.reset()}
         >
           <FaIcon icon={faNotdef} rotation={90} /> 초기화
         </button>
@@ -167,19 +152,70 @@ export default function Page(props: PageProps<Params, SearchParams>) {
         {/* Save */}
         <button
           type='button'
-          className='btn px-3 py-2'
-          disabled={!isRegistBtnValid || updateOrder.isLoading}
-          onClick={() => updateOrder.mutate()}
+          className='m-box px-3 py-2 m-hover disabled:opacity-40'
+          disabled={!isValid || createOrder.isLoading}
+          onClick={() => createOrder.mutate()}
         >
-          <FaIcon icon={faFloppyDisk} /> 저장
+          {createOrder.isLoading ? (
+            <>
+              <FaIcon icon={faSpinner} className='animate-spin' /> 저장중...
+            </>
+          ) : (
+            <>
+              <FaIcon icon={faFloppyDisk} /> 저장
+            </>
+          )}
         </button>
       </div>
 
       {/* Form */}
-      <form action='' onSubmit={(e) => e.preventDefault()}>
-        <div className='flex gap-3 justify-evenly flex-wrap items-start'>
+      <form action='' onSubmit={(e) => e.preventDefault()} className='flex gap-2 flex-1'>
+        <div>
           <fieldset className='fieldset'>
-            <legend className='btn text-lg bg-transparent p-2' onClick={senderInfo.toggle}>
+            <legend className='legend'>
+              <FaIcon icon={faBoxesStacked} /> 상품목록
+            </legend>
+
+            <table className='grid gap-1' style={{ gridTemplateColumns: "auto 5rem" }}>
+              <thead className='contents'>
+                <tr className='contents'>
+                  <th className='font-normal w-full'>
+                    <FaIcon icon={faBox} /> 상품명
+                  </th>
+                  <th className='font-normal'>
+                    <FaIcon icon={faCoins} /> 가격(원)
+                  </th>
+                </tr>
+              </thead>
+              <tbody className='contents'>
+                {products?.data.map((product, index) => (
+                  <tr className='contents'>
+                    <td
+                      className='text-center btn p-2 shadow-none w-52'
+                      onClick={() =>
+                        changeActions.addProduct({
+                          name: product.name,
+                          price: product.price,
+                          quantity: 1,
+                        })
+                      }
+                      onDoubleClick={() => navigate.push("/admin/products/" + product.id)}
+                    >
+                      {product.name}
+                    </td>
+                    <td className='text-center btn p-2 shadow-none'>
+                      {product.price.toLocaleString()}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </fieldset>
+        </div>
+
+        <div className='w-72'>
+          <fieldset className='fieldset'>
+            <legend className='legend' onClick={senderInfo.toggle}>
               <FaIcon icon={faPaperPlane} fontSize={16} />
               &nbsp;보내는 사람&nbsp;
               <FaIcon icon={faCircleQuestion} fontSize={16} />
@@ -195,13 +231,12 @@ export default function Page(props: PageProps<Params, SearchParams>) {
               <label htmlFor='sender-name' className='label'>
                 <FaIcon icon={faSignature} /> 이름
               </label>
-              <input
+              <Input
                 id='sender-name'
                 type='text'
                 placeholder='홍길동'
-                className='input'
-                disabled={updateOrder.isLoading}
-                value={partialOrder.senderName}
+                disabled={createOrder.isLoading}
+                value={change.senderName}
                 onChange={changeActions.onSenderNameChange}
                 required
               />
@@ -211,21 +246,26 @@ export default function Page(props: PageProps<Params, SearchParams>) {
               <label htmlFor='sender-phone' className='label'>
                 <FaIcon icon={faMobileScreenButton} /> 전화번호
               </label>
-              <input
+              <Input
                 id='sender-phone'
+                list='sender-phone-list'
                 type='tel'
                 placeholder='010-xxxx-xxxx'
-                className='input'
-                disabled={updateOrder.isLoading}
-                value={partialOrder.senderPhone}
+                disabled={createOrder.isLoading}
+                value={change.senderPhone}
                 onChange={changeActions.onSenderPhoneChange}
                 required
               />
+              <datalist id='sender-phone-list'>
+                {customers?.data?.data?.map((customer) => (
+                  <option key={customer.id} value={customer.phone}></option>
+                ))}
+              </datalist>
             </div>
           </fieldset>
 
           <fieldset className='fieldset'>
-            <legend className='text-lg m-box p-2 text-center bg-transparent'>
+            <legend className='legend'>
               <FaIcon icon={faPaperPlane} fontSize={16} /> 받는 사람
             </legend>
 
@@ -234,11 +274,11 @@ export default function Page(props: PageProps<Params, SearchParams>) {
                 <FaIcon icon={faPaperPlane} /> 보내는 사람과
               </label>
               <CheckBox
-                checked={partialOrder.sameAsSender || false}
-                disable={updateOrder.isLoading}
+                checked={change.sameAsSender}
+                disable={createOrder.isLoading}
                 toggleFn={changeActions.toggleSameAsSender}
-                trueElements={[<FaIcon icon={faEquals} />, " 동일"]}
-                falseElements={[<FaIcon icon={faNotEqual} />, " 동일하지 않음"]}
+                trueElements={[<FaIcon icon={faEquals} />, "같음"]}
+                falseElements={[<FaIcon icon={faNotEqual} />, " 같지 않음"]}
               />
             </div>
 
@@ -250,8 +290,8 @@ export default function Page(props: PageProps<Params, SearchParams>) {
                 id='receiver-name'
                 type='text'
                 placeholder='홍길동'
-                disabled={sameAsSender.isOn || updateOrder.isLoading}
-                value={sameAsSender.isOn ? partialOrder.senderName : partialOrder.receiverName}
+                disabled={change.sameAsSender || createOrder.isLoading}
+                value={finalOrder.receiverName}
                 onChange={changeActions.onReceiverNameChange}
                 required
               />
@@ -265,8 +305,8 @@ export default function Page(props: PageProps<Params, SearchParams>) {
                 id='receiver-phone'
                 type='text'
                 placeholder='010-xxxx-xxxx'
-                disabled={sameAsSender.isOn || updateOrder.isLoading}
-                value={sameAsSender.isOn ? partialOrder.senderPhone : partialOrder.receiverPhone}
+                disabled={change.sameAsSender || createOrder.isLoading}
+                value={finalOrder.receiverPhone}
                 onChange={changeActions.onReceiverPhoneChange}
                 required
               />
@@ -280,8 +320,8 @@ export default function Page(props: PageProps<Params, SearchParams>) {
                 id='receiver-address'
                 type='text'
                 placeholder='남원월산로74번길 42'
-                disabled={updateOrder.isLoading}
-                value={partialOrder.receiverAddress}
+                disabled={createOrder.isLoading}
+                value={change.receiverAddress}
                 onChange={postCodePopup.show}
                 onClick={postCodePopup.show}
                 required
@@ -296,65 +336,106 @@ export default function Page(props: PageProps<Params, SearchParams>) {
                 id='receiver-address-detail'
                 type='text'
                 placeholder='단독주택, 1층 101호, ...'
-                disabled={updateOrder.isLoading}
-                value={partialOrder.receiverAddressDetail}
+                disabled={createOrder.isLoading}
+                value={change.receiverAddressDetail}
                 onChange={changeActions.onReceiverAddressDetailChange}
                 required
               />
             </div>
           </fieldset>
+        </div>
 
+        <div>
           <fieldset className='fieldset'>
-            <legend className='text-lg m-box p-2 text-center bg-transparent'>
+            <legend className='legend'>
               <FaIcon icon={faBoxesStacked} /> 배송물품
             </legend>
 
-            <BlurInfo open={productInfo.isOn} closeFn={productInfo.toggle}>
-              묶음 배송은 10kg까지만 가능합니다. <br />
-              배송해야할 상품이 많은 경우, <br />
-              배송정보을 나눠서 작성하셔야합니다. <br />
-            </BlurInfo>
-
-            <div className='field'>
-              <label
-                className='btn label bg-transparent shadow-none text-start'
-                onClick={productInfo.toggle}
-              >
-                <FaIcon icon={faBox} /> 상품선택 <FaIcon icon={faCircleQuestion} />
-              </label>
-              <select
-                name='product-name'
-                id='product-name'
-                className={cls("rounded-md bg-white px-3 py-2 w-full disabled:opacity-40", {
-                  "shake border-red-300 border-2": !validity.productName,
-                })}
-                disabled={updateOrder.isLoading}
-                value={partialOrder.productName}
-                onChange={changeActions.onProductNameChange}
-                required
-              >
-                <option value='상품을 선택해주세요.'>상품을 선택해주세요.</option>
-                {products.data?.data.map((product) => (
-                  <option key={product.id} value={product.name}>
-                    {product.name}
-                  </option>
+            <table className='grid gap-1' style={{ gridTemplateColumns: "repeat(4, auto)" }}>
+              <thead className='contents'>
+                <tr className='contents'>
+                  <th className='font-normal'>
+                    <FaIcon icon={faBox} /> 상품명
+                  </th>
+                  <th className='font-normal'>
+                    <FaIcon icon={faCoins} /> 가격(원)
+                  </th>
+                  <th className='font-normal'>
+                    <FaIcon icon={faCalculator} /> 수량(개)
+                  </th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody className='contents'>
+                {finalOrder.products.map((product, index, arr) => (
+                  <tr className='contents'>
+                    <td className='text-center'>
+                      <Input
+                        id='product-name'
+                        list='product-name-list'
+                        type='text'
+                        className='text-center'
+                        disabled={createOrder.isLoading}
+                        value={product.name}
+                        onChange={(e) =>
+                          changeActions.setProductName({ index, name: e.target.value })
+                        }
+                        invalid={product.name.length <= 0}
+                      />
+                    </td>
+                    <td className='relative'>
+                      <Input
+                        id='product-price'
+                        type='text'
+                        className='text-center w-28'
+                        value={product.price.toLocaleString()}
+                        onChange={(e) =>
+                          changeActions.setProductPrice({
+                            index,
+                            price: Number(e.target.value.replaceAll(",", "")),
+                          })
+                        }
+                      />
+                    </td>
+                    <td className='relative'>
+                      <Input
+                        id='product-quantity'
+                        type='text'
+                        className='text-center w-28'
+                        disabled={createOrder.isLoading}
+                        value={product.quantity.toLocaleString()}
+                        onChange={(e) =>
+                          changeActions.setQuantity({
+                            index,
+                            quantity: Number(e.target.value.replaceAll(",", "")) || 0,
+                          })
+                        }
+                        required
+                        invalid={product.quantity <= 0}
+                      />
+                    </td>
+                    <td>
+                      <button
+                        type='button'
+                        className='btn w-10 h-full shadow-none'
+                        onClick={() => changeActions.removeProduct(index)}
+                        disabled={createOrder.isLoading || arr.length === 1}
+                      >
+                        <FaIcon icon={faTrashCan} />
+                      </button>
+                    </td>
+                  </tr>
                 ))}
-              </select>
-            </div>
+              </tbody>
+            </table>
 
-            <div className='field'>
-              <label id='memo' className='btn label bg-transparent shadow-none text-start'>
-                <FaIcon icon={faSignature} /> 메모 <FaIcon icon={faCircleQuestion} />
-              </label>
-              <Input
-                id='memo'
-                type='text'
-                disabled={updateOrder.isLoading}
-                value={partialOrder.memo}
-                onChange={changeActions.onMemoChange}
-                required
-              />
-            </div>
+            <button
+              type='button'
+              className='btn mt-2 p-2 w-full shadow-none'
+              onClick={() => changeActions.addProduct(undefined)}
+            >
+              <FaIcon icon={faPlus} /> 추가하기
+            </button>
           </fieldset>
         </div>
       </form>

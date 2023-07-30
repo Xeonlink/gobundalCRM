@@ -85,13 +85,13 @@ export default function Page(props: PageProps<any, SearchParams>) {
       {/* Toolbar */}
       <div className='flex flex-wrap items-center gap-3 mb-3'>
         {/* Refresh */}
-        <button type='button' className='btn px-3 py-2' onClick={() => items.refetch()}>
+        <button type='button' className='btn' onClick={() => items.refetch()}>
           <FaIcon icon={faArrowsRotate} /> 새로고침
         </button>
 
         {/* Change ViewStyle */}
         <select
-          className='btn px-3 py-2 appearance-none text-center'
+          className='btn appearance-none text-center'
           value={view}
           onChange={onViewStyleChange}
         >
@@ -100,17 +100,17 @@ export default function Page(props: PageProps<any, SearchParams>) {
         </select>
 
         {/* Cratet New Order */}
-        <Link href='customers/create' className='btn px-3 py-2'>
+        <Link href='customers/create' className='btn'>
           <FaIcon icon={faPlus} /> 고객 추가하기
         </Link>
 
         {/* Delete */}
-        <button type='button' className='btn px-3 py-2' onClick={onDeleteClick}>
+        <button type='button' className='btn' onClick={onDeleteClick}>
           <FaIcon icon={faTrashCan} /> 선택삭제
         </button>
 
         {/* 엑셀로 다운로드하기 */}
-        <button type='button' className='btn px-3 py-2' onClick={onExcelDownloadClick}>
+        <button type='button' className='btn' onClick={onExcelDownloadClick}>
           <ImgIcon src={IcoExcel} alt='엑셀로 변환' fontSize={20} /> 엑셀로 변환
         </button>
 
@@ -126,14 +126,14 @@ export default function Page(props: PageProps<any, SearchParams>) {
         <table className='w-full customers-table-grid gap-1'>
           <thead className='contents'>
             <tr className='contents'>
-              <th className={th`bg-orange-100 col-span-2`}>기본</th>
-              <th className={th`bg-green-100 col-span-2`}>상세</th>
+              <th className='th bg-orange-100 col-span-2'>기본</th>
+              <th className='th bg-green-100 col-span-2'>상세</th>
             </tr>
             <tr className='contents'>
-              <th className={th`bg-orange-50`}>이름</th>
-              <th className={th`bg-orange-50`}>전화번호</th>
-              <th className={th`bg-green-50`}>주소</th>
-              <th className={th`bg-green-50`}>상세주소</th>
+              <th className='th bg-orange-50'>이름</th>
+              <th className='th bg-orange-50'>전화번호</th>
+              <th className='th bg-green-50'>주소</th>
+              <th className='th bg-green-50'>상세주소</th>
             </tr>
           </thead>
           <tbody className='contents'>
@@ -146,8 +146,8 @@ export default function Page(props: PageProps<any, SearchParams>) {
                 onTouchEnd={() => gotoItemPage(item.id)}
                 aria-selected={selectedIds.includes(item.id)}
               >
-                <td className={td``}>{item.name}</td>
-                <td className={td``}>{item.phone}</td>
+                <td className='td'>{item.name}</td>
+                <td className='td'>{item.phone}</td>
                 <td className={td`text-start`}>{item.address}</td>
                 <td className={td`text-start`}>{item.addressDetail}</td>
               </tr>

@@ -15,7 +15,7 @@ export interface Team {
   isLeave: boolean;
 }
 
-export type RawTeam = Omit<Team, "date" | "id">;
+export type RawTeam = Omit<Team, "id">;
 
 export function useTeams(date: string, options?: QueryOptions<GetResponse<Team>>) {
   const auth = useAuth();

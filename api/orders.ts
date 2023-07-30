@@ -14,9 +14,11 @@ export interface Order {
   receiverPhone: string;
   receiverAddress: string;
   receiverAddressDetail: string;
-  productName: string;
-  productPrice: number;
-  quantity: number;
+  products: {
+    name: string;
+    price: number;
+    quantity: number;
+  }[];
   memo: string;
 }
 
@@ -43,7 +45,7 @@ export function useCreateOrder(rawOrder: Partial<RawOrder>, options?: MutateOpti
   const mutationFn = async () => {
     const uri = `/orders`;
     const body = rawOrder;
-    const res = await apiRoot.patch(uri, body);
+    const res = await apiRoot.post(uri, body);
     return res.data;
   };
 

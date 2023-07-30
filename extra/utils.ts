@@ -40,3 +40,13 @@ export function debounce<T extends (...args: any[]) => any>(fn: T, delay: number
     }, delay);
   };
 }
+
+export function diff<T extends object>(target1: T, target2: T): Partial<T> {
+  const result = {} as Partial<T>;
+  for (const key in target1) {
+    if (target1[key] !== target2[key]) {
+      result[key] = target1[key];
+    }
+  }
+  return result;
+}

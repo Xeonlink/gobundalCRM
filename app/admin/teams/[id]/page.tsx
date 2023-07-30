@@ -22,15 +22,14 @@ import {
 import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/navigation";
 
-type SearchParams = { date: `${string}-${string}-${string}` };
 type Params = { id: string };
 
-export default function Page(props: PageProps<Params, SearchParams>) {
-  const { params, searchParams: query } = props;
+export default function Page(props: PageProps<Params>) {
+  const { params } = props;
 
   useAuth();
   const navigate = useRouter();
-  const team = useTeam(query.date, params.id);
+  const team = useTeam(params.id);
   const [changes, chnageActions] = useTypeSafeReducer({} as Partial<Team>, {
     onLeaderNameChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
       state.leaderName = e.target.value;
@@ -58,10 +57,10 @@ export default function Page(props: PageProps<Params, SearchParams>) {
     },
   });
 
-  const updateTeam = useUpdateTeam(query.date, params.id, changes, {
+  const updateTeam = useUpdateTeam(params.id, changes, {
     onSuccess: () => navigate.back(),
   });
-  const eraseTeam = useDeleteTeam(query.date, params.id, {
+  const eraseTeam = useDeleteTeam(params.id, {
     onSuccess: () => navigate.back(),
   });
 
@@ -95,7 +94,7 @@ export default function Page(props: PageProps<Params, SearchParams>) {
       {/* Toolbar */}
       <div className='mb-3 flex flex-wrap gap-3'>
         {/* Back */}
-        <button className='btn px-3 py-2' onClick={navigate.back}>
+        <button className='btn' onClick={navigate.back}>
           <FaIcon icon={faArrowLeft} /> 뒤로가기
         </button>
 
@@ -103,23 +102,18 @@ export default function Page(props: PageProps<Params, SearchParams>) {
         <span className='flex-1'></span>
 
         {/* Clear */}
-        <button
-          type='button'
-          className='btn px-3 py-2'
-          disabled={isCleared}
-          onClick={chnageActions.reset}
-        >
+        <button type='button' className='btn' disabled={isCleared} onClick={chnageActions.reset}>
           <FaIcon icon={faNotdef} rotation={90} />
           &nbsp;초기화
         </button>
 
         {/* Delete */}
-        <button className='btn px-3 py-2' onClick={() => eraseTeam.mutate()}>
+        <button className='btn' onClick={() => eraseTeam.mutate()}>
           <FaIcon icon={faTrashCan} /> 삭제
         </button>
 
         {/* Update */}
-        <button className='btn px-3 py-2' onClick={() => updateTeam.mutate()} disabled={isValid}>
+        <button className='btn' onClick={() => updateTeam.mutate()} disabled={isValid}>
           <FaIcon icon={faFloppyDisk} /> 저장
         </button>
       </div>

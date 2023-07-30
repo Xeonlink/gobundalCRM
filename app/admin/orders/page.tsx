@@ -41,7 +41,7 @@ export default function Page(props: PageProps<any, SearchParams>) {
   const navigate = useRouter();
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const orders = useOrders(date);
-  const eraseOrders = useDeleteOrders(date, selectedIds, {
+  const eraseOrders = useDeleteOrders(selectedIds, {
     onSuccess: () => setSelectedIds([]),
   });
 
@@ -95,10 +95,7 @@ export default function Page(props: PageProps<any, SearchParams>) {
       {/* Toolbar */}
       <div className='flex flex-wrap items-center gap-3 mb-3'>
         {/* 오늘 날짜로 재검색 */}
-        <Link
-          href={`orders?date=${dayjs().format("YYYY-MM-DD")}&view=${view}`}
-          className='btn px-3 py-2'
-        >
+        <Link href={`orders?date=${dayjs().format("YYYY-MM-DD")}&view=${view}`} className='btn'>
           <FaIcon icon={faCalendarDays} /> 오늘
         </Link>
 
@@ -130,13 +127,13 @@ export default function Page(props: PageProps<any, SearchParams>) {
         </fieldset>
 
         {/* Refresh */}
-        <button type='button' className='btn px-3 py-2' onClick={() => orders.refetch()}>
+        <button type='button' className='btn' onClick={() => orders.refetch()}>
           <FaIcon icon={faArrowsRotate} /> 새로고침
         </button>
 
         {/* Change ViewStyle */}
         <select
-          className='btn px-3 py-2 appearance-none text-center'
+          className='btn appearance-none text-center'
           value={view}
           onChange={onViewStyleChange}
         >
@@ -145,17 +142,17 @@ export default function Page(props: PageProps<any, SearchParams>) {
         </select>
 
         {/* Cratet New Order */}
-        <Link href='orders/create' className='btn px-3 py-2'>
+        <Link href='orders/create' className='btn'>
           <FaIcon icon={faPlus} /> 송장 작성하기
         </Link>
 
         {/* Delete */}
-        <button type='button' className='btn px-3 py-2' onClick={onDeleteClick}>
+        <button type='button' className='btn' onClick={onDeleteClick}>
           <FaIcon icon={faTrashCan} /> 선택삭제
         </button>
 
         {/* 엑셀로 다운로드하기 */}
-        <button type='button' className='btn px-3 py-2' onClick={onExcelDownloadClick}>
+        <button type='button' className='btn' onClick={onExcelDownloadClick}>
           <ImgIcon src={IcoExcel} alt='엑셀로 변환' fontSize={20} /> 엑셀로 변환
         </button>
       </div>
@@ -164,18 +161,18 @@ export default function Page(props: PageProps<any, SearchParams>) {
         <table className='w-full orders-table-grid gap-1'>
           <thead className='contents'>
             <tr className='contents'>
-              <th className={th`col-span-2 bg-orange-100`}>보내는 사람</th>
-              <th className={th`col-span-3 bg-green-100`}>받는 사람</th>
-              <th className={th`col-span-2 bg-blue-100`}>상품정보</th>
+              <th className='th col-span-2 bg-orange-100'>보내는 사람</th>
+              <th className='th col-span-3 bg-green-100'>받는 사람</th>
+              <th className='th col-span-2 bg-blue-100'>상품정보</th>
             </tr>
             <tr className='contents'>
-              <th className={th`bg-orange-50`}>이름</th>
-              <th className={th`bg-orange-50`}>전화번호</th>
-              <th className={th`bg-green-50`}>이름</th>
-              <th className={th`bg-green-50`}>전화번호</th>
-              <th className={th`bg-green-50`}>주소</th>
-              <th className={th`bg-blue-50`}>상품명</th>
-              <th className={th`bg-blue-50`}>이니셜</th>
+              <th className='th bg-orange-50'>이름</th>
+              <th className='th bg-orange-50'>전화번호</th>
+              <th className='th bg-green-50'>이름</th>
+              <th className='th bg-green-50'>전화번호</th>
+              <th className='th bg-green-50'>주소</th>
+              <th className='th bg-blue-50'>상품명</th>
+              <th className='th bg-blue-50'>메모</th>
             </tr>
           </thead>
           <tbody className='contents'>
@@ -188,15 +185,15 @@ export default function Page(props: PageProps<any, SearchParams>) {
                 onTouchEnd={() => gotoItemPage(order.id)}
                 aria-selected={selectedIds.includes(order.id)}
               >
-                <td className={td``}>{order.senderName}</td>
-                <td className={td``}>{order.senderPhone}</td>
-                <td className={td``}>{order.receiverName}</td>
-                <td className={td``}>{order.receiverPhone}</td>
+                <td className='td'>{order.senderName}</td>
+                <td className='td'>{order.senderPhone}</td>
+                <td className='td'>{order.receiverName}</td>
+                <td className='td'>{order.receiverPhone}</td>
                 <td className={td`text-start`}>
                   {order.receiverAddress}, {order.receiverAddressDetail}
                 </td>
-                <td className={td``}>{order.productName}</td>
-                <td className={td``}>{order.initial}</td>
+                <td className='td'>{order.productName}</td>
+                <td className='td'>{order.memo}</td>
               </tr>
             ))}
           </tbody>
@@ -225,7 +222,7 @@ export default function Page(props: PageProps<any, SearchParams>) {
               <p className='bg-blue-200 p-2 rounded-md'>
                 <b className='text-lg'>{item.productName}</b>
                 <br />
-                {item.initial}
+                {item.memo}
               </p>
             </li>
           ))}

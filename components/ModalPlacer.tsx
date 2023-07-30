@@ -1,13 +1,13 @@
 "use client";
 
-import { SyntheticEvent, useContext } from "react";
+import { Suspense, useContext } from "react";
 import { ModalContext } from "./ModalProvider";
 
 export function ModalPlacer() {
   const [modals, setModals] = useContext(ModalContext);
 
   return (
-    <div className='contents'>
+    <Suspense fallback={<ModalLoading />}>
       {modals.map((modal: any) => ({
         ...modal.ui,
         key: modal.key,
@@ -24,6 +24,10 @@ export function ModalPlacer() {
           id: modal.key,
         },
       }))}
-    </div>
+    </Suspense>
   );
+}
+
+function ModalLoading() {
+  return <div className='fixed w-screen h-screen flex justify-center items-center'>Loading...</div>;
 }

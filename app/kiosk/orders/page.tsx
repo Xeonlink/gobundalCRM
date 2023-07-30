@@ -3,12 +3,13 @@
 import { RawOrder, useCreateOrder } from "@/api/orders";
 import { useProducts } from "@/api/products";
 import { BlurInfo } from "@/components/BlurInfo";
+import { CheckBox } from "@/components/CheckBox";
+import { Input } from "@/components/Input";
 import { PageProps } from "@/extra/type";
-import { toHyphenPhone } from "@/extra/utils";
+import { cls, toHyphenPhone } from "@/extra/utils";
 import { usePostCodePopup } from "@/hooks/usePostCodePopup";
 import { useToggle } from "@/hooks/useToggle";
 import { useTypeSafeReducer } from "@/hooks/useTypeSafeReducer";
-import ImgInitialEx from "@/public/images/initial_ex.png";
 import { faCircleQuestion } from "@fortawesome/free-regular-svg-icons";
 import {
   faAddressCard,
@@ -24,19 +25,19 @@ import {
   faSpinner,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import Image from "next/image";
-import { useState } from "react";
 
 const defaultOrder: RawOrder = {
   senderName: "",
   senderPhone: "",
+  sameAsSender: false,
   receiverName: "",
   receiverPhone: "",
   receiverAddress: "",
   receiverAddressDetail: "",
   productName: "상품을 선택해주세요.",
-  initial: "",
+  productPrice: 0,
+  quantity: 1,
+  memo: "",
 };
 
 export default function Page(_: PageProps) {
@@ -48,15 +49,16 @@ export default function Page(_: PageProps) {
   const senderInfo = useToggle(false);
   const initialInfo = useToggle(false);
   const productInfo = useToggle(false);
-  const sameAsSender = useToggle(false);
-  const products = useProducts();
-  const [extraProductName, setExtraProductName] = useState("");
+  const { data: products } = useProducts();
   const [order, orderActions] = useTypeSafeReducer(defaultOrder, {
     onSenderNameChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
       state.senderName = e.target.value;
     },
     onSenderPhoneChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
       state.senderPhone = toHyphenPhone(e.target.value);
+    },
+    toggleSameAsSender: (state) => {
+      state.sameAsSender = !state.sameAsSender;
     },
     onReceiverNameChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
       state.receiverName = e.target.value;
@@ -70,26 +72,20 @@ export default function Page(_: PageProps) {
     onReceiverAddressDetailChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
       state.receiverAddressDetail = e.target.value;
     },
-    onProductNameChange: (state, e: React.ChangeEvent<HTMLSelectElement>) => {
-      state.productName = e.target.value;
-    },
-    onInitialChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
-      state.initial = e.target.value;
+    onProductChange: (state, e: React.ChangeEvent<HTMLSelectElement>) => {
+      const product = products?.data.find((p) => p.id === e.target.value);
+      state.productName = product?.name || "상품을 선택해주세요.";
+      state.productPrice = product?.price || 0;
     },
     reset: (_) => {
       return defaultOrder;
     },
   });
 
-  const onExtraProductNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setExtraProductName(e.target.value);
-  };
-
   const finalOrder: RawOrder = {
     ...order,
-    receiverName: sameAsSender.isOn ? order.senderName : order.receiverName,
-    receiverPhone: sameAsSender.isOn ? order.senderPhone : order.receiverPhone,
-    productName: order.productName === "기타" ? extraProductName : order.productName,
+    receiverName: order.sameAsSender ? order.senderName : order.receiverName,
+    receiverPhone: order.sameAsSender ? order.senderPhone : order.receiverPhone,
   };
 
   const validity = {
@@ -100,7 +96,6 @@ export default function Page(_: PageProps) {
     receiverAddress: finalOrder.receiverAddress.length > 0,
     receiverAddressDetail: finalOrder.receiverAddressDetail.length > 0,
     productName: finalOrder.productName !== "상품을 선택해주세요.",
-    initial: finalOrder.initial.length > 0,
   };
 
   const isRegistBtnValid = Object.values(validity).every((v) => v);
@@ -109,12 +104,10 @@ export default function Page(_: PageProps) {
     onSuccess: () => {
       alert("배송정보 등록이 완료되었습니다.");
       if (confirm("추가로 등록하시겠습니까?")) {
-        orderActions.onProductNameChange({ target: { value: "상품을 선택해주세요." } } as any);
+        orderActions.onProductChange({ target: { value: "기타" } } as any);
         return;
       }
       orderActions.reset();
-      setExtraProductName("");
-      sameAsSender.off();
     },
   });
 
@@ -141,11 +134,10 @@ export default function Page(_: PageProps) {
               <label htmlFor='sender-name' className='label'>
                 <FaIcon icon={faSignature} /> 이름
               </label>
-              <input
+              <Input
                 id='sender-name'
                 type='text'
                 placeholder='홍길동'
-                className='input'
                 disabled={createOrder.isLoading}
                 value={order.senderName}
                 onChange={orderActions.onSenderNameChange}
@@ -157,11 +149,10 @@ export default function Page(_: PageProps) {
               <label htmlFor='sender-phone' className='label'>
                 <FaIcon icon={faMobileScreenButton} /> 전화번호
               </label>
-              <input
+              <Input
                 id='sender-phone'
                 type='tel'
                 placeholder='010-xxxx-xxxx'
-                className='input'
                 disabled={createOrder.isLoading}
                 value={order.senderPhone}
                 onChange={orderActions.onSenderPhoneChange}
@@ -179,40 +170,25 @@ export default function Page(_: PageProps) {
               <label htmlFor='same-as-sender' className='label'>
                 <FaIcon icon={faPaperPlane} /> 보내는 사람과
               </label>
-              <div
-                className='flex gap-3 disabled:opacity-40 mb-3'
-                aria-disabled={createOrder.isLoading}
-              >
-                <button
-                  type='button'
-                  className='btn w-full shadow-none p-2'
-                  disabled={sameAsSender.isOn}
-                  onClick={sameAsSender.toggle}
-                >
-                  <FaIcon icon={faEquals} /> 동일
-                </button>
-                <button
-                  type='button'
-                  className='btn w-full shadow-none p-2'
-                  disabled={!sameAsSender.isOn}
-                  onClick={sameAsSender.toggle}
-                >
-                  <FaIcon icon={faNotEqual} /> 동일하지 않음
-                </button>
-              </div>
+              <CheckBox
+                checked={order.sameAsSender}
+                disable={createOrder.isLoading}
+                toggleFn={orderActions.toggleSameAsSender}
+                trueElements={[<FaIcon icon={faEquals} />, " 동일"]}
+                falseElements={[<FaIcon icon={faNotEqual} />, " 동일하지 않음"]}
+              />
             </div>
 
             <div className='field'>
               <label htmlFor='receiver-name' className='label'>
                 <FaIcon icon={faSignature} /> 이름
               </label>
-              <input
+              <Input
                 id='receiver-name'
                 type='text'
                 placeholder='홍길동'
-                className='input'
-                disabled={sameAsSender.isOn || createOrder.isLoading}
-                value={sameAsSender.isOn ? order.senderName : order.receiverName}
+                disabled={order.sameAsSender || createOrder.isLoading}
+                value={order.sameAsSender ? order.senderName : order.receiverName}
                 onChange={orderActions.onReceiverNameChange}
                 required
               />
@@ -222,13 +198,12 @@ export default function Page(_: PageProps) {
               <label htmlFor='receiver-phone' className='label'>
                 <FaIcon icon={faMobileScreenButton} /> 전화번호
               </label>
-              <input
+              <Input
                 id='receiver-phone'
                 type='text'
                 placeholder='010-xxxx-xxxx'
-                className='input'
-                disabled={sameAsSender.isOn || createOrder.isLoading}
-                value={sameAsSender.isOn ? order.senderPhone : order.receiverPhone}
+                disabled={order.sameAsSender || createOrder.isLoading}
+                value={order.sameAsSender ? order.senderPhone : order.receiverPhone}
                 onChange={orderActions.onReceiverPhoneChange}
                 required
               />
@@ -238,11 +213,10 @@ export default function Page(_: PageProps) {
               <label htmlFor='receiver-address' className='label'>
                 <FaIcon icon={faSignsPost} /> 주소
               </label>
-              <input
+              <Input
                 id='receiver-address'
                 type='text'
                 placeholder='남원월산로74번길 42'
-                className='input'
                 disabled={createOrder.isLoading}
                 value={order.receiverAddress}
                 onChange={postCodePopup.show}
@@ -255,11 +229,10 @@ export default function Page(_: PageProps) {
               <label htmlFor='receiver-address-detail' className='label'>
                 <FaIcon icon={faBuilding} /> 상세주소
               </label>
-              <input
+              <Input
                 id='receiver-address-detail'
                 type='text'
                 placeholder='단독주택, 1층 101호, ...'
-                className='input'
                 disabled={createOrder.isLoading}
                 value={order.receiverAddressDetail}
                 onChange={orderActions.onReceiverAddressDetailChange}
@@ -295,62 +268,26 @@ export default function Page(_: PageProps) {
               <select
                 name='product-name'
                 id='product-name'
-                className={`rounded-md bg-white px-3 py-2 mb-3 w-full disabled:opacity-40 ${
-                  validity.productName ? "" : "shake border-red-300 border-2"
-                }`}
+                className={cls("rounded-md bg-white px-3 py-2 w-full disabled:opacity-40", {
+                  "shake border-red-300 border-2": !validity.productName,
+                })}
                 disabled={createOrder.isLoading}
-                value={order.productName}
-                onChange={orderActions.onProductNameChange}
+                value={
+                  products?.data.find((item) => item.id === order.productName)?.id ||
+                  "상품을 선택해주세요."
+                }
+                onChange={orderActions.onProductChange}
                 required
               >
                 <option value='상품을 선택해주세요.'>상품을 선택해주세요.</option>
-                {products.data?.data
+                {products?.data
                   .filter((item) => item.enabled)
                   .map((item) => (
-                    <option key={item.id} value={item.name}>
+                    <option key={item.id} value={item.id}>
                       {item.name}
                     </option>
                   ))}
-                <option value='기타'>기타</option>
               </select>
-              {order.productName === "기타" ? (
-                <input
-                  id='product-name'
-                  type='text'
-                  placeholder='귤5kg, 귤10kg, 귤5kg x 2, ...'
-                  className='input'
-                  disabled={createOrder.isLoading}
-                  value={extraProductName}
-                  onChange={onExtraProductNameChange}
-                  required
-                />
-              ) : null}
-            </div>
-
-            <div className='field'>
-              <label
-                className='btn label bg-transparent shadow-none text-start'
-                onClick={initialInfo.toggle}
-              >
-                <FaIcon icon={faSignature} /> 이니셜 <FaIcon icon={faCircleQuestion} />
-              </label>
-              <input
-                id='initial'
-                type='text'
-                placeholder='HGD, love you, 하트모양, ...'
-                className='input mb-2'
-                disabled={createOrder.isLoading}
-                value={order.initial}
-                onChange={orderActions.onInitialChange}
-                required
-              />
-              <Image
-                src={ImgInitialEx}
-                alt='귤 상자에 자신만의 이니셜이 그려져있는 사진'
-                className='rounded-md max-w-full'
-                width={250}
-                placeholder='blur'
-              />
             </div>
           </fieldset>
         </div>

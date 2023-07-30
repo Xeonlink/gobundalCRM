@@ -80,7 +80,7 @@ export default function Page() {
       {/* Toolbar */}
       <div className='mb-3 flex flex-wrap gap-3'>
         {/* Back */}
-        <Link href='.' replace className='btn px-3 py-2'>
+        <Link href='.' replace className='btn'>
           <FaIcon icon={faArrowLeft} /> 뒤로가기
         </Link>
 
@@ -90,17 +90,16 @@ export default function Page() {
         {/* Clear */}
         <button
           type='button'
-          className='btn px-3 py-2'
+          className='btn'
           disabled={team === defaultTeam}
           onClick={teamActions.reset}
         >
-          <FaIcon icon={faNotdef} rotation={90} />
-          &nbsp;초기화
+          <FaIcon icon={faNotdef} rotation={90} /> 초기화
         </button>
 
         {/* Save */}
         <button
-          className='btn px-3 py-2'
+          className='btn'
           onClick={() => createTeam.mutate()}
           disabled={!isValid || createTeam.isLoading}
         >
@@ -119,7 +118,7 @@ export default function Page() {
       {/* Form */}
       <form className='w-80 m-auto'>
         <fieldset className='fieldset'>
-          <legend className='btn bg-transparent p-2'>
+          <legend className='legend'>
             <FaIcon icon={faPeopleGroup} fontSize={16} /> 팀 생성
           </legend>
 
