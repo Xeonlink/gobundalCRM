@@ -29,7 +29,7 @@ export default function Page(props: PageProps<any, SearchParams>) {
   const modalCtrl = useModal();
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const products = useProducts();
-  const deleteProducts = useDeleteProducts(selectedIds, {
+  const deleteItems = useDeleteProducts(selectedIds, {
     onSuccess: () => setSelectedIds([]),
   });
 
@@ -59,7 +59,7 @@ export default function Page(props: PageProps<any, SearchParams>) {
   const onDeleteClick = () => {
     if (selectedIds.length === 0) return;
     if (!confirm("정말로 삭제하시겠습니까?")) return;
-    deleteProducts.mutate();
+    deleteItems.mutate();
   };
 
   return (
@@ -98,7 +98,7 @@ export default function Page(props: PageProps<any, SearchParams>) {
       </div>
 
       {view === "table" ? (
-        <table className='w-full product-table-grid gap-1'>
+        <table className='w-full grid gap-1 grid-cols-[repeat(6,_auto)]'>
           <thead className='contents'>
             <tr className='contents'>
               <th className='th col-span-4 bg-orange-100'>상품</th>
@@ -148,7 +148,7 @@ export default function Page(props: PageProps<any, SearchParams>) {
       ) : null}
 
       {view === "card" ? (
-        <ol className='product-card-grid gap-3'>
+        <ol className='grid grid-cols-[repeat(auto-fill,_minmax(200px,_1fr))] gap-3'>
           {products.data?.data?.map((item) => (
             <li
               key={item.id}

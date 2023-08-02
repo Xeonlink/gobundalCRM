@@ -98,13 +98,13 @@ export function ProductDialog(props: Props) {
       return mode === "CREATE" ? defaultProduct : originProduct!;
     },
   });
-  const createProduct = useCreateProduct(product, {
+  const createItem = useCreateProduct(product, {
     onSuccess: () => props.closeSelf?.(),
   });
-  const updateProduct = useUpdateProduct(originProduct?.id!, diff(product, originProduct!), {
+  const updateItem = useUpdateProduct(originProduct?.id!, diff(product, originProduct!), {
     onSuccess: () => props.closeSelf?.(),
   });
-  const deleteProduct = useDeleteProduct(originProduct?.id!, {
+  const deleteItem = useDeleteProduct(originProduct?.id!, {
     onSuccess: () => props.closeSelf?.(),
   });
 
@@ -115,7 +115,7 @@ export function ProductDialog(props: Props) {
   };
   const isValid = Object.values(validity).every((v) => v);
   const isCleared = mode === "CREATE" ? product === defaultProduct : originProduct === product;
-  const isLoading = createProduct.isLoading || updateProduct.isLoading || deleteProduct.isLoading;
+  const isLoading = createItem.isLoading || updateItem.isLoading || deleteItem.isLoading;
 
   return (
     <dialog
@@ -249,7 +249,7 @@ export function ProductDialog(props: Props) {
             type='button'
             className='btn'
             disabled={isLoading}
-            onClick={() => deleteProduct.mutate()}
+            onClick={() => deleteItem.mutate()}
           >
             <FaIcon icon={faTrashAlt} isLoading={isLoading} value='삭제' />
           </button>
@@ -259,7 +259,7 @@ export function ProductDialog(props: Props) {
         <button
           type='button'
           className='btn'
-          onClick={mode === "CREATE" ? () => createProduct.mutate() : () => updateProduct.mutate()}
+          onClick={mode === "CREATE" ? () => createItem.mutate() : () => updateItem.mutate()}
           disabled={!isValid || isLoading}
         >
           <FaIcon icon={faFloppyDisk} isLoading={isLoading} value='저장' />

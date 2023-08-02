@@ -35,15 +35,7 @@ const defaultTeam: RawTeam = {
   isLeave: false,
 };
 
-type Props = ModalProps<
-  | {
-      mode: "CREATE";
-    }
-  | {
-      mode: "UPDATE";
-      teamId: string;
-    }
->;
+type Props = ModalProps<{ mode: "CREATE" } | { mode: "UPDATE"; teamId: string }>;
 
 export function TeamDialog(props: Props) {
   const { mode } = props;
@@ -73,9 +65,7 @@ export function TeamDialog(props: Props) {
     toggleIsLeave: (state) => {
       state.isLeave = !state.isLeave;
     },
-    reset: () => {
-      return mode === "CREATE" ? defaultTeam : originTeam!;
-    },
+    reset: () => (mode === "CREATE" ? defaultTeam : originTeam!),
   });
   const createTeam = useCreateTeam(team, {
     onSuccess: () => props.closeSelf?.(),
@@ -98,11 +88,7 @@ export function TeamDialog(props: Props) {
   const isLoading = createTeam.isLoading || updateTeam.isLoading || deleteTeam.isLoading;
 
   return (
-    <dialog
-      ref={props.ref}
-      onClose={props.closeSelf}
-      className='max-w-full max-h-full rounded-md p-0 w-96 bg-transparent backdrop:backdrop-blur-md animate-scaleTo1'
-    >
+    <dialog ref={props.ref} onClose={props.closeSelf} className='dialog w-96'>
       <fieldset className='fieldset'>
         <legend className='legend'>
           <FaIcon icon={faPeopleGroup} fontSize={16} /> 팀 생성
@@ -126,7 +112,7 @@ export function TeamDialog(props: Props) {
             value={team.leaderName}
             onChange={teamActions.onLeaderNameChange}
             disabled={isLoading}
-            required
+            invalid={team.leaderName === ""}
           />
         </div>
 
@@ -141,7 +127,7 @@ export function TeamDialog(props: Props) {
             value={team.leaderPhone}
             onChange={teamActions.onLeaderPhoneChange}
             disabled={isLoading}
-            required
+            invalid={team.leaderPhone === ""}
           />
         </div>
 
@@ -155,7 +141,7 @@ export function TeamDialog(props: Props) {
             onChange={teamActions.onCouponChange}
             disabled={isLoading}
             placeholder='쿠폰사'
-            required
+            invalid={team.coupon === ""}
           />
         </div>
 

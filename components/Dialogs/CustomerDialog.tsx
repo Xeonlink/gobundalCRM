@@ -56,13 +56,13 @@ export function CustomerDialog(props: Props) {
     },
     reset: () => (mode === "CREATE" ? defaultCustomer : originCustomer!),
   });
-  const createCustomer = useCreateCustomer(customer, {
+  const createItem = useCreateCustomer(customer, {
     onSuccess: () => props.closeSelf?.(),
   });
-  const updateCustomer = useUpdateCustomer(originCustomer?.id!, diff(customer, originCustomer!), {
+  const updateItem = useUpdateCustomer(originCustomer?.id!, diff(customer, originCustomer!), {
     onSuccess: () => props.closeSelf?.(),
   });
-  const deleteCustomer = useDeleteCustomer(originCustomer?.id!, {
+  const deleteItem = useDeleteCustomer(originCustomer?.id!, {
     onSuccess: () => props.closeSelf?.(),
   });
   const postCodePopup = usePostCodePopup({
@@ -77,8 +77,7 @@ export function CustomerDialog(props: Props) {
   };
   const isValid = Object.values(validity).every((v) => v);
   const isCleared = mode === "CREATE" ? customer === defaultCustomer : originCustomer === customer;
-  const isLoading =
-    createCustomer.isLoading || updateCustomer.isLoading || deleteCustomer.isLoading;
+  const isLoading = createItem.isLoading || updateItem.isLoading || deleteItem.isLoading;
 
   return (
     <dialog
@@ -172,7 +171,7 @@ export function CustomerDialog(props: Props) {
             type='button'
             className='btn'
             disabled={isLoading}
-            onClick={() => deleteCustomer.mutate()}
+            onClick={() => deleteItem.mutate()}
           >
             <FaIcon icon={faTrashAlt} isLoading={isLoading} value='삭제' />
           </button>
@@ -182,9 +181,7 @@ export function CustomerDialog(props: Props) {
         <button
           type='button'
           className='btn'
-          onClick={
-            mode === "CREATE" ? () => createCustomer.mutate() : () => updateCustomer.mutate()
-          }
+          onClick={mode === "CREATE" ? () => createItem.mutate() : () => updateItem.mutate()}
           disabled={!isValid || isLoading}
         >
           <FaIcon icon={faFloppyDisk} isLoading={isLoading} value='저장' />

@@ -3,6 +3,32 @@ import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
 import { useAutoInvalidateMutation } from "./utils/useAutoInvalidateMutation";
 import { GetResponse, apiRoot } from "./utils/utils";
+import dayjs from "dayjs";
+
+export const defaultOrder: RawOrder = {
+  date: dayjs().format("YYYY-MM-DD"),
+  senderName: "",
+  senderPhone: "",
+  sameAsSender: false,
+  receiverName: "",
+  receiverPhone: "",
+  receiverAddress: "",
+  receiverAddressDetail: "",
+  products: [
+    {
+      name: "",
+      price: 0,
+      quantity: 1,
+    },
+  ],
+  memo: "",
+};
+
+export type OrderProduct = {
+  name: string;
+  price: number;
+  quantity: number;
+};
 
 export interface Order {
   id: string;
@@ -14,11 +40,7 @@ export interface Order {
   receiverPhone: string;
   receiverAddress: string;
   receiverAddressDetail: string;
-  products: {
-    name: string;
-    price: number;
-    quantity: number;
-  }[];
+  products: OrderProduct[];
   memo: string;
 }
 

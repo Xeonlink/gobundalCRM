@@ -33,9 +33,7 @@ type Status =
   | "InvalidPasswordException"
   | "RequestSignUpSuccess";
 
-type SearchParams = {
-  url: string;
-};
+type SearchParams = { url: string };
 
 export default function Page(props: PageProps<any, SearchParams>) {
   const { searchParams } = props;

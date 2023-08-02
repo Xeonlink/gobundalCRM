@@ -1,6 +1,6 @@
 "use client";
 
-import { useDeleteTeams, useTeams } from "@/api/teams";
+import { Team, useDeleteTeams, useTeams } from "@/api/teams";
 import { DateChanger } from "@/components/DateChanger";
 import { TeamDialog } from "@/components/Dialogs/TeamDialog";
 import { ImgIcon } from "@/components/ImgIcon";
@@ -13,6 +13,12 @@ import IcoExcel from "@/public/icons/excel.png";
 import { faCalendarDays } from "@fortawesome/free-regular-svg-icons";
 import { faArrowsRotate, faPlus, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
+import {
+  createColumnHelper,
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
 import dayjs from "dayjs";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -109,7 +115,7 @@ export default function Page(props: PageProps<any, SearchParams>) {
       </div>
 
       {view === "table" ? (
-        <table className='w-full teams-table-grid gap-1'>
+        <table className='w-full grid grid-cols-[repeat(6,_auto)] gap-1'>
           <thead className='contents'>
             <tr className='contents'>
               <th className='th bg-orange-100 col-span-2'>대표자</th>
@@ -128,7 +134,7 @@ export default function Page(props: PageProps<any, SearchParams>) {
             {teams.data?.data.map((item) => (
               <tr
                 key={item.id}
-                className='contents cursor-pointer order-table__tr'
+                className='contents cursor-pointer tr_selected'
                 onClick={onItemClick(item.id)}
                 onDoubleClick={() => openUpdateTeamDialog(item.id)}
                 onTouchEnd={() => openUpdateTeamDialog(item.id)}
@@ -147,7 +153,7 @@ export default function Page(props: PageProps<any, SearchParams>) {
       ) : null}
 
       {view === "card" ? (
-        <ol className='teams-card-grid gap-3'>
+        <ol className='grid grid-cols-[repeat(auto-fill,_minmax(170px,_1fr))] gap-3'>
           {teams.data?.data.map((item) => (
             <li
               key={item.id}

@@ -1,7 +1,15 @@
 "use client";
 
 import { useCustomersByName } from "@/api/customers";
-import { RawOrder, useCreateOrder, useDeleteOrder, useOrder, useUpdateOrder } from "@/api/orders";
+import {
+  OrderProduct,
+  RawOrder,
+  defaultOrder,
+  useCreateOrder,
+  useDeleteOrder,
+  useOrder,
+  useUpdateOrder,
+} from "@/api/orders";
 import { ModalProps } from "@/extra/type";
 import { diff, toHyphenPhone } from "@/extra/utils";
 import { useDebounce } from "@/hooks/useDebounce";
@@ -13,7 +21,6 @@ import {
   faBoxesStacked,
   faBuilding,
   faCalculator,
-  faCalendar,
   faCalendarAlt,
   faCheck,
   faCoins,
@@ -31,32 +38,12 @@ import {
   faTrashCan,
   faX,
 } from "@fortawesome/free-solid-svg-icons";
+import dayjs from "dayjs";
 import { CheckBox } from "../CheckBox";
+import { DateChanger } from "../DateChanger";
 import { FaIcon } from "../FaIcon";
 import { Input } from "../Input";
 import { ProductSelector } from "../Selectors/ProductSelector";
-import dayjs from "dayjs";
-import { DateChanger } from "../DateChanger";
-import { Dialog } from "./Dialog";
-
-const defaultProduct = {
-  name: "",
-  price: 0,
-  quantity: 1,
-};
-
-const defaultOrder: RawOrder = {
-  date: dayjs().format("YYYY-MM-DD"),
-  senderName: "",
-  senderPhone: "",
-  sameAsSender: false,
-  receiverName: "",
-  receiverPhone: "",
-  receiverAddress: "",
-  receiverAddressDetail: "",
-  products: [defaultProduct],
-  memo: "",
-};
 
 type ProductPayload<T extends HTMLElement> = { index: number; e: React.ChangeEvent<T> };
 type Props = ModalProps<{ mode: "CREATE" } | { mode: "UPDATE"; orderId: string }>;
@@ -98,7 +85,7 @@ export function OrderDialog(props: Props) {
     onReceiverAddressDetailChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
       state.receiverAddressDetail = e.target.value;
     },
-    addProduct: (state, product: typeof defaultProduct = { ...defaultProduct }) => {
+    addProduct: (state, product: OrderProduct = { ...defaultOrder.products[0] }) => {
       state.products.push(product);
     },
     removeProduct: (state, index: number) => {
@@ -124,13 +111,13 @@ export function OrderDialog(props: Props) {
   });
   const debouncedSenderName = useDebounce(order.senderName, 500);
   const customers = useCustomersByName(debouncedSenderName);
-  const createOrder = useCreateOrder(order, {
+  const createItem = useCreateOrder(order, {
     onSuccess: () => props.closeSelf?.(),
   });
-  const updateOrder = useUpdateOrder(originOrder?.id!, diff(order, originOrder!), {
+  const updateItem = useUpdateOrder(originOrder?.id!, diff(order, originOrder!), {
     onSuccess: () => props.closeSelf?.(),
   });
-  const deleteOrder = useDeleteOrder(originOrder?.id!, {
+  const deleteItem = useDeleteOrder(originOrder?.id!, {
     onSuccess: () => props.closeSelf?.(),
   });
   const postCodePopup = usePostCodePopup({
@@ -164,10 +151,10 @@ export function OrderDialog(props: Props) {
   };
   const isValid = Object.values(validity).every((v) => v);
   const isCleared = mode === "CREATE" ? order === defaultOrder : originOrder === order;
-  const isLoading = createOrder.isLoading || updateOrder.isLoading || deleteOrder.isLoading;
+  const isLoading = createItem.isLoading || updateItem.isLoading || deleteItem.isLoading;
 
   return (
-    <Dialog ref={props.ref} onClose={props.closeSelf}>
+    <dialog ref={props.ref} onClose={props.closeSelf} className='dialog'>
       <div className='flex flex-row flex-nowrap min-w-max mb-3 gap-3'>
         <div className='w-72 space-y-3'>
           <fieldset className='fieldset'>
@@ -182,7 +169,7 @@ export function OrderDialog(props: Props) {
               <Input
                 id='sender-name'
                 placeholder='홍길동'
-                disabled={createOrder.isLoading}
+                disabled={createItem.isLoading}
                 value={order.senderName}
                 onChange={orderActions.onSenderNameChange}
                 invalid={order.senderName === ""}
@@ -198,7 +185,7 @@ export function OrderDialog(props: Props) {
                 list='sender-phone-list'
                 type='tel'
                 placeholder='010-xxxx-xxxx'
-                disabled={createOrder.isLoading}
+                disabled={createItem.isLoading}
                 value={order.senderPhone}
                 onChange={orderActions.onSenderPhoneChange}
                 invalid={order.senderPhone === ""}
@@ -222,7 +209,7 @@ export function OrderDialog(props: Props) {
               </label>
               <CheckBox
                 checked={order.sameAsSender}
-                disable={createOrder.isLoading}
+                disable={createItem.isLoading}
                 toggleFn={orderActions.toggleSameAsSender}
                 trueContents={[faEquals, " 같음"]}
                 falseContents={[faNotEqual, " 같지 않음"]}
@@ -236,7 +223,7 @@ export function OrderDialog(props: Props) {
               <Input
                 id='receiver-name'
                 placeholder='홍길동'
-                disabled={order.sameAsSender || createOrder.isLoading}
+                disabled={order.sameAsSender || createItem.isLoading}
                 value={order.receiverName}
                 onChange={orderActions.onReceiverNameChange}
                 invalid={order.receiverName === ""}
@@ -250,7 +237,7 @@ export function OrderDialog(props: Props) {
               <Input
                 id='receiver-phone'
                 placeholder='010-xxxx-xxxx'
-                disabled={order.sameAsSender || createOrder.isLoading}
+                disabled={order.sameAsSender || createItem.isLoading}
                 value={order.receiverPhone}
                 onChange={orderActions.onReceiverPhoneChange}
                 invalid={order.receiverPhone === ""}
@@ -264,7 +251,7 @@ export function OrderDialog(props: Props) {
               <Input
                 id='receiver-address'
                 placeholder='남원월산로74번길 42'
-                disabled={createOrder.isLoading}
+                disabled={createItem.isLoading}
                 value={order.receiverAddress}
                 onChange={postCodePopup.show}
                 onClick={postCodePopup.show}
@@ -279,7 +266,7 @@ export function OrderDialog(props: Props) {
               <Input
                 id='receiver-address-detail'
                 placeholder='단독주택, 1층 101호, ...'
-                disabled={createOrder.isLoading}
+                disabled={createItem.isLoading}
                 value={order.receiverAddressDetail}
                 onChange={orderActions.onReceiverAddressDetailChange}
                 invalid={order.receiverAddressDetail === ""}
@@ -294,7 +281,7 @@ export function OrderDialog(props: Props) {
               <FaIcon icon={faBoxesStacked} /> 배송물품
             </legend>
 
-            <table className='grid gap-1' style={{ gridTemplateColumns: "10rem 7rem 5rem 2.5rem" }}>
+            <table className='grid grid-cols-[10rem_7rem_5rem_2.5rem] gap-1'>
               <thead className='contents'>
                 <tr className='contents'>
                   <th className='font-normal'>
@@ -317,7 +304,7 @@ export function OrderDialog(props: Props) {
                         id='product-name'
                         list='product-name-list'
                         className='text-center'
-                        disabled={createOrder.isLoading}
+                        disabled={createItem.isLoading}
                         value={product.name}
                         onChange={(e) => orderActions.onProductNameChange({ index, e })}
                         invalid={product.name.length <= 0}
@@ -336,7 +323,7 @@ export function OrderDialog(props: Props) {
                         id='product-quantity'
                         type='number'
                         className='text-center'
-                        disabled={createOrder.isLoading}
+                        disabled={createItem.isLoading}
                         value={product.quantity.toLocaleString()}
                         onChange={(e) => orderActions.onProductQuantityChange({ index, e })}
                         required
@@ -397,7 +384,7 @@ export function OrderDialog(props: Props) {
                 id='memo'
                 placeholder='메모'
                 className='rounded-md w-full p-2 min-h-max'
-                disabled={createOrder.isLoading}
+                disabled={createItem.isLoading}
                 value={order.memo}
                 onChange={orderActions.onMemoChange}
               />
@@ -428,7 +415,7 @@ export function OrderDialog(props: Props) {
             type='button'
             className='btn'
             disabled={isLoading}
-            onClick={() => deleteOrder.mutate()}
+            onClick={() => deleteItem.mutate()}
           >
             <FaIcon icon={faTrashAlt} isLoading={isLoading} value='삭제' />
           </button>
@@ -438,12 +425,12 @@ export function OrderDialog(props: Props) {
         <button
           type='button'
           className='btn'
-          onClick={mode === "CREATE" ? () => createOrder.mutate() : () => updateOrder.mutate()}
+          onClick={mode === "CREATE" ? () => createItem.mutate() : () => updateItem.mutate()}
           disabled={!isValid || isLoading}
         >
           <FaIcon icon={faFloppyDisk} isLoading={isLoading} value='저장' />
         </button>
       </form>
-    </Dialog>
+    </dialog>
   );
 }

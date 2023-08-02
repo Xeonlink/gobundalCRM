@@ -2,25 +2,22 @@
 
 import { Product, useDeleteProducts, useProducts } from "@/api/products";
 import { ModalProps } from "@/extra/type";
+import { useExcel } from "@/hooks/useExcel";
 import { useItemSelection } from "@/hooks/useItemSelection";
+import { useModal } from "@/hooks/useModal";
+import IcoExcel from "@/public/icons/excel.png";
 import {
-  faArrowsRotate,
   faBoxesStacked,
   faCheck,
   faCoins,
-  faFloppyDisk,
   faPlus,
   faSignature,
   faTrashCan,
   faX,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
-import { Dialog } from "../Dialogs/Dialog";
-import { useModal } from "@/hooks/useModal";
 import { ProductDialog } from "../Dialogs/ProductDialog";
 import { ImgIcon } from "../ImgIcon";
-import IcoExcel from "@/public/icons/excel.png";
-import { useExcel } from "@/hooks/useExcel";
 
 type Props = ModalProps<{
   onSelect?: (product: Product) => void;
@@ -33,7 +30,7 @@ export function ProductSelector(props: Props) {
   const selected = useItemSelection();
   const modalCtrl = useModal();
   const excel = useExcel();
-  const deleteProducts = useDeleteProducts(selected.ids, {
+  const deleteItems = useDeleteProducts(selected.ids, {
     onSuccess: () => selected.clear(),
   });
 
@@ -59,24 +56,21 @@ export function ProductSelector(props: Props) {
   const onDeleteClick = () => {
     if (selected.isEmpty) return;
     if (!confirm("정말로 삭제하시겠습니까?")) return;
-    deleteProducts.mutate();
+    deleteItems.mutate();
   };
   const onExcelDownloadClick = () => {
     excel.download(products?.data!, "상품");
   };
 
   return (
-    <Dialog ref={ref} onClose={closeSelf}>
+    <dialog ref={ref} onClose={closeSelf} className='dialog'>
       <div className='space-y-3'>
         <fieldset className='fieldset'>
           <legend className='legend'>
             <FaIcon icon={faBoxesStacked} /> 상품선택
           </legend>
 
-          <table
-            className='grid gap-1'
-            style={{ gridTemplateColumns: "14rem 7rem 7rem 5rem 5rem 5rem" }}
-          >
+          <table className='grid grid-cols-[14rem_7rem_7rem_5rem_5rem_5rem] gap-1'>
             <thead className='contents'>
               <tr className='contents'>
                 <th className='bg-transparent font-normal'>
@@ -152,6 +146,6 @@ export function ProductSelector(props: Props) {
           <FaIcon icon={faCheck} /> 선택
         </button>
       </form>
-    </Dialog>
+    </dialog>
   );
 }

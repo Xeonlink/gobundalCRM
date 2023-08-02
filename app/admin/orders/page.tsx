@@ -68,7 +68,7 @@ export default function Page(props: PageProps<any, SearchParams>) {
         </Link>
 
         {/* 해당 날짜로 검색 */}
-        <DateChanger date={date} onChange={onDateChange} />
+        <DateChanger date={date} onChange={onDateChange} className='shadow-md' />
 
         {/* Refresh */}
         <button type='button' className='btn' onClick={() => orders.refetch()}>
@@ -102,7 +102,7 @@ export default function Page(props: PageProps<any, SearchParams>) {
       </div>
 
       {view === "table" ? (
-        <table className='w-full orders-table-grid gap-1'>
+        <table className='w-full grid grid-cols-[repeat(7,_auto)] gap-1'>
           <thead className='contents'>
             <tr className='contents'>
               <th className='th col-span-2 bg-orange-100'>보내는 사람</th>
@@ -123,7 +123,7 @@ export default function Page(props: PageProps<any, SearchParams>) {
             {orders.data?.data.map((item) => (
               <tr
                 key={item.id}
-                className='contents cursor-pointer order-table__tr'
+                className='contents cursor-pointer tr_selected'
                 onClick={selected.onItemClick(item.id)}
                 onDoubleClick={() => openOrderUpdateDialog(item.id)}
                 onTouchEnd={() => openOrderUpdateDialog(item.id)}
@@ -145,7 +145,7 @@ export default function Page(props: PageProps<any, SearchParams>) {
       ) : null}
 
       {view === "card" ? (
-        <ol className='orders-card-grid gap-3'>
+        <ol className='grid grid-cols-[repeat(auto-fill,_minmax(250px,_1fr))] gap-3 items-center'>
           {orders.data?.data.map((item) => (
             <li
               key={item.id}

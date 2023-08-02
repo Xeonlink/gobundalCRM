@@ -33,7 +33,7 @@ export default function Page(props: PageProps<any, SearchParams>) {
   const items = useCustomersByName(name, {
     enabled: name !== "",
   });
-  const eraseItems = useDeleteCustomers(selected.ids, {
+  const deleteItems = useDeleteCustomers(selected.ids, {
     onSuccess: () => selected.clear(),
   });
 
@@ -49,7 +49,7 @@ export default function Page(props: PageProps<any, SearchParams>) {
   const onDeleteClick = () => {
     if (selected.ids.length === 0) return;
     if (!confirm("정말로 삭제하시겠습니까?")) return;
-    eraseItems.mutate();
+    deleteItems.mutate();
   };
   const onExcelDownloadClick = () => {
     excel.download(items.data?.data!, "고객");
@@ -98,7 +98,7 @@ export default function Page(props: PageProps<any, SearchParams>) {
       </div>
 
       {view === "table" ? (
-        <table className='w-full customers-table-grid gap-1'>
+        <table className='w-full grid grid-cols-[repeat(4,_auto)] gap-1'>
           <thead className='contents'>
             <tr className='contents'>
               <th className='th bg-orange-100 col-span-2'>기본</th>
@@ -115,7 +115,7 @@ export default function Page(props: PageProps<any, SearchParams>) {
             {items.data?.data.map((item) => (
               <tr
                 key={item.id}
-                className='contents cursor-pointer order-table__tr'
+                className='contents cursor-pointer tr_selected'
                 onClick={selected.onItemClick(item.id)}
                 onDoubleClick={() => openCustomerUpdateDialog(item.id)}
                 onTouchEnd={() => openCustomerUpdateDialog(item.id)}
@@ -132,7 +132,7 @@ export default function Page(props: PageProps<any, SearchParams>) {
       ) : null}
 
       {view === "card" ? (
-        <ol className='orders-card-grid gap-3'>
+        <ol className='grid grid-cols-[repeat(auto-fill,_minmax(250px,_1fr))] gap-3 items-start'>
           {items.data?.data.map((item) => (
             <li
               key={item.id}
