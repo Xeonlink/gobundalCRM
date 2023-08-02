@@ -75,13 +75,12 @@ export function useCreateCustomer(rawCustomer: RawCustomer, options?: MutateOpti
 }
 
 export function useUpdateCustomer(
-  name: string,
-  phone: string,
+  id: string,
   partialCustomer: Partial<Customer>,
   options?: MutateOption
 ) {
   const mutationFn = async () => {
-    const uri = `/customers/${name}#${phone}`;
+    const uri = `/customers/${id}`;
     const body = partialCustomer;
     const res = await apiRoot.patch(uri, body);
     return res.data;
@@ -90,9 +89,9 @@ export function useUpdateCustomer(
   return useAutoInvalidateMutation(["customers"], mutationFn, options);
 }
 
-export function useDeleteCustomer(name: string, phone: string, options?: MutateOption) {
+export function useDeleteCustomer(id: string, options?: MutateOption) {
   const mutationFn = async () => {
-    const uri = `/customers/${name}#${phone}`;
+    const uri = `/customers/${id}`;
     const res = await apiRoot.delete(uri);
     return res.data;
   };
@@ -100,26 +99,26 @@ export function useDeleteCustomer(name: string, phone: string, options?: MutateO
   return useAutoInvalidateMutation(["customers"], mutationFn, options);
 }
 
-export function useCustomer(name: string, phone: string, options?: QueryOptions<Customer>) {
+export function useCustomer(id: string, options?: QueryOptions<Customer>) {
   const auth = useAuth();
 
   const queryFn = async () => {
-    const uri = `/customers/${name}#${phone}`;
+    const uri = `/customers/${id}`;
     const res = await apiRoot.get<Customer>(uri);
     return res.data;
   };
 
-  return useQuery(["customers", JSON.stringify({ name, phone })], queryFn, {
+  return useQuery(["customers", id], queryFn, {
     suspense: true,
     enabled: auth.isSignIn,
     ...options,
   });
 }
 
-export function useDeleteCustomers(namePhones: string[], options?: MutateOption) {
+export function useDeleteCustomers(ids: string[], options?: MutateOption) {
   const mutationFn = async () => {
     const uri = `/customers`;
-    const config = { params: { ids: JSON.stringify(namePhones) } };
+    const config = { params: { ids: JSON.stringify(ids) } };
     const res = await apiRoot.delete(uri, config);
     return res.data;
   };

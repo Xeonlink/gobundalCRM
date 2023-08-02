@@ -1,93 +1,61 @@
 "use client";
 
-import { useCustomersByName } from "@/api/customers";
 import { useDeleteOrders, useOrders } from "@/api/orders";
+import { DateChanger } from "@/components/DateChanger";
+import { OrderDialog } from "@/components/Dialogs/OrderDialog";
 import { ImgIcon } from "@/components/ImgIcon";
 import { PageProps } from "@/extra/type";
-import { cls } from "@/extra/utils";
+import { cn } from "@/extra/utils";
 import { useAuth } from "@/hooks/useAuth";
+import { useExcel } from "@/hooks/useExcel";
+import { useItemSelection } from "@/hooks/useItemSelection";
+import { useModal } from "@/hooks/useModal";
 import IcoExcel from "@/public/icons/excel.png";
 import { faCalendarDays } from "@fortawesome/free-regular-svg-icons";
 import { faArrowsRotate, faPlus, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
-import { useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
-import * as XlSX from "xlsx";
+import React from "react";
 
 type SearchParams = {
   date: `${string}-${string}-${string}`;
   view: "card" | "table";
 };
 
-const th = (className: TemplateStringsArray) => {
-  return `m-box py-1 shadow-none ${className.join(" ")}`;
-};
-
-const td = (className: TemplateStringsArray) => {
-  return `text-center py-1 px-2 rounded-md aria-selected:bg-white aria-selected:bg-opacity-70 transition-all ${className.join(
-    " "
-  )}`;
-};
-
 export default function Page(props: PageProps<any, SearchParams>) {
   const { searchParams } = props;
   const { date = dayjs().format("YYYY-MM-DD"), view = "table" } = searchParams;
-  const [year, month, day] = date.split("-");
 
   useAuth();
   const navigate = useRouter();
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const excel = useExcel();
+  const modalCtrl = useModal();
+  const selected = useItemSelection();
   const orders = useOrders(date);
-  const eraseOrders = useDeleteOrders(selectedIds, {
-    onSuccess: () => setSelectedIds([]),
+  const eraseOrders = useDeleteOrders(selected.ids, {
+    onSuccess: () => selected.clear(),
   });
-
-  const onYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    navigate.replace(`orders?date=${e.target.value}-${month}-${day}&view=${view}`);
-  };
-  const onMonthChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    navigate.replace(`orders?date=${year}-${`0${e.target.value}`.slice(-2)}-${day}&view=${view}`);
-  };
-  const onDayChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    navigate.replace(`orders?date=${year}-${month}-${`0${e.target.value}`.slice(-2)}&view=${view}`);
+  const onDateChange = (date: string) => {
+    navigate.replace(`orders?date=${date}&view=${view}`);
   };
   const onViewStyleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     navigate.replace(`orders?date=${date}&view=${e.target.value}`);
   };
-
-  const onItemClick = (id: string) => (e: React.MouseEvent<HTMLElement>) => {
-    if (e.ctrlKey || e.metaKey) {
-      if (selectedIds.includes(id)) {
-        setSelectedIds((prev) => prev.filter((selectedId) => selectedId !== id));
-      } else {
-        setSelectedIds((prev) => [...prev, id]);
-      }
-    } else {
-      setSelectedIds([id]);
-    }
+  const openOrderCreateDialog = () => {
+    modalCtrl.open(<OrderDialog mode='CREATE' />);
   };
-
-  const gotoItemPage = (orderId: string) => {
-    navigate.push(`orders/${orderId}?date=${date}`);
+  const openOrderUpdateDialog = (orderId: string) => {
+    modalCtrl.open(<OrderDialog mode='UPDATE' orderId={orderId} />);
   };
-
   const onDeleteClick = () => {
-    if (selectedIds.length === 0) return;
+    if (selected.ids.length === 0) return;
     if (!confirm("정말로 삭제하시겠습니까?")) return;
     eraseOrders.mutate();
   };
-
-  const onExcelDownloadClick = () => {
-    if (orders.data?.data === undefined) return;
-
-    const fileName = `${dayjs().format("YYYY-MM-DD")} 주문.xlsx`;
-    const sheet = XlSX.utils.json_to_sheet(orders.data?.data);
-    const book = XlSX.utils.book_new();
-    XlSX.utils.book_append_sheet(book, sheet, "Sheet1");
-    XlSX.writeFile(book, fileName);
+  const onDownloadClick = () => {
+    excel.download(orders.data?.data!, "주문목록");
   };
 
   return (
@@ -100,31 +68,7 @@ export default function Page(props: PageProps<any, SearchParams>) {
         </Link>
 
         {/* 해당 날짜로 검색 */}
-        <fieldset className='m-box'>
-          <select className='btn shadow-none px-3 py-2' value={+year} onChange={onYearChange}>
-            {[2023, 2024, 2025].map((year) => (
-              <option key={year} value={year}>
-                {year}년
-              </option>
-            ))}
-          </select>
-          <span className='text-gray-200'>|</span>
-          <select className='btn shadow-none px-3 py-2' value={+month} onChange={onMonthChange}>
-            {new Array(12).fill(0).map((_, index) => (
-              <option key={index} value={index + 1}>
-                {index + 1}월
-              </option>
-            ))}
-          </select>
-          <span className='text-gray-200'>|</span>
-          <select className='btn shadow-none px-3 py-2' value={+day} onChange={onDayChange}>
-            {new Array(31).fill(0).map((_, index) => (
-              <option key={index} value={index + 1}>
-                {index + 1}일
-              </option>
-            ))}
-          </select>
-        </fieldset>
+        <DateChanger date={date} onChange={onDateChange} />
 
         {/* Refresh */}
         <button type='button' className='btn' onClick={() => orders.refetch()}>
@@ -142,9 +86,9 @@ export default function Page(props: PageProps<any, SearchParams>) {
         </select>
 
         {/* Cratet New Order */}
-        <Link href='orders/create' className='btn'>
+        <button type='button' className='btn' onClick={openOrderCreateDialog}>
           <FaIcon icon={faPlus} /> 송장 작성하기
-        </Link>
+        </button>
 
         {/* Delete */}
         <button type='button' className='btn' onClick={onDeleteClick}>
@@ -152,7 +96,7 @@ export default function Page(props: PageProps<any, SearchParams>) {
         </button>
 
         {/* 엑셀로 다운로드하기 */}
-        <button type='button' className='btn' onClick={onExcelDownloadClick}>
+        <button type='button' className='btn' onClick={onDownloadClick}>
           <ImgIcon src={IcoExcel} alt='엑셀로 변환' fontSize={20} /> 엑셀로 변환
         </button>
       </div>
@@ -176,24 +120,24 @@ export default function Page(props: PageProps<any, SearchParams>) {
             </tr>
           </thead>
           <tbody className='contents'>
-            {orders.data?.data.map((order) => (
+            {orders.data?.data.map((item) => (
               <tr
-                key={order.id}
+                key={item.id}
                 className='contents cursor-pointer order-table__tr'
-                onClick={onItemClick(order.id)}
-                onDoubleClick={() => gotoItemPage(order.id)}
-                onTouchEnd={() => gotoItemPage(order.id)}
-                aria-selected={selectedIds.includes(order.id)}
+                onClick={selected.onItemClick(item.id)}
+                onDoubleClick={() => openOrderUpdateDialog(item.id)}
+                onTouchEnd={() => openOrderUpdateDialog(item.id)}
+                aria-selected={selected.ids.includes(item.id)}
               >
-                <td className='td'>{order.senderName}</td>
-                <td className='td'>{order.senderPhone}</td>
-                <td className='td'>{order.receiverName}</td>
-                <td className='td'>{order.receiverPhone}</td>
-                <td className={td`text-start`}>
-                  {order.receiverAddress}, {order.receiverAddressDetail}
+                <td className='td'>{item.senderName}</td>
+                <td className='td'>{item.senderPhone}</td>
+                <td className='td'>{item.receiverName}</td>
+                <td className='td'>{item.receiverPhone}</td>
+                <td className='td text-start'>
+                  {item.receiverAddress}, {item.receiverAddressDetail}
                 </td>
-                <td className='td'>{order.productName}</td>
-                <td className='td'>{order.memo}</td>
+                <td className='td'>{item.products[0].name}</td>
+                <td className='td'>{item.memo}</td>
               </tr>
             ))}
           </tbody>
@@ -205,11 +149,11 @@ export default function Page(props: PageProps<any, SearchParams>) {
           {orders.data?.data.map((item) => (
             <li
               key={item.id}
-              className={cls("btn p-2 bg-transparent active:scale-90 text-start", {
-                "bg-white bg-opacity-70": selectedIds.includes(item.id),
+              className={cn("btn p-2 bg-transparent active:scale-90 text-start", {
+                "bg-white bg-opacity-70": selected.ids.includes(item.id),
               })}
-              onClick={onItemClick(item.id)}
-              onDoubleClick={() => gotoItemPage(item.id)}
+              onClick={selected.onItemClick(item.id)}
+              onDoubleClick={() => openOrderUpdateDialog(item.id)}
             >
               <p className='bg-orange-200 mb-2 p-2 rounded-md'>
                 <b className='text-lg'>{item.senderName}</b> {item.senderPhone}
@@ -220,7 +164,7 @@ export default function Page(props: PageProps<any, SearchParams>) {
                 {item.receiverAddress}, {item.receiverAddressDetail}
               </p>
               <p className='bg-blue-200 p-2 rounded-md'>
-                <b className='text-lg'>{item.productName}</b>
+                <b className='text-lg'>{item.products[0].name}</b>
                 <br />
                 {item.memo}
               </p>

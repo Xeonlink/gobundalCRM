@@ -33,9 +33,11 @@ import {
   faTrashCan,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
+import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
 
 const defaultOrder: RawOrder = {
+  date: dayjs().format("YYYY-MM-DD"),
   senderName: "",
   senderPhone: "",
   sameAsSender: false,
@@ -250,7 +252,6 @@ export default function Page() {
             </label>
             <Input
               id='sender-name'
-              type='text'
               placeholder='홍길동'
               disabled={createOrder.isLoading}
               value={order.senderName}
@@ -308,7 +309,6 @@ export default function Page() {
                     <Input
                       id='product-name'
                       list='product-name-list'
-                      type='text'
                       className='text-center'
                       disabled={createOrder.isLoading}
                       value={product.name}
@@ -319,7 +319,6 @@ export default function Page() {
                   <td className='relative'>
                     <Input
                       id='product-price'
-                      type='text'
                       className='text-center w-28'
                       value={product.price.toLocaleString()}
                       onChange={(e) =>
@@ -333,7 +332,6 @@ export default function Page() {
                   <td className='relative'>
                     <Input
                       id='product-quantity'
-                      type='text'
                       className='text-center w-28'
                       disabled={createOrder.isLoading}
                       value={product.quantity.toLocaleString()}
@@ -384,8 +382,8 @@ export default function Page() {
               checked={order.sameAsSender}
               disable={createOrder.isLoading}
               toggleFn={orderActions.toggleSameAsSender}
-              trueElements={[<FaIcon icon={faEquals} />, "같음"]}
-              falseElements={[<FaIcon icon={faNotEqual} />, " 같지 않음"]}
+              trueContents={[faEquals, " 같음"]}
+              falseContents={[faNotEqual, " 같지 않음"]}
             />
           </div>
 
@@ -395,7 +393,6 @@ export default function Page() {
             </label>
             <Input
               id='receiver-name'
-              type='text'
               placeholder='홍길동'
               disabled={order.sameAsSender || createOrder.isLoading}
               value={finalOrder.receiverName}
@@ -410,7 +407,6 @@ export default function Page() {
             </label>
             <Input
               id='receiver-phone'
-              type='text'
               placeholder='010-xxxx-xxxx'
               disabled={order.sameAsSender || createOrder.isLoading}
               value={finalOrder.receiverPhone}
@@ -425,7 +421,6 @@ export default function Page() {
             </label>
             <Input
               id='receiver-address'
-              type='text'
               placeholder='남원월산로74번길 42'
               disabled={createOrder.isLoading}
               value={order.receiverAddress}
@@ -441,7 +436,6 @@ export default function Page() {
             </label>
             <Input
               id='receiver-address-detail'
-              type='text'
               placeholder='단독주택, 1층 101호, ...'
               disabled={createOrder.isLoading}
               value={order.receiverAddressDetail}

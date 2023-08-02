@@ -1,4 +1,6 @@
+import clsx from "clsx";
 import { EmptyObject } from "./type";
+import { twMerge } from "tailwind-merge";
 
 export function toHyphenPhone(str: string): string {
   return str
@@ -31,6 +33,10 @@ export const cls = (className: string, optoinalClasses?: { [key: string]: boolea
   );
 };
 
+export function cn(...inputs: clsx.ClassValue[]) {
+  return twMerge(clsx(...inputs));
+}
+
 export function debounce<T extends (...args: any[]) => any>(fn: T, delay: number) {
   let timer: ReturnType<typeof setTimeout>;
   return function (this: any, ...args: Parameters<T>) {
@@ -44,7 +50,7 @@ export function debounce<T extends (...args: any[]) => any>(fn: T, delay: number
 export function diff<T extends object>(target1: T, target2: T): Partial<T> {
   const result = {} as Partial<T>;
   for (const key in target1) {
-    if (target1[key] !== target2[key]) {
+    if (target1?.[key] !== target2?.[key]) {
       result[key] = target1[key];
     }
   }

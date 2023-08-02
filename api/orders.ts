@@ -22,7 +22,7 @@ export interface Order {
   memo: string;
 }
 
-export type RawOrder = Omit<Order, "date" | "id">;
+export type RawOrder = Omit<Order, "id">;
 
 export function useOrders(date: string, options?: QueryOptions<GetResponse<Order>>) {
   const auth = useAuth();

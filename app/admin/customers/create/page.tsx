@@ -128,7 +128,6 @@ export default function Page() {
               </label>
               <Input
                 id='name'
-                type='text'
                 placeholder='홍길동'
                 disabled={createProduct.isLoading}
                 value={customer.name}
@@ -144,7 +143,6 @@ export default function Page() {
               </label>
               <Input
                 id='price'
-                type='text'
                 placeholder='010-xxxx-xxxx'
                 disabled={createProduct.isLoading}
                 value={customer.phone}
@@ -160,7 +158,6 @@ export default function Page() {
               </label>
               <Input
                 id='address'
-                type='text'
                 placeholder='제주특별자치도 서귀포시 남원읍 ...'
                 disabled={createProduct.isLoading}
                 value={customer.address}
@@ -176,7 +173,6 @@ export default function Page() {
               </label>
               <Input
                 id='address-detail'
-                type='text'
                 placeholder='apt, 101호 ...'
                 disabled={createProduct.isLoading}
                 value={customer.addressDetail}

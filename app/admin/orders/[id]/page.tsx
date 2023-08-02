@@ -1,7 +1,7 @@
 "use client";
 
 import { useCustomersByName } from "@/api/customers";
-import { RawOrder, useCreateOrder, useOrder, useOrders } from "@/api/orders";
+import { RawOrder, useCreateOrder, useOrder } from "@/api/orders";
 import { useProducts } from "@/api/products";
 import { BlurInfo } from "@/components/BlurInfo";
 import { CheckBox } from "@/components/CheckBox";
@@ -233,7 +233,6 @@ export default function Page(props: PageProps<Params>) {
               </label>
               <Input
                 id='sender-name'
-                type='text'
                 placeholder='홍길동'
                 disabled={createOrder.isLoading}
                 value={change.senderName}
@@ -277,8 +276,8 @@ export default function Page(props: PageProps<Params>) {
                 checked={change.sameAsSender}
                 disable={createOrder.isLoading}
                 toggleFn={changeActions.toggleSameAsSender}
-                trueElements={[<FaIcon icon={faEquals} />, "같음"]}
-                falseElements={[<FaIcon icon={faNotEqual} />, " 같지 않음"]}
+                trueContents={[faEquals, " 같음"]}
+                falseContents={[faNotEqual, " 같지 않음"]}
               />
             </div>
 
@@ -288,7 +287,6 @@ export default function Page(props: PageProps<Params>) {
               </label>
               <Input
                 id='receiver-name'
-                type='text'
                 placeholder='홍길동'
                 disabled={change.sameAsSender || createOrder.isLoading}
                 value={finalOrder.receiverName}
@@ -303,7 +301,6 @@ export default function Page(props: PageProps<Params>) {
               </label>
               <Input
                 id='receiver-phone'
-                type='text'
                 placeholder='010-xxxx-xxxx'
                 disabled={change.sameAsSender || createOrder.isLoading}
                 value={finalOrder.receiverPhone}
@@ -318,7 +315,6 @@ export default function Page(props: PageProps<Params>) {
               </label>
               <Input
                 id='receiver-address'
-                type='text'
                 placeholder='남원월산로74번길 42'
                 disabled={createOrder.isLoading}
                 value={change.receiverAddress}
@@ -334,7 +330,6 @@ export default function Page(props: PageProps<Params>) {
               </label>
               <Input
                 id='receiver-address-detail'
-                type='text'
                 placeholder='단독주택, 1층 101호, ...'
                 disabled={createOrder.isLoading}
                 value={change.receiverAddressDetail}
@@ -373,7 +368,6 @@ export default function Page(props: PageProps<Params>) {
                       <Input
                         id='product-name'
                         list='product-name-list'
-                        type='text'
                         className='text-center'
                         disabled={createOrder.isLoading}
                         value={product.name}
@@ -386,7 +380,6 @@ export default function Page(props: PageProps<Params>) {
                     <td className='relative'>
                       <Input
                         id='product-price'
-                        type='text'
                         className='text-center w-28'
                         value={product.price.toLocaleString()}
                         onChange={(e) =>
@@ -400,7 +393,6 @@ export default function Page(props: PageProps<Params>) {
                     <td className='relative'>
                       <Input
                         id='product-quantity'
-                        type='text'
                         className='text-center w-28'
                         disabled={createOrder.isLoading}
                         value={product.quantity.toLocaleString()}

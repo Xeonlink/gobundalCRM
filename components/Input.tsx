@@ -1,3 +1,4 @@
+import { cn } from "@/extra/utils";
 import { DetailedHTMLProps, InputHTMLAttributes } from "react";
 
 interface Props extends DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> {
@@ -13,8 +14,17 @@ export function Input(props: Props) {
       autoCorrect='off'
       autoCapitalize='off'
       spellCheck='false'
+      type='text'
       {...rest}
-      className={`input ${invalid ? "input-invalid" : ""} ${props.className ?? ""}`}
+      className={
+        cn(
+          "rounded-md bg-white px-3 py-2 w-full disabled:opacity-40",
+          {
+            "animate-shake shadow-red-300": invalid,
+          },
+          props.className
+        ) + " shadow-inset-2"
+      }
     />
   );
 }

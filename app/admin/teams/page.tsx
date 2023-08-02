@@ -2,13 +2,12 @@
 
 import { useDeleteTeams, useTeams } from "@/api/teams";
 import { DateChanger } from "@/components/DateChanger";
+import { TeamDialog } from "@/components/Dialogs/TeamDialog";
 import { ImgIcon } from "@/components/ImgIcon";
-import { StatusDot } from "@/components/StatusDot";
-import { TeamDialog } from "@/components/TeamDialog";
 import { PageProps } from "@/extra/type";
-import { cls } from "@/extra/utils";
+import { cn } from "@/extra/utils";
 import { useAuth } from "@/hooks/useAuth";
-import { useExcelDownload } from "@/hooks/useExcel";
+import { useExcel } from "@/hooks/useExcel";
 import { useModal } from "@/hooks/useModal";
 import IcoExcel from "@/public/icons/excel.png";
 import { faCalendarDays } from "@fortawesome/free-regular-svg-icons";
@@ -30,20 +29,13 @@ export default function Page(props: PageProps<any, SearchParams>) {
 
   useAuth();
   const navigate = useRouter();
-  const { modalCtrl } = useModal();
+  const modalCtrl = useModal();
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const teams = useTeams(date);
-  const excel = useExcelDownload(teams.data?.data!, "팀");
+  const excel = useExcel();
   const eraseTeams = useDeleteTeams(selectedIds, {
     onSuccess: () => setSelectedIds([]),
   });
-
-  const onDateChange = (date: string) => {
-    navigate.replace(`teams?date=${date}&view=${view}`);
-  };
-  const onViewStyleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    navigate.replace(`teams?date=${date}&view=${e.target.value}`);
-  };
 
   const onItemClick = (id: string) => (e: React.MouseEvent<HTMLElement>) => {
     if (e.ctrlKey || e.metaKey) {
@@ -56,18 +48,25 @@ export default function Page(props: PageProps<any, SearchParams>) {
       setSelectedIds([id]);
     }
   };
-
+  const onDateChange = (date: string) => {
+    navigate.replace(`teams?date=${date}&view=${view}`);
+  };
+  const onViewStyleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    navigate.replace(`teams?date=${date}&view=${e.target.value}`);
+  };
   const openCreateTeamDialog = () => {
     modalCtrl.open(<TeamDialog mode='CREATE' />);
   };
   const openUpdateTeamDialog = (id: string) => {
     modalCtrl.open(<TeamDialog mode='UPDATE' teamId={id} />);
   };
-
   const onDeleteClick = () => {
     if (selectedIds.length === 0) return;
     if (!confirm("정말로 삭제하시겠습니까?")) return;
     eraseTeams.mutate();
+  };
+  const onDownloadClick = () => {
+    excel.download(teams.data?.data!, "팀");
   };
 
   return (
@@ -104,7 +103,7 @@ export default function Page(props: PageProps<any, SearchParams>) {
         </button>
 
         {/* 엑셀로 다운로드하기 */}
-        <button type='button' className='btn' onClick={excel.downalod}>
+        <button type='button' className='btn' onClick={onDownloadClick}>
           <ImgIcon src={IcoExcel} alt='엑셀로 변환' fontSize={20} /> 엑셀로 변환
         </button>
       </div>
@@ -139,12 +138,8 @@ export default function Page(props: PageProps<any, SearchParams>) {
                 <td className='td'>{item.leaderPhone}</td>
                 <td className='td'>{item.coupon}</td>
                 <td className='td'>{item.population}</td>
-                <td className='td'>
-                  <StatusDot good={item.isApproved} />
-                </td>
-                <td className='td'>
-                  <StatusDot good={item.isLeave} />
-                </td>
+                <td className='td'>{item.isApproved ? "O" : "X"}</td>
+                <td className='td'>{item.isLeave ? "O" : "X"}</td>
               </tr>
             ))}
           </tbody>
@@ -156,7 +151,7 @@ export default function Page(props: PageProps<any, SearchParams>) {
           {teams.data?.data.map((item) => (
             <li
               key={item.id}
-              className={cls("btn p-3 bg-opacity-50 active:scale-90 text-start", {
+              className={cn("btn p-3 bg-opacity-50 active:scale-90 text-start", {
                 "bg-opacity-100": selectedIds.includes(item.id),
               })}
               aria-selected={selectedIds.includes(item.id)}
@@ -164,8 +159,8 @@ export default function Page(props: PageProps<any, SearchParams>) {
               onDoubleClick={() => openUpdateTeamDialog(item.id)}
             >
               <ol className='flex items-center gap-1 py-2'>
-                <StatusDot good={item.isApproved} />
-                <StatusDot good={item.isLeave} />
+                {item.isApproved ? "O" : "X"}
+                {item.isLeave ? "O" : "X"}
               </ol>
               <b className='text-2xl '>{item.leaderName}</b>
               <br />

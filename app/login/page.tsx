@@ -1,5 +1,6 @@
 "use client";
 
+import { Input } from "@/components/Input";
 import { PageProps } from "@/extra/type";
 import { useAuth } from "@/hooks/useAuth";
 import { useTypeSafeReducer } from "@/hooks/useTypeSafeReducer";
@@ -88,7 +89,7 @@ export default function Page(props: PageProps<any, SearchParams>) {
         />
         <form className='w-80 p-4 max-w-full m-auto relative' onSubmit={(e) => e.preventDefault()}>
           <fieldset className='fieldset'>
-            <legend className='btn bg-transparent p-2'>
+            <legend className='legend'>
               <FaIcon icon={faUserLock} /> 사용자 인증
             </legend>
 
@@ -96,17 +97,13 @@ export default function Page(props: PageProps<any, SearchParams>) {
               <label htmlFor='username' className='label'>
                 <FaIcon icon={faSignature} /> 사용자 이름
               </label>
-              <input
-                type='text'
+              <Input
                 id='username'
                 placeholder='id'
-                className='input'
                 defaultValue={credentials.username}
                 onChange={actions.setUsername}
                 disabled={isLoading}
-                required
-                autoCapitalize='off'
-                autoComplete='off'
+                invalid={credentials.username === ""}
                 autoFocus
               />
             </div>
@@ -115,17 +112,14 @@ export default function Page(props: PageProps<any, SearchParams>) {
               <label htmlFor='password' className='label'>
                 <FaIcon icon={faKey} /> 비밀번호
               </label>
-              <input
+              <Input
                 type='password'
                 id='password'
                 placeholder='password'
-                className='input'
                 defaultValue={credentials.password}
                 onChange={actions.setPassword}
                 disabled={isLoading}
-                required
-                autoCapitalize='off'
-                autoComplete='off'
+                invalid={credentials.password.length < 8}
               />
             </div>
 
@@ -165,9 +159,23 @@ export default function Page(props: PageProps<any, SearchParams>) {
           </fieldset>
 
           {/* Submit Buttons */}
-          <div className='flex gap-3 disabled:opacity-40 w-64 max-w-full m-auto flex-row-reverse'>
+          <div className='mt-3 space-x-2 text-center'>
             <button
-              className='btn w-full p-2'
+              type='button'
+              className='btn'
+              onClick={() => signUp.mutate()}
+              disabled={!isValid || isLoading}
+            >
+              {isLoading ? (
+                <FaIcon icon={faSpinner} className='animate-spin' />
+              ) : (
+                <FaIcon icon={faUserPlus} />
+              )}
+              &nbsp;가입요청
+            </button>
+
+            <button
+              className='btn'
               onClick={() => signIn.mutate()}
               disabled={isLoading || !isValid}
             >
@@ -177,19 +185,6 @@ export default function Page(props: PageProps<any, SearchParams>) {
                 <FaIcon icon={faArrowRightToBracket} />
               )}
               &nbsp;로그인
-            </button>
-
-            <button
-              className='btn w-full p-2'
-              onClick={() => signUp.mutate()}
-              disabled={isLoading || !isValid}
-            >
-              {isLoading ? (
-                <FaIcon icon={faSpinner} className='animate-spin' />
-              ) : (
-                <FaIcon icon={faUserPlus} />
-              )}
-              &nbsp;가입요청
             </button>
           </div>
         </form>

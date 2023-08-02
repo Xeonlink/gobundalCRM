@@ -4,7 +4,20 @@ import { useContext } from "react";
 export function useModal() {
   const [_, setModals] = useContext(ModalContext);
 
-  const open = (ui: React.ReactNode, key: number = Math.round(Math.random() * 10000)) => {
+  const open = (revealedUI: React.ReactNode, key: number = Math.round(Math.random() * 10000)) => {
+    const originUI = revealedUI as any;
+
+    const ui = {
+      ...originUI,
+      key,
+      props: {
+        ...originUI.props,
+        closeSelf: () => setModals((prev) => prev.filter((m) => m.key !== key)),
+        ref: (target: HTMLDialogElement | undefined) => target?.showModal(),
+        id: key,
+      },
+    };
+
     const modal = { key, ui };
     setModals((prev) => [...prev, modal]);
     return key;
@@ -14,5 +27,5 @@ export function useModal() {
     setModals((prev) => prev.filter((modal) => modal.key !== key));
   };
 
-  return { modalCtrl: { open, close } };
+  return { open, close };
 }

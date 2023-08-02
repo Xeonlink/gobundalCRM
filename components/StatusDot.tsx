@@ -1,4 +1,4 @@
-import { cls } from "@/extra/utils";
+import { cn } from "@/extra/utils";
 
 type Props = {
   className?: string;
@@ -10,7 +10,7 @@ export function StatusDot(props: Props) {
 
   return (
     <i
-      className={cls(`inline-block rounded-full bg-green-500 w-3 h-3 ${className}`, {
+      className={cn(`inline-block rounded-full bg-green-500 w-3 h-3 ${className}`, {
         "bg-orange-500": !good,
       })}
     />

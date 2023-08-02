@@ -1,32 +1,22 @@
 "use client";
 
 import { useDeleteProducts, useProducts } from "@/api/products";
+import { ProductDialog } from "@/components/Dialogs/ProductDialog";
 import { ImgIcon } from "@/components/ImgIcon";
 import { PageProps } from "@/extra/type";
-import { cls } from "@/extra/utils";
+import { cn } from "@/extra/utils";
 import { useAuth } from "@/hooks/useAuth";
+import { useExcel } from "@/hooks/useExcel";
+import { useModal } from "@/hooks/useModal";
 import IcoExcel from "@/public/icons/excel.png";
 import { faArrowsRotate, faInfinity, faPlus, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
-import dayjs from "dayjs";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
-import * as XlSX from "xlsx";
 
 type SearchParams = {
   date: `${string}-${string}-${string}`;
   view: "card" | "table";
-};
-
-const th = (className: TemplateStringsArray) => {
-  return `m-box py-1 shadow-none ${className.join(" ")}`;
-};
-
-const td = (className: TemplateStringsArray) => {
-  return `text-center py-1 px-2 rounded-md aria-selected:bg-white aria-selected:bg-opacity-70 transition-all ${className.join(
-    " "
-  )}`;
 };
 
 export default function Page(props: PageProps<any, SearchParams>) {
@@ -34,16 +24,14 @@ export default function Page(props: PageProps<any, SearchParams>) {
   const { view = "table" } = searchParams;
 
   useAuth();
+  const excel = useExcel();
   const navigate = useRouter();
+  const modalCtrl = useModal();
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const products = useProducts();
   const deleteProducts = useDeleteProducts(selectedIds, {
     onSuccess: () => setSelectedIds([]),
   });
-
-  const onViewStyleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    navigate.replace(`products?view=${e.target.value}`);
-  };
 
   const onItemClick = (id: string) => (e: React.MouseEvent<HTMLElement>) => {
     if (e.ctrlKey || e.metaKey) {
@@ -56,25 +44,22 @@ export default function Page(props: PageProps<any, SearchParams>) {
       setSelectedIds([id]);
     }
   };
-
-  const gotoItemPage = (orderId: string) => {
-    navigate.push(`products/${orderId}`);
+  const onViewStyleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    navigate.replace(`products?view=${e.target.value}`);
   };
-
+  const openProductCreateDialog = () => {
+    modalCtrl.open(<ProductDialog mode='CREATE' />);
+  };
+  const openProductUpdateDialog = (productId: string) => {
+    modalCtrl.open(<ProductDialog mode='UPDATE' productId={productId} />);
+  };
+  const onExcelDownloadClick = () => {
+    excel.download(products.data?.data!, "상품");
+  };
   const onDeleteClick = () => {
     if (selectedIds.length === 0) return;
     if (!confirm("정말로 삭제하시겠습니까?")) return;
     deleteProducts.mutate();
-  };
-
-  const onExcelDownloadClick = () => {
-    if (products.data?.data === undefined) return;
-
-    const fileName = `${dayjs().format("YYYY-MM-DD")} 상품.xlsx`;
-    const sheet = XlSX.utils.json_to_sheet(products.data?.data);
-    const book = XlSX.utils.book_new();
-    XlSX.utils.book_append_sheet(book, sheet, "Sheet1");
-    XlSX.writeFile(book, fileName);
   };
 
   return (
@@ -97,9 +82,9 @@ export default function Page(props: PageProps<any, SearchParams>) {
         </select>
 
         {/* Cratet New Order */}
-        <Link href='products/create' className='btn'>
+        <button type='button' className='btn' onClick={openProductCreateDialog}>
           <FaIcon icon={faPlus} /> 상품 추가하기
-        </Link>
+        </button>
 
         {/* Delete */}
         <button type='button' className='btn' onClick={onDeleteClick}>
@@ -132,26 +117,29 @@ export default function Page(props: PageProps<any, SearchParams>) {
             {products.data?.data.map((item) => (
               <tr
                 key={item.id}
-                className='contents cursor-pointer order-table__tr'
+                className='contents cursor-pointer group'
                 onClick={onItemClick(item.id)}
-                onDoubleClick={() => gotoItemPage(item.id)}
-                onTouchEnd={() => gotoItemPage(item.id)}
+                onDoubleClick={() => openProductUpdateDialog(item.id)}
+                onTouchEnd={() => openProductUpdateDialog(item.id)}
                 aria-selected={selectedIds.includes(item.id)}
               >
-                <td className='td'>{item.name}</td>
-                <td className='td'>{item.price.toLocaleString() + "원"}</td>
-                <td className='td'>{item.salePrice.toLocaleString() + "원"}</td>
-                <td className='td'>
+                <td className='td group-aria-selected:bg-white group-aria-selected:bg-opacity-40'>
+                  {item.name}
+                </td>
+                <td className='td group-aria-selected:bg-white group-aria-selected:bg-opacity-40'>
+                  {item.price.toLocaleString() + "원"}
+                </td>
+                <td className='td group-aria-selected:bg-white group-aria-selected:bg-opacity-40'>
+                  {item.salePrice.toLocaleString() + "원"}
+                </td>
+                <td className='td group-aria-selected:bg-white group-aria-selected:bg-opacity-40'>
                   {item.remain < 0 ? <FaIcon icon={faInfinity} /> : item.remain}
                 </td>
-                <td className='td'>{item.isSale ? "O" : "X"}</td>
-                <td className='td'>
+                <td className='td group-aria-selected:bg-white group-aria-selected:bg-opacity-40'>
+                  {item.isSale ? "O" : "X"}
+                </td>
+                <td className='td group-aria-selected:bg-white group-aria-selected:bg-opacity-40'>
                   {item.enabled ? "O" : "X"}
-                  {/* {item.enabled ? (
-                    <i className='inline-block rounded-full bg-green-500 w-3 h-3' />
-                  ) : (
-                    <i className='inline-block rounded-full bg-orange-500 w-3 h-3' />
-                  )} */}
                 </td>
               </tr>
             ))}
@@ -164,11 +152,11 @@ export default function Page(props: PageProps<any, SearchParams>) {
           {products.data?.data?.map((item) => (
             <li
               key={item.id}
-              className={cls("btn p-2 bg-transparent active:scale-90 text-start", {
+              className={cn("btn p-2 bg-transparent active:scale-90 text-start", {
                 "bg-opacity-70 bg-white": selectedIds.includes(item.id),
               })}
               onClick={onItemClick(item.id)}
-              onDoubleClick={() => gotoItemPage(item.id)}
+              onDoubleClick={() => openProductUpdateDialog(item.id)}
             >
               <p className='bg-orange-200 mb-2 p-2 rounded-md'>
                 <b className='text-lg'>{item.name}</b> <br />

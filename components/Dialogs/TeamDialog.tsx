@@ -1,6 +1,6 @@
 "use client";
 
-import { RawTeam, useCreateTeam, useTeam, useUpdateTeam } from "@/api/teams";
+import { RawTeam, useCreateTeam, useDeleteTeam, useTeam, useUpdateTeam } from "@/api/teams";
 import { ModalProps } from "@/extra/type";
 import { diff, toHyphenPhone } from "@/extra/utils";
 import { useTypeSafeReducer } from "@/hooks/useTypeSafeReducer";
@@ -14,16 +14,16 @@ import {
   faNotdef,
   faPeopleGroup,
   faSignature,
-  faSpinner,
   faThumbsDown,
   faThumbsUp,
+  faTrashAlt,
   faX,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
-import { CheckBox } from "./CheckBox";
-import { Input } from "./Input";
 import dayjs from "dayjs";
-import { DateChanger } from "./DateChanger";
+import { CheckBox } from "../CheckBox";
+import { DateChanger } from "../DateChanger";
+import { FaIcon } from "../FaIcon";
+import { Input } from "../Input";
 
 const defaultTeam: RawTeam = {
   date: dayjs().format("YYYY-MM-DD"),
@@ -80,7 +80,10 @@ export function TeamDialog(props: Props) {
   const createTeam = useCreateTeam(team, {
     onSuccess: () => props.closeSelf?.(),
   });
-  const updateTeam = useUpdateTeam(originTeam?.id!, diff(originTeam!, team), {
+  const updateTeam = useUpdateTeam(originTeam?.id!, diff(team, originTeam!), {
+    onSuccess: () => props.closeSelf?.(),
+  });
+  const deleteTeam = useDeleteTeam(originTeam?.id!, {
     onSuccess: () => props.closeSelf?.(),
   });
 
@@ -92,6 +95,7 @@ export function TeamDialog(props: Props) {
   };
   const isValid = Object.values(validity).every((v) => v);
   const isCleared = mode === "CREATE" ? team === defaultTeam : originTeam === team;
+  const isLoading = createTeam.isLoading || updateTeam.isLoading || deleteTeam.isLoading;
 
   return (
     <dialog
@@ -99,8 +103,8 @@ export function TeamDialog(props: Props) {
       onClose={props.closeSelf}
       className='max-w-full max-h-full rounded-md p-0 w-96 bg-transparent backdrop:backdrop-blur-md animate-scaleTo1'
     >
-      <fieldset className='fieldset bg-white bg-opacity-40 mb-2'>
-        <legend className='legend bg-white bg-opacity-40'>
+      <fieldset className='fieldset'>
+        <legend className='legend'>
           <FaIcon icon={faPeopleGroup} fontSize={16} /> 팀 생성
         </legend>
 
@@ -118,11 +122,10 @@ export function TeamDialog(props: Props) {
           </label>
           <Input
             id='leader-name'
-            type='text'
             placeholder='홍길동'
             value={team.leaderName}
             onChange={teamActions.onLeaderNameChange}
-            disabled={createTeam.isLoading}
+            disabled={isLoading}
             required
           />
         </div>
@@ -137,7 +140,7 @@ export function TeamDialog(props: Props) {
             placeholder='010-xxxx-xxxx'
             value={team.leaderPhone}
             onChange={teamActions.onLeaderPhoneChange}
-            disabled={createTeam.isLoading}
+            disabled={isLoading}
             required
           />
         </div>
@@ -148,10 +151,9 @@ export function TeamDialog(props: Props) {
           </label>
           <Input
             id='coupon'
-            type='text'
             value={team.coupon}
             onChange={teamActions.onCouponChange}
-            disabled={createTeam.isLoading}
+            disabled={isLoading}
             placeholder='쿠폰사'
             required
           />
@@ -166,7 +168,7 @@ export function TeamDialog(props: Props) {
             type='number'
             value={team.population}
             onChange={teamActions.onPopulationChange}
-            disabled={createTeam.isLoading}
+            disabled={isLoading}
             placeholder='인원수'
           />
         </div>
@@ -176,11 +178,11 @@ export function TeamDialog(props: Props) {
             <FaIcon icon={team.isApproved ? faThumbsUp : faThumbsDown} /> 쿠폰이 승인되었습니까?
           </label>
           <CheckBox
-            disable={createTeam.isLoading}
+            disable={isLoading}
             checked={team.isApproved}
             toggleFn={teamActions.toggleIsApproved}
-            trueElements={[<FaIcon icon={faThumbsUp} />, " 승인완료"]}
-            falseElements={[<FaIcon icon={faThumbsDown} />, " 승인대기"]}
+            trueContents={[faThumbsUp, " 승인완료"]}
+            falseContents={[faThumbsDown, " 승인대기"]}
           />
         </div>
 
@@ -189,55 +191,51 @@ export function TeamDialog(props: Props) {
             <FaIcon icon={team.isLeave ? faDoorOpen : faDoorClosed} /> 손님이 체험장을 나갔습니까?
           </label>
           <CheckBox
-            disable={createTeam.isLoading}
+            disable={isLoading}
             checked={team.isLeave}
             toggleFn={teamActions.toggleIsLeave}
-            trueElements={[<FaIcon icon={faDoorOpen} />, " 나갔음"]}
-            falseElements={[<FaIcon icon={faDoorClosed} />, " 나가지 않음"]}
+            trueContents={[faDoorOpen, " 나갔음"]}
+            falseContents={[faDoorClosed, " 나가지 않음"]}
           />
         </div>
       </fieldset>
 
-      <form method='dialog' className='flex justify-end gap-2'>
+      <form method='dialog' className='flex justify-end gap-2 mt-2'>
         {/* Close */}
-        <button className='btn' disabled={createTeam.isLoading}>
-          {createTeam.isLoading ? (
-            <>
-              <FaIcon icon={faSpinner} className='animate-spin' /> 저장중...
-            </>
-          ) : (
-            <>
-              <FaIcon icon={faX} /> 닫기
-            </>
-          )}
+        <button className='btn' disabled={isLoading}>
+          <FaIcon icon={faX} isLoading={isLoading} value='닫기' />
         </button>
 
         {/* Clear */}
         <button
           type='button'
           className='btn'
-          disabled={isCleared || createTeam.isLoading}
+          disabled={isCleared || isLoading}
           onClick={teamActions.reset}
         >
-          <FaIcon icon={faNotdef} rotation={90} /> 초기화
+          <FaIcon icon={faNotdef} rotation={90} isLoading={isLoading} value='초기화' />
         </button>
+
+        {/* Delete */}
+        {mode === "UPDATE" ? (
+          <button
+            type='button'
+            className='btn'
+            disabled={isLoading}
+            onClick={() => deleteTeam.mutate()}
+          >
+            <FaIcon icon={faTrashAlt} isLoading={isLoading} value='삭제' />
+          </button>
+        ) : null}
 
         {/* Save */}
         <button
           type='button'
           className='btn'
           onClick={mode === "CREATE" ? () => createTeam.mutate() : () => updateTeam.mutate()}
-          disabled={!isValid || createTeam.isLoading}
+          disabled={!isValid || isLoading}
         >
-          {createTeam.isLoading ? (
-            <>
-              <FaIcon icon={faSpinner} className='animate-spin' /> 저장중...
-            </>
-          ) : (
-            <>
-              <FaIcon icon={faFloppyDisk} /> 저장
-            </>
-          )}
+          <FaIcon icon={faFloppyDisk} isLoading={isLoading} value='저장' />
         </button>
       </form>
     </dialog>

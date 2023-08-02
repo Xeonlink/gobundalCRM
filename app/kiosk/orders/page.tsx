@@ -6,7 +6,7 @@ import { BlurInfo } from "@/components/BlurInfo";
 import { CheckBox } from "@/components/CheckBox";
 import { Input } from "@/components/Input";
 import { PageProps } from "@/extra/type";
-import { cls, toHyphenPhone } from "@/extra/utils";
+import { cn, toHyphenPhone } from "@/extra/utils";
 import { usePostCodePopup } from "@/hooks/usePostCodePopup";
 import { useToggle } from "@/hooks/useToggle";
 import { useTypeSafeReducer } from "@/hooks/useTypeSafeReducer";
@@ -136,7 +136,6 @@ export default function Page(_: PageProps) {
               </label>
               <Input
                 id='sender-name'
-                type='text'
                 placeholder='홍길동'
                 disabled={createOrder.isLoading}
                 value={order.senderName}
@@ -174,8 +173,8 @@ export default function Page(_: PageProps) {
                 checked={order.sameAsSender}
                 disable={createOrder.isLoading}
                 toggleFn={orderActions.toggleSameAsSender}
-                trueElements={[<FaIcon icon={faEquals} />, " 동일"]}
-                falseElements={[<FaIcon icon={faNotEqual} />, " 동일하지 않음"]}
+                trueContents={[faEquals, " 동일"]}
+                falseContents={[faNotEqual, " 동일하지 않음"]}
               />
             </div>
 
@@ -185,7 +184,6 @@ export default function Page(_: PageProps) {
               </label>
               <Input
                 id='receiver-name'
-                type='text'
                 placeholder='홍길동'
                 disabled={order.sameAsSender || createOrder.isLoading}
                 value={order.sameAsSender ? order.senderName : order.receiverName}
@@ -200,7 +198,6 @@ export default function Page(_: PageProps) {
               </label>
               <Input
                 id='receiver-phone'
-                type='text'
                 placeholder='010-xxxx-xxxx'
                 disabled={order.sameAsSender || createOrder.isLoading}
                 value={order.sameAsSender ? order.senderPhone : order.receiverPhone}
@@ -215,7 +212,6 @@ export default function Page(_: PageProps) {
               </label>
               <Input
                 id='receiver-address'
-                type='text'
                 placeholder='남원월산로74번길 42'
                 disabled={createOrder.isLoading}
                 value={order.receiverAddress}
@@ -231,7 +227,6 @@ export default function Page(_: PageProps) {
               </label>
               <Input
                 id='receiver-address-detail'
-                type='text'
                 placeholder='단독주택, 1층 101호, ...'
                 disabled={createOrder.isLoading}
                 value={order.receiverAddressDetail}
@@ -268,8 +263,8 @@ export default function Page(_: PageProps) {
               <select
                 name='product-name'
                 id='product-name'
-                className={cls("rounded-md bg-white px-3 py-2 w-full disabled:opacity-40", {
-                  "shake border-red-300 border-2": !validity.productName,
+                className={cn("rounded-md bg-white px-3 py-2 w-full disabled:opacity-40", {
+                  "animate-shake border-red-300 border-2": !validity.productName,
                 })}
                 disabled={createOrder.isLoading}
                 value={

@@ -15,7 +15,6 @@ export interface LayoutParam<P = {}> {
 }
 
 export type ModalProps<T = {}> = T & {
-  id?: string;
   closeSelf?: () => void;
   ref?: (instance: HTMLDialogElement) => void;
 };

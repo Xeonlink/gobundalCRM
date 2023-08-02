@@ -1,6 +1,6 @@
 "use client";
 
-import { cls } from "@/extra/utils";
+import { cn } from "@/extra/utils";
 
 type Props = {
   className?: string;
@@ -15,7 +15,7 @@ export function DateChanger(props: Props) {
   return (
     <div
       id='date'
-      className={cls("bg-white rounded-md flex items-center", {
+      className={cn("bg-white rounded-md flex items-center", {
         [className || ""]: !!className,
       })}
     >

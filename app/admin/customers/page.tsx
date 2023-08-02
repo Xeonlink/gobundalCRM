@@ -1,32 +1,23 @@
 "use client";
 
 import { useCustomersByName, useDeleteCustomers } from "@/api/customers";
+import { CustomerDialog } from "@/components/Dialogs/CustomerDialog";
 import { ImgIcon } from "@/components/ImgIcon";
 import { Input } from "@/components/Input";
 import { PageProps } from "@/extra/type";
-import { cls, debounce } from "@/extra/utils";
+import { cn, debounce } from "@/extra/utils";
 import { useAuth } from "@/hooks/useAuth";
+import { useExcel } from "@/hooks/useExcel";
+import { useItemSelection } from "@/hooks/useItemSelection";
+import { useModal } from "@/hooks/useModal";
 import IcoExcel from "@/public/icons/excel.png";
 import { faArrowsRotate, faPlus, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
-import dayjs from "dayjs";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
-import * as XlSX from "xlsx";
 
 type SearchParams = {
   view: "card" | "table";
-};
-
-const th = (className: TemplateStringsArray) => {
-  return `m-box py-1 shadow-none ${className.join(" ")}`;
-};
-
-const td = (className: TemplateStringsArray) => {
-  return `text-center py-1 px-2 rounded-md aria-selected:bg-white aria-selected:bg-opacity-70 transition-all ${className.join(
-    " "
-  )}`;
 };
 
 export default function Page(props: PageProps<any, SearchParams>) {
@@ -34,50 +25,34 @@ export default function Page(props: PageProps<any, SearchParams>) {
   const { view = "table" } = searchParams;
 
   useAuth();
+  const excel = useExcel();
+  const modalCtrl = useModal();
   const navigate = useRouter();
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [name, setName] = useState("");
+  const selected = useItemSelection();
   const items = useCustomersByName(name, {
     enabled: name !== "",
   });
-  const eraseItems = useDeleteCustomers(selectedIds, {
-    onSuccess: () => setSelectedIds([]),
+  const eraseItems = useDeleteCustomers(selected.ids, {
+    onSuccess: () => selected.clear(),
   });
 
   const onViewStyleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     navigate.replace(`customsers?view=${e.target.value}`);
   };
-
-  const onItemClick = (id: string) => (e: React.MouseEvent<HTMLElement>) => {
-    if (e.ctrlKey || e.metaKey) {
-      if (selectedIds.includes(id)) {
-        setSelectedIds((prev) => prev.filter((selectedId) => selectedId !== id));
-      } else {
-        setSelectedIds((prev) => [...prev, id]);
-      }
-    } else {
-      setSelectedIds([id]);
-    }
+  const openCustomerCreateDialog = () => {
+    modalCtrl.open(<CustomerDialog mode='CREATE' />);
   };
-
-  const gotoItemPage = (id: string) => {
-    navigate.push(`customers/${id}`);
+  const openCustomerUpdateDialog = (customerId: string) => {
+    modalCtrl.open(<CustomerDialog mode='UPDATE' customerId={customerId} />);
   };
-
   const onDeleteClick = () => {
-    if (selectedIds.length === 0) return;
+    if (selected.ids.length === 0) return;
     if (!confirm("정말로 삭제하시겠습니까?")) return;
     eraseItems.mutate();
   };
-
   const onExcelDownloadClick = () => {
-    if (items.data?.data === undefined) return;
-
-    const fileName = `${dayjs().format("YYYY-MM-DD")} 주문.xlsx`;
-    const sheet = XlSX.utils.json_to_sheet(items.data?.data);
-    const book = XlSX.utils.book_new();
-    XlSX.utils.book_append_sheet(book, sheet, "Sheet1");
-    XlSX.writeFile(book, fileName);
+    excel.download(items.data?.data!, "고객");
   };
 
   return (
@@ -100,9 +75,9 @@ export default function Page(props: PageProps<any, SearchParams>) {
         </select>
 
         {/* Cratet New Order */}
-        <Link href='customers/create' className='btn'>
+        <button type='button' className='btn' onClick={openCustomerCreateDialog}>
           <FaIcon icon={faPlus} /> 고객 추가하기
-        </Link>
+        </button>
 
         {/* Delete */}
         <button type='button' className='btn' onClick={onDeleteClick}>
@@ -141,15 +116,15 @@ export default function Page(props: PageProps<any, SearchParams>) {
               <tr
                 key={item.id}
                 className='contents cursor-pointer order-table__tr'
-                onClick={onItemClick(item.id)}
-                onDoubleClick={() => gotoItemPage(item.id)}
-                onTouchEnd={() => gotoItemPage(item.id)}
-                aria-selected={selectedIds.includes(item.id)}
+                onClick={selected.onItemClick(item.id)}
+                onDoubleClick={() => openCustomerUpdateDialog(item.id)}
+                onTouchEnd={() => openCustomerUpdateDialog(item.id)}
+                aria-selected={selected.includes(item.id)}
               >
                 <td className='td'>{item.name}</td>
                 <td className='td'>{item.phone}</td>
-                <td className={td`text-start`}>{item.address}</td>
-                <td className={td`text-start`}>{item.addressDetail}</td>
+                <td className='td text-start'>{item.address}</td>
+                <td className='td text-start'>{item.addressDetail}</td>
               </tr>
             ))}
           </tbody>
@@ -161,11 +136,11 @@ export default function Page(props: PageProps<any, SearchParams>) {
           {items.data?.data.map((item) => (
             <li
               key={item.id}
-              className={cls("btn p-2 bg-transparent active:scale-90 text-start", {
-                "bg-white bg-opacity-70": selectedIds.includes(item.id),
+              className={cn("btn p-2 bg-transparent active:scale-90 text-start", {
+                "bg-white bg-opacity-70": selected.includes(item.id),
               })}
-              onClick={onItemClick(item.id)}
-              onDoubleClick={() => gotoItemPage(item.id)}
+              onClick={selected.onItemClick(item.id)}
+              onDoubleClick={() => openCustomerUpdateDialog(item.id)}
             >
               <p className='bg-orange-200 mb-2 p-2 rounded-md'>
                 <b className='text-lg'>{item.name}</b> {item.phone}
