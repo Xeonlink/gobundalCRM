@@ -11,7 +11,15 @@ import { useExcel } from "@/hooks/useExcel";
 import { useItemSelection } from "@/hooks/useItemSelection";
 import { useModal } from "@/hooks/useModal";
 import IcoExcel from "@/public/icons/excel.png";
-import { faArrowsRotate, faPlus, faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowsRotate,
+  faBuilding,
+  faMobileScreen,
+  faPlus,
+  faSignature,
+  faSignsPost,
+  faTrashCan,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -101,14 +109,18 @@ export default function Page(props: PageProps<any, SearchParams>) {
         <table className='w-full grid grid-cols-[repeat(4,_auto)] gap-1'>
           <thead className='contents'>
             <tr className='contents'>
-              <th className='th bg-orange-100 col-span-2'>기본</th>
-              <th className='th bg-green-100 col-span-2'>상세</th>
-            </tr>
-            <tr className='contents'>
-              <th className='th bg-orange-50'>이름</th>
-              <th className='th bg-orange-50'>전화번호</th>
-              <th className='th bg-green-50'>주소</th>
-              <th className='th bg-green-50'>상세주소</th>
+              <th className='th bg-orange-50'>
+                <FaIcon icon={faSignature} /> 이름
+              </th>
+              <th className='th bg-orange-50'>
+                <FaIcon icon={faMobileScreen} /> 전화번호
+              </th>
+              <th className='th bg-green-50'>
+                <FaIcon icon={faSignsPost} /> 주소
+              </th>
+              <th className='th bg-green-50'>
+                <FaIcon icon={faBuilding} /> 상세주소
+              </th>
             </tr>
           </thead>
           <tbody className='contents'>

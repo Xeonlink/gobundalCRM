@@ -21,7 +21,7 @@ input[type="number"] {
   */
 @layer components {
   .th {
-    @apply rounded-md py-1;
+    @apply rounded-md py-1 bg-transparent font-normal;
   }
   .td {
     @apply text-center py-1 px-2 rounded-md aria-selected:bg-white aria-selected:bg-opacity-70 transition-all;

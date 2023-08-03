@@ -12,7 +12,18 @@ import { useItemSelection } from "@/hooks/useItemSelection";
 import { useModal } from "@/hooks/useModal";
 import IcoExcel from "@/public/icons/excel.png";
 import { faCalendarDays } from "@fortawesome/free-regular-svg-icons";
-import { faArrowsRotate, faPlus, faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowsRotate,
+  faBox,
+  faBoxes,
+  faMobileScreen,
+  faNoteSticky,
+  faPaperPlane,
+  faPlus,
+  faSignature,
+  faSignsPost,
+  faTrashCan,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
 import dayjs from "dayjs";
 import Link from "next/link";
@@ -105,18 +116,38 @@ export default function Page(props: PageProps<any, SearchParams>) {
         <table className='w-full grid grid-cols-[repeat(7,_auto)] gap-1'>
           <thead className='contents'>
             <tr className='contents'>
-              <th className='th col-span-2 bg-orange-100'>보내는 사람</th>
-              <th className='th col-span-3 bg-green-100'>받는 사람</th>
-              <th className='th col-span-2 bg-blue-100'>상품정보</th>
+              <th className='th col-span-2 bg-orange-100'>
+                <FaIcon icon={faPaperPlane} /> 보내는 사람
+              </th>
+              <th className='th col-span-3 bg-green-100'>
+                <FaIcon icon={faPaperPlane} rotation={90} /> 받는 사람
+              </th>
+              <th className='th col-span-2 bg-blue-100'>
+                <FaIcon icon={faBoxes} /> 상품정보
+              </th>
             </tr>
             <tr className='contents'>
-              <th className='th bg-orange-50'>이름</th>
-              <th className='th bg-orange-50'>전화번호</th>
-              <th className='th bg-green-50'>이름</th>
-              <th className='th bg-green-50'>전화번호</th>
-              <th className='th bg-green-50'>주소</th>
-              <th className='th bg-blue-50'>상품명</th>
-              <th className='th bg-blue-50'>메모</th>
+              <th className='th bg-orange-50'>
+                <FaIcon icon={faSignature} /> 이름
+              </th>
+              <th className='th bg-orange-50'>
+                <FaIcon icon={faMobileScreen} /> 전화번호
+              </th>
+              <th className='th bg-green-50'>
+                <FaIcon icon={faSignature} /> 이름
+              </th>
+              <th className='th bg-green-50'>
+                <FaIcon icon={faMobileScreen} /> 전화번호
+              </th>
+              <th className='th bg-green-50'>
+                <FaIcon icon={faSignsPost} /> 주소
+              </th>
+              <th className='th bg-blue-50'>
+                <FaIcon icon={faBox} /> 상품명
+              </th>
+              <th className='th bg-blue-50'>
+                <FaIcon icon={faNoteSticky} /> 메모
+              </th>
             </tr>
           </thead>
           <tbody className='contents'>

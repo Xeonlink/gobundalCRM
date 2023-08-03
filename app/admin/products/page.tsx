@@ -9,7 +9,19 @@ import { useAuth } from "@/hooks/useAuth";
 import { useExcel } from "@/hooks/useExcel";
 import { useModal } from "@/hooks/useModal";
 import IcoExcel from "@/public/icons/excel.png";
-import { faArrowsRotate, faInfinity, faPlus, faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowsRotate,
+  faBox,
+  faBoxes,
+  faCoins,
+  faInfinity,
+  faPlus,
+  faSignature,
+  faSliders,
+  faToggleOn,
+  faTrashCan,
+  faWon,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -101,16 +113,32 @@ export default function Page(props: PageProps<any, SearchParams>) {
         <table className='w-full grid gap-1 grid-cols-[repeat(6,_auto)]'>
           <thead className='contents'>
             <tr className='contents'>
-              <th className='th col-span-4 bg-orange-100'>상품</th>
-              <th className='th col-span-2 bg-green-100'>상태</th>
+              <th className='th col-span-4 bg-orange-100'>
+                <FaIcon icon={faBox} /> 상품
+              </th>
+              <th className='th col-span-2 bg-green-100'>
+                <FaIcon icon={faSliders} /> 상태
+              </th>
             </tr>
             <tr className='contents'>
-              <th className='th bg-orange-50'>이름</th>
-              <th className='th bg-orange-50'>가격</th>
-              <th className='th bg-orange-50'>할인가격</th>
-              <th className='th bg-orange-50'>재고</th>
-              <th className='th bg-green-50'>할인중</th>
-              <th className='th bg-green-50'>활성화</th>
+              <th className='th bg-orange-50'>
+                <FaIcon icon={faSignature} /> 이름
+              </th>
+              <th className='th bg-orange-50'>
+                <FaIcon icon={faWon} /> 가격
+              </th>
+              <th className='th bg-orange-50'>
+                <FaIcon icon={faWon} /> 할인가격
+              </th>
+              <th className='th bg-orange-50'>
+                <FaIcon icon={faBoxes} /> 재고
+              </th>
+              <th className='th bg-green-50'>
+                <FaIcon icon={faCoins} /> 할인중
+              </th>
+              <th className='th bg-green-50'>
+                <FaIcon icon={faToggleOn} /> 활성화
+              </th>
             </tr>
           </thead>
           <tbody className='contents'>

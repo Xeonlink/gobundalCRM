@@ -73,23 +73,24 @@ export function ProductSelector(props: Props) {
           <table className='grid grid-cols-[14rem_7rem_7rem_5rem_5rem_5rem] gap-1'>
             <thead className='contents'>
               <tr className='contents'>
-                <th className='bg-transparent font-normal'>
+                <th className='th'>
                   <FaIcon icon={faSignature} /> 이름
                 </th>
-                <th className='bg-transparent font-normal'>
+                <th className='th'>
                   <FaIcon icon={faCoins} /> 가격
                 </th>
-                <th className='bg-transparent font-normal'>
+                <th className='th'>
                   <FaIcon icon={faCoins} /> 할인가격
                 </th>
-                <th className='bg-transparent font-normal'>재고</th>
-                <th className='bg-transparent font-normal'>할인중</th>
-                <th className='bg-transparent font-normal'>활성화</th>
+                <th className='th'>재고</th>
+                <th className='th'>할인중</th>
+                <th className='th'>활성화</th>
               </tr>
             </thead>
             <tbody className='contents'>
               {products?.data.map((product, index) => (
                 <tr
+                  key={product.id}
                   className='contents group'
                   onDoubleClick={onItemDoubleClick(product)}
                   onClick={selected.onItemClick(product.id)}

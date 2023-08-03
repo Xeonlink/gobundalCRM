@@ -14,7 +14,7 @@ import { useTypeSafeReducer } from "@/hooks/useTypeSafeReducer";
 import {
   faBuilding,
   faFloppyDisk,
-  faMobileScreenButton,
+  faMobileScreen,
   faNotdef,
   faPeopleGroup,
   faSignature,
@@ -106,7 +106,7 @@ export function CustomerDialog(props: Props) {
 
         <div className='field'>
           <label htmlFor='phone' className='label'>
-            <FaIcon icon={faMobileScreenButton} /> 전화번호
+            <FaIcon icon={faMobileScreen} /> 전화번호
           </label>
           <Input
             id='phone'

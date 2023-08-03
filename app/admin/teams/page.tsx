@@ -1,6 +1,6 @@
 "use client";
 
-import { Team, useDeleteTeams, useTeams } from "@/api/teams";
+import { useDeleteTeams, useTeams } from "@/api/teams";
 import { DateChanger } from "@/components/DateChanger";
 import { TeamDialog } from "@/components/Dialogs/TeamDialog";
 import { ImgIcon } from "@/components/ImgIcon";
@@ -11,14 +11,22 @@ import { useExcel } from "@/hooks/useExcel";
 import { useModal } from "@/hooks/useModal";
 import IcoExcel from "@/public/icons/excel.png";
 import { faCalendarDays } from "@fortawesome/free-regular-svg-icons";
-import { faArrowsRotate, faPlus, faTrashCan } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
 import {
-  createColumnHelper,
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
+  faArrowsRotate,
+  faCheck,
+  faCircleInfo,
+  faFlag,
+  faMobileScreen,
+  faPeopleArrows,
+  faPeopleGroup,
+  faPersonWalkingArrowRight,
+  faPhoneAlt,
+  faPlus,
+  faSignature,
+  faTicket,
+  faTrashCan,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
 import dayjs from "dayjs";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -118,16 +126,32 @@ export default function Page(props: PageProps<any, SearchParams>) {
         <table className='w-full grid grid-cols-[repeat(6,_auto)] gap-1'>
           <thead className='contents'>
             <tr className='contents'>
-              <th className='th bg-orange-100 col-span-2'>대표자</th>
-              <th className='th bg-green-100 col-span-4'>정보</th>
+              <th className='th bg-orange-100 col-span-2'>
+                <FaIcon icon={faFlag} /> 대표자
+              </th>
+              <th className='th bg-green-100 col-span-4'>
+                <FaIcon icon={faCircleInfo} /> 정보
+              </th>
             </tr>
             <tr className='contents'>
-              <th className='th bg-orange-50'>이름</th>
-              <th className='th bg-orange-50'>전화번호</th>
-              <th className='th bg-green-50'>쿠폰사</th>
-              <th className='th bg-green-50'>인원수</th>
-              <th className='th bg-green-50'>쿠폰승인</th>
-              <th className='th bg-green-50'>체험완료</th>
+              <th className='th bg-orange-50'>
+                <FaIcon icon={faSignature} /> 이름
+              </th>
+              <th className='th bg-orange-50'>
+                <FaIcon icon={faMobileScreen} /> 전화번호
+              </th>
+              <th className='th bg-green-50'>
+                <FaIcon icon={faTicket} /> 쿠폰사
+              </th>
+              <th className='th bg-green-50'>
+                <FaIcon icon={faPeopleGroup} /> 인원수
+              </th>
+              <th className='th bg-green-50'>
+                <FaIcon icon={faCheck} /> 쿠폰승인
+              </th>
+              <th className='th bg-green-50'>
+                <FaIcon icon={faPersonWalkingArrowRight} /> 체험완료
+              </th>
             </tr>
           </thead>
           <tbody className='contents'>
