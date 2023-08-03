@@ -121,22 +121,22 @@ export function ProductDialog(props: Props) {
     <dialog
       ref={props.ref}
       onClose={props.closeSelf}
-      className='max-w-full max-h-full rounded-md p-0 bg-transparent backdrop:backdrop-blur-md animate-scaleTo1 overflow-auto'
+      className="max-h-full max-w-full animate-scaleTo1 overflow-auto rounded-md bg-transparent p-0 backdrop:backdrop-blur-md"
     >
-      <div className='flex flex-row flex-nowrap min-w-max mb-3 gap-3'>
-        <div className='w-96 space-y-3'>
-          <fieldset className='fieldset'>
-            <legend className='legend'>
+      <div className="mb-3 flex min-w-max flex-row flex-nowrap gap-3">
+        <div className="w-96 space-y-3">
+          <fieldset className="fieldset">
+            <legend className="legend">
               <FaIcon icon={faPaperPlane} fontSize={16} /> 상품정보
             </legend>
 
-            <div className='field'>
-              <label htmlFor='name' className='label'>
+            <div className="field">
+              <label htmlFor="name" className="label">
                 <FaIcon icon={faSignature} /> 상품명
               </label>
               <Input
-                id='name'
-                placeholder='한라봉청 3kg'
+                id="name"
+                placeholder="한라봉청 3kg"
                 disabled={isLoading}
                 value={product.name}
                 onChange={productActions.onNameChange}
@@ -144,23 +144,23 @@ export function ProductDialog(props: Props) {
               />
             </div>
 
-            <div className='field'>
-              <label htmlFor='price' className='label'>
+            <div className="field">
+              <label htmlFor="price" className="label">
                 <FaIcon icon={faWon} /> 상품가격
               </label>
               <Input
-                id='price'
-                placeholder='10,000원'
+                id="price"
+                placeholder="10,000원"
                 disabled={isLoading}
                 value={product.price.toLocaleString()}
                 onChange={productActions.onPriceChange}
                 required
               />
-              <div className='absolute bottom-2 right-3'>원</div>
+              <div className="absolute bottom-2 right-3">원</div>
             </div>
 
-            <div className='field'>
-              <label htmlFor='is-sale' className='label'>
+            <div className="field">
+              <label htmlFor="is-sale" className="label">
                 <FaIcon icon={faCoins} /> 할인여부
               </label>
               <CheckBox
@@ -172,24 +172,24 @@ export function ProductDialog(props: Props) {
               />
             </div>
 
-            <div className='field'>
-              <label htmlFor='sale-price' className='label'>
+            <div className="field">
+              <label htmlFor="sale-price" className="label">
                 <FaIcon icon={faWon} /> 할인가격
               </label>
               <Input
-                id='sale-price'
-                placeholder='10,000원'
+                id="sale-price"
+                placeholder="10,000원"
                 disabled={isLoading}
                 value={product.salePrice.toLocaleString()}
                 onChange={productActions.onSalePriceChange}
                 required
                 invalid={!validity.salePrice}
               />
-              <div className='absolute bottom-2 right-3'>원</div>
+              <div className="absolute bottom-2 right-3">원</div>
             </div>
 
-            <div className='field'>
-              <label htmlFor='is-sale' className='label'>
+            <div className="field">
+              <label htmlFor="is-sale" className="label">
                 <FaIcon icon={faBoxes} /> 재고
               </label>
               <CheckBox
@@ -200,19 +200,19 @@ export function ProductDialog(props: Props) {
                 falseContents={[faListOl, "수량"]}
               />
               <Input
-                id='remain'
-                placeholder='10,000개'
+                id="remain"
+                placeholder="10,000개"
                 disabled={isLoading || product.remain === -1}
                 value={product.remain.toLocaleString()}
                 onChange={productActions.onRemainChange}
                 required
                 invalid={!validity.remain}
               />
-              <div className='absolute bottom-2 right-3'>개</div>
+              <div className="absolute bottom-2 right-3">개</div>
             </div>
 
-            <div className='field'>
-              <label htmlFor='enabled' className='label'>
+            <div className="field">
+              <label htmlFor="enabled" className="label">
                 <FaIcon icon={product.enabled ? faEye : faEyeSlash} /> 활성화 여부
               </label>
               <CheckBox
@@ -227,42 +227,42 @@ export function ProductDialog(props: Props) {
         </div>
       </div>
 
-      <form method='dialog' className='flex justify-center gap-2'>
+      <form method="dialog" className="flex justify-center gap-2">
         {/* Close */}
-        <button className='btn' disabled={isLoading}>
-          <FaIcon icon={faX} isLoading={isLoading} value='닫기' />
+        <button className="btn" disabled={isLoading}>
+          <FaIcon icon={faX} isLoading={isLoading} value="닫기" />
         </button>
 
         {/* Clear */}
         <button
-          type='button'
-          className='btn'
+          type="button"
+          className="btn"
           disabled={isCleared || isLoading}
           onClick={productActions.reset}
         >
-          <FaIcon icon={faNotdef} rotation={90} isLoading={isLoading} value='초기화' />
+          <FaIcon icon={faNotdef} rotation={90} isLoading={isLoading} value="초기화" />
         </button>
 
         {/* Delete */}
         {mode === "UPDATE" ? (
           <button
-            type='button'
-            className='btn'
+            type="button"
+            className="btn"
             disabled={isLoading}
             onClick={() => deleteItem.mutate()}
           >
-            <FaIcon icon={faTrashAlt} isLoading={isLoading} value='삭제' />
+            <FaIcon icon={faTrashAlt} isLoading={isLoading} value="삭제" />
           </button>
         ) : null}
 
         {/* Save */}
         <button
-          type='button'
-          className='btn'
+          type="button"
+          className="btn"
           onClick={mode === "CREATE" ? () => createItem.mutate() : () => updateItem.mutate()}
           disabled={!isValid || isLoading}
         >
-          <FaIcon icon={faFloppyDisk} isLoading={isLoading} value='저장' />
+          <FaIcon icon={faFloppyDisk} isLoading={isLoading} value="저장" />
         </button>
       </form>
     </dialog>

@@ -14,5 +14,5 @@ export function ModalPlacer() {
 }
 
 function ModalLoading() {
-  return <div className='fixed w-screen h-screen flex justify-center items-center'>Loading...</div>;
+  return <div className="fixed flex h-screen w-screen items-center justify-center">Loading...</div>;
 }

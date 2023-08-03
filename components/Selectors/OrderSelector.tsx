@@ -2,7 +2,7 @@
 
 import { ModalProps } from "@/extra/type";
 import { useModal } from "@/hooks/useModal";
-import { createRef, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 
 type Props = ModalProps;
 
@@ -26,9 +26,9 @@ export function OrderSelector(props: Props) {
     <dialog
       ref={props.ref}
       onClose={props.closeSelf}
-      className='max-w-full max-h-full rounded-md p-0 bg-transparent backdrop:backdrop-blur-md animate-scaleTo1'
+      className="max-h-full max-w-full animate-scaleTo1 rounded-md bg-transparent p-0 backdrop:backdrop-blur-md"
     >
-      <button type='button' className='btn' onClick={openOrderSelector}>
+      <button type="button" className="btn" onClick={openOrderSelector}>
         테스트
       </button>
     </dialog>

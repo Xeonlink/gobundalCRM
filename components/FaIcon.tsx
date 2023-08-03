@@ -13,7 +13,7 @@ export function FaIcon(props: Props) {
   if (isLoading) {
     return (
       <>
-        <FontAwesomeIcon icon={faSpinner} className='animate-spin' /> {loadingText}
+        <FontAwesomeIcon icon={faSpinner} className="animate-spin" /> {loadingText}
       </>
     );
   }

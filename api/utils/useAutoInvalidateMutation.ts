@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 export function useAutoInvalidateMutation(
   mutationKey: string[],
   mutationFn: () => Promise<any>,
-  options?: MutateOption
+  options?: MutateOption,
 ) {
   const queryClient = useQueryClient();
 

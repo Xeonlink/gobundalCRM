@@ -3,7 +3,6 @@
 import { useCustomersByName } from "@/api/customers";
 import {
   OrderProduct,
-  RawOrder,
   defaultOrder,
   useCreateOrder,
   useDeleteOrder,
@@ -38,7 +37,6 @@ import {
   faTrashCan,
   faX,
 } from "@fortawesome/free-solid-svg-icons";
-import dayjs from "dayjs";
 import { CheckBox } from "../CheckBox";
 import { DateChanger } from "../DateChanger";
 import { FaIcon } from "../FaIcon";
@@ -135,7 +133,7 @@ export function OrderDialog(props: Props) {
             quantity: 1,
           });
         }}
-      />
+      />,
     );
   };
 
@@ -154,21 +152,21 @@ export function OrderDialog(props: Props) {
   const isLoading = createItem.isLoading || updateItem.isLoading || deleteItem.isLoading;
 
   return (
-    <dialog ref={props.ref} onClose={props.closeSelf} className='dialog'>
-      <div className='flex flex-row flex-nowrap min-w-max mb-3 gap-3'>
-        <div className='w-72 space-y-3'>
-          <fieldset className='fieldset'>
-            <legend className='legend'>
+    <dialog ref={props.ref} onClose={props.closeSelf} className="dialog">
+      <div className="mb-3 flex min-w-max flex-row flex-nowrap gap-3">
+        <div className="w-72 space-y-3">
+          <fieldset className="fieldset">
+            <legend className="legend">
               <FaIcon icon={faPaperPlane} fontSize={16} /> 보내는 사람
             </legend>
 
-            <div className='field'>
-              <label htmlFor='sender-name' className='label'>
+            <div className="field">
+              <label htmlFor="sender-name" className="label">
                 <FaIcon icon={faSignature} /> 이름
               </label>
               <Input
-                id='sender-name'
-                placeholder='홍길동'
+                id="sender-name"
+                placeholder="홍길동"
                 disabled={createItem.isLoading}
                 value={order.senderName}
                 onChange={orderActions.onSenderNameChange}
@@ -176,21 +174,21 @@ export function OrderDialog(props: Props) {
               />
             </div>
 
-            <div className='field'>
-              <label htmlFor='sender-phone' className='label'>
+            <div className="field">
+              <label htmlFor="sender-phone" className="label">
                 <FaIcon icon={faMobileScreenButton} /> 전화번호
               </label>
               <Input
-                id='sender-phone'
-                list='sender-phone-list'
-                type='tel'
-                placeholder='010-xxxx-xxxx'
+                id="sender-phone"
+                list="sender-phone-list"
+                type="tel"
+                placeholder="010-xxxx-xxxx"
                 disabled={createItem.isLoading}
                 value={order.senderPhone}
                 onChange={orderActions.onSenderPhoneChange}
                 invalid={order.senderPhone === ""}
               />
-              <datalist id='sender-phone-list'>
+              <datalist id="sender-phone-list">
                 {customers?.data?.data?.map((customer) => (
                   <option key={customer.id} value={customer.phone}></option>
                 ))}
@@ -198,13 +196,13 @@ export function OrderDialog(props: Props) {
             </div>
           </fieldset>
 
-          <fieldset className='fieldset'>
-            <legend className='legend'>
+          <fieldset className="fieldset">
+            <legend className="legend">
               <FaIcon icon={faPaperPlane} fontSize={16} /> 받는 사람
             </legend>
 
-            <div className='field'>
-              <label htmlFor='same-as-sender' className='label'>
+            <div className="field">
+              <label htmlFor="same-as-sender" className="label">
                 <FaIcon icon={faPaperPlane} /> 보내는 사람과
               </label>
               <CheckBox
@@ -216,13 +214,13 @@ export function OrderDialog(props: Props) {
               />
             </div>
 
-            <div className='field'>
-              <label htmlFor='receiver-name' className='label'>
+            <div className="field">
+              <label htmlFor="receiver-name" className="label">
                 <FaIcon icon={faSignature} /> 이름
               </label>
               <Input
-                id='receiver-name'
-                placeholder='홍길동'
+                id="receiver-name"
+                placeholder="홍길동"
                 disabled={order.sameAsSender || createItem.isLoading}
                 value={order.receiverName}
                 onChange={orderActions.onReceiverNameChange}
@@ -230,13 +228,13 @@ export function OrderDialog(props: Props) {
               />
             </div>
 
-            <div className='field'>
-              <label htmlFor='receiver-phone' className='label'>
+            <div className="field">
+              <label htmlFor="receiver-phone" className="label">
                 <FaIcon icon={faMobileScreenButton} /> 전화번호
               </label>
               <Input
-                id='receiver-phone'
-                placeholder='010-xxxx-xxxx'
+                id="receiver-phone"
+                placeholder="010-xxxx-xxxx"
                 disabled={order.sameAsSender || createItem.isLoading}
                 value={order.receiverPhone}
                 onChange={orderActions.onReceiverPhoneChange}
@@ -244,13 +242,13 @@ export function OrderDialog(props: Props) {
               />
             </div>
 
-            <div className='field'>
-              <label htmlFor='receiver-address' className='label'>
+            <div className="field">
+              <label htmlFor="receiver-address" className="label">
                 <FaIcon icon={faSignsPost} /> 주소
               </label>
               <Input
-                id='receiver-address'
-                placeholder='남원월산로74번길 42'
+                id="receiver-address"
+                placeholder="남원월산로74번길 42"
                 disabled={createItem.isLoading}
                 value={order.receiverAddress}
                 onChange={postCodePopup.show}
@@ -259,13 +257,13 @@ export function OrderDialog(props: Props) {
               />
             </div>
 
-            <div className='field'>
-              <label htmlFor='receiver-address-detail' className='label'>
+            <div className="field">
+              <label htmlFor="receiver-address-detail" className="label">
                 <FaIcon icon={faBuilding} /> 상세주소
               </label>
               <Input
-                id='receiver-address-detail'
-                placeholder='단독주택, 1층 101호, ...'
+                id="receiver-address-detail"
+                placeholder="단독주택, 1층 101호, ..."
                 disabled={createItem.isLoading}
                 value={order.receiverAddressDetail}
                 onChange={orderActions.onReceiverAddressDetailChange}
@@ -276,53 +274,53 @@ export function OrderDialog(props: Props) {
         </div>
 
         <div>
-          <fieldset className='fieldset'>
-            <legend className='legend'>
+          <fieldset className="fieldset">
+            <legend className="legend">
               <FaIcon icon={faBoxesStacked} /> 배송물품
             </legend>
 
-            <table className='grid grid-cols-[10rem_7rem_5rem_2.5rem] gap-1'>
-              <thead className='contents'>
-                <tr className='contents'>
-                  <th className='font-normal'>
+            <table className="grid grid-cols-[10rem_7rem_5rem_2.5rem] gap-1">
+              <thead className="contents">
+                <tr className="contents">
+                  <th className="font-normal">
                     <FaIcon icon={faBox} /> 상품명
                   </th>
-                  <th className='font-normal'>
+                  <th className="font-normal">
                     <FaIcon icon={faCoins} /> 가격(원)
                   </th>
-                  <th className='font-normal'>
+                  <th className="font-normal">
                     <FaIcon icon={faCalculator} /> 수량(개)
                   </th>
                   <th></th>
                 </tr>
               </thead>
-              <tbody className='contents'>
+              <tbody className="contents">
                 {order.products.map((product, index, arr) => (
-                  <tr key={index} className='contents'>
-                    <td className='text-center'>
+                  <tr key={index} className="contents">
+                    <td className="text-center">
                       <Input
-                        id='product-name'
-                        list='product-name-list'
-                        className='text-center'
+                        id="product-name"
+                        list="product-name-list"
+                        className="text-center"
                         disabled={createItem.isLoading}
                         value={product.name}
                         onChange={(e) => orderActions.onProductNameChange({ index, e })}
                         invalid={product.name.length <= 0}
                       />
                     </td>
-                    <td className='relative'>
+                    <td className="relative">
                       <Input
-                        id='product-price'
-                        className='text-center'
+                        id="product-price"
+                        className="text-center"
                         value={product.price.toLocaleString()}
                         onChange={(e) => orderActions.onProductPriceChange({ index, e })}
                       />
                     </td>
-                    <td className='relative'>
+                    <td className="relative">
                       <Input
-                        id='product-quantity'
-                        type='number'
-                        className='text-center'
+                        id="product-quantity"
+                        type="number"
+                        className="text-center"
                         disabled={createItem.isLoading}
                         value={product.quantity.toLocaleString()}
                         onChange={(e) => orderActions.onProductQuantityChange({ index, e })}
@@ -332,8 +330,8 @@ export function OrderDialog(props: Props) {
                     </td>
                     <td>
                       <button
-                        type='button'
-                        className='btn w-10 h-full shadow-none'
+                        type="button"
+                        className="btn h-full w-10 shadow-none"
                         onClick={() => orderActions.removeProduct(index)}
                       >
                         <FaIcon icon={faTrashCan} />
@@ -344,17 +342,17 @@ export function OrderDialog(props: Props) {
               </tbody>
             </table>
 
-            <div className='space-x-2 text-end'>
+            <div className="space-x-2 text-end">
               <button
-                type='button'
-                className='btn mt-2 shadow-none inline-block'
+                type="button"
+                className="btn mt-2 inline-block shadow-none"
                 onClick={() => orderActions.addProduct(undefined)}
               >
                 <FaIcon icon={faPlus} /> 추가하기
               </button>
               <button
-                type='button'
-                className='btn mt-2 shadow-none inline-block'
+                type="button"
+                className="btn mt-2 inline-block shadow-none"
                 onClick={openProductSelector}
               >
                 <FaIcon icon={faCheck} /> 선택하기
@@ -363,27 +361,27 @@ export function OrderDialog(props: Props) {
           </fieldset>
         </div>
 
-        <div className='w-72 space-y-3'>
-          <fieldset className='fieldset'>
-            <legend className='legend'>
+        <div className="w-72 space-y-3">
+          <fieldset className="fieldset">
+            <legend className="legend">
               <FaIcon icon={faPaperPlane} fontSize={16} /> 기타 정보
             </legend>
 
-            <div className='field'>
-              <label htmlFor='date' className='label'>
+            <div className="field">
+              <label htmlFor="date" className="label">
                 <FaIcon icon={faCalendarAlt} /> 주문날짜
               </label>
               <DateChanger date={order.date} onChange={orderActions.setDate} />
             </div>
 
-            <div className='field'>
-              <label htmlFor='memo' className='label'>
+            <div className="field">
+              <label htmlFor="memo" className="label">
                 <FaIcon icon={faNoteSticky} /> 메모
               </label>
               <textarea
-                id='memo'
-                placeholder='메모'
-                className='rounded-md w-full p-2 min-h-max'
+                id="memo"
+                placeholder="메모"
+                className="min-h-max w-full rounded-md p-2"
                 disabled={createItem.isLoading}
                 value={order.memo}
                 onChange={orderActions.onMemoChange}
@@ -393,42 +391,42 @@ export function OrderDialog(props: Props) {
         </div>
       </div>
 
-      <form method='dialog' className='flex justify-center gap-2'>
+      <form method="dialog" className="flex justify-center gap-2">
         {/* Close */}
-        <button className='btn' disabled={isLoading}>
-          <FaIcon icon={faX} isLoading={isLoading} value='닫기' />
+        <button className="btn" disabled={isLoading}>
+          <FaIcon icon={faX} isLoading={isLoading} value="닫기" />
         </button>
 
         {/* Clear */}
         <button
-          type='button'
-          className='btn'
+          type="button"
+          className="btn"
           disabled={isCleared || isLoading}
           onClick={orderActions.reset}
         >
-          <FaIcon icon={faNotdef} rotation={90} isLoading={isLoading} value='초기화' />
+          <FaIcon icon={faNotdef} rotation={90} isLoading={isLoading} value="초기화" />
         </button>
 
         {/* Delete */}
         {mode === "UPDATE" ? (
           <button
-            type='button'
-            className='btn'
+            type="button"
+            className="btn"
             disabled={isLoading}
             onClick={() => deleteItem.mutate()}
           >
-            <FaIcon icon={faTrashAlt} isLoading={isLoading} value='삭제' />
+            <FaIcon icon={faTrashAlt} isLoading={isLoading} value="삭제" />
           </button>
         ) : null}
 
         {/* Save */}
         <button
-          type='button'
-          className='btn'
+          type="button"
+          className="btn"
           onClick={mode === "CREATE" ? () => createItem.mutate() : () => updateItem.mutate()}
           disabled={!isValid || isLoading}
         >
-          <FaIcon icon={faFloppyDisk} isLoading={isLoading} value='저장' />
+          <FaIcon icon={faFloppyDisk} isLoading={isLoading} value="저장" />
         </button>
       </form>
     </dialog>

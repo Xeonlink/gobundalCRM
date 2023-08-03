@@ -1,6 +1,6 @@
 import clsx from "clsx";
-import { EmptyObject } from "./type";
 import { twMerge } from "tailwind-merge";
+import { EmptyObject } from "./type";
 
 export function toHyphenPhone(str: string): string {
   return str

@@ -14,13 +14,13 @@ export function DateChanger(props: Props) {
 
   return (
     <div
-      id='date'
-      className={cn("bg-white rounded-md flex items-center", {
+      id="date"
+      className={cn("flex items-center rounded-md bg-white", {
         [className || ""]: !!className,
       })}
     >
       <select
-        className='btn shadow-none px-3 py-2 w-full'
+        className="btn w-full px-3 py-2 shadow-none"
         value={+year}
         onChange={(e) => onChange(`${e.target.value}-${month}-${day}}`)}
       >
@@ -30,9 +30,9 @@ export function DateChanger(props: Props) {
           </option>
         ))}
       </select>
-      <span className='text-gray-200'>|</span>
+      <span className="text-gray-200">|</span>
       <select
-        className='btn shadow-none px-3 py-2 w-full'
+        className="btn w-full px-3 py-2 shadow-none"
         value={+month}
         onChange={(e) => onChange(`${year}-${`0${e.target.value}`.slice(-2)}-${day}`)}
       >
@@ -42,9 +42,9 @@ export function DateChanger(props: Props) {
           </option>
         ))}
       </select>
-      <span className='text-gray-200'>|</span>
+      <span className="text-gray-200">|</span>
       <select
-        className='btn shadow-none px-3 py-2 w-full'
+        className="btn w-full px-3 py-2 shadow-none"
         value={+day}
         onChange={(e) => onChange(`${year}-${month}-${`0${e.target.value}`.slice(-2)}`)}
       >

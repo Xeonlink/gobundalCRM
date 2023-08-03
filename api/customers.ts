@@ -77,7 +77,7 @@ export function useCreateCustomer(rawCustomer: RawCustomer, options?: MutateOpti
 export function useUpdateCustomer(
   id: string,
   partialCustomer: Partial<Customer>,
-  options?: MutateOption
+  options?: MutateOption,
 ) {
   const mutationFn = async () => {
     const uri = `/customers/${id}`;

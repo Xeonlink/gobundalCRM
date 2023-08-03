@@ -4,7 +4,6 @@ import { useCustomersByName } from "@/api/customers";
 import { OrderProduct, defaultOrder, useCreateOrder } from "@/api/orders";
 import { useProducts } from "@/api/products";
 import { CheckBox } from "@/components/CheckBox";
-import { DateChanger } from "@/components/DateChanger";
 import { Input } from "@/components/Input";
 import { PageProps } from "@/extra/type";
 import { cn, toHyphenPhone } from "@/extra/utils";
@@ -18,7 +17,6 @@ import {
   faBoxesStacked,
   faBuilding,
   faCalculator,
-  faCalendarAlt,
   faEquals,
   faMobileScreenButton,
   faNotEqual,
@@ -114,22 +112,22 @@ export default function Page(_: PageProps) {
   const isValid = Object.values(validity).every((item) => item);
 
   return (
-    <div className='p-3 m-auto max-w-full overflow-auto h-full'>
-      <h1 className='text-3xl text-center py-8 font-bold'>택배 정보</h1>
+    <div className="m-auto h-full max-w-full overflow-auto p-3">
+      <h1 className="py-8 text-center text-3xl font-bold">택배 정보</h1>
 
-      <div className='flex flex-row flex-wrap justify-center items-start gap-3 mb-3'>
-        <fieldset className='fieldset w-80'>
-          <legend className='legend'>
+      <div className="mb-3 flex flex-row flex-wrap items-start justify-center gap-3">
+        <fieldset className="fieldset w-80">
+          <legend className="legend">
             <FaIcon icon={faPaperPlane} fontSize={16} /> 보내는 사람
           </legend>
 
-          <div className='field'>
-            <label htmlFor='sender-name' className='label'>
+          <div className="field">
+            <label htmlFor="sender-name" className="label">
               <FaIcon icon={faSignature} /> 이름
             </label>
             <Input
-              id='sender-name'
-              placeholder='홍길동'
+              id="sender-name"
+              placeholder="홍길동"
               disabled={createItem.isLoading}
               value={order.senderName}
               onChange={orderActions.onSenderNameChange}
@@ -137,21 +135,21 @@ export default function Page(_: PageProps) {
             />
           </div>
 
-          <div className='field'>
-            <label htmlFor='sender-phone' className='label'>
+          <div className="field">
+            <label htmlFor="sender-phone" className="label">
               <FaIcon icon={faMobileScreenButton} /> 전화번호
             </label>
             <Input
-              id='sender-phone'
-              list='sender-phone-list'
-              type='tel'
-              placeholder='010-xxxx-xxxx'
+              id="sender-phone"
+              list="sender-phone-list"
+              type="tel"
+              placeholder="010-xxxx-xxxx"
               disabled={createItem.isLoading}
               value={order.senderPhone}
               onChange={orderActions.onSenderPhoneChange}
               invalid={order.senderPhone === ""}
             />
-            <datalist id='sender-phone-list'>
+            <datalist id="sender-phone-list">
               {customers?.data?.data?.map((customer) => (
                 <option key={customer.id} value={customer.phone}></option>
               ))}
@@ -159,13 +157,13 @@ export default function Page(_: PageProps) {
           </div>
         </fieldset>
 
-        <fieldset className='fieldset w-80'>
-          <legend className='legend'>
+        <fieldset className="fieldset w-80">
+          <legend className="legend">
             <FaIcon icon={faPaperPlane} fontSize={16} /> 받는 사람
           </legend>
 
-          <div className='field'>
-            <label htmlFor='same-as-sender' className='label'>
+          <div className="field">
+            <label htmlFor="same-as-sender" className="label">
               <FaIcon icon={faPaperPlane} /> 보내는 사람과
             </label>
             <CheckBox
@@ -177,13 +175,13 @@ export default function Page(_: PageProps) {
             />
           </div>
 
-          <div className='field'>
-            <label htmlFor='receiver-name' className='label'>
+          <div className="field">
+            <label htmlFor="receiver-name" className="label">
               <FaIcon icon={faSignature} /> 이름
             </label>
             <Input
-              id='receiver-name'
-              placeholder='홍길동'
+              id="receiver-name"
+              placeholder="홍길동"
               disabled={order.sameAsSender || createItem.isLoading}
               value={order.receiverName}
               onChange={orderActions.onReceiverNameChange}
@@ -191,13 +189,13 @@ export default function Page(_: PageProps) {
             />
           </div>
 
-          <div className='field'>
-            <label htmlFor='receiver-phone' className='label'>
+          <div className="field">
+            <label htmlFor="receiver-phone" className="label">
               <FaIcon icon={faMobileScreenButton} /> 전화번호
             </label>
             <Input
-              id='receiver-phone'
-              placeholder='010-xxxx-xxxx'
+              id="receiver-phone"
+              placeholder="010-xxxx-xxxx"
               disabled={order.sameAsSender || createItem.isLoading}
               value={order.receiverPhone}
               onChange={orderActions.onReceiverPhoneChange}
@@ -205,13 +203,13 @@ export default function Page(_: PageProps) {
             />
           </div>
 
-          <div className='field'>
-            <label htmlFor='receiver-address' className='label'>
+          <div className="field">
+            <label htmlFor="receiver-address" className="label">
               <FaIcon icon={faSignsPost} /> 주소
             </label>
             <Input
-              id='receiver-address'
-              placeholder='남원월산로74번길 42'
+              id="receiver-address"
+              placeholder="남원월산로74번길 42"
               disabled={createItem.isLoading}
               value={order.receiverAddress}
               onChange={postCodePopup.show}
@@ -220,13 +218,13 @@ export default function Page(_: PageProps) {
             />
           </div>
 
-          <div className='field'>
-            <label htmlFor='receiver-address-detail' className='label'>
+          <div className="field">
+            <label htmlFor="receiver-address-detail" className="label">
               <FaIcon icon={faBuilding} /> 상세주소
             </label>
             <Input
-              id='receiver-address-detail'
-              placeholder='단독주택, 1층 101호, ...'
+              id="receiver-address-detail"
+              placeholder="단독주택, 1층 101호, ..."
               disabled={createItem.isLoading}
               value={order.receiverAddressDetail}
               onChange={orderActions.onReceiverAddressDetailChange}
@@ -235,37 +233,37 @@ export default function Page(_: PageProps) {
           </div>
         </fieldset>
 
-        <fieldset className='fieldset w-80'>
-          <legend className='legend'>
+        <fieldset className="fieldset w-80">
+          <legend className="legend">
             <FaIcon icon={faBoxesStacked} /> 배송물품
           </legend>
 
-          <table className='grid grid-cols-[1fr_3.5rem_2.5rem] gap-1'>
-            <thead className='contents'>
-              <tr className='contents'>
-                <th className='font-normal'>
+          <table className="grid grid-cols-[1fr_3.5rem_2.5rem] gap-1">
+            <thead className="contents">
+              <tr className="contents">
+                <th className="font-normal">
                   <FaIcon icon={faBox} /> 상품명
                 </th>
-                <th className='font-normal'>
+                <th className="font-normal">
                   <FaIcon icon={faCalculator} /> 수량
                 </th>
                 <th></th>
               </tr>
             </thead>
-            <tbody className='contents'>
+            <tbody className="contents">
               {order.products.map((product, index, arr) => (
-                <tr key={index} className='contents'>
-                  <td className='text-center'>
+                <tr key={index} className="contents">
+                  <td className="text-center">
                     <select
                       className={
-                        cn("rounded-md bg-white px-3 py-2 w-full disabled:opacity-40", {
+                        cn("w-full rounded-md bg-white px-3 py-2 disabled:opacity-40", {
                           "animate-shake shadow-red-300": product.name === "none" || !product.name,
                         }) + " shadow-inset-2"
                       }
                       onChange={(e) => orderActions.onProductNameChange({ index, e })}
                       value={!!product.name ? product.name : "none"}
                     >
-                      <option value='none'>상품을 선택해주세요.</option>
+                      <option value="none">상품을 선택해주세요.</option>
                       {enabledProducts.map((item) => (
                         <option key={item.id} value={item.name}>
                           {item.name}
@@ -273,11 +271,11 @@ export default function Page(_: PageProps) {
                       ))}
                     </select>
                   </td>
-                  <td className='relative'>
+                  <td className="relative">
                     <Input
-                      id='product-quantity'
-                      type='number'
-                      className='text-center'
+                      id="product-quantity"
+                      type="number"
+                      className="text-center"
                       disabled={createItem.isLoading}
                       value={product.quantity.toLocaleString()}
                       onChange={(e) => orderActions.onProductQuantityChange({ index, e })}
@@ -287,8 +285,8 @@ export default function Page(_: PageProps) {
                   </td>
                   <td>
                     <button
-                      type='button'
-                      className='btn w-10 h-full shadow-none'
+                      type="button"
+                      className="btn h-full w-10 shadow-none"
                       onClick={() => orderActions.removeProduct(index)}
                       disabled={index === 0}
                     >
@@ -300,10 +298,10 @@ export default function Page(_: PageProps) {
             </tbody>
           </table>
 
-          <div className='space-x-2 text-end'>
+          <div className="space-x-2 text-end">
             <button
-              type='button'
-              className='btn mt-2 shadow-none inline-block'
+              type="button"
+              className="btn mt-2 inline-block shadow-none"
               onClick={() => orderActions.addProduct(undefined)}
             >
               <FaIcon icon={faPlus} /> 추가하기
@@ -311,19 +309,19 @@ export default function Page(_: PageProps) {
           </div>
         </fieldset>
 
-        <fieldset className='fieldset w-80'>
-          <legend className='legend'>
+        <fieldset className="fieldset w-80">
+          <legend className="legend">
             <FaIcon icon={faPaperPlane} fontSize={16} /> 기타 정보
           </legend>
 
-          <div className='field'>
-            <label htmlFor='memo' className='label'>
+          <div className="field">
+            <label htmlFor="memo" className="label">
               <FaIcon icon={faNoteSticky} /> 메모
             </label>
             <textarea
-              id='memo'
-              placeholder='메모'
-              className='rounded-md w-full p-2 min-h-max'
+              id="memo"
+              placeholder="메모"
+              className="min-h-max w-full rounded-md p-2"
               disabled={createItem.isLoading}
               value={order.memo}
               onChange={orderActions.onMemoChange}
@@ -332,16 +330,16 @@ export default function Page(_: PageProps) {
         </fieldset>
       </div>
 
-      <div className='mb-10 text-center'>
+      <div className="mb-10 text-center">
         <button
-          type='button'
-          className='btn py-2 mb-3 w-56 max-w-full'
+          type="button"
+          className="btn mb-3 w-56 max-w-full py-2"
           disabled={!isValid || createItem.isLoading}
           onClick={() => createItem.mutate()}
         >
           {createItem.isLoading ? (
             <>
-              <FaIcon icon={faSpinner} className='animate-spin' /> 배송정보 등록중...
+              <FaIcon icon={faSpinner} className="animate-spin" /> 배송정보 등록중...
             </>
           ) : (
             <>

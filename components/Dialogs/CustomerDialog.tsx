@@ -83,20 +83,20 @@ export function CustomerDialog(props: Props) {
     <dialog
       ref={props.ref}
       onClose={props.closeSelf}
-      className='max-w-full max-h-full rounded-md p-0 w-96 bg-transparent backdrop:backdrop-blur-md animate-scaleTo1'
+      className="max-h-full w-96 max-w-full animate-scaleTo1 rounded-md bg-transparent p-0 backdrop:backdrop-blur-md"
     >
-      <fieldset className='fieldset'>
-        <legend className='legend'>
+      <fieldset className="fieldset">
+        <legend className="legend">
           <FaIcon icon={faPeopleGroup} fontSize={16} /> 고객 정보
         </legend>
 
-        <div className='field'>
-          <label htmlFor='name' className='label'>
+        <div className="field">
+          <label htmlFor="name" className="label">
             <FaIcon icon={faSignature} /> 이름
           </label>
           <Input
-            id='name'
-            placeholder='홍길동'
+            id="name"
+            placeholder="홍길동"
             value={customer.name}
             onChange={customerActions.onNameChange}
             disabled={isLoading}
@@ -104,14 +104,14 @@ export function CustomerDialog(props: Props) {
           />
         </div>
 
-        <div className='field'>
-          <label htmlFor='phone' className='label'>
+        <div className="field">
+          <label htmlFor="phone" className="label">
             <FaIcon icon={faMobileScreen} /> 전화번호
           </label>
           <Input
-            id='phone'
-            type='tel'
-            placeholder='010-xxxx-xxxx'
+            id="phone"
+            type="tel"
+            placeholder="010-xxxx-xxxx"
             value={customer.phone}
             onChange={customerActions.onPhoneChange}
             disabled={isLoading}
@@ -119,13 +119,13 @@ export function CustomerDialog(props: Props) {
           />
         </div>
 
-        <div className='field'>
-          <label htmlFor='receiver-address' className='label'>
+        <div className="field">
+          <label htmlFor="receiver-address" className="label">
             <FaIcon icon={faSignsPost} /> 주소
           </label>
           <Input
-            id='receiver-address'
-            placeholder='남원월산로74번길 42'
+            id="receiver-address"
+            placeholder="남원월산로74번길 42"
             disabled={isLoading}
             value={customer.address}
             onChange={postCodePopup.show}
@@ -134,13 +134,13 @@ export function CustomerDialog(props: Props) {
           />
         </div>
 
-        <div className='field'>
-          <label htmlFor='receiver-address-detail' className='label'>
+        <div className="field">
+          <label htmlFor="receiver-address-detail" className="label">
             <FaIcon icon={faBuilding} /> 상세주소
           </label>
           <Input
-            id='receiver-address-detail'
-            placeholder='단독주택, 1층 101호, ...'
+            id="receiver-address-detail"
+            placeholder="단독주택, 1층 101호, ..."
             disabled={isLoading}
             value={customer.addressDetail}
             onChange={customerActions.onAddressDetailChange}
@@ -149,42 +149,42 @@ export function CustomerDialog(props: Props) {
         </div>
       </fieldset>
 
-      <form method='dialog' className='flex justify-end gap-2 mt-2'>
+      <form method="dialog" className="mt-2 flex justify-end gap-2">
         {/* Close */}
-        <button className='btn' disabled={isLoading}>
-          <FaIcon icon={faX} isLoading={isLoading} value='닫기' />
+        <button className="btn" disabled={isLoading}>
+          <FaIcon icon={faX} isLoading={isLoading} value="닫기" />
         </button>
 
         {/* Clear */}
         <button
-          type='button'
-          className='btn'
+          type="button"
+          className="btn"
           disabled={isCleared || isLoading}
           onClick={customerActions.reset}
         >
-          <FaIcon icon={faNotdef} rotation={90} isLoading={isLoading} value='초기화' />
+          <FaIcon icon={faNotdef} rotation={90} isLoading={isLoading} value="초기화" />
         </button>
 
         {/* Delete */}
         {mode === "UPDATE" ? (
           <button
-            type='button'
-            className='btn'
+            type="button"
+            className="btn"
             disabled={isLoading}
             onClick={() => deleteItem.mutate()}
           >
-            <FaIcon icon={faTrashAlt} isLoading={isLoading} value='삭제' />
+            <FaIcon icon={faTrashAlt} isLoading={isLoading} value="삭제" />
           </button>
         ) : null}
 
         {/* Save */}
         <button
-          type='button'
-          className='btn'
+          type="button"
+          className="btn"
           onClick={mode === "CREATE" ? () => createItem.mutate() : () => updateItem.mutate()}
           disabled={!isValid || isLoading}
         >
-          <FaIcon icon={faFloppyDisk} isLoading={isLoading} value='저장' />
+          <FaIcon icon={faFloppyDisk} isLoading={isLoading} value="저장" />
         </button>
       </form>
     </dialog>

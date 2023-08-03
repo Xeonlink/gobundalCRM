@@ -18,7 +18,7 @@ export function ReactQueryProvider(props: Props) {
           // refetchOnWindowFocus: false,
         },
       },
-    })
+    }),
   );
 
   return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;

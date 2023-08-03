@@ -16,7 +16,7 @@ export function UserPoolProvider(props: PropsWithChildren) {
        * 지정하지 않을 경우, localStorage에 저장한다.
        */
       // Storage: sessionStorage,
-    })
+    }),
   );
 
   return <UserPoolContext.Provider value={Pool}>{props.children}</UserPoolContext.Provider>;

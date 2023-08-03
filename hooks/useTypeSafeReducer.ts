@@ -1,4 +1,4 @@
-import { useReducer, useState } from "react";
+import { useState } from "react";
 
 export type Reducer<S = any, P = any> = (state: S, payload?: P) => S | void;
 export type Reducers<S = any> = { [K: string]: Reducer<S> };
@@ -33,7 +33,7 @@ export type Dispatchers<RS extends Reducers> = { [Type in keyof RS]: Dispatcher<
 export function useTypeSafeReducer<S extends object, RS extends Reducers<S>>(
   initialState: S | (() => S),
   reducers: RS,
-  cloneFn: (state: S) => S = cloneDeep
+  cloneFn: (state: S) => S = cloneDeep,
 ) {
   const [state, setState] = useState(initialState);
 
@@ -66,7 +66,7 @@ export function useTypeSafeReducer<S extends object, RS extends Reducers<S>>(
     },
     {} as {
       [key: string]: (payload: any) => void;
-    }
+    },
   ) as Dispatchers<RS>;
 
   return [state, actions] as const;

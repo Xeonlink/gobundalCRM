@@ -10,19 +10,19 @@ export function Input(props: Props) {
 
   return (
     <input
-      autoComplete='off'
-      autoCorrect='off'
-      autoCapitalize='off'
-      spellCheck='false'
-      type='text'
+      autoComplete="off"
+      autoCorrect="off"
+      autoCapitalize="off"
+      spellCheck="false"
+      type="text"
       {...rest}
       className={
         cn(
-          "rounded-md bg-white px-3 py-2 w-full disabled:opacity-40",
+          "w-full rounded-md bg-white px-3 py-2 disabled:opacity-40",
           {
             "animate-shake shadow-red-300": invalid,
           },
-          props.className
+          props.className,
         ) + " shadow-inset-2"
       }
     />

@@ -11,7 +11,7 @@ export function ImgIcon(props: Props) {
       height={h}
       alt={alt}
       {...otherProps}
-      className={`inline-block align-text-bottom w-[1em] h-auto ${props.className}`}
+      className={`inline-block h-auto w-[1em] align-text-bottom ${props.className}`}
       style={{ fontSize }}
     />
   );

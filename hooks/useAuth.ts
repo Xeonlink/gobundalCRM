@@ -1,6 +1,5 @@
 "use client";
 
-import { QueryOptions } from "@/extra/type";
 import {
   AuthenticationDetails,
   CognitoUser,

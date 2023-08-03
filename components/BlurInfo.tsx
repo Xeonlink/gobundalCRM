@@ -12,11 +12,11 @@ export function BlurInfo(props: PropsWithChildren<BlurInfoProps>) {
 
   return (
     <div
-      className='absolute top-0 left-0 w-full h-full z-10 backdrop-blur-sm rounded-md overflow-hidden flex flex-col items-center justify-center transition-all aria-hidden:hidden'
+      className="absolute left-0 top-0 z-10 flex h-full w-full flex-col items-center justify-center overflow-hidden rounded-md backdrop-blur-sm transition-all aria-hidden:hidden"
       aria-hidden={!open}
     >
-      <span className='mb-4'>{children}</span>
-      <button type='button' className='btn' onClick={closeFn}>
+      <span className="mb-4">{children}</span>
+      <button type="button" className="btn" onClick={closeFn}>
         <FaIcon icon={faXmark} /> 닫기
       </button>
     </div>

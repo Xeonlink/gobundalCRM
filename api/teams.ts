@@ -1,7 +1,7 @@
 import { useAutoInvalidateMutation } from "@/api/utils/useAutoInvalidateMutation";
 import { MutateOption, QueryOptions } from "@/extra/type";
 import { useAuth } from "@/hooks/useAuth";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { GetResponse, apiRoot } from "./utils/utils";
 
 export interface Team {
@@ -48,7 +48,7 @@ export function useCreateTeam(rawTeam: RawTeam, options?: MutateOption) {
 export function useUpdateTeam(
   id: string,
   partialRawTeam: Partial<Omit<Team, "id">>,
-  options?: MutateOption
+  options?: MutateOption,
 ) {
   const mutationFn = async () => {
     const uri = `/teams/${id}`;

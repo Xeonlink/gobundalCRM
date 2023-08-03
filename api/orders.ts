@@ -1,9 +1,9 @@
 import { MutateOption, QueryOptions } from "@/extra/type";
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
+import dayjs from "dayjs";
 import { useAutoInvalidateMutation } from "./utils/useAutoInvalidateMutation";
 import { GetResponse, apiRoot } from "./utils/utils";
-import dayjs from "dayjs";
 
 export const defaultOrder: RawOrder = {
   date: dayjs().format("YYYY-MM-DD"),
@@ -77,7 +77,7 @@ export function useCreateOrder(rawOrder: Partial<RawOrder>, options?: MutateOpti
 export function useUpdateOrder(
   id: string,
   partialRawOrder: Partial<RawOrder>,
-  options?: MutateOption
+  options?: MutateOption,
 ) {
   const mutationFn = async () => {
     const uri = `/orders/${id}`;

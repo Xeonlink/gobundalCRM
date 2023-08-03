@@ -15,18 +15,18 @@ export function CheckBox(props: CheckBoxProps) {
   const { checked, toggleFn, trueContents, falseContents } = props;
 
   return (
-    <div className='flex gap-3 disabled:opacity-40 mb-3' aria-disabled={props.disable}>
+    <div className="mb-3 flex gap-3 disabled:opacity-40" aria-disabled={props.disable}>
       <button
-        type='button'
-        className='btn w-full shadow-none p-2'
+        type="button"
+        className="btn w-full p-2 shadow-none"
         disabled={checked}
         onClick={toggleFn}
       >
         {!!trueContents[0] && <FontAwesomeIcon icon={trueContents[0]} />} {trueContents[1]}
       </button>
       <button
-        type='button'
-        className='btn w-full shadow-none p-2'
+        type="button"
+        className="btn w-full p-2 shadow-none"
         disabled={!checked}
         onClick={toggleFn}
       >

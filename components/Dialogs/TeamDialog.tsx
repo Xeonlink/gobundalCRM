@@ -88,27 +88,27 @@ export function TeamDialog(props: Props) {
   const isLoading = createTeam.isLoading || updateTeam.isLoading || deleteTeam.isLoading;
 
   return (
-    <dialog ref={props.ref} onClose={props.closeSelf} className='dialog w-96'>
-      <fieldset className='fieldset'>
-        <legend className='legend'>
+    <dialog ref={props.ref} onClose={props.closeSelf} className="dialog w-96">
+      <fieldset className="fieldset">
+        <legend className="legend">
           <FaIcon icon={faPeopleGroup} fontSize={16} /> 팀 생성
         </legend>
 
         {/* 해당 날짜로 검색 */}
-        <div className='field'>
-          <label htmlFor='date' className='label'>
+        <div className="field">
+          <label htmlFor="date" className="label">
             <FaIcon icon={faCalendarAlt} /> 날짜
           </label>
           <DateChanger date={team.date} onChange={teamActions.setDate} />
         </div>
 
-        <div className='field'>
-          <label htmlFor='leader-name' className='label'>
+        <div className="field">
+          <label htmlFor="leader-name" className="label">
             <FaIcon icon={faSignature} /> 이름
           </label>
           <Input
-            id='leader-name'
-            placeholder='홍길동'
+            id="leader-name"
+            placeholder="홍길동"
             value={team.leaderName}
             onChange={teamActions.onLeaderNameChange}
             disabled={isLoading}
@@ -116,14 +116,14 @@ export function TeamDialog(props: Props) {
           />
         </div>
 
-        <div className='field'>
-          <label htmlFor='leader-phone' className='label'>
+        <div className="field">
+          <label htmlFor="leader-phone" className="label">
             <FaIcon icon={faMobileScreenButton} /> 전화번호
           </label>
           <Input
-            id='leader-phone'
-            type='tel'
-            placeholder='010-xxxx-xxxx'
+            id="leader-phone"
+            type="tel"
+            placeholder="010-xxxx-xxxx"
             value={team.leaderPhone}
             onChange={teamActions.onLeaderPhoneChange}
             disabled={isLoading}
@@ -131,36 +131,36 @@ export function TeamDialog(props: Props) {
           />
         </div>
 
-        <div className='field'>
-          <label htmlFor='coupon' className='label'>
+        <div className="field">
+          <label htmlFor="coupon" className="label">
             <FaIcon icon={faBuilding} /> 쿠폰사
           </label>
           <Input
-            id='coupon'
+            id="coupon"
             value={team.coupon}
             onChange={teamActions.onCouponChange}
             disabled={isLoading}
-            placeholder='쿠폰사'
+            placeholder="쿠폰사"
             invalid={team.coupon === ""}
           />
         </div>
 
-        <div className='field'>
-          <label htmlFor='population' className='label'>
+        <div className="field">
+          <label htmlFor="population" className="label">
             <FaIcon icon={faPeopleGroup} /> 인원수
           </label>
           <Input
-            id='population'
-            type='number'
+            id="population"
+            type="number"
             value={team.population}
             onChange={teamActions.onPopulationChange}
             disabled={isLoading}
-            placeholder='인원수'
+            placeholder="인원수"
           />
         </div>
 
-        <div className='field'>
-          <label htmlFor='is-approved' className='label'>
+        <div className="field">
+          <label htmlFor="is-approved" className="label">
             <FaIcon icon={team.isApproved ? faThumbsUp : faThumbsDown} /> 쿠폰이 승인되었습니까?
           </label>
           <CheckBox
@@ -172,8 +172,8 @@ export function TeamDialog(props: Props) {
           />
         </div>
 
-        <div className='field'>
-          <label htmlFor='is-approved' className='label'>
+        <div className="field">
+          <label htmlFor="is-approved" className="label">
             <FaIcon icon={team.isLeave ? faDoorOpen : faDoorClosed} /> 손님이 체험장을 나갔습니까?
           </label>
           <CheckBox
@@ -186,42 +186,42 @@ export function TeamDialog(props: Props) {
         </div>
       </fieldset>
 
-      <form method='dialog' className='flex justify-end gap-2 mt-2'>
+      <form method="dialog" className="mt-2 flex justify-end gap-2">
         {/* Close */}
-        <button className='btn' disabled={isLoading}>
-          <FaIcon icon={faX} isLoading={isLoading} value='닫기' />
+        <button className="btn" disabled={isLoading}>
+          <FaIcon icon={faX} isLoading={isLoading} value="닫기" />
         </button>
 
         {/* Clear */}
         <button
-          type='button'
-          className='btn'
+          type="button"
+          className="btn"
           disabled={isCleared || isLoading}
           onClick={teamActions.reset}
         >
-          <FaIcon icon={faNotdef} rotation={90} isLoading={isLoading} value='초기화' />
+          <FaIcon icon={faNotdef} rotation={90} isLoading={isLoading} value="초기화" />
         </button>
 
         {/* Delete */}
         {mode === "UPDATE" ? (
           <button
-            type='button'
-            className='btn'
+            type="button"
+            className="btn"
             disabled={isLoading}
             onClick={() => deleteTeam.mutate()}
           >
-            <FaIcon icon={faTrashAlt} isLoading={isLoading} value='삭제' />
+            <FaIcon icon={faTrashAlt} isLoading={isLoading} value="삭제" />
           </button>
         ) : null}
 
         {/* Save */}
         <button
-          type='button'
-          className='btn'
+          type="button"
+          className="btn"
           onClick={mode === "CREATE" ? () => createTeam.mutate() : () => updateTeam.mutate()}
           disabled={!isValid || isLoading}
         >
-          <FaIcon icon={faFloppyDisk} isLoading={isLoading} value='저장' />
+          <FaIcon icon={faFloppyDisk} isLoading={isLoading} value="저장" />
         </button>
       </form>
     </dialog>

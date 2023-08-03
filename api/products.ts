@@ -78,7 +78,7 @@ export function useProduct(id: string, options?: QueryOptions<Product>) {
       suspense: true,
       enabled: auth.isSignIn,
       ...options,
-    }
+    },
   );
 }
 
