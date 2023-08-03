@@ -10,7 +10,7 @@ export function useAutoInvalidateMutation(
 
   return useMutation<any, unknown, void, unknown>(mutationKey, mutationFn, {
     ...options,
-    onSuccess: (data, variables, context) => {
+    onSuccess: (data: any, variables: void, context: unknown) => {
       queryClient.invalidateQueries(mutationKey);
       options?.onSuccess?.(data, variables, context);
     },
