@@ -1,14 +1,11 @@
 "use client";
 
-import { useCustomersByName } from "@/api/customers";
 import { OrderProduct, defaultOrder, useCreateOrder } from "@/api/orders";
-import { useProducts } from "@/api/products";
+import { useAuthFreeProducts } from "@/api/products";
 import { CheckBox } from "@/components/CheckBox";
 import { Input } from "@/components/Input";
 import { PageProps } from "@/extra/type";
 import { cn, toHyphenPhone } from "@/extra/utils";
-import { useDebounce } from "@/hooks/useDebounce";
-import { useModal } from "@/hooks/useModal";
 import { usePostCodePopup } from "@/hooks/usePostCodePopup";
 import { useTypeSafeReducer } from "@/hooks/useTypeSafeReducer";
 import {
@@ -33,8 +30,10 @@ import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
 type ProductPayload<T extends HTMLElement> = { index: number; e: React.ChangeEvent<T> };
 
 export default function Page(_: PageProps) {
-  const modalCtrl = useModal();
-  const { data: products } = useProducts();
+  // const auth = useAuth({
+  //   unAuthorizedRedirect: false,
+  // });
+  const { data: products } = useAuthFreeProducts();
   const enabledProducts = products?.data.filter((item) => item.enabled) ?? [];
   const [order, orderActions] = useTypeSafeReducer(defaultOrder, {
     setDate: (state, date: string) => {
@@ -88,11 +87,11 @@ export default function Page(_: PageProps) {
     },
     reset: () => defaultOrder,
   });
-  const debouncedSenderName = useDebounce(order.senderName, 500);
-  const customers = useCustomersByName(debouncedSenderName);
+  // const debouncedSenderName = useDebounce(order.senderName, 500);
+  // const customers = useCustomersByName(debouncedSenderName);
   const createItem = useCreateOrder(order, {
     onSuccess: () => {
-      orderActions.reset();
+      if (!confirm("송장등록이 완료되었습니다. 계속 등록하시겠습니까?")) orderActions.reset();
     },
   });
   const postCodePopup = usePostCodePopup({
@@ -149,11 +148,11 @@ export default function Page(_: PageProps) {
               onChange={orderActions.onSenderPhoneChange}
               invalid={order.senderPhone === ""}
             />
-            <datalist id="sender-phone-list">
+            {/* <datalist id="sender-phone-list">
               {customers?.data?.data?.map((customer) => (
                 <option key={customer.id} value={customer.phone}></option>
               ))}
-            </datalist>
+            </datalist> */}
           </div>
         </fieldset>
 

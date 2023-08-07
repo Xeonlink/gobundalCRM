@@ -1,8 +1,8 @@
 import { MutateOption, QueryOptions } from "@/extra/type";
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
-import { useAutoInvalidateMutation } from "./utils/useAutoInvalidateMutation";
-import { GetResponse, apiRoot } from "./utils/utils";
+import { useAutoInvalidateMutation } from "../hooks/useAutoInvalidateMutation";
+import { GetResponse, apiRoot } from "./utils";
 
 export interface Customer {
   id: string;

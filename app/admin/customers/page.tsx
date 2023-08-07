@@ -5,7 +5,7 @@ import { CustomerDialog } from "@/components/Dialogs/CustomerDialog";
 import { ImgIcon } from "@/components/ImgIcon";
 import { Input } from "@/components/Input";
 import { PageProps } from "@/extra/type";
-import { cn, debounce } from "@/extra/utils";
+import { cn } from "@/extra/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { useExcel } from "@/hooks/useExcel";
 import { useItemSelection } from "@/hooks/useItemSelection";
@@ -14,6 +14,7 @@ import IcoExcel from "@/public/icons/excel.png";
 import {
   faArrowsRotate,
   faBuilding,
+  faMagnifyingGlass,
   faMobileScreen,
   faPlus,
   faSignature,
@@ -21,22 +22,24 @@ import {
   faTrashCan,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 
 type SearchParams = {
   view: "card" | "table";
+  name: string;
 };
 
 export default function Page(props: PageProps<any, SearchParams>) {
   const { searchParams } = props;
-  const { view = "table" } = searchParams;
+  const { view = "table", name = "" } = searchParams;
 
   useAuth();
   const excel = useExcel();
   const modalCtrl = useModal();
   const navigate = useRouter();
-  const [name, setName] = useState("");
+  const nameRef = useRef<HTMLInputElement>(null);
   const selected = useItemSelection();
   const items = useCustomersByName(name, {
     enabled: name !== "",
@@ -46,7 +49,7 @@ export default function Page(props: PageProps<any, SearchParams>) {
   });
 
   const onViewStyleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    navigate.replace(`customsers?view=${e.target.value}`);
+    navigate.replace(`customers?view=${e.target.value}`);
   };
   const openCustomerCreateDialog = () => {
     modalCtrl.open(<CustomerDialog mode="CREATE" />);
@@ -67,11 +70,6 @@ export default function Page(props: PageProps<any, SearchParams>) {
     <main className="h-full flex-1 overflow-auto p-3">
       {/* Toolbar */}
       <div className="mb-3 flex flex-wrap items-center gap-3">
-        {/* Refresh */}
-        <button type="button" className="btn" onClick={() => items.refetch()}>
-          <FaIcon icon={faArrowsRotate} /> 새로고침
-        </button>
-
         {/* Change ViewStyle */}
         <select
           className="btn appearance-none text-center"
@@ -97,12 +95,20 @@ export default function Page(props: PageProps<any, SearchParams>) {
           <ImgIcon src={IcoExcel} alt="엑셀로 변환" fontSize={20} /> 엑셀로 변환
         </button>
 
-        {/* 고객이름으로 검색 */}
-        <Input
-          className="w-40 shadow-md"
-          placeholder="홍길동"
-          onChange={debounce((e) => setName(e.target.value), 300)}
-        />
+        <div className="space-x-3">
+          {/* 고객이름으로 검색 */}
+          <Input
+            className="w-40 shadow-md"
+            placeholder="홍길동"
+            defaultValue={name}
+            ref={nameRef}
+          />
+
+          {/* Search */}
+          <Link href={`customers?view=${view}&name=${nameRef.current?.value}`} className="btn">
+            <FaIcon icon={faMagnifyingGlass} /> 검색
+          </Link>
+        </div>
       </div>
 
       {view === "table" ? (
@@ -135,8 +141,8 @@ export default function Page(props: PageProps<any, SearchParams>) {
               >
                 <td className="td">{item.name}</td>
                 <td className="td">{item.phone}</td>
-                <td className="td text-start">{item.address}</td>
-                <td className="td text-start">{item.addressDetail}</td>
+                <td className="td">{item.address}</td>
+                <td className="td">{item.addressDetail}</td>
               </tr>
             ))}
           </tbody>

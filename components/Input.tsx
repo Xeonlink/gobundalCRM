@@ -1,15 +1,16 @@
 import { cn } from "@/extra/utils";
-import { DetailedHTMLProps, InputHTMLAttributes } from "react";
+import { DetailedHTMLProps, InputHTMLAttributes, LegacyRef, forwardRef } from "react";
 
 interface Props extends DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> {
   invalid?: boolean;
 }
 
-export function Input(props: Props) {
+export const Input = forwardRef((props: Props, ref?: LegacyRef<HTMLInputElement>) => {
   const { invalid, ...rest } = props;
 
   return (
     <input
+      ref={ref}
       autoComplete="off"
       autoCorrect="off"
       autoCapitalize="off"
@@ -27,4 +28,4 @@ export function Input(props: Props) {
       }
     />
   );
-}
+});

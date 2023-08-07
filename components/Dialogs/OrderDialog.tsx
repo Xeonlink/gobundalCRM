@@ -3,6 +3,7 @@
 import { useCustomersByName } from "@/api/customers";
 import {
   OrderProduct,
+  RawOrder,
   defaultOrder,
   useCreateOrder,
   useDeleteOrder,
@@ -23,6 +24,7 @@ import {
   faCalendarAlt,
   faCheck,
   faCoins,
+  faCopy,
   faEquals,
   faFloppyDisk,
   faMobileScreenButton,
@@ -44,7 +46,7 @@ import { Input } from "../Input";
 import { ProductSelector } from "../Selectors/ProductSelector";
 
 type ProductPayload<T extends HTMLElement> = { index: number; e: React.ChangeEvent<T> };
-type Props = ModalProps<{ mode: "CREATE" } | { mode: "UPDATE"; orderId: string }>;
+type Props = ModalProps<{ mode: "CREATE"; base?: RawOrder } | { mode: "UPDATE"; orderId: string }>;
 
 export function OrderDialog(props: Props) {
   const { mode } = props;
@@ -53,60 +55,61 @@ export function OrderDialog(props: Props) {
   const { data: originOrder } = useOrder(mode === "UPDATE" ? props.orderId : "", {
     enabled: mode === "UPDATE",
   });
-  const [order, orderActions] = useTypeSafeReducer(originOrder || defaultOrder, {
-    setDate: (state, date: string) => {
-      state.date = date;
+  const [order, orderActions] = useTypeSafeReducer(
+    mode === "CREATE" ? props.base || defaultOrder : originOrder!,
+    {
+      setDate: (state, date: string) => {
+        state.date = date;
+      },
+      onSenderNameChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
+        state.senderName = e.target.value;
+        state.receiverName = !state.sameAsSender ? state.receiverName : e.target.value;
+      },
+      onSenderPhoneChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
+        const newPhone = toHyphenPhone(e.target.value);
+        state.senderPhone = newPhone;
+        state.receiverPhone = !state.sameAsSender ? state.receiverPhone : newPhone;
+      },
+      toggleSameAsSender: (state) => {
+        state.receiverName = !state.sameAsSender ? state.senderName : "";
+        state.receiverPhone = !state.sameAsSender ? state.senderPhone : "";
+        state.sameAsSender = !state.sameAsSender;
+      },
+      onReceiverNameChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
+        state.receiverName = e.target.value;
+      },
+      onReceiverPhoneChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
+        state.receiverPhone = toHyphenPhone(e.target.value);
+      },
+      setReceiverAddress: (state, receiverAddress: string) => {
+        state.receiverAddress = receiverAddress;
+      },
+      onReceiverAddressDetailChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
+        state.receiverAddressDetail = e.target.value;
+      },
+      addProduct: (state, product: OrderProduct = { ...defaultOrder.products[0] }) => {
+        state.products.push(product);
+      },
+      removeProduct: (state, index: number) => {
+        state.products.splice(index, 1);
+      },
+      onProductNameChange: (state, payload: ProductPayload<HTMLInputElement>) => {
+        state.products[payload.index].name = payload.e.target.value;
+      },
+      onProductPriceChange: (state, payload: ProductPayload<HTMLInputElement>) => {
+        state.products[payload.index].price = Number(payload.e.target.value.replaceAll(",", ""));
+      },
+      onProductQuantityChange: (state, payload: ProductPayload<HTMLInputElement>) => {
+        const newQuantity = Number(payload.e.target.value.replaceAll(",", ""));
+        if (newQuantity < 0) return;
+        state.products[payload.index].quantity = newQuantity;
+      },
+      onMemoChange: (state, e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        state.memo = e.target.value;
+      },
+      reset: () => (mode === "CREATE" ? defaultOrder : originOrder!),
     },
-    onSenderNameChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
-      state.senderName = e.target.value;
-      state.receiverName = !state.sameAsSender ? state.receiverName : e.target.value;
-    },
-    onSenderPhoneChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
-      const newPhone = toHyphenPhone(e.target.value);
-      state.senderPhone = newPhone;
-      state.receiverPhone = !state.sameAsSender ? state.receiverPhone : newPhone;
-    },
-    toggleSameAsSender: (state) => {
-      state.receiverName = !state.sameAsSender ? state.senderName : "";
-      state.receiverPhone = !state.sameAsSender ? state.senderPhone : "";
-      state.sameAsSender = !state.sameAsSender;
-    },
-    onReceiverNameChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
-      state.receiverName = e.target.value;
-    },
-    onReceiverPhoneChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
-      state.receiverPhone = toHyphenPhone(e.target.value);
-    },
-    setReceiverAddress: (state, receiverAddress: string) => {
-      state.receiverAddress = receiverAddress;
-    },
-    onReceiverAddressDetailChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
-      state.receiverAddressDetail = e.target.value;
-    },
-    addProduct: (state, product: OrderProduct = { ...defaultOrder.products[0] }) => {
-      state.products.push(product);
-    },
-    removeProduct: (state, index: number) => {
-      state.products.splice(index, 1);
-    },
-    onProductNameChange: (state, payload: ProductPayload<HTMLInputElement>) => {
-      state.products[payload.index].name = payload.e.target.value;
-    },
-    onProductPriceChange: (state, payload: ProductPayload<HTMLInputElement>) => {
-      state.products[payload.index].price = Number(payload.e.target.value.replaceAll(",", ""));
-    },
-    onProductQuantityChange: (state, payload: ProductPayload<HTMLInputElement>) => {
-      const newQuantity = Number(payload.e.target.value.replaceAll(",", ""));
-      if (newQuantity < 0) return;
-      state.products[payload.index].quantity = newQuantity;
-    },
-    onMemoChange: (state, e: React.ChangeEvent<HTMLTextAreaElement>) => {
-      state.memo = e.target.value;
-    },
-    reset: () => {
-      return mode === "CREATE" ? defaultOrder : originOrder!;
-    },
-  });
+  );
   const debouncedSenderName = useDebounce(order.senderName, 500);
   const customers = useCustomersByName(debouncedSenderName);
   const createItem = useCreateOrder(order, {
@@ -126,15 +129,14 @@ export function OrderDialog(props: Props) {
   const openProductSelector = () => {
     modalCtrl.open(
       <ProductSelector
-        onSelect={(product) => {
-          orderActions.addProduct({
-            name: product.name,
-            price: product.price,
-            quantity: 1,
-          });
+        onSelect={({ name, price }) => {
+          orderActions.addProduct({ name, price, quantity: 1 });
         }}
       />,
     );
+  };
+  const openOrderCopyDialog = () => {
+    modalCtrl.open(<OrderDialog mode="CREATE" base={order} />);
   };
 
   const validity = {
@@ -405,6 +407,11 @@ export function OrderDialog(props: Props) {
           onClick={orderActions.reset}
         >
           <FaIcon icon={faNotdef} rotation={90} isLoading={isLoading} value="초기화" />
+        </button>
+
+        {/* Clear */}
+        <button type="button" className="btn" disabled={isLoading} onClick={openOrderCopyDialog}>
+          <FaIcon icon={faCopy} isLoading={isLoading} value="복제" />
         </button>
 
         {/* Delete */}

@@ -83,9 +83,14 @@ export const getIdToken = async () => {
 
 type AuthOptions = {
   unAuthorized?: () => void;
+  unAuthorizedRedirect?: boolean;
 };
 
-export function useAuth(options: AuthOptions = {}) {
+export function useAuth(
+  options: AuthOptions = {
+    unAuthorizedRedirect: true,
+  },
+) {
   const user = Pool.getCurrentUser();
   const isSignIn = user !== null;
 
@@ -93,9 +98,9 @@ export function useAuth(options: AuthOptions = {}) {
   const navigate = useRouter();
 
   useEffect(() => {
-    if (!isSignIn) {
-      navigate.push(`/login?url=${path}`);
-    }
+    if (options.unAuthorizedRedirect === false) return;
+    if (isSignIn === true) return;
+    navigate.push(`/login?url=${path}`);
   }, []);
 
   return { signIn, signUp, user, isSignIn, getSession };
