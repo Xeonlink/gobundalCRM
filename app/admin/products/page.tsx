@@ -35,12 +35,14 @@ export default function Page(props: PageProps<any, SearchParams>) {
   const { searchParams } = props;
   const { view = "table" } = searchParams;
 
-  useAuth();
+  const auth = useAuth();
   const excel = useExcel();
   const navigate = useRouter();
   const modalCtrl = useModal();
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const products = useProducts();
+  const products = useProducts({
+    enabled: auth.isSignIn,
+  });
   const deleteItems = useDeleteProducts(selectedIds, {
     onSuccess: () => setSelectedIds([]),
   });

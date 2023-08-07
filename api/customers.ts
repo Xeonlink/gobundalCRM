@@ -15,8 +15,6 @@ export interface Customer {
 export type RawCustomer = Omit<Customer, "id">;
 
 export function useCustomers(options?: QueryOptions<GetResponse<Customer>>) {
-  const auth = useAuth();
-
   const queryFn = async () => {
     const uri = `/customers`;
     const res = await apiRoot.get<GetResponse<Customer>>(uri);
@@ -25,14 +23,11 @@ export function useCustomers(options?: QueryOptions<GetResponse<Customer>>) {
 
   return useQuery(["customers"], queryFn, {
     suspense: true,
-    enabled: auth.isSignIn,
     ...options,
   });
 }
 
 export function useCustomersByName(name: string, options?: QueryOptions<GetResponse<Customer>>) {
-  const auth = useAuth();
-
   const queryFn = async () => {
     const uri = `/customers`;
     const config = { params: { name } };
@@ -41,14 +36,11 @@ export function useCustomersByName(name: string, options?: QueryOptions<GetRespo
   };
 
   return useQuery(["customers", JSON.stringify({ name })], queryFn, {
-    enabled: auth.isSignIn && !!name,
     ...options,
   });
 }
 
 export function useCustomersByPhone(phone: string, options?: QueryOptions<GetResponse<Customer>>) {
-  const auth = useAuth();
-
   const queryFn = async () => {
     const uri = `/customers`;
     const config = { params: { phone } };
@@ -58,7 +50,6 @@ export function useCustomersByPhone(phone: string, options?: QueryOptions<GetRes
 
   return useQuery(["customers", JSON.stringify({ phone })], queryFn, {
     suspense: true,
-    enabled: auth.isSignIn,
     ...options,
   });
 }

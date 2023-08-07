@@ -18,8 +18,6 @@ export interface Team {
 export type RawTeam = Omit<Team, "id">;
 
 export function useTeams(date: string, options?: QueryOptions<GetResponse<Team>>) {
-  const auth = useAuth();
-
   const queryFn = async () => {
     const uri = `/teams`;
     const config = { params: { date } };
@@ -29,7 +27,6 @@ export function useTeams(date: string, options?: QueryOptions<GetResponse<Team>>
 
   return useQuery(["teams", date], queryFn, {
     suspense: true,
-    enabled: auth.isSignIn,
     ...options,
   });
 }
@@ -71,8 +68,6 @@ export function useDeleteTeam(id: string, options?: MutateOption) {
 }
 
 export function useTeam(id: string, options?: QueryOptions<Team>) {
-  const auth = useAuth();
-
   const queryFn = async () => {
     const uri = `/teams/${id}`;
     const res = await apiRoot.get<Team>(uri);
@@ -81,7 +76,6 @@ export function useTeam(id: string, options?: QueryOptions<Team>) {
 
   return useQuery(["teams", id], queryFn, {
     suspense: true,
-    enabled: auth.isSignIn,
     ...options,
   });
 }
