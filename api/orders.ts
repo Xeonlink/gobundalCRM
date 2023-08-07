@@ -47,8 +47,6 @@ export interface Order {
 export type RawOrder = Omit<Order, "id">;
 
 export function useOrders(date: string, options?: QueryOptions<GetResponse<Order>>) {
-  const auth = useAuth();
-
   const queryFn = async () => {
     const uri = `/orders`;
     const config = { params: { date } };
@@ -58,7 +56,6 @@ export function useOrders(date: string, options?: QueryOptions<GetResponse<Order
 
   return useQuery(["orders", date], queryFn, {
     suspense: true,
-    enabled: auth.isSignIn,
     ...options,
   });
 }
@@ -100,8 +97,6 @@ export function useDeleteOrder(id: string, options?: MutateOption) {
 }
 
 export function useOrder(id: string, options?: QueryOptions<Order>) {
-  const auth = useAuth();
-
   const queryFn = async () => {
     const uri = `/orders/${id}`;
     const res = await apiRoot.get<Order>(uri);
@@ -110,7 +105,6 @@ export function useOrder(id: string, options?: QueryOptions<Order>) {
 
   return useQuery(["orders", id], queryFn, {
     suspense: true,
-    enabled: auth.isSignIn,
     ...options,
   });
 }

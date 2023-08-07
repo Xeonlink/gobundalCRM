@@ -39,12 +39,14 @@ export default function Page(props: PageProps<any, SearchParams>) {
   const { searchParams } = props;
   const { date = dayjs().format("YYYY-MM-DD"), view = "table" } = searchParams;
 
-  useAuth();
   const navigate = useRouter();
   const excel = useExcel();
   const modalCtrl = useModal();
   const selected = useItemSelection();
-  const orders = useOrders(date);
+  const auth = useAuth();
+  const orders = useOrders(date, {
+    enabled: auth.isSignIn,
+  });
   const eraseOrders = useDeleteOrders(selected.ids, {
     onSuccess: () => selected.clear(),
   });

@@ -17,22 +17,6 @@ export interface Product {
 export type RawProduct = Omit<Product, "id">;
 
 export function useProducts(options?: QueryOptions<GetResponse<Product>>) {
-  const auth = useAuth();
-
-  const queryFn = async () => {
-    const uri = `/products`;
-    const res = await apiRoot.get<GetResponse<Product>>(uri);
-    return res.data;
-  };
-
-  return useQuery(["products"], queryFn, {
-    suspense: true,
-    enabled: auth.isSignIn,
-    ...options,
-  });
-}
-
-export function useAuthFreeProducts(options?: QueryOptions<GetResponse<Product>>) {
   const queryFn = async () => {
     const uri = `/products`;
     const res = await apiRoot.get<GetResponse<Product>>(uri);
@@ -78,8 +62,6 @@ export function useDeleteProduct(id: string, options?: MutateOptions) {
 }
 
 export function useProduct(id: string, options?: QueryOptions<Product>) {
-  const auth = useAuth();
-
   const queryFn = async () => {
     const uri = `/products/${id}`;
     const res = await apiRoot.get<Product>(uri);
@@ -88,7 +70,6 @@ export function useProduct(id: string, options?: QueryOptions<Product>) {
 
   return useQuery(["products", id], queryFn, {
     suspense: true,
-    enabled: auth.isSignIn,
     ...options,
   });
 }

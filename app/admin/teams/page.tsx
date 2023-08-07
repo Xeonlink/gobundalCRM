@@ -39,12 +39,14 @@ export default function Page(props: PageProps<any, SearchParams>) {
   const { searchParams } = props;
   const { date = dayjs().format("YYYY-MM-DD"), view = "table" } = searchParams;
 
-  useAuth();
+  const auth = useAuth();
   const navigate = useRouter();
   const modalCtrl = useModal();
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const teams = useTeams(date);
   const excel = useExcel();
+  const teams = useTeams(date, {
+    enabled: auth.isSignIn,
+  });
   const eraseTeams = useDeleteTeams(selectedIds, {
     onSuccess: () => setSelectedIds([]),
   });

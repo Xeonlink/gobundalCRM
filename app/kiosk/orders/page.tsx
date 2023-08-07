@@ -1,11 +1,12 @@
 "use client";
 
 import { OrderProduct, defaultOrder, useCreateOrder } from "@/api/orders";
-import { useAuthFreeProducts } from "@/api/products";
+import { useProducts } from "@/api/products";
 import { CheckBox } from "@/components/CheckBox";
 import { Input } from "@/components/Input";
 import { PageProps } from "@/extra/type";
 import { cn, toHyphenPhone } from "@/extra/utils";
+import { useAuth } from "@/hooks/useAuth";
 import { usePostCodePopup } from "@/hooks/usePostCodePopup";
 import { useTypeSafeReducer } from "@/hooks/useTypeSafeReducer";
 import {
@@ -30,10 +31,10 @@ import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
 type ProductPayload<T extends HTMLElement> = { index: number; e: React.ChangeEvent<T> };
 
 export default function Page(_: PageProps) {
-  // const auth = useAuth({
-  //   unAuthorizedRedirect: false,
-  // });
-  const { data: products } = useAuthFreeProducts();
+  const auth = useAuth();
+  const { data: products } = useProducts({
+    enabled: auth.isSignIn,
+  });
   const enabledProducts = products?.data.filter((item) => item.enabled) ?? [];
   const [order, orderActions] = useTypeSafeReducer(defaultOrder, {
     setDate: (state, date: string) => {
