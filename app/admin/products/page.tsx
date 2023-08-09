@@ -7,6 +7,7 @@ import { PageProps } from "@/extra/type";
 import { cn } from "@/extra/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { useExcel } from "@/hooks/useExcel";
+import { useItemSelection } from "@/hooks/useItemSelection";
 import { useModal } from "@/hooks/useModal";
 import IcoExcel from "@/public/icons/excel.png";
 import {
@@ -24,7 +25,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React from "react";
 
 type SearchParams = {
   date: `${string}-${string}-${string}`;
@@ -39,25 +40,13 @@ export default function Page(props: PageProps<any, SearchParams>) {
   const excel = useExcel();
   const navigate = useRouter();
   const modalCtrl = useModal();
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const selected = useItemSelection();
   const products = useProducts({
     enabled: auth.isSignIn,
   });
-  const deleteItems = useDeleteProducts(selectedIds, {
-    onSuccess: () => setSelectedIds([]),
+  const deleteItems = useDeleteProducts(selected.ids, {
+    onSuccess: () => selected.clear(),
   });
-
-  const onItemClick = (id: string) => (e: React.MouseEvent<HTMLElement>) => {
-    if (e.ctrlKey || e.metaKey) {
-      if (selectedIds.includes(id)) {
-        setSelectedIds((prev) => prev.filter((selectedId) => selectedId !== id));
-      } else {
-        setSelectedIds((prev) => [...prev, id]);
-      }
-    } else {
-      setSelectedIds([id]);
-    }
-  };
   const onViewStyleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     navigate.replace(`products?view=${e.target.value}`);
   };
@@ -71,7 +60,7 @@ export default function Page(props: PageProps<any, SearchParams>) {
     excel.download(products.data?.data!, "상품");
   };
   const onDeleteClick = () => {
-    if (selectedIds.length === 0) return;
+    if (selected.isEmpty) return;
     if (!confirm("정말로 삭제하시겠습니까?")) return;
     deleteItems.mutate();
   };
@@ -148,10 +137,10 @@ export default function Page(props: PageProps<any, SearchParams>) {
               <tr
                 key={item.id}
                 className="group contents cursor-pointer"
-                onClick={onItemClick(item.id)}
+                onClick={selected.onItemClick(item.id)}
                 onDoubleClick={() => openProductUpdateDialog(item.id)}
                 onTouchEnd={() => openProductUpdateDialog(item.id)}
-                aria-selected={selectedIds.includes(item.id)}
+                aria-selected={selected.includes(item.id)}
               >
                 <td className="td group-aria-selected:bg-white group-aria-selected:bg-opacity-40">
                   {item.name}
@@ -183,9 +172,9 @@ export default function Page(props: PageProps<any, SearchParams>) {
             <li
               key={item.id}
               className={cn("btn bg-transparent p-2 text-start active:scale-90", {
-                "bg-white bg-opacity-70": selectedIds.includes(item.id),
+                "bg-white bg-opacity-70": selected.includes(item.id),
               })}
-              onClick={onItemClick(item.id)}
+              onClick={selected.onItemClick(item.id)}
               onDoubleClick={() => openProductUpdateDialog(item.id)}
             >
               <p className="mb-2 rounded-md bg-orange-200 p-2">

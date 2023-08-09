@@ -1,16 +1,30 @@
 import { MutateOption } from "@/extra/type";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  MutationFunction,
+  MutationKey,
+  UseMutationOptions,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 
-export function useAutoInvalidateMutation(
-  mutationKey: string[],
-  mutationFn: () => Promise<any>,
-  options?: MutateOption,
+export function useAutoInvalidateMutation<
+  TData = unknown,
+  TError = unknown,
+  TVariables = void,
+  TContext = unknown,
+>(
+  mutationKey: MutationKey,
+  mutationFn?: MutationFunction<TData, TVariables>,
+  options?: Omit<
+    UseMutationOptions<TData, TError, TVariables, TContext>,
+    "mutationKey" | "mutationFn"
+  >,
 ) {
   const queryClient = useQueryClient();
 
-  return useMutation<any, unknown, void, unknown>(mutationKey, mutationFn, {
+  return useMutation<TData, TError, TVariables, TContext>(mutationKey, mutationFn, {
     ...options,
-    onSuccess: (data: any, variables: void, context: unknown) => {
+    onSuccess: (data: TData, variables: TVariables, context?: TContext) => {
       queryClient.invalidateQueries(mutationKey);
       options?.onSuccess?.(data, variables, context);
     },

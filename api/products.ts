@@ -12,6 +12,7 @@ export interface Product {
   salePrice: number;
   remain: number;
   enabled: boolean;
+  imgSrc: string;
 }
 
 export type RawProduct = Omit<Product, "id">;
