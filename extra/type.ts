@@ -32,3 +32,8 @@ export type MutateOption = Omit<
   UseMutationOptions<any, unknown, void, unknown>,
   "mutationFn" | "mutationKey"
 >;
+
+export type GenericMutateOption<TVariables> = Omit<
+  UseMutationOptions<any, unknown, TVariables, unknown>,
+  "mutateFn" | "mutationKey"
+>;

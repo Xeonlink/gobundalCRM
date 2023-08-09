@@ -8,6 +8,7 @@ import {
   faCartPlus,
   faCartShopping,
   faChartLine,
+  faImage,
   faPeopleGroup,
   faPerson,
   faReceipt,
@@ -36,6 +37,7 @@ export function AdminNavbar() {
   const isAdminOrders = path.startsWith("/admin/orders");
   const isAdminProducts = path.startsWith("/admin/products");
   const isAdminCustomers = path.startsWith("/admin/customers");
+  const isAdminAssets = path.startsWith("/admin/assets");
 
   return (
     <nav
@@ -78,6 +80,10 @@ export function AdminNavbar() {
 
           <Link href="customers" className={link``} aria-selected={isAdminCustomers}>
             <FaIcon className="mr-2" width={20} icon={faPerson} /> 고객 관리
+          </Link>
+
+          <Link href="assets" className={link``} aria-selected={isAdminAssets}>
+            <FaIcon className="mr-2" width={20} icon={faImage} /> 자료 관리
           </Link>
         </div>
 

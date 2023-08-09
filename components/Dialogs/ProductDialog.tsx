@@ -12,10 +12,12 @@ import { diff } from "@/extra/utils";
 import { useTypeSafeReducer } from "@/hooks/useTypeSafeReducer";
 import {
   faBoxes,
+  faCheck,
   faCoins,
   faEye,
   faEyeSlash,
   faFloppyDisk,
+  faImage,
   faInfinity,
   faListOl,
   faNotdef,
@@ -25,9 +27,12 @@ import {
   faWon,
   faX,
 } from "@fortawesome/free-solid-svg-icons";
+import { useDropzone } from "react-dropzone";
 import { CheckBox } from "../CheckBox";
 import { FaIcon } from "../FaIcon";
 import { Input } from "../Input";
+import { useModal } from "@/hooks/useModal";
+import AssetSelector from "../Selectors/AssetSelector";
 
 const defaultProduct: RawProduct = {
   name: "",
@@ -36,21 +41,15 @@ const defaultProduct: RawProduct = {
   salePrice: 0,
   remain: 0,
   enabled: false,
+  imgSrc: "",
 };
 
-type Props = ModalProps<
-  | {
-      mode: "CREATE";
-    }
-  | {
-      mode: "UPDATE";
-      productId: string;
-    }
->;
+type Props = ModalProps<{ mode: "CREATE" } | { mode: "UPDATE"; productId: string }>;
 
 export function ProductDialog(props: Props) {
   const { mode } = props;
 
+  const modalCtrl = useModal();
   const { data: originProduct } = useProduct(mode === "UPDATE" ? props.productId : "", {
     enabled: mode === "UPDATE",
   });
@@ -62,41 +61,24 @@ export function ProductDialog(props: Props) {
       state.name = e.target.value;
     },
     onPriceChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
-      if (e.target.value === "") {
-        state.price = 0;
-        return;
-      }
-      const newPrice = parseInt(e.target.value.replaceAll(",", ""));
-      if (!newPrice) return;
-      state.price = newPrice;
+      state.price = parseInt(e.target.value.replaceAll(",", "")) || 0;
     },
     toggleIsSale: (state) => {
       state.isSale = !state.isSale;
     },
     onSalePriceChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
-      if (e.target.value === "") {
-        state.salePrice = 0;
-        return;
-      }
-      const newSalePrice = parseInt(e.target.value.replaceAll(",", ""));
-      if (!newSalePrice) return;
-      state.salePrice = newSalePrice;
+      state.salePrice = parseInt(e.target.value.replaceAll(",", "")) || 0;
     },
     toggleRemainInfinite: (state) => {
       state.remain = state.remain < 0 ? 0 : -1;
     },
     onRemainChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
-      if (e.target.value === "") {
-        state.remain = 0;
-        return;
-      }
-      const newRemain = parseInt(e.target.value.replaceAll(",", ""));
-      if (!newRemain) return;
-      state.remain = newRemain;
+      state.remain = parseInt(e.target.value.replaceAll(",", "")) || 0;
     },
-    reset: () => {
-      return mode === "CREATE" ? defaultProduct : originProduct!;
+    setImgSrc: (state, src: string) => {
+      state.imgSrc = src;
     },
+    reset: () => (mode === "CREATE" ? defaultProduct : originProduct!),
   });
   const createItem = useCreateProduct(product, {
     onSuccess: () => props.closeSelf?.(),
@@ -107,6 +89,9 @@ export function ProductDialog(props: Props) {
   const deleteItem = useDeleteProduct(originProduct?.id!, {
     onSuccess: () => props.closeSelf?.(),
   });
+  const openAssetSelector = () => {
+    modalCtrl.open(<AssetSelector onSelect={(asset) => productActions.setImgSrc(asset.src)} />);
+  };
 
   const validity = {
     name: product.name !== "",
@@ -223,6 +208,28 @@ export function ProductDialog(props: Props) {
                 falseContents={[faEyeSlash, "안보여짐"]}
               />
             </div>
+          </fieldset>
+        </div>
+
+        <div className="w-80 space-y-3">
+          <fieldset className="fieldset">
+            <legend className="legend">
+              <FaIcon icon={faImage} fontSize={16} /> 상품이미지
+            </legend>
+
+            {product.imgSrc === "" ? (
+              <div className="flex min-h-[8rem] items-center justify-center">
+                <FaIcon icon={faImage} className="mr-2" /> 상품이미지를 선택해주세요.
+              </div>
+            ) : (
+              <div className="mb-3">
+                <img src={product.imgSrc} alt="상품이미지" className="m-auto" />
+              </div>
+            )}
+
+            <button type="button" className="btn shadow-none" onClick={openAssetSelector}>
+              <FaIcon icon={faCheck} /> 이미지 선택
+            </button>
           </fieldset>
         </div>
       </div>
