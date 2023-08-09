@@ -19,9 +19,7 @@ import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
 import { ProductDialog } from "../Dialogs/ProductDialog";
 import { ImgIcon } from "../ImgIcon";
 
-type Props = ModalProps<{
-  onSelect?: (product: Product) => void;
-}>;
+type Props = ModalProps<{ onSelect?: (product: Product) => void }>;
 
 export function ProductSelector(props: Props) {
   const { ref, closeSelf, onSelect } = props;
