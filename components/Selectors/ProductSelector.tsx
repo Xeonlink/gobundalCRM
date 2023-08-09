@@ -1,10 +1,10 @@
 "use client";
 
 import { Product, useDeleteProducts, useProducts } from "@/api/products";
-import { ModalProps } from "@/extra/type";
+import { ModalProps } from "@/extra/modal";
 import { useExcel } from "@/hooks/useExcel";
 import { useItemSelection } from "@/hooks/useItemSelection";
-import { useModal } from "@/hooks/useModal";
+import { useModal } from "@/extra/modal";
 import IcoExcel from "@/public/icons/excel.png";
 import {
   faBoxesStacked,

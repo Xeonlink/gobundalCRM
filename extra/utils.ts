@@ -47,6 +47,18 @@ export function debounce<T extends (...args: any[]) => any>(fn: T, delay: number
   };
 }
 
+export function throttle<T extends (...args: any[]) => any>(fn: T, delay: number) {
+  let timer: ReturnType<typeof setTimeout>;
+  return function (this: any, ...args: Parameters<T>) {
+    if (!timer) {
+      timer = setTimeout(() => {
+        fn.apply(this, args);
+        timer = undefined!;
+      }, delay);
+    }
+  };
+}
+
 export function diff<T extends object>(target1: T, target2: T): Partial<T> {
   const result = {} as Partial<T>;
   for (const key in target1) {

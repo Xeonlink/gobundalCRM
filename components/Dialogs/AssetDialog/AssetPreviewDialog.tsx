@@ -1,6 +1,6 @@
 "use client";
 
-import { ModalProps } from "@/extra/type";
+import { ModalProps } from "@/extra/modal";
 
 type Props = ModalProps<{ src: string }>;
 
@@ -11,7 +11,7 @@ export function AssetPreviewDialog(props: Props) {
     <dialog
       ref={ref}
       onClose={closeSelf}
-      className="dialog flex h-full animate-scaleTo1"
+      className="dialog flex h-full animate-scaleTo1 cursor-pointer"
       onClick={closeSelf}
     >
       <img src={src} alt="이미지 프리뷰" className="m-auto max-h-[95%] max-w-[95%] rounded-xl" />

@@ -3,12 +3,12 @@
 import { useDeleteProducts, useProducts } from "@/api/products";
 import { ProductDialog } from "@/components/Dialogs/ProductDialog";
 import { ImgIcon } from "@/components/ImgIcon";
+import { useModal } from "@/extra/modal";
 import { PageProps } from "@/extra/type";
 import { cn } from "@/extra/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { useExcel } from "@/hooks/useExcel";
 import { useItemSelection } from "@/hooks/useItemSelection";
-import { useModal } from "@/hooks/useModal";
 import IcoExcel from "@/public/icons/excel.png";
 import {
   faArrowsRotate,

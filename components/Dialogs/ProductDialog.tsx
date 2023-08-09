@@ -7,14 +7,15 @@ import {
   useProduct,
   useUpdateProduct,
 } from "@/api/products";
-import { ModalProps } from "@/extra/type";
+import { ModalProps } from "@/extra/modal";
 import { diff } from "@/extra/utils";
-import { useModal } from "@/hooks/useModal";
+import { useModal } from "@/extra/modal";
 import { useTypeSafeReducer } from "@/hooks/useTypeSafeReducer";
 import {
   faBoxes,
   faCheck,
   faCoins,
+  faCopy,
   faEye,
   faEyeSlash,
   faFloppyDisk,
@@ -44,7 +45,9 @@ const defaultProduct: RawProduct = {
   imgSrc: "",
 };
 
-type Props = ModalProps<{ mode: "CREATE" } | { mode: "UPDATE"; productId: string }>;
+type Props = ModalProps<
+  { mode: "CREATE"; base?: RawProduct } | { mode: "UPDATE"; productId: string }
+>;
 
 export function ProductDialog(props: Props) {
   const { mode } = props;
@@ -53,33 +56,36 @@ export function ProductDialog(props: Props) {
   const { data: originProduct } = useProduct(mode === "UPDATE" ? props.productId : "", {
     enabled: mode === "UPDATE",
   });
-  const [product, productActions] = useTypeSafeReducer(originProduct || defaultProduct, {
-    toggleEnabled: (state) => {
-      state.enabled = !state.enabled;
+  const [product, productActions] = useTypeSafeReducer(
+    mode === "CREATE" ? props.base || defaultProduct : originProduct!,
+    {
+      toggleEnabled: (state) => {
+        state.enabled = !state.enabled;
+      },
+      onNameChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
+        state.name = e.target.value;
+      },
+      onPriceChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
+        state.price = parseInt(e.target.value.replaceAll(",", "")) || 0;
+      },
+      toggleIsSale: (state) => {
+        state.isSale = !state.isSale;
+      },
+      onSalePriceChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
+        state.salePrice = parseInt(e.target.value.replaceAll(",", "")) || 0;
+      },
+      toggleRemainInfinite: (state) => {
+        state.remain = state.remain < 0 ? 0 : -1;
+      },
+      onRemainChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
+        state.remain = parseInt(e.target.value.replaceAll(",", "")) || 0;
+      },
+      setImgSrc: (state, src: string) => {
+        state.imgSrc = src;
+      },
+      reset: () => (mode === "CREATE" ? defaultProduct : originProduct!),
     },
-    onNameChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
-      state.name = e.target.value;
-    },
-    onPriceChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
-      state.price = parseInt(e.target.value.replaceAll(",", "")) || 0;
-    },
-    toggleIsSale: (state) => {
-      state.isSale = !state.isSale;
-    },
-    onSalePriceChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
-      state.salePrice = parseInt(e.target.value.replaceAll(",", "")) || 0;
-    },
-    toggleRemainInfinite: (state) => {
-      state.remain = state.remain < 0 ? 0 : -1;
-    },
-    onRemainChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
-      state.remain = parseInt(e.target.value.replaceAll(",", "")) || 0;
-    },
-    setImgSrc: (state, src: string) => {
-      state.imgSrc = src;
-    },
-    reset: () => (mode === "CREATE" ? defaultProduct : originProduct!),
-  });
+  );
   const createItem = useCreateProduct(product, {
     onSuccess: () => props.closeSelf?.(),
   });
@@ -93,8 +99,10 @@ export function ProductDialog(props: Props) {
     modalCtrl.open(<AssetSelector onSelect={(asset) => productActions.setImgSrc(asset.src)} />);
   };
   const openAssetPreviewDialog = (src: string) => {
-    console.log(src);
     modalCtrl.open(<AssetPreviewDialog src={src} />);
+  };
+  const openProductCopyDialog = () => {
+    modalCtrl.open(<ProductDialog mode="CREATE" base={product} />);
   };
 
   const validity = {
@@ -256,6 +264,11 @@ export function ProductDialog(props: Props) {
           onClick={productActions.reset}
         >
           <FaIcon icon={faNotdef} rotation={90} isLoading={isLoading} value="초기화" />
+        </button>
+
+        {/* Copy */}
+        <button type="button" className="btn" disabled={isLoading} onClick={openProductCopyDialog}>
+          <FaIcon icon={faCopy} isLoading={isLoading} value="복제" />
         </button>
 
         {/* Delete */}

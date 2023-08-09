@@ -1,9 +1,9 @@
 "use client";
 
 import { useAsset, useDeleteAsset, useUpdateAsset } from "@/api/assets";
-import { ModalProps } from "@/extra/type";
+import { ModalProps } from "@/extra/modal";
 import { diff } from "@/extra/utils";
-import { useModal } from "@/hooks/useModal";
+import { useModal } from "@/extra/modal";
 import { useTypeSafeReducer } from "@/hooks/useTypeSafeReducer";
 import {
   faFloppyDisk,

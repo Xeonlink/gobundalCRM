@@ -7,7 +7,7 @@ import {
   useDeleteCustomer,
   useUpdateCustomer,
 } from "@/api/customers";
-import { ModalProps } from "@/extra/type";
+import { ModalProps } from "@/extra/modal";
 import { diff, toHyphenPhone } from "@/extra/utils";
 import { usePostCodePopup } from "@/hooks/usePostCodePopup";
 import { useTypeSafeReducer } from "@/hooks/useTypeSafeReducer";

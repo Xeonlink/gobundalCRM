@@ -5,11 +5,11 @@ import { useDeleteProducts } from "@/api/products";
 import { AssetCreateDialog } from "@/components/Dialogs/AssetDialog/AssetCreateDialog";
 import { AssetUpdateDialog } from "@/components/Dialogs/AssetDialog/AssetUpdateDialog";
 import { ImgIcon } from "@/components/ImgIcon";
-import { ModalProps } from "@/extra/type";
+import { ModalProps } from "@/extra/modal";
 import { cn } from "@/extra/utils";
 import { useExcel } from "@/hooks/useExcel";
 import { useItemSelection } from "@/hooks/useItemSelection";
-import { useModal } from "@/hooks/useModal";
+import { useModal } from "@/extra/modal";
 import IcoExcel from "@/public/icons/excel.png";
 import {
   faBoxesStacked,

@@ -1,7 +1,7 @@
 "use client";
 
-import { ModalProps } from "@/extra/type";
-import { useModal } from "@/hooks/useModal";
+import { ModalProps } from "@/extra/modal";
+import { useModal } from "@/extra/modal";
 import { useEffect, useRef } from "react";
 
 type Props = ModalProps;

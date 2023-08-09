@@ -8,7 +8,7 @@ import { PageProps } from "@/extra/type";
 import { cn } from "@/extra/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { useExcel } from "@/hooks/useExcel";
-import { useModal } from "@/hooks/useModal";
+import { useModal } from "@/extra/modal";
 import IcoExcel from "@/public/icons/excel.png";
 import { faCalendarDays } from "@fortawesome/free-regular-svg-icons";
 import {

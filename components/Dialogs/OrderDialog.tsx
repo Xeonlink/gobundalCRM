@@ -10,10 +10,10 @@ import {
   useOrder,
   useUpdateOrder,
 } from "@/api/orders";
-import { ModalProps } from "@/extra/type";
+import { ModalProps } from "@/extra/modal";
 import { diff, toHyphenPhone } from "@/extra/utils";
 import { useDebounce } from "@/hooks/useDebounce";
-import { useModal } from "@/hooks/useModal";
+import { useModal } from "@/extra/modal";
 import { usePostCodePopup } from "@/hooks/usePostCodePopup";
 import { useTypeSafeReducer } from "@/hooks/useTypeSafeReducer";
 import {
@@ -409,7 +409,7 @@ export function OrderDialog(props: Props) {
           <FaIcon icon={faNotdef} rotation={90} isLoading={isLoading} value="초기화" />
         </button>
 
-        {/* Clear */}
+        {/* Copy */}
         <button type="button" className="btn" disabled={isLoading} onClick={openOrderCopyDialog}>
           <FaIcon icon={faCopy} isLoading={isLoading} value="복제" />
         </button>

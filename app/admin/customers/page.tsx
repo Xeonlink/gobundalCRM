@@ -9,7 +9,7 @@ import { cn } from "@/extra/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { useExcel } from "@/hooks/useExcel";
 import { useItemSelection } from "@/hooks/useItemSelection";
-import { useModal } from "@/hooks/useModal";
+import { useModal } from "@/extra/modal";
 import IcoExcel from "@/public/icons/excel.png";
 import {
   faArrowsRotate,

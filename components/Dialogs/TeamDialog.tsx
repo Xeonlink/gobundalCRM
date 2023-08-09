@@ -1,7 +1,7 @@
 "use client";
 
 import { RawTeam, useCreateTeam, useDeleteTeam, useTeam, useUpdateTeam } from "@/api/teams";
-import { ModalProps } from "@/extra/type";
+import { ModalProps } from "@/extra/modal";
 import { diff, toHyphenPhone } from "@/extra/utils";
 import { useTypeSafeReducer } from "@/hooks/useTypeSafeReducer";
 import {

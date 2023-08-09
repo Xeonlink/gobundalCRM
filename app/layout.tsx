@@ -1,5 +1,3 @@
-import { ModalPlacer } from "@/components/ModalPlacer";
-import { ModalProvider } from "@/components/ModalProvider";
 import { ReactQueryProvider } from "@/components/ReactQueryProvider";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
@@ -7,6 +5,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { PropsWithChildren } from "react";
 import "./globals.css";
+import { ModalPlacer } from "@/extra/modal";
 config.autoAddCss = false;
 
 const inter = Inter({ subsets: ["latin"] });
@@ -24,12 +23,10 @@ export default function RootLayout(props: PropsWithChildren) {
       <body
         className={`${inter.className} flex h-screen bg-gradient-to-b from-orange-200 to-green-200`}
       >
-        <ModalProvider>
-          <ReactQueryProvider>
-            {children}
-            <ModalPlacer />
-          </ReactQueryProvider>
-        </ModalProvider>
+        <ReactQueryProvider>
+          {children}
+          <ModalPlacer />
+        </ReactQueryProvider>
       </body>
     </html>
   );
