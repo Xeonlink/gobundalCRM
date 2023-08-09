@@ -9,6 +9,7 @@ import {
 } from "@/api/products";
 import { ModalProps } from "@/extra/type";
 import { diff } from "@/extra/utils";
+import { useModal } from "@/hooks/useModal";
 import { useTypeSafeReducer } from "@/hooks/useTypeSafeReducer";
 import {
   faBoxes,
@@ -27,12 +28,11 @@ import {
   faWon,
   faX,
 } from "@fortawesome/free-solid-svg-icons";
-import { useDropzone } from "react-dropzone";
 import { CheckBox } from "../CheckBox";
 import { FaIcon } from "../FaIcon";
 import { Input } from "../Input";
-import { useModal } from "@/hooks/useModal";
 import AssetSelector from "../Selectors/AssetSelector";
+import { AssetPreviewDialog } from "./AssetDialog/AssetPreviewDialog";
 
 const defaultProduct: RawProduct = {
   name: "",
@@ -91,6 +91,10 @@ export function ProductDialog(props: Props) {
   });
   const openAssetSelector = () => {
     modalCtrl.open(<AssetSelector onSelect={(asset) => productActions.setImgSrc(asset.src)} />);
+  };
+  const openAssetPreviewDialog = (src: string) => {
+    console.log(src);
+    modalCtrl.open(<AssetPreviewDialog src={src} />);
   };
 
   const validity = {
@@ -222,9 +226,13 @@ export function ProductDialog(props: Props) {
                 <FaIcon icon={faImage} className="mr-2" /> 상품이미지를 선택해주세요.
               </div>
             ) : (
-              <div className="mb-3">
+              <button
+                type="button"
+                className="mb-3 w-full"
+                onDoubleClick={() => openAssetPreviewDialog(product.imgSrc)}
+              >
                 <img src={product.imgSrc} alt="상품이미지" className="m-auto" />
-              </div>
+              </button>
             )}
 
             <button type="button" className="btn shadow-none" onClick={openAssetSelector}>
