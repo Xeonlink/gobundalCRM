@@ -21,7 +21,7 @@ export default function RootLayout(props: PropsWithChildren) {
   return (
     <html lang="en">
       <body
-        className={`${inter.className} flex h-screen bg-gradient-to-b from-orange-200 to-green-200`}
+        className={`${inter.className} flex h-screen bg-gradient-to-b from-orange-200 to-green-200 text-sm`}
       >
         <ReactQueryProvider>
           {children}

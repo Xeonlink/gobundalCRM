@@ -72,7 +72,9 @@ export function ModalPlacer() {
 function ModalLoading() {
   return React.createElement(
     "div",
-    { className: "fixed flex h-screen w-screen items-center justify-center" },
+    {
+      className: "absolute w-full top-0 left-0 flex h-screen w-screen items-center justify-center",
+    },
     "Loading...",
   );
 }

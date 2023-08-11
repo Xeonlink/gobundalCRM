@@ -121,7 +121,7 @@ export function ProductDialog(props: Props) {
       className="max-h-full max-w-full animate-scaleTo1 overflow-auto rounded-md bg-transparent p-0 backdrop:backdrop-blur-md"
     >
       <div className="mb-3 flex min-w-max flex-row flex-nowrap gap-3">
-        <div className="w-96 space-y-3">
+        <div className="w-64 space-y-3">
           <fieldset className="fieldset">
             <legend className="legend">
               <FaIcon icon={faPaperPlane} fontSize={16} /> 상품정보
@@ -195,6 +195,7 @@ export function ProductDialog(props: Props) {
                 toggleFn={productActions.toggleRemainInfinite}
                 trueContents={[faInfinity, "무한"]}
                 falseContents={[faListOl, "수량"]}
+                className="rounded-b-none"
               />
               <Input
                 id="remain"
@@ -204,6 +205,7 @@ export function ProductDialog(props: Props) {
                 onChange={productActions.onRemainChange}
                 required
                 invalid={!validity.remain}
+                className="rounded-t-none"
               />
               <div className="absolute bottom-2 right-3">개</div>
             </div>
@@ -250,48 +252,55 @@ export function ProductDialog(props: Props) {
         </div>
       </div>
 
-      <form method="dialog" className="flex justify-center gap-2">
-        {/* Close */}
-        <button className="btn" disabled={isLoading}>
-          <FaIcon icon={faX} isLoading={isLoading} value="닫기" />
-        </button>
+      <form method="dialog" className="text-center">
+        <div className="inline-block overflow-hidden rounded-md">
+          {/* Close */}
+          <button className="btn rounded-none shadow-none" disabled={isLoading}>
+            <FaIcon icon={faX} isLoading={isLoading} value="닫기" />
+          </button>
 
-        {/* Clear */}
-        <button
-          type="button"
-          className="btn"
-          disabled={isCleared || isLoading}
-          onClick={productActions.reset}
-        >
-          <FaIcon icon={faNotdef} rotation={90} isLoading={isLoading} value="초기화" />
-        </button>
-
-        {/* Copy */}
-        <button type="button" className="btn" disabled={isLoading} onClick={openProductCopyDialog}>
-          <FaIcon icon={faCopy} isLoading={isLoading} value="복제" />
-        </button>
-
-        {/* Delete */}
-        {mode === "UPDATE" ? (
+          {/* Clear */}
           <button
             type="button"
-            className="btn"
-            disabled={isLoading}
-            onClick={() => deleteItem.mutate()}
+            className="btn rounded-none shadow-none"
+            disabled={isCleared || isLoading}
+            onClick={productActions.reset}
           >
-            <FaIcon icon={faTrashAlt} isLoading={isLoading} value="삭제" />
+            <FaIcon icon={faNotdef} rotation={90} isLoading={isLoading} value="초기화" />
           </button>
-        ) : null}
 
-        {/* Save */}
-        <button
-          type="button"
-          className="btn"
-          onClick={mode === "CREATE" ? () => createItem.mutate() : () => updateItem.mutate()}
-          disabled={!isValid || isLoading}
-        >
-          <FaIcon icon={faFloppyDisk} isLoading={isLoading} value="저장" />
-        </button>
+          {/* Copy */}
+          <button
+            type="button"
+            className="btn rounded-none shadow-none"
+            disabled={isLoading}
+            onClick={openProductCopyDialog}
+          >
+            <FaIcon icon={faCopy} isLoading={isLoading} value="복제" />
+          </button>
+
+          {/* Delete */}
+          {mode === "UPDATE" ? (
+            <button
+              type="button"
+              className="btn rounded-none shadow-none"
+              disabled={isLoading}
+              onClick={() => deleteItem.mutate()}
+            >
+              <FaIcon icon={faTrashAlt} isLoading={isLoading} value="삭제" />
+            </button>
+          ) : null}
+
+          {/* Save */}
+          <button
+            type="button"
+            className="btn rounded-none shadow-none"
+            onClick={mode === "CREATE" ? () => createItem.mutate() : () => updateItem.mutate()}
+            disabled={!isValid || isLoading}
+          >
+            <FaIcon icon={faFloppyDisk} isLoading={isLoading} value="저장" />
+          </button>
+        </div>
       </form>
     </dialog>
   );

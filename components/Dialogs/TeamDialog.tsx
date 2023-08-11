@@ -88,12 +88,8 @@ export function TeamDialog(props: Props) {
   const isLoading = createTeam.isLoading || updateTeam.isLoading || deleteTeam.isLoading;
 
   return (
-    <dialog ref={props.ref} onClose={props.closeSelf} className="dialog w-96">
-      <fieldset className="fieldset">
-        <legend className="legend">
-          <FaIcon icon={faPeopleGroup} fontSize={16} /> 팀 생성
-        </legend>
-
+    <dialog ref={props.ref} onClose={props.closeSelf} className="dialog w-64 space-y-2">
+      <div className="fieldset pt-2">
         {/* 해당 날짜로 검색 */}
         <div className="field">
           <label htmlFor="date" className="label">
@@ -184,45 +180,47 @@ export function TeamDialog(props: Props) {
             falseContents={[faDoorClosed, " 나가지 않음"]}
           />
         </div>
-      </fieldset>
+      </div>
 
-      <form method="dialog" className="mt-2 flex justify-end gap-2">
-        {/* Close */}
-        <button className="btn" disabled={isLoading}>
-          <FaIcon icon={faX} isLoading={isLoading} value="닫기" />
-        </button>
+      <form method="dialog" className="text-end">
+        <div className="inline-block overflow-hidden rounded-md">
+          {/* Close */}
+          <button className="btn rounded-none shadow-none" disabled={isLoading}>
+            <FaIcon icon={faX} isLoading={isLoading} value="닫기" />
+          </button>
 
-        {/* Clear */}
-        <button
-          type="button"
-          className="btn"
-          disabled={isCleared || isLoading}
-          onClick={teamActions.reset}
-        >
-          <FaIcon icon={faNotdef} rotation={90} isLoading={isLoading} value="초기화" />
-        </button>
-
-        {/* Delete */}
-        {mode === "UPDATE" ? (
+          {/* Clear */}
           <button
             type="button"
-            className="btn"
-            disabled={isLoading}
-            onClick={() => deleteTeam.mutate()}
+            className="btn rounded-none shadow-none"
+            disabled={isCleared || isLoading}
+            onClick={teamActions.reset}
           >
-            <FaIcon icon={faTrashAlt} isLoading={isLoading} value="삭제" />
+            <FaIcon icon={faNotdef} rotation={90} isLoading={isLoading} value="초기화" />
           </button>
-        ) : null}
 
-        {/* Save */}
-        <button
-          type="button"
-          className="btn"
-          onClick={mode === "CREATE" ? () => createTeam.mutate() : () => updateTeam.mutate()}
-          disabled={!isValid || isLoading}
-        >
-          <FaIcon icon={faFloppyDisk} isLoading={isLoading} value="저장" />
-        </button>
+          {/* Delete */}
+          {mode === "UPDATE" ? (
+            <button
+              type="button"
+              className="btn rounded-none shadow-none"
+              disabled={isLoading}
+              onClick={() => deleteTeam.mutate()}
+            >
+              <FaIcon icon={faTrashAlt} isLoading={isLoading} value="삭제" />
+            </button>
+          ) : null}
+
+          {/* Save */}
+          <button
+            type="button"
+            className="btn rounded-none shadow-none"
+            onClick={mode === "CREATE" ? () => createTeam.mutate() : () => updateTeam.mutate()}
+            disabled={!isValid || isLoading}
+          >
+            <FaIcon icon={faFloppyDisk} isLoading={isLoading} value="저장" />
+          </button>
+        </div>
       </form>
     </dialog>
   );

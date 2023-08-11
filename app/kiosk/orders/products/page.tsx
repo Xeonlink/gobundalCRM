@@ -26,12 +26,6 @@ export default function Page() {
         <button type="button" className="p-3">
           <ImgIcon src={IcoLogo} alt="곱은달 로고" fontSize={110} />
         </button>
-
-        <div className="flex-1"></div>
-
-        <button type="button" className="p-4">
-          <FaIcon icon={faCartShopping} />
-        </button>
       </nav>
 
       <ColumnList threashold={[0, 640, 900, 1200, Infinity]}>
@@ -68,11 +62,11 @@ export default function Page() {
                       </span>
                     )}
                   </div>
-                  <div className="flex flex-wrap gap-1 sm:flex-nowrap">
-                    <button type="button" className="btn w-full shadow-none">
+                  <div className="flex flex-wrap overflow-hidden rounded-md sm:flex-nowrap">
+                    <button type="button" className="btn w-full rounded-none shadow-none">
                       <FaIcon icon={faCartPlus} /> 장바구니
                     </button>
-                    <button type="button" className="btn w-full shadow-none">
+                    <button type="button" className="btn w-full rounded-none shadow-none">
                       <FaIcon icon={faCreditCard} /> 구매
                     </button>
                   </div>
@@ -81,6 +75,12 @@ export default function Page() {
           </ol>
         )}
       </ColumnList>
+
+      <div className="floating-action-btns fixed bottom-10 right-10">
+        <button type="button" className="h-12 w-12 rounded-full bg-white">
+          <FaIcon icon={faCartShopping} />
+        </button>
+      </div>
     </div>
   );
 }

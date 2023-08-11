@@ -27,10 +27,11 @@ input[type="number"] {
     @apply rounded-md px-2 py-1 text-center transition-all aria-selected:bg-white aria-selected:bg-opacity-70;
   }
   .fieldset {
-    @apply relative w-full animate-scaleTo1 rounded-lg border-4 border-white p-2 shadow-md;
+    /* @apply relative w-full animate-scaleTo1 rounded-lg border-4 border-white p-2 shadow-md; */
+    @apply relative w-full animate-scaleTo1 rounded-lg bg-[#f0f0f0];
   }
   .legend {
-    @apply rounded-md border-4 border-white px-2 py-1 text-center text-lg;
+    @apply rounded-md px-2 py-1 text-center text-lg;
   }
   .field {
     @apply relative mb-3 last-of-type:mb-0;

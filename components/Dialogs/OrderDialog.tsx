@@ -156,7 +156,7 @@ export function OrderDialog(props: Props) {
   return (
     <dialog ref={props.ref} onClose={props.closeSelf} className="dialog">
       <div className="mb-3 flex min-w-max flex-row flex-nowrap gap-3">
-        <div className="w-72 space-y-3">
+        <div className="w-72 space-y-2">
           <fieldset className="fieldset">
             <legend className="legend">
               <FaIcon icon={faPaperPlane} fontSize={16} /> 보내는 사람
@@ -275,13 +275,40 @@ export function OrderDialog(props: Props) {
           </fieldset>
         </div>
 
-        <div>
+        <div className="space-y-2">
+          <fieldset className="fieldset">
+            <legend className="legend">
+              <FaIcon icon={faPaperPlane} fontSize={16} /> 기타 정보
+            </legend>
+
+            <div className="field">
+              <label htmlFor="date" className="label">
+                <FaIcon icon={faCalendarAlt} /> 주문날짜
+              </label>
+              <DateChanger date={order.date} onChange={orderActions.setDate} />
+            </div>
+
+            <div className="field">
+              <label htmlFor="memo" className="label">
+                <FaIcon icon={faNoteSticky} /> 메모
+              </label>
+              <textarea
+                id="memo"
+                placeholder="메모"
+                className="block max-h-min w-full rounded-md px-3 py-2"
+                disabled={createItem.isLoading}
+                value={order.memo}
+                onChange={orderActions.onMemoChange}
+              />
+            </div>
+          </fieldset>
+
           <fieldset className="fieldset">
             <legend className="legend">
               <FaIcon icon={faBoxesStacked} /> 배송물품
             </legend>
 
-            <table className="grid grid-cols-[10rem_7rem_5rem_2.5rem] gap-1">
+            <table className="grid grid-cols-[10rem_7rem_3rem_auto]">
               <thead className="contents">
                 <tr className="contents">
                   <th className="font-normal">
@@ -291,7 +318,7 @@ export function OrderDialog(props: Props) {
                     <FaIcon icon={faCoins} /> 가격(원)
                   </th>
                   <th className="font-normal">
-                    <FaIcon icon={faCalculator} /> 수량(개)
+                    <FaIcon icon={faCalculator} /> 수량
                   </th>
                   <th></th>
                 </tr>
@@ -362,47 +389,18 @@ export function OrderDialog(props: Props) {
             </div>
           </fieldset>
         </div>
-
-        <div className="w-72 space-y-3">
-          <fieldset className="fieldset">
-            <legend className="legend">
-              <FaIcon icon={faPaperPlane} fontSize={16} /> 기타 정보
-            </legend>
-
-            <div className="field">
-              <label htmlFor="date" className="label">
-                <FaIcon icon={faCalendarAlt} /> 주문날짜
-              </label>
-              <DateChanger date={order.date} onChange={orderActions.setDate} />
-            </div>
-
-            <div className="field">
-              <label htmlFor="memo" className="label">
-                <FaIcon icon={faNoteSticky} /> 메모
-              </label>
-              <textarea
-                id="memo"
-                placeholder="메모"
-                className="min-h-max w-full rounded-md p-2"
-                disabled={createItem.isLoading}
-                value={order.memo}
-                onChange={orderActions.onMemoChange}
-              />
-            </div>
-          </fieldset>
-        </div>
       </div>
 
-      <form method="dialog" className="flex justify-center gap-2">
+      <form method="dialog" className="w-full text-center">
         {/* Close */}
-        <button className="btn" disabled={isLoading}>
+        <button className="btn rounded-r-none" disabled={isLoading}>
           <FaIcon icon={faX} isLoading={isLoading} value="닫기" />
         </button>
 
         {/* Clear */}
         <button
           type="button"
-          className="btn"
+          className="btn rounded-none shadow-none"
           disabled={isCleared || isLoading}
           onClick={orderActions.reset}
         >
@@ -410,7 +408,12 @@ export function OrderDialog(props: Props) {
         </button>
 
         {/* Copy */}
-        <button type="button" className="btn" disabled={isLoading} onClick={openOrderCopyDialog}>
+        <button
+          type="button"
+          className="btn rounded-none shadow-none"
+          disabled={isLoading}
+          onClick={openOrderCopyDialog}
+        >
           <FaIcon icon={faCopy} isLoading={isLoading} value="복제" />
         </button>
 
@@ -418,7 +421,7 @@ export function OrderDialog(props: Props) {
         {mode === "UPDATE" ? (
           <button
             type="button"
-            className="btn"
+            className="btn rounded-none shadow-none"
             disabled={isLoading}
             onClick={() => deleteItem.mutate()}
           >
@@ -429,7 +432,7 @@ export function OrderDialog(props: Props) {
         {/* Save */}
         <button
           type="button"
-          className="btn"
+          className="btn rounded-l-none shadow-none"
           onClick={mode === "CREATE" ? () => createItem.mutate() : () => updateItem.mutate()}
           disabled={!isValid || isLoading}
         >
