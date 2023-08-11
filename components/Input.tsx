@@ -17,15 +17,13 @@ export const Input = forwardRef((props: Props, ref?: LegacyRef<HTMLInputElement>
       spellCheck="false"
       type="text"
       {...rest}
-      className={
-        cn(
-          "w-full rounded-md bg-white px-3 py-2 disabled:opacity-40",
-          {
-            "animate-shake shadow-red-300": invalid,
-          },
-          props.className,
-        ) + " shadow-inset-2"
-      }
+      className={cn(
+        "dsy-input-bordered dsy-input dsy-input-sm",
+        {
+          "dsy-input-error animate-shake": invalid,
+        },
+        props.className,
+      )}
     />
   );
 });

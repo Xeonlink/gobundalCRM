@@ -45,7 +45,7 @@ input[type="number"] {
     @apply disabled:cursor-auto disabled:opacity-40;
   }
   .dialog {
-    @apply max-h-full max-w-full rounded-md bg-transparent p-0 backdrop:backdrop-blur-md focus:outline-none;
+    @apply max-h-full max-w-full rounded-md bg-transparent p-0 text-black backdrop:backdrop-blur-md focus:outline-none;
   }
 }
 
