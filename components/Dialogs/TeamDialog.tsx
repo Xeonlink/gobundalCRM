@@ -90,13 +90,14 @@ export function TeamDialog(props: Props) {
 
   return (
     <dialog ref={props.ref} onClose={props.closeSelf} className="dsy-modal">
-      <form method="dialog" className="dsy-modal-box">
-        <h3 className="text-lg font-bold">Team !!</h3>
-
+      <form
+        method="dialog"
+        className="dsy-modal-box max-h-screen w-full bg-opacity-60 backdrop-blur-md"
+      >
         <div className=" bg-transparent pt-2">
           {/* 해당 날짜로 검색 */}
           <div className="dsy-form-control">
-            <label htmlFor="date" className="dsy-label">
+            <label htmlFor="date" className="dsy-label py-1">
               <span className="dsy-label-text">
                 <FaIcon icon={faCalendarAlt} /> 날짜
               </span>
@@ -105,11 +106,12 @@ export function TeamDialog(props: Props) {
           </div>
 
           <div className="dsy-form-control">
-            <label htmlFor="leader-name" className="dsy-label">
+            <label htmlFor="leader-name" className="dsy-label py-1">
               <span className="dsy-label-text">
                 <FaIcon icon={faSignature} /> 이름
               </span>
               <Input
+                className="w-full max-w-[15rem]"
                 id="leader-name"
                 placeholder="홍길동"
                 value={team.leaderName}
@@ -121,11 +123,12 @@ export function TeamDialog(props: Props) {
           </div>
 
           <div className="dsy-form-control">
-            <label htmlFor="leader-phone" className="dsy-label">
+            <label htmlFor="leader-phone" className="dsy-label py-1">
               <span className="dsy-label-text">
                 <FaIcon icon={faMobileScreenButton} /> 전화번호
               </span>
               <Input
+                className="w-60"
                 id="leader-phone"
                 type="tel"
                 placeholder="010-xxxx-xxxx"
@@ -138,11 +141,12 @@ export function TeamDialog(props: Props) {
           </div>
 
           <div className="dsy-form-control">
-            <label htmlFor="coupon" className="dsy-label">
+            <label htmlFor="coupon" className="dsy-label py-1">
               <span className="dsy-label-text">
                 <FaIcon icon={faBuilding} /> 쿠폰사
               </span>
               <Input
+                className="w-60"
                 id="coupon"
                 value={team.coupon}
                 onChange={teamActions.onCouponChange}
@@ -154,11 +158,12 @@ export function TeamDialog(props: Props) {
           </div>
 
           <div className="dsy-form-control">
-            <label htmlFor="population" className="dsy-label">
+            <label htmlFor="population" className="dsy-label py-1">
               <span className="dsy-label-text">
                 <FaIcon icon={faPeopleGroup} /> 인원수
               </span>
               <Input
+                className="w-60"
                 id="population"
                 type="number"
                 value={team.population}
@@ -170,7 +175,7 @@ export function TeamDialog(props: Props) {
           </div>
 
           <div className="dsy-form-control">
-            <label htmlFor="is-approved" className="dsy-label">
+            <label htmlFor="is-approved" className="dsy-label py-1">
               <span className="dsy-label-text">
                 <FaIcon icon={team.isApproved ? faThumbsUp : faThumbsDown} /> 쿠폰이 승인되었습니까?
               </span>
@@ -186,7 +191,7 @@ export function TeamDialog(props: Props) {
           </div>
 
           <div className="dsy-form-control">
-            <label htmlFor="is-leave" className="dsy-label">
+            <label htmlFor="is-leave" className="dsy-label py-1">
               <span className="dsy-label-text">
                 <FaIcon icon={team.isLeave ? faDoorOpen : faDoorClosed} /> 손님이 체험장을
                 나갔습니까?

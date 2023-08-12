@@ -80,22 +80,15 @@ export function CustomerDialog(props: Props) {
   const isLoading = createItem.isLoading || updateItem.isLoading || deleteItem.isLoading;
 
   return (
-    <dialog
-      ref={props.ref}
-      onClose={props.closeSelf}
-      className="max-h-full max-w-full animate-scaleTo1 rounded-md bg-transparent p-0 backdrop:backdrop-blur-md"
-    >
-      <div className="w-72 space-y-2">
-        <fieldset className="fieldset">
-          <legend className="legend">
-            <FaIcon icon={faPeopleGroup} fontSize={16} /> 고객 정보
-          </legend>
-
-          <div className="field">
-            <label htmlFor="name" className="label">
+    <dialog ref={props.ref} className="dsy-modal">
+      <form method="dialog" className="dsy-modal-box w-96 bg-opacity-60 backdrop-blur-md">
+        <div className="dsy-form-control">
+          <label htmlFor="name" className="dsy-label py-1">
+            <span className="dsy-label-text">
               <FaIcon icon={faSignature} /> 이름
-            </label>
+            </span>
             <Input
+              className="w-60"
               id="name"
               placeholder="홍길동"
               value={customer.name}
@@ -103,13 +96,16 @@ export function CustomerDialog(props: Props) {
               disabled={isLoading}
               invalid={customer.name === ""}
             />
-          </div>
+          </label>
+        </div>
 
-          <div className="field">
-            <label htmlFor="phone" className="label">
+        <div className="dsy-form-control">
+          <label htmlFor="phone" className="dsy-label py-1">
+            <span className="dsy-label-text">
               <FaIcon icon={faMobileScreen} /> 전화번호
-            </label>
+            </span>
             <Input
+              className="w-60"
               id="phone"
               type="tel"
               placeholder="010-xxxx-xxxx"
@@ -118,13 +114,16 @@ export function CustomerDialog(props: Props) {
               disabled={isLoading}
               invalid={customer.phone === ""}
             />
-          </div>
+          </label>
+        </div>
 
-          <div className="field">
-            <label htmlFor="receiver-address" className="label">
+        <div className="dsy-form-control">
+          <label htmlFor="receiver-address" className="dsy-label py-1">
+            <span className="dsy-label-text">
               <FaIcon icon={faSignsPost} /> 주소
-            </label>
+            </span>
             <Input
+              className="w-60"
               id="receiver-address"
               placeholder="남원월산로74번길 42"
               disabled={isLoading}
@@ -133,13 +132,16 @@ export function CustomerDialog(props: Props) {
               onClick={postCodePopup.show}
               required
             />
-          </div>
+          </label>
+        </div>
 
-          <div className="field">
-            <label htmlFor="receiver-address-detail" className="label">
+        <div className="dsy-form-control">
+          <label htmlFor="receiver-address-detail" className="dsy-label py-1">
+            <span className="dsy-label-text">
               <FaIcon icon={faBuilding} /> 상세주소
-            </label>
+            </span>
             <Input
+              className="w-60"
               id="receiver-address-detail"
               placeholder="단독주택, 1층 101호, ..."
               disabled={isLoading}
@@ -147,21 +149,24 @@ export function CustomerDialog(props: Props) {
               onChange={customerActions.onAddressDetailChange}
               required
             />
-          </div>
-        </fieldset>
-      </div>
+          </label>
+        </div>
 
-      <form method="dialog" className="mt-2 flex justify-end">
-        <div className="inline-block overflow-hidden rounded-md">
+        <div className="dsy-modal-action">
           {/* Close */}
-          <button className="btn rounded-none shadow-none" disabled={isLoading}>
+          <button
+            type="button"
+            className="dsy-btn-sm dsy-btn"
+            disabled={isLoading}
+            onClick={props.closeSelf}
+          >
             <FaIcon icon={faX} isLoading={isLoading} value="닫기" />
           </button>
 
           {/* Clear */}
           <button
             type="button"
-            className="btn rounded-none shadow-none"
+            className="dsy-btn-sm dsy-btn"
             disabled={isCleared || isLoading}
             onClick={customerActions.reset}
           >
@@ -172,7 +177,7 @@ export function CustomerDialog(props: Props) {
           {mode === "UPDATE" ? (
             <button
               type="button"
-              className="btn rounded-none shadow-none"
+              className="dsy-btn-sm dsy-btn"
               disabled={isLoading}
               onClick={() => deleteItem.mutate()}
             >
@@ -183,7 +188,7 @@ export function CustomerDialog(props: Props) {
           {/* Save */}
           <button
             type="button"
-            className="btn rounded-none shadow-none"
+            className="dsy-btn-sm dsy-btn"
             onClick={mode === "CREATE" ? () => createItem.mutate() : () => updateItem.mutate()}
             disabled={!isValid || isLoading}
           >

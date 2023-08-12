@@ -8,6 +8,7 @@ import { useTypeSafeReducer } from "@/hooks/useTypeSafeReducer";
 import {
   faFloppyDisk,
   faImage,
+  faMagnifyingGlass,
   faNotdef,
   faShapes,
   faSignature,
@@ -49,88 +50,82 @@ export function AssetUpdateDialog(props: ModalProps<{ assetId: string }>) {
   const isLoading = updateItem.isLoading || deleteItem.isLoading;
 
   return (
-    <dialog
-      ref={props.ref}
-      onClose={props.closeSelf}
-      className="max-h-full max-w-full animate-scaleTo1 overflow-auto rounded-md bg-transparent p-0 backdrop:backdrop-blur-md"
-    >
-      <div className="mb-3 flex min-w-max flex-row flex-nowrap gap-3">
-        <div className="w-80 space-y-3">
-          <fieldset className="fieldset">
-            <legend className="legend">
-              <FaIcon icon={faImage} fontSize={16} /> 에셋
-            </legend>
+    <dialog ref={props.ref} onClose={props.closeSelf} className="dsy-modal">
+      <form method="dialog" className="dsy-modal-box w-96 bg-opacity-60 backdrop-blur-md">
+        <button type="button" onDoubleClick={() => openAssetPreviewDialog(asset.src)}>
+          <img src={asset.src} alt={asset.name} className="rounded-md" />
+        </button>
 
-            <img
-              src={asset.src}
-              alt={asset.name}
-              className="m-auto mb-3"
-              onDoubleClick={() => openAssetPreviewDialog(asset.src)}
-            />
-
-            <div className="field">
-              <label htmlFor="name" className="label">
-                <FaIcon icon={faSignature} fontSize={16} /> 이름
-              </label>
-              <Input
-                id="name"
-                value={asset.name}
-                onChange={assetActions.onNameChange}
-                placeholder="이름"
-              />
-            </div>
-
-            <div className="field">
-              <label htmlFor="mimeType" className="label">
-                <FaIcon icon={faShapes} fontSize={16} /> 형식
-              </label>
-              <Input
-                id="mimeType"
-                value={asset.mimeType}
-                placeholder="mimeType"
-                readOnly
-                className="cursor-default bg-opacity-70 outline-none"
-              />
-            </div>
-          </fieldset>
+        <div className="dsy-divider">
+          <FaIcon icon={faMagnifyingGlass} /> 상세정보
         </div>
-      </div>
 
-      <form method="dialog" className="flex justify-center gap-2">
-        {/* Close */}
-        <button className="btn" disabled={isLoading}>
-          <FaIcon icon={faX} isLoading={isLoading} value="닫기" />
-        </button>
+        <div className="dsy-form-control">
+          <label htmlFor="name" className="dsy-label py-1">
+            <span className="dsy-label-text">
+              <FaIcon icon={faSignature} fontSize={16} /> 이름
+            </span>
+            <Input
+              id="name"
+              value={asset.name}
+              onChange={assetActions.onNameChange}
+              placeholder="이름"
+              className="w-60"
+            />
+          </label>
+        </div>
 
-        {/* Clear */}
-        <button
-          type="button"
-          className="btn"
-          disabled={isCleared || isLoading}
-          onClick={assetActions.reset}
-        >
-          <FaIcon icon={faNotdef} rotation={90} isLoading={isLoading} value="초기화" />
-        </button>
+        <div className="dsy-form-control">
+          <label htmlFor="mimeType" className="dsy-label py-1">
+            <span className="dsy-label-text">
+              <FaIcon icon={faShapes} fontSize={16} /> 형식
+            </span>
+            <Input
+              id="mimeType"
+              value={asset.mimeType}
+              placeholder="mimeType"
+              disabled
+              className="w-60"
+            />
+          </label>
+        </div>
 
-        {/* Delete */}
-        <button
-          type="button"
-          className="btn"
-          disabled={isLoading}
-          onClick={() => deleteItem.mutate()}
-        >
-          <FaIcon icon={faTrashAlt} isLoading={isLoading} value="삭제" />
-        </button>
+        <div className="dsy-modal-action">
+          {/* Close */}
+          <button className="dsy-btn-sm dsy-btn" disabled={isLoading}>
+            <FaIcon icon={faX} isLoading={isLoading} value="닫기" />
+          </button>
 
-        {/* Save */}
-        <button
-          type="button"
-          className="btn"
-          onClick={() => updateItem.mutate()}
-          disabled={!isValid || isLoading}
-        >
-          <FaIcon icon={faFloppyDisk} isLoading={isLoading} value="저장" />
-        </button>
+          {/* Clear */}
+          <button
+            type="button"
+            className="dsy-btn-sm dsy-btn"
+            disabled={isCleared || isLoading}
+            onClick={assetActions.reset}
+          >
+            <FaIcon icon={faNotdef} rotation={90} isLoading={isLoading} value="초기화" />
+          </button>
+
+          {/* Delete */}
+          <button
+            type="button"
+            className="dsy-btn-sm dsy-btn"
+            disabled={isLoading}
+            onClick={() => deleteItem.mutate()}
+          >
+            <FaIcon icon={faTrashAlt} isLoading={isLoading} value="삭제" />
+          </button>
+
+          {/* Save */}
+          <button
+            type="button"
+            className="dsy-btn-sm dsy-btn"
+            onClick={() => updateItem.mutate()}
+            disabled={!isValid || isLoading}
+          >
+            <FaIcon icon={faFloppyDisk} isLoading={isLoading} value="저장" />
+          </button>
+        </div>
       </form>
     </dialog>
   );

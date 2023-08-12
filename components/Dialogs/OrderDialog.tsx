@@ -156,13 +156,16 @@ export function OrderDialog(props: Props) {
 
   return (
     <dialog ref={props.ref} onClose={props.closeSelf} className="dsy-modal">
-      <form method="dialog" className="dsy-modal-box bg-opacity-60 backdrop-blur-md">
+      <form
+        method="dialog"
+        className="dsy-modal-box max-h-screen w-full bg-opacity-60 backdrop-blur-md"
+      >
         <div className="dsy-form-control">
-          <label htmlFor="date" className="dsy-label py-1">
+          <label htmlFor="date" className="dsy-label py-1 pt-0">
             <span className="dsy-label-text">
               <FaIcon icon={faCalendarAlt} /> 주문날짜
             </span>
-            <NewDateChanger date={order.date} onChange={orderActions.setDate} />
+            <NewDateChanger date={order.date} onChange={orderActions.setDate} className="w-60" />
           </label>
         </div>
 
@@ -172,7 +175,7 @@ export function OrderDialog(props: Props) {
               <FaIcon icon={faSignature} /> 이름
             </span>
             <Input
-              className="w-64"
+              className="w-60"
               id="sender-name"
               placeholder="홍길동"
               disabled={createItem.isLoading}
@@ -189,7 +192,7 @@ export function OrderDialog(props: Props) {
               <FaIcon icon={faMobileScreenButton} /> 전화번호
             </span>
             <Input
-              className="w-64"
+              className="w-60"
               id="sender-phone"
               list="sender-phone-list"
               type="tel"
@@ -207,7 +210,7 @@ export function OrderDialog(props: Props) {
           </label>
         </div>
 
-        <div className="dsy-divider">From</div>
+        <div className="dsy-divider">{/* <FaIcon icon={faPaperPlane} /> From */}</div>
 
         <div className="dsy-form-control">
           <label htmlFor="same-as-sender" className="dsy-label py-1">
@@ -228,10 +231,10 @@ export function OrderDialog(props: Props) {
         <div className="dsy-form-control">
           <label htmlFor="receiver-name" className="dsy-label py-1">
             <span className="dsy-label-text">
-              <FaIcon icon={faSignature} /> 받는 사람 이름
+              <FaIcon icon={faSignature} /> 이름
             </span>
             <Input
-              className="w-64"
+              className="w-60"
               id="receiver-name"
               placeholder="홍길동"
               disabled={order.sameAsSender || createItem.isLoading}
@@ -245,10 +248,10 @@ export function OrderDialog(props: Props) {
         <div className="dsy-form-control">
           <label htmlFor="receiver-phone" className="dsy-label py-1">
             <span className="dsy-label-text">
-              <FaIcon icon={faMobileScreenButton} /> 받는 사람 전화번호
+              <FaIcon icon={faMobileScreenButton} /> 전화번호
             </span>
             <Input
-              className="w-64"
+              className="w-60"
               id="receiver-phone"
               placeholder="010-xxxx-xxxx"
               disabled={order.sameAsSender || createItem.isLoading}
@@ -265,7 +268,7 @@ export function OrderDialog(props: Props) {
               <FaIcon icon={faSignsPost} /> 주소
             </span>
             <Input
-              className="w-64"
+              className="w-60"
               id="receiver-address"
               placeholder="남원월산로74번길 42"
               disabled={createItem.isLoading}
@@ -283,7 +286,7 @@ export function OrderDialog(props: Props) {
               <FaIcon icon={faBuilding} /> 상세주소
             </span>
             <Input
-              className="w-64"
+              className="w-60"
               id="receiver-address-detail"
               placeholder="단독주택, 1층 101호, ..."
               disabled={createItem.isLoading}
@@ -300,7 +303,7 @@ export function OrderDialog(props: Props) {
               <FaIcon icon={faNoteSticky} /> 메모
             </span>
             <Input
-              className="w-64"
+              className="w-60"
               id="memo"
               placeholder="메모"
               disabled={createItem.isLoading}
@@ -310,9 +313,9 @@ export function OrderDialog(props: Props) {
           </label>
         </div>
 
-        <div className="dsy-divider">To</div>
+        <div className="dsy-divider">{/* <FaIcon icon={faPaperPlane} rotation={90} /> To */}</div>
 
-        <table className="grid w-full grid-cols-[1fr_8rem_5rem_auto]">
+        <table className="grid w-full grid-cols-[1fr_6rem_4rem_auto]">
           <thead className="contents">
             <tr className="contents">
               <th className="text-sm font-normal">
@@ -375,17 +378,23 @@ export function OrderDialog(props: Props) {
           </tbody>
         </table>
 
-        <div className="space-x-2 text-end">
-          <button
-            type="button"
-            className="dsy-btn-sm dsy-btn mt-2"
-            onClick={() => orderActions.addProduct(undefined)}
-          >
-            <FaIcon icon={faPlus} /> 추가하기
-          </button>
-          <button type="button" className="dsy-btn-sm dsy-btn mt-2" onClick={openProductSelector}>
-            <FaIcon icon={faCheck} /> 선택하기
-          </button>
+        <div className="mt-2 text-end">
+          <div className="dsy-join inline-block">
+            <button
+              type="button"
+              className="dsy-btn-sm dsy-join-item dsy-btn"
+              onClick={() => orderActions.addProduct(undefined)}
+            >
+              <FaIcon icon={faPlus} /> 추가하기
+            </button>
+            <button
+              type="button"
+              className="dsy-btn-sm dsy-join-item dsy-btn"
+              onClick={openProductSelector}
+            >
+              <FaIcon icon={faCheck} /> 선택하기
+            </button>
+          </div>
         </div>
 
         <div className="dsy-modal-action">

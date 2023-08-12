@@ -34,6 +34,7 @@ module.exports = {
   plugins: [require("daisyui")],
   daisyui: {
     prefix: "dsy-",
+    base: false,
     themes: [
       {
         mytheme: {

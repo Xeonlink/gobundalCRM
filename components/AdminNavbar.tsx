@@ -42,7 +42,7 @@ export function AdminNavbar() {
   return (
     <nav
       className={cn(
-        "overflow-hidden bg-black bg-opacity-70 text-white transition-all duration-500 aria-expanded:w-40",
+        "hidden overflow-hidden bg-black bg-opacity-70 text-white transition-all duration-500 aria-expanded:w-40 sm:block",
         shrink.isOn ? "w-12" : "w-40",
       )}
       onMouseEnter={shrink.off}
