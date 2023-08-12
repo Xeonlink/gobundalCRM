@@ -78,117 +78,117 @@ export default function Page(props: PageProps<any, SearchParams>) {
 
   return (
     <main className="h-full flex-1 overflow-auto p-3">
-      <div className="m-auto w-96 max-w-full">
-        <Image
-          src={IcoLogo}
-          alt="gobundal-logo"
-          width={250}
-          height={250}
-          placeholder="blur"
-          className="m-auto my-8"
-        />
-        <form className="relative m-auto w-80 max-w-full p-4" onSubmit={(e) => e.preventDefault()}>
-          <fieldset className="fieldset">
-            <legend className="legend">
-              <FaIcon icon={faUserLock} /> 사용자 인증
-            </legend>
+      <Image
+        src={IcoLogo}
+        alt="gobundal-logo"
+        width={250}
+        height={250}
+        placeholder="blur"
+        className="m-auto my-8"
+      />
 
-            <div className="field">
-              <label htmlFor="username" className="label">
-                <FaIcon icon={faSignature} /> 사용자 이름
-              </label>
-              <Input
-                id="username"
-                placeholder="id"
-                defaultValue={credentials.username}
-                onChange={actions.setUsername}
-                disabled={isLoading}
-                invalid={credentials.username === ""}
-                autoFocus
-              />
-            </div>
+      <form
+        className="dsy-modal-box m-auto max-w-[20rem] bg-opacity-60 backdrop-blur-md"
+        onSubmit={(e) => e.preventDefault()}
+      >
+        <h1 className="mb-4 text-center text-lg">
+          <FaIcon icon={faUserLock} /> 사용자 인증
+        </h1>
 
-            <div className="field">
-              <label htmlFor="password" className="label">
-                <FaIcon icon={faKey} /> 비밀번호
-              </label>
-              <Input
-                type="password"
-                id="password"
-                placeholder="password"
-                defaultValue={credentials.password}
-                onChange={actions.setPassword}
-                disabled={isLoading}
-                invalid={credentials.password.length < 8}
-              />
-            </div>
+        <div className="dsy-form-control mb-2">
+          <label htmlFor="username" className="dsy-label">
+            <span className="dsy-label-text">
+              <FaIcon icon={faSignature} /> 사용자 이름
+            </span>
+          </label>
+          <Input
+            id="username"
+            placeholder="id"
+            defaultValue={credentials.username}
+            onChange={actions.setUsername}
+            disabled={isLoading}
+            invalid={credentials.username === ""}
+            autoFocus
+          />
+        </div>
 
-            {/* Message Container */}
-            <ul className="w-full pl-1">
-              {status === "UserNotConfirmedException" ? (
-                <li className="mt-3">
-                  <FaIcon icon={faCircleCheck} className="text-red-500" /> 승인되지 않은 사용자
-                  입니다.
-                </li>
-              ) : null}
-              {status === "UsernameExistsException" ? (
-                <li className="mt-3">
-                  <FaIcon icon={faCircleCheck} className="text-red-500" /> 이미 존재하는 사용자
-                  입니다.
-                </li>
-              ) : null}
-              {status === "UserNotFoundException" ? (
-                <li className="mt-3">
-                  <FaIcon icon={faCircleCheck} className="text-red-500" /> 사용자를 찾을 수
-                  없습니다.
-                </li>
-              ) : null}
-              {status === "InvalidPasswordException" ? (
-                <li className="mt-3">
-                  <FaIcon icon={faCircleCheck} className="text-red-500" /> 유효하지 않은 비밀번호
-                  형식입니다.
-                </li>
-              ) : null}
-              {status === "RequestSignUpSuccess" ? (
-                <li className="mt-3">
-                  <FaIcon icon={faCircleCheck} className="text-green-500" /> 가입요청이
-                  완료되었습니다.
-                </li>
-              ) : null}
-            </ul>
-          </fieldset>
+        <div className="dsy-form-control">
+          <label htmlFor="password" className="dsy-label">
+            <span className="dsy-label-text">
+              <FaIcon icon={faKey} /> 비밀번호
+            </span>
+          </label>
+          <Input
+            type="password"
+            id="password"
+            placeholder="password"
+            defaultValue={credentials.password}
+            onChange={actions.setPassword}
+            disabled={isLoading}
+            invalid={credentials.password.length < 8}
+          />
+        </div>
 
-          {/* Submit Buttons */}
-          <div className="mt-3 space-x-2 text-center">
-            <button
-              type="button"
-              className="btn"
-              onClick={() => signUp.mutate()}
-              disabled={!isValid || isLoading}
-            >
-              {isLoading ? (
-                <FaIcon icon={faSpinner} className="animate-spin" />
-              ) : (
-                <FaIcon icon={faUserPlus} />
-              )}
-              &nbsp;가입요청
-            </button>
+        {/* Message Container */}
+        <ul className="w-full pl-1">
+          {status === "UserNotConfirmedException" ? (
+            <li className="mt-3">
+              <FaIcon icon={faCircleCheck} className="text-red-500" /> 승인되지 않은 사용자 입니다.
+            </li>
+          ) : null}
+          {status === "UsernameExistsException" ? (
+            <li className="mt-3">
+              <FaIcon icon={faCircleCheck} className="text-red-500" /> 이미 존재하는 사용자 입니다.
+            </li>
+          ) : null}
+          {status === "UserNotFoundException" ? (
+            <li className="mt-3">
+              <FaIcon icon={faCircleCheck} className="text-red-500" /> 사용자를 찾을 수 없습니다.
+            </li>
+          ) : null}
+          {status === "InvalidPasswordException" ? (
+            <li className="mt-3">
+              <FaIcon icon={faCircleCheck} className="text-red-500" /> 유효하지 않은 비밀번호
+              형식입니다.
+            </li>
+          ) : null}
+          {status === "RequestSignUpSuccess" ? (
+            <li className="mt-3">
+              <FaIcon icon={faCircleCheck} className="text-green-500" /> 가입요청이 완료되었습니다.
+            </li>
+          ) : null}
+        </ul>
 
-            <button
-              className="btn"
-              onClick={() => signIn.mutate()}
-              disabled={isLoading || !isValid}
-            >
-              {isLoading ? (
-                <FaIcon icon={faSpinner} className="animate-spin" />
-              ) : (
-                <FaIcon icon={faArrowRightToBracket} />
-              )}
-              &nbsp;로그인
-            </button>
-          </div>
-        </form>
-      </div>
+        {/* Submit Buttons */}
+        <div className="dsy-modal-action">
+          <button
+            type="button"
+            className="dsy-btn-sm dsy-btn"
+            onClick={() => signUp.mutate()}
+            disabled={!isValid || isLoading}
+          >
+            {isLoading ? (
+              <FaIcon icon={faSpinner} className="animate-spin" />
+            ) : (
+              <FaIcon icon={faUserPlus} />
+            )}
+            &nbsp;가입요청
+          </button>
+
+          <button
+            className="dsy-btn-sm dsy-btn"
+            onClick={() => signIn.mutate()}
+            disabled={isLoading || !isValid}
+          >
+            {isLoading ? (
+              <FaIcon icon={faSpinner} className="animate-spin" />
+            ) : (
+              <FaIcon icon={faArrowRightToBracket} />
+            )}
+            &nbsp;로그인
+          </button>
+        </div>
+      </form>
     </main>
   );
 }
