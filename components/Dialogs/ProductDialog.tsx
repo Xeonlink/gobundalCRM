@@ -119,7 +119,7 @@ export function ProductDialog(props: Props) {
       <form method="dialog" className="dsy-modal-box w-96 bg-opacity-60 backdrop-blur-md">
         <div className="dsy-form-control">
           <label htmlFor="name" className="dsy-label relative py-1">
-            <span className="dsy-label-text">
+            <span className="dsy-label-text min-w-fit">
               <FaIcon icon={faSignature} /> 상품명
             </span>
             <Input
@@ -129,14 +129,14 @@ export function ProductDialog(props: Props) {
               value={product.name}
               onChange={productActions.onNameChange}
               invalid={!validity.name}
-              className="w-60"
+              className="w-full max-w-[15rem]"
             />
           </label>
         </div>
 
         <div className="dsy-form-control">
           <label htmlFor="price" className="dsy-label relative py-1">
-            <span className="dsy-label-text">
+            <span className="dsy-label-text min-w-fit">
               <FaIcon icon={faWon} /> 상품가격
             </span>
             <Input
@@ -146,15 +146,15 @@ export function ProductDialog(props: Props) {
               value={product.price.toLocaleString()}
               onChange={productActions.onPriceChange}
               required
-              className="w-60"
+              className="w-full max-w-[15rem]"
             />
             <div className="absolute bottom-2 right-3">원</div>
           </label>
         </div>
 
         <div className="dsy-form-control">
-          <label htmlFor="is-sale" className="dsy-label py-1">
-            <span className="dsy-label-text">
+          <label htmlFor="is-sale" className="dsy-label gap-2 py-1">
+            <span className="dsy-label-text min-w-fit">
               <FaIcon icon={faCoins} /> 할인여부
             </span>
             <input
@@ -171,7 +171,7 @@ export function ProductDialog(props: Props) {
 
         <div className="dsy-form-control">
           <label htmlFor="sale-price" className="dsy-label relative py-1">
-            <span className="dsy-label-text">
+            <span className="dsy-label-text min-w-fit">
               <FaIcon icon={faWon} /> 할인가격
             </span>
             <Input
@@ -182,15 +182,15 @@ export function ProductDialog(props: Props) {
               onChange={productActions.onSalePriceChange}
               required
               invalid={!validity.salePrice}
-              className="w-60"
+              className="w-full max-w-[15rem]"
             />
             <div className="absolute bottom-2 right-3">원</div>
           </label>
         </div>
 
         <div className="dsy-form-control">
-          <label htmlFor="remain" className="dsy-label py-1">
-            <span className="dsy-label-text">
+          <label htmlFor="remain" className="dsy-label gap-2 py-1">
+            <span className="dsy-label-text min-w-fit">
               <FaIcon icon={faInfinity} /> 무한재고
             </span>
             <input
@@ -206,7 +206,7 @@ export function ProductDialog(props: Props) {
 
         <div className="dsy-form-control">
           <label htmlFor="is-sale" className="dsy-label relative py-1">
-            <span className="dsy-label-text">
+            <span className="dsy-label-text min-w-fit">
               <FaIcon icon={faBoxes} /> 재고
             </span>
             <Input
@@ -217,15 +217,15 @@ export function ProductDialog(props: Props) {
               onChange={productActions.onRemainChange}
               required
               invalid={!validity.remain}
-              className="w-60"
+              className="w-full max-w-[15rem]"
             />
             <div className="absolute bottom-2 right-3">개</div>
           </label>
         </div>
 
         <div className="dsy-form-control">
-          <label htmlFor="enabled" className="dsy-label py-1">
-            <span className="dsy-label-text">
+          <label htmlFor="enabled" className="dsy-label gap-2 py-1">
+            <span className="dsy-label-text min-w-fit">
               <FaIcon icon={product.enabled ? faEye : faEyeSlash} /> 활성화
             </span>
             <input

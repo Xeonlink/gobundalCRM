@@ -162,20 +162,24 @@ export function OrderDialog(props: Props) {
       >
         <div className="dsy-form-control">
           <label htmlFor="date" className="dsy-label py-1 pt-0">
-            <span className="dsy-label-text">
+            <span className="dsy-label-text min-w-fit">
               <FaIcon icon={faCalendarAlt} /> 주문날짜
             </span>
-            <NewDateChanger date={order.date} onChange={orderActions.setDate} className="w-60" />
+            <NewDateChanger
+              date={order.date}
+              onChange={orderActions.setDate}
+              className="w-full max-w-[15rem]"
+            />
           </label>
         </div>
 
         <div className="dsy-form-control">
-          <label htmlFor="sender-name" className="dsy-label py-1">
-            <span className="dsy-label-text">
+          <label htmlFor="sender-name" className="dsy-label gap-2 py-1">
+            <span className="dsy-label-text min-w-fit">
               <FaIcon icon={faSignature} /> 이름
             </span>
             <Input
-              className="w-60"
+              className="w-full max-w-[15rem]"
               id="sender-name"
               placeholder="홍길동"
               disabled={createItem.isLoading}
@@ -187,12 +191,12 @@ export function OrderDialog(props: Props) {
         </div>
 
         <div className="dsy-form-control">
-          <label htmlFor="sender-phone" className="dsy-label py-1">
-            <span className="dsy-label-text">
+          <label htmlFor="sender-phone" className="dsy-label gap-2 py-1">
+            <span className="dsy-label-text min-w-fit">
               <FaIcon icon={faMobileScreenButton} /> 전화번호
             </span>
             <Input
-              className="w-60"
+              className="w-full max-w-[15rem]"
               id="sender-phone"
               list="sender-phone-list"
               type="tel"
@@ -213,8 +217,8 @@ export function OrderDialog(props: Props) {
         <div className="dsy-divider">{/* <FaIcon icon={faPaperPlane} /> From */}</div>
 
         <div className="dsy-form-control">
-          <label htmlFor="same-as-sender" className="dsy-label py-1">
-            <span className="dsy-label-text">
+          <label htmlFor="same-as-sender" className="dsy-label gap-2 py-1">
+            <span className="dsy-label-text min-w-fit">
               <FaIcon icon={faPaperPlane} /> 보내는 사람과 같음
             </span>
             <input
@@ -229,12 +233,12 @@ export function OrderDialog(props: Props) {
         </div>
 
         <div className="dsy-form-control">
-          <label htmlFor="receiver-name" className="dsy-label py-1">
-            <span className="dsy-label-text">
+          <label htmlFor="receiver-name" className="dsy-label gap-2 py-1">
+            <span className="dsy-label-text min-w-fit">
               <FaIcon icon={faSignature} /> 이름
             </span>
             <Input
-              className="w-60"
+              className="w-full max-w-[15rem]"
               id="receiver-name"
               placeholder="홍길동"
               disabled={order.sameAsSender || createItem.isLoading}
@@ -246,12 +250,12 @@ export function OrderDialog(props: Props) {
         </div>
 
         <div className="dsy-form-control">
-          <label htmlFor="receiver-phone" className="dsy-label py-1">
-            <span className="dsy-label-text">
+          <label htmlFor="receiver-phone" className="dsy-label gap-2 py-1">
+            <span className="dsy-label-text min-w-fit">
               <FaIcon icon={faMobileScreenButton} /> 전화번호
             </span>
             <Input
-              className="w-60"
+              className="w-full max-w-[15rem]"
               id="receiver-phone"
               placeholder="010-xxxx-xxxx"
               disabled={order.sameAsSender || createItem.isLoading}
@@ -263,12 +267,12 @@ export function OrderDialog(props: Props) {
         </div>
 
         <div className="dsy-form-control">
-          <label htmlFor="receiver-address" className="dsy-label py-1">
-            <span className="dsy-label-text">
+          <label htmlFor="receiver-address" className="dsy-label gap-2 py-1">
+            <span className="dsy-label-text min-w-fit">
               <FaIcon icon={faSignsPost} /> 주소
             </span>
             <Input
-              className="w-60"
+              className="w-full max-w-[15rem]"
               id="receiver-address"
               placeholder="남원월산로74번길 42"
               disabled={createItem.isLoading}
@@ -281,12 +285,12 @@ export function OrderDialog(props: Props) {
         </div>
 
         <div className="dsy-form-control">
-          <label htmlFor="receiver-address-detail" className="dsy-label py-1">
-            <span className="dsy-label-text">
+          <label htmlFor="receiver-address-detail" className="dsy-label gap-2 py-1">
+            <span className="dsy-label-text min-w-fit">
               <FaIcon icon={faBuilding} /> 상세주소
             </span>
             <Input
-              className="w-60"
+              className="w-full max-w-[15rem]"
               id="receiver-address-detail"
               placeholder="단독주택, 1층 101호, ..."
               disabled={createItem.isLoading}
@@ -298,12 +302,12 @@ export function OrderDialog(props: Props) {
         </div>
 
         <div className="dsy-form-control">
-          <label htmlFor="memo" className="dsy-label py-1">
-            <span className="dsy-label-text">
+          <label htmlFor="memo" className="dsy-label gap-2 py-1">
+            <span className="dsy-label-text min-w-fit">
               <FaIcon icon={faNoteSticky} /> 메모
             </span>
             <Input
-              className="w-60"
+              className="w-full max-w-[15rem]"
               id="memo"
               placeholder="메모"
               disabled={createItem.isLoading}

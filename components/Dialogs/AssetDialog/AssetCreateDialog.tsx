@@ -79,8 +79,8 @@ export function AssetCreateDialog(props: ModalProps) {
         </div>
 
         <div className="dsy-form-control">
-          <label htmlFor="name" className="dsy-label py-1">
-            <span className="dsy-label-text">
+          <label htmlFor="name" className="dsy-label gap-2 py-1">
+            <span className="dsy-label-text min-w-fit">
               <FaIcon icon={faSignature} fontSize={16} /> 이름
             </span>
             <Input
@@ -88,14 +88,14 @@ export function AssetCreateDialog(props: ModalProps) {
               value={asset.name}
               onChange={assetActions.onNameChange}
               placeholder="이름"
-              className="w-60"
+              className="w-full max-w-[15rem]"
             />
           </label>
         </div>
 
         <div className="dsy-form-control">
-          <label htmlFor="mimeType" className="dsy-label py-1">
-            <span className="dsy-label-text">
+          <label htmlFor="mimeType" className="dsy-label gap-2 py-1">
+            <span className="dsy-label-text min-w-fit">
               <FaIcon icon={faShapes} fontSize={16} /> 형식
             </span>
             <Input
@@ -103,7 +103,7 @@ export function AssetCreateDialog(props: ModalProps) {
               value={asset.mimeType}
               placeholder="mimeType"
               disabled
-              className="w-60"
+              className="w-full max-w-[15rem]"
             />
           </label>
         </div>

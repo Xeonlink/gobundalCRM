@@ -83,12 +83,12 @@ export function CustomerDialog(props: Props) {
     <dialog ref={props.ref} className="dsy-modal">
       <form method="dialog" className="dsy-modal-box w-96 bg-opacity-60 backdrop-blur-md">
         <div className="dsy-form-control">
-          <label htmlFor="name" className="dsy-label py-1">
-            <span className="dsy-label-text">
+          <label htmlFor="name" className="dsy-label gap-2 py-1">
+            <span className="dsy-label-text min-w-fit">
               <FaIcon icon={faSignature} /> 이름
             </span>
             <Input
-              className="w-60"
+              className="w-full max-w-[15rem]"
               id="name"
               placeholder="홍길동"
               value={customer.name}
@@ -100,12 +100,12 @@ export function CustomerDialog(props: Props) {
         </div>
 
         <div className="dsy-form-control">
-          <label htmlFor="phone" className="dsy-label py-1">
-            <span className="dsy-label-text">
+          <label htmlFor="phone" className="dsy-label gap-2 py-1">
+            <span className="dsy-label-text min-w-fit">
               <FaIcon icon={faMobileScreen} /> 전화번호
             </span>
             <Input
-              className="w-60"
+              className="w-full max-w-[15rem]"
               id="phone"
               type="tel"
               placeholder="010-xxxx-xxxx"
@@ -118,12 +118,12 @@ export function CustomerDialog(props: Props) {
         </div>
 
         <div className="dsy-form-control">
-          <label htmlFor="receiver-address" className="dsy-label py-1">
-            <span className="dsy-label-text">
+          <label htmlFor="receiver-address" className="dsy-label gap-2 py-1">
+            <span className="dsy-label-text min-w-fit">
               <FaIcon icon={faSignsPost} /> 주소
             </span>
             <Input
-              className="w-60"
+              className="w-full max-w-[15rem]"
               id="receiver-address"
               placeholder="남원월산로74번길 42"
               disabled={isLoading}
@@ -136,12 +136,12 @@ export function CustomerDialog(props: Props) {
         </div>
 
         <div className="dsy-form-control">
-          <label htmlFor="receiver-address-detail" className="dsy-label py-1">
-            <span className="dsy-label-text">
+          <label htmlFor="receiver-address-detail" className="dsy-label gap-2 py-1">
+            <span className="dsy-label-text min-w-fit">
               <FaIcon icon={faBuilding} /> 상세주소
             </span>
             <Input
-              className="w-60"
+              className="w-full max-w-[15rem]"
               id="receiver-address-detail"
               placeholder="단독주택, 1층 101호, ..."
               disabled={isLoading}
