@@ -73,7 +73,3 @@ input[type="number"] {
     display: none;
   }
 }
-
-.tr_selected[aria-selected="true"] > td {
-  @apply bg-white bg-opacity-40;
-}
