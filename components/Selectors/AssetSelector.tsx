@@ -62,57 +62,62 @@ export default function AssetSelector(props: Props) {
   };
 
   return (
-    <dialog ref={ref} onClose={closeSelf} className="dialog">
-      <div className="space-y-3">
-        <fieldset className="fieldset">
-          <legend className="legend">
-            <FaIcon icon={faBoxesStacked} /> 상품선택
-          </legend>
+    <dialog ref={ref} onClose={closeSelf} className="dsy-modal">
+      <form
+        method="dialog"
+        className="dsy-modal-box max-h-screen w-full max-w-[45rem] bg-opacity-60 backdrop-blur-md"
+      >
+        <ul className="grid grid-cols-[repeat(auto-fill,_minmax(200px,_1fr))] text-sm">
+          {assets?.data?.map((item) => (
+            <li
+              key={item.id}
+              className={cn(
+                "rounded-lg bg-white bg-opacity-0 p-2 text-center shadow-none transition-all duration-300 hover:bg-opacity-30 active:scale-90",
+                {
+                  "bg-opacity-40": selected.includes(item.id),
+                },
+              )}
+              onClick={selected.onItemClick(item.id)}
+              onDoubleClick={() => openAssetUpdateDialog(item.id)}
+            >
+              <img src={item.src} alt={item.name} className="m-auto mb-2 h-44 object-contain" />
+              <h1 className="font-bold">{item.name}</h1>
+              <span>{item.mimeType}</span>
+            </li>
+          ))}
+        </ul>
 
-          <ol className="grid grid-cols-[repeat(auto-fill,_200px)] gap-3">
-            {assets?.data?.map((item) => (
-              <li
-                key={item.id}
-                className={cn("btn bg-transparent p-2 text-start active:scale-90", {
-                  "bg-white bg-opacity-70": selected.includes(item.id),
-                })}
-                onClick={selected.onItemClick(item.id)}
-                onDoubleClick={() => openAssetUpdateDialog(item.id)}
-              >
-                <img src={item.src} alt={item.name} className="m-auto h-44 object-contain" />
-                <h1 className="font-bold">{item.name}</h1>
-                <p className="text-sm">{item.mimeType}</p>
-              </li>
-            ))}
-          </ol>
-        </fieldset>
-      </div>
+        <div className="dsy-modal-action">
+          {/* Close */}
+          <button className="dsy-btn-sm dsy-btn">
+            <FaIcon icon={faX} /> 닫기
+          </button>
 
-      <form method="dialog" className="mt-3 flex justify-center gap-2">
-        {/* Cratet New Order */}
-        <button type="button" className="btn" onClick={openAssetCreateDialog}>
-          <FaIcon icon={faPlus} /> 에셋 추가하기
-        </button>
+          {/* Cratet New Order */}
+          <button type="button" className="dsy-btn-sm dsy-btn" onClick={openAssetCreateDialog}>
+            <FaIcon icon={faPlus} /> 에셋 추가하기
+          </button>
 
-        {/* Delete */}
-        <button type="button" className="btn" onClick={onDeleteClick}>
-          <FaIcon icon={faTrashCan} /> 선택삭제
-        </button>
+          {/* Delete */}
+          <button type="button" className="dsy-btn-sm dsy-btn" onClick={onDeleteClick}>
+            <FaIcon icon={faTrashCan} /> 선택삭제
+          </button>
 
-        {/* 엑셀로 다운로드하기 */}
-        <button type="button" className="btn" onClick={onExcelDownloadClick}>
-          <ImgIcon src={IcoExcel} alt="엑셀로 변환" fontSize={20} /> 엑셀로 변환
-        </button>
+          {/* 엑셀로 다운로드하기 */}
+          <button type="button" className="dsy-btn-sm dsy-btn" onClick={onExcelDownloadClick}>
+            <ImgIcon src={IcoExcel} alt="엑셀로 변환" fontSize={20} /> 엑셀로 변환
+          </button>
 
-        {/* Close */}
-        <button className="btn">
-          <FaIcon icon={faX} /> 닫기
-        </button>
-
-        {/* 확인 */}
-        <button type="button" className="btn" onClick={onConfirmClick} disabled={selected.isEmpty}>
-          <FaIcon icon={faCheck} /> 선택
-        </button>
+          {/* 확인 */}
+          <button
+            type="button"
+            className="dsy-btn-sm dsy-btn"
+            onClick={onConfirmClick}
+            disabled={selected.isEmpty}
+          >
+            <FaIcon icon={faCheck} /> 선택
+          </button>
+        </div>
       </form>
     </dialog>
   );
