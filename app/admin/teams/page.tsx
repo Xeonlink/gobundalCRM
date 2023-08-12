@@ -4,11 +4,11 @@ import { useDeleteTeams, useTeams } from "@/api/teams";
 import { DateChanger } from "@/components/DateChanger";
 import { TeamDialog } from "@/components/Dialogs/TeamDialog";
 import { ImgIcon } from "@/components/ImgIcon";
+import { useModal } from "@/extra/modal";
 import { PageProps } from "@/extra/type";
-import { cn } from "@/extra/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { useExcel } from "@/hooks/useExcel";
-import { useModal } from "@/extra/modal";
+import { useItemSelection } from "@/hooks/useItemSelection";
 import IcoExcel from "@/public/icons/excel.png";
 import { faCalendarDays } from "@fortawesome/free-regular-svg-icons";
 import {
@@ -28,45 +28,27 @@ import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
 import dayjs from "dayjs";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 
-type SearchParams = {
-  date: `${string}-${string}-${string}`;
-  view: "card" | "table";
-};
+type SearchParams = { date: `${string}-${string}-${string}` };
 
 export default function Page(props: PageProps<any, SearchParams>) {
   const { searchParams } = props;
-  const { date = dayjs().format("YYYY-MM-DD"), view = "table" } = searchParams;
+  const { date = dayjs().format("YYYY-MM-DD") } = searchParams;
 
   const auth = useAuth();
   const navigate = useRouter();
   const modalCtrl = useModal();
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const selected = useItemSelection();
   const excel = useExcel();
   const teams = useTeams(date, {
     enabled: auth.isSignIn,
   });
-  const eraseTeams = useDeleteTeams(selectedIds, {
-    onSuccess: () => setSelectedIds([]),
+  const eraseTeams = useDeleteTeams(selected.ids, {
+    onSuccess: () => selected.clear(),
   });
 
-  const onItemClick = (id: string) => (e: React.MouseEvent<HTMLElement>) => {
-    if (e.ctrlKey || e.metaKey) {
-      if (selectedIds.includes(id)) {
-        setSelectedIds((prev) => prev.filter((selectedId) => selectedId !== id));
-      } else {
-        setSelectedIds((prev) => [...prev, id]);
-      }
-    } else {
-      setSelectedIds([id]);
-    }
-  };
   const onDateChange = (date: string) => {
-    navigate.replace(`teams?date=${date}&view=${view}`);
-  };
-  const onViewStyleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    navigate.replace(`teams?date=${date}&view=${e.target.value}`);
+    navigate.replace(`teams?date=${date}`);
   };
   const openCreateTeamDialog = () => {
     modalCtrl.open(<TeamDialog mode="CREATE" />);
@@ -75,7 +57,7 @@ export default function Page(props: PageProps<any, SearchParams>) {
     modalCtrl.open(<TeamDialog mode="UPDATE" teamId={id} />);
   };
   const onDeleteClick = () => {
-    if (selectedIds.length === 0) return;
+    if (selected.ids.length === 0) return;
     if (!confirm("정말로 삭제하시겠습니까?")) return;
     eraseTeams.mutate();
   };
@@ -88,7 +70,7 @@ export default function Page(props: PageProps<any, SearchParams>) {
       {/* Toolbar */}
       <div className="mb-3 flex flex-wrap items-center gap-3">
         {/* 오늘 날짜로 재검색 */}
-        <Link href={`teams?date=${dayjs().format("YYYY-MM-DD")}&view=${view}`} className="btn">
+        <Link href={`teams?date=${dayjs().format("YYYY-MM-DD")}`} className="btn">
           <FaIcon icon={faCalendarDays} /> 오늘
         </Link>
 
@@ -99,12 +81,6 @@ export default function Page(props: PageProps<any, SearchParams>) {
         <button type="button" className="btn" onClick={() => teams.refetch()}>
           <FaIcon icon={faArrowsRotate} /> 새로고침
         </button>
-
-        {/* Change ViewStyle */}
-        <select className="btn text-center" value={view} onChange={onViewStyleChange}>
-          <option value="table">표로 보기</option>
-          <option value="card">카드로 보기</option>
-        </select>
 
         {/* Cratet New Team */}
         <button type="button" className="btn" onClick={openCreateTeamDialog}>
@@ -122,87 +98,99 @@ export default function Page(props: PageProps<any, SearchParams>) {
         </button>
       </div>
 
-      {view === "table" ? (
-        <table className="grid w-full grid-cols-[repeat(6,_auto)] gap-1">
-          <thead className="contents">
-            <tr className="contents">
-              <th className="th col-span-2 bg-orange-100">
+      <div className="max-w-full overflow-x-auto">
+        <table className="table">
+          <thead>
+            <tr>
+              <th className="rounded-tl-md bg-orange-100" colSpan={3}>
                 <FaIcon icon={faFlag} /> 대표자
               </th>
-              <th className="th col-span-4 bg-green-100">
+              <th className="rounded-tr-md bg-green-100" colSpan={4}>
                 <FaIcon icon={faCircleInfo} /> 정보
               </th>
             </tr>
-            <tr className="contents">
-              <th className="th bg-orange-50">
+            <tr>
+              <th className="rounded-bl-md bg-orange-50">
+                <input type="checkbox" name="" id="" className="dsy-checkbox dsy-checkbox-xs" />
+              </th>
+              <th className="bg-orange-50">
                 <FaIcon icon={faSignature} /> 이름
               </th>
-              <th className="th bg-orange-50">
+              <th className="bg-orange-50">
                 <FaIcon icon={faMobileScreen} /> 전화번호
               </th>
-              <th className="th bg-green-50">
+              <th className="bg-green-50">
                 <FaIcon icon={faTicket} /> 쿠폰사
               </th>
-              <th className="th bg-green-50">
+              <th className="bg-green-50">
                 <FaIcon icon={faPeopleGroup} /> 인원수
               </th>
-              <th className="th bg-green-50">
+              <th className="bg-green-50">
                 <FaIcon icon={faCheck} /> 쿠폰승인
               </th>
-              <th className="th bg-green-50">
+              <th className="rounded-br-md bg-green-50">
                 <FaIcon icon={faPersonWalkingArrowRight} /> 체험완료
               </th>
             </tr>
           </thead>
-          <tbody className="contents">
+          <tbody>
             {teams.data?.data.map((item) => (
               <tr
                 key={item.id}
-                className="tr_selected contents cursor-pointer"
-                onClick={onItemClick(item.id)}
+                onClick={selected.onItemClick(item.id)}
                 onDoubleClick={() => openUpdateTeamDialog(item.id)}
                 onTouchEnd={() => openUpdateTeamDialog(item.id)}
-                aria-selected={selectedIds.includes(item.id)}
               >
-                <td className="td">{item.leaderName}</td>
-                <td className="td">{item.leaderPhone}</td>
-                <td className="td">{item.coupon}</td>
-                <td className="td">{item.population}</td>
-                <td className="td">{item.isApproved ? "O" : "X"}</td>
-                <td className="td">{item.isLeave ? "O" : "X"}</td>
+                <td className="max-sm:absolute max-sm:right-3 max-sm:top-3">
+                  <input
+                    type="checkbox"
+                    name=""
+                    id=""
+                    className="dsy-checkbox dsy-checkbox-xs"
+                    checked={selected.ids.includes(item.id)}
+                  />
+                </td>
+                <td>
+                  <label>
+                    <FaIcon icon={faSignature} /> 이름
+                  </label>
+                  <span>{item.leaderName}</span>
+                </td>
+                <td>
+                  <label>
+                    <FaIcon icon={faMobileScreen} /> 전화번호
+                  </label>
+                  <span>{item.leaderPhone}</span>
+                </td>
+                <td>
+                  <label>
+                    <FaIcon icon={faTicket} /> 쿠폰사
+                  </label>
+                  <span>{item.coupon}</span>
+                </td>
+                <td>
+                  <label>
+                    <FaIcon icon={faPeopleGroup} /> 인원수
+                  </label>
+                  <span>{item.population}</span>
+                </td>
+                <td>
+                  <label>
+                    <FaIcon icon={faCheck} /> 쿠폰승인
+                  </label>
+                  <span>{item.isApproved ? "O" : "X"}</span>
+                </td>
+                <td>
+                  <label>
+                    <FaIcon icon={faPersonWalkingArrowRight} /> 체험완료
+                  </label>
+                  <span>{item.isLeave ? "O" : "X"}</span>
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
-      ) : null}
-
-      {view === "card" ? (
-        <ol className="grid grid-cols-[repeat(auto-fill,_minmax(170px,_1fr))] gap-3">
-          {teams.data?.data.map((item) => (
-            <li
-              key={item.id}
-              className={cn("btn bg-opacity-50 p-3 text-start active:scale-90", {
-                "bg-opacity-100": selectedIds.includes(item.id),
-              })}
-              aria-selected={selectedIds.includes(item.id)}
-              onClick={onItemClick(item.id)}
-              onDoubleClick={() => openUpdateTeamDialog(item.id)}
-            >
-              <ol className="flex items-center gap-1 py-2">
-                {item.isApproved ? "O" : "X"}
-                {item.isLeave ? "O" : "X"}
-              </ol>
-              <b className="text-2xl ">{item.leaderName}</b>
-              <br />
-              {item.leaderPhone}
-              <br />
-              {item.coupon}
-              <br />
-              {item.population}명
-            </li>
-          ))}
-        </ol>
-      ) : null}
+      </div>
     </main>
   );
 }
