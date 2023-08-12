@@ -47,6 +47,34 @@ input[type="number"] {
   .dialog {
     @apply max-h-full max-w-full rounded-md bg-transparent p-0 text-black backdrop:backdrop-blur-md focus:outline-none;
   }
+
+  /**
+    * Custom Table Styles =============================
+    */
+  .table {
+    @apply w-full min-w-max text-sm sm:text-center;
+  }
+  .table thead {
+    @apply max-sm:hidden;
+  }
+  .table thead tr {
+    @apply border-b-[1px] last-of-type:border-b-0;
+  }
+  .table thead tr th {
+    @apply border-r-[1px] px-3 py-2 font-normal last-of-type:border-r-0;
+  }
+  .table tbody tr {
+    @apply relative cursor-pointer flex-col rounded-md px-4 py-3 even:bg-white even:bg-opacity-40 max-sm:flex;
+  }
+  .table tbody tr td {
+    @apply py-2 first-of-type:rounded-l-md last-of-type:rounded-r-md max-sm:flex max-sm:py-1;
+  }
+  .table tbody tr td label {
+    @apply w-24 sm:hidden;
+  }
+  .table tbody tr td span {
+    @apply max-sm:flex-1;
+  }
 }
 
 @layer utilities {
