@@ -10,25 +10,21 @@ import {
   useOrder,
   useUpdateOrder,
 } from "@/api/orders";
-import { ModalProps } from "@/extra/modal";
+import { ModalProps, useModal } from "@/extra/modal";
 import { diff, toHyphenPhone } from "@/extra/utils";
 import { useDebounce } from "@/hooks/useDebounce";
-import { useModal } from "@/extra/modal";
 import { usePostCodePopup } from "@/hooks/usePostCodePopup";
 import { useTypeSafeReducer } from "@/hooks/useTypeSafeReducer";
 import {
   faBox,
-  faBoxesStacked,
   faBuilding,
   faCalculator,
   faCalendarAlt,
   faCheck,
   faCoins,
   faCopy,
-  faEquals,
   faFloppyDisk,
   faMobileScreenButton,
-  faNotEqual,
   faNotdef,
   faNoteSticky,
   faPaperPlane,
@@ -39,12 +35,10 @@ import {
   faTrashCan,
   faX,
 } from "@fortawesome/free-solid-svg-icons";
-import { CheckBox } from "../CheckBox";
-import { DateChanger } from "../DateChanger";
 import { FaIcon } from "../FaIcon";
 import { Input } from "../Input";
-import { ProductSelector } from "../Selectors/ProductSelector";
 import { NewDateChanger } from "../NewDateChanger";
+import { ProductSelector } from "../Selectors/ProductSelector";
 
 type ProductPayload<T extends HTMLElement> = { index: number; e: React.ChangeEvent<T> };
 type Props = ModalProps<{ mode: "CREATE"; base?: RawOrder } | { mode: "UPDATE"; orderId: string }>;
@@ -130,13 +124,11 @@ export function OrderDialog(props: Props) {
   const openProductSelector = () => {
     modalCtrl.open(
       <ProductSelector
-        onSelect={({ name, price }) => {
-          orderActions.addProduct({ name, price, quantity: 1 });
-        }}
+        onSelect={({ name, price }) => orderActions.addProduct({ name, price, quantity: 1 })}
       />,
     );
   };
-  const openOrderCopyDialog = () => {
+  const openItemCopyDialog = () => {
     modalCtrl.open(<OrderDialog mode="CREATE" base={order} />);
   };
 
@@ -422,7 +414,7 @@ export function OrderDialog(props: Props) {
             type="button"
             className="dsy-btn-sm dsy-btn"
             disabled={isLoading}
-            onClick={openOrderCopyDialog}
+            onClick={openItemCopyDialog}
           >
             <FaIcon icon={faCopy} isLoading={isLoading} value="복제" />
           </button>

@@ -1,12 +1,20 @@
 "use client";
 
-import { RawTeam, useCreateTeam, useDeleteTeam, useTeam, useUpdateTeam } from "@/api/teams";
-import { ModalProps } from "@/extra/modal";
+import {
+  RawTeam,
+  defaultTeam,
+  useCreateTeam,
+  useDeleteTeam,
+  useTeam,
+  useUpdateTeam,
+} from "@/api/teams";
+import { ModalProps, useModal } from "@/extra/modal";
 import { diff, toHyphenPhone } from "@/extra/utils";
 import { useTypeSafeReducer } from "@/hooks/useTypeSafeReducer";
 import {
   faBuilding,
   faCalendarAlt,
+  faCopy,
   faDoorClosed,
   faDoorOpen,
   faFloppyDisk,
@@ -19,55 +27,46 @@ import {
   faTrashAlt,
   faX,
 } from "@fortawesome/free-solid-svg-icons";
-import dayjs from "dayjs";
-import { CheckBox } from "../CheckBox";
-import { DateChanger } from "../DateChanger";
 import { FaIcon } from "../FaIcon";
 import { Input } from "../Input";
 import { NewDateChanger } from "../NewDateChanger";
 
-const defaultTeam: RawTeam = {
-  date: dayjs().format("YYYY-MM-DD"),
-  leaderName: "",
-  leaderPhone: "",
-  coupon: "",
-  population: 1,
-  isApproved: false,
-  isLeave: false,
-};
-
-type Props = ModalProps<{ mode: "CREATE" } | { mode: "UPDATE"; teamId: string }>;
+type Props = ModalProps<{ mode: "CREATE"; base?: RawTeam } | { mode: "UPDATE"; teamId: string }>;
 
 export function TeamDialog(props: Props) {
   const { mode } = props;
 
+  const modalCtrl = useModal();
   const { data: originTeam } = useTeam(mode === "UPDATE" ? props.teamId : "", {
     enabled: mode === "UPDATE",
   });
-  const [team, teamActions] = useTypeSafeReducer(originTeam || defaultTeam, {
-    setDate: (state, date: string) => {
-      state.date = date;
+  const [team, teamActions] = useTypeSafeReducer(
+    mode === "CREATE" ? props.base || defaultTeam : originTeam!,
+    {
+      setDate: (state, date: string) => {
+        state.date = date;
+      },
+      onLeaderNameChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
+        state.leaderName = e.target.value;
+      },
+      onLeaderPhoneChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
+        state.leaderPhone = toHyphenPhone(e.target.value);
+      },
+      onCouponChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
+        state.coupon = e.target.value;
+      },
+      onPopulationChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
+        state.population = parseInt(e.target.value) || state.population;
+      },
+      toggleIsApproved: (state) => {
+        state.isApproved = !state.isApproved;
+      },
+      toggleIsLeave: (state) => {
+        state.isLeave = !state.isLeave;
+      },
+      reset: () => (mode === "CREATE" ? defaultTeam : originTeam!),
     },
-    onLeaderNameChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
-      state.leaderName = e.target.value;
-    },
-    onLeaderPhoneChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
-      state.leaderPhone = toHyphenPhone(e.target.value);
-    },
-    onCouponChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
-      state.coupon = e.target.value;
-    },
-    onPopulationChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
-      state.population = parseInt(e.target.value) || state.population;
-    },
-    toggleIsApproved: (state) => {
-      state.isApproved = !state.isApproved;
-    },
-    toggleIsLeave: (state) => {
-      state.isLeave = !state.isLeave;
-    },
-    reset: () => (mode === "CREATE" ? defaultTeam : originTeam!),
-  });
+  );
   const createTeam = useCreateTeam(team, {
     onSuccess: () => props.closeSelf?.(),
   });
@@ -77,6 +76,9 @@ export function TeamDialog(props: Props) {
   const deleteTeam = useDeleteTeam(originTeam?.id!, {
     onSuccess: () => props.closeSelf?.(),
   });
+  const openItemCopyDialog = () => {
+    modalCtrl.open(<TeamDialog mode="CREATE" base={team} />);
+  };
 
   const validity = {
     leaderName: team.leaderName !== "",
@@ -222,6 +224,16 @@ export function TeamDialog(props: Props) {
             onClick={teamActions.reset}
           >
             <FaIcon icon={faNotdef} rotation={90} isLoading={isLoading} value="초기화" />
+          </button>
+
+          {/* Copy */}
+          <button
+            type="button"
+            className="dsy-btn-sm dsy-btn"
+            disabled={isLoading}
+            onClick={openItemCopyDialog}
+          >
+            <FaIcon icon={faCopy} isLoading={isLoading} value="복제" />
           </button>
 
           {/* Delete */}
