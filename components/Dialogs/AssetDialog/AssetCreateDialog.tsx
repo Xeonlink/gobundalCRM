@@ -1,11 +1,12 @@
 "use client";
 
 import { RawAsset, useCreateAsset } from "@/api/assets";
-import { ModalProps } from "@/extra/type";
+import { ModalProps } from "@/extra/modal";
 import { useTypeSafeReducer } from "@/hooks/useTypeSafeReducer";
 import {
   faFloppyDisk,
   faImage,
+  faMagnifyingGlass,
   faNotdef,
   faShapes,
   faSignature,
@@ -48,94 +49,91 @@ export function AssetCreateDialog(props: ModalProps) {
   const isLoading = createItem.isLoading;
 
   return (
-    <dialog
-      ref={props.ref}
-      onClose={props.closeSelf}
-      className="max-h-full max-w-full animate-scaleTo1 overflow-auto rounded-md bg-transparent p-0 backdrop:backdrop-blur-md"
-    >
-      <div className="mb-3 flex min-w-max flex-row flex-nowrap gap-3">
-        <div className="w-80 space-y-3">
-          <fieldset className="fieldset">
-            <legend className="legend">
-              <FaIcon icon={faImage} fontSize={16} /> 에셋
-            </legend>
-
-            <div className="field" {...dropZone.getRootProps()}>
-              {!!dropZone.acceptedFiles.length ? (
-                <label
-                  htmlFor="image"
-                  className="min-h-[10rem] cursor-pointer overflow-hidden rounded-lg transition-all"
-                >
-                  <img
-                    src={URL.createObjectURL(dropZone.acceptedFiles[0])}
-                    alt="dropped-image"
-                    className="m-auto"
-                  />
-                </label>
-              ) : (
-                <label
-                  htmlFor="image"
-                  className="flex min-h-[10rem] cursor-pointer items-center justify-center rounded-lg bg-white bg-opacity-90 transition-colors hover:bg-opacity-100"
-                >
-                  <FaIcon icon={faImage} className="mr-1" /> 이미지를 드래그하거나 클릭하세요.
-                </label>
-              )}
-              <input id="image" {...dropZone.getInputProps()} />
-            </div>
-
-            <div className="field">
-              <label htmlFor="name" className="label">
-                <FaIcon icon={faSignature} fontSize={16} /> 이름
-              </label>
-              <Input
-                id="name"
-                value={asset.name}
-                onChange={assetActions.onNameChange}
-                placeholder="이름"
+    <dialog ref={props.ref} onClose={props.closeSelf} className="dsy-modal">
+      <form method="dialog" className="dsy-modal-box w-96 bg-opacity-60 backdrop-blur-md">
+        <div {...dropZone.getRootProps()}>
+          {!!dropZone.acceptedFiles.length ? (
+            <label
+              htmlFor="image"
+              className="min-h-[10rem] cursor-pointer overflow-hidden rounded-lg transition-all"
+            >
+              <img
+                src={URL.createObjectURL(dropZone.acceptedFiles[0])}
+                alt="dropped-image"
+                className="m-auto"
               />
-            </div>
-
-            <div className="field">
-              <label htmlFor="mimeType" className="label">
-                <FaIcon icon={faShapes} fontSize={16} /> 형식
-              </label>
-              <Input
-                id="mimeType"
-                value={asset.mimeType}
-                placeholder="mimeType"
-                readOnly
-                className="cursor-default bg-opacity-70 outline-none"
-              />
-            </div>
-          </fieldset>
+            </label>
+          ) : (
+            <label
+              htmlFor="image"
+              className="flex min-h-[10rem] cursor-pointer items-center justify-center rounded-lg bg-white bg-opacity-90 transition-colors hover:bg-opacity-100"
+            >
+              <FaIcon icon={faImage} className="mr-1" /> 이미지를 드래그하거나 클릭하세요.
+            </label>
+          )}
+          <input id="image" {...dropZone.getInputProps()} />
         </div>
-      </div>
 
-      <form method="dialog" className="flex justify-center gap-2">
-        {/* Close */}
-        <button className="btn" disabled={isLoading}>
-          <FaIcon icon={faX} isLoading={isLoading} value="닫기" />
-        </button>
+        <div className="dsy-divider">
+          <FaIcon icon={faMagnifyingGlass} /> 상세정보
+        </div>
 
-        {/* Clear */}
-        <button
-          type="button"
-          className="btn"
-          disabled={isCleared || isLoading}
-          onClick={assetActions.reset}
-        >
-          <FaIcon icon={faNotdef} rotation={90} isLoading={isLoading} value="초기화" />
-        </button>
+        <div className="dsy-form-control">
+          <label htmlFor="name" className="dsy-label gap-2 py-1">
+            <span className="dsy-label-text min-w-fit">
+              <FaIcon icon={faSignature} fontSize={16} /> 이름
+            </span>
+            <Input
+              id="name"
+              value={asset.name}
+              onChange={assetActions.onNameChange}
+              placeholder="이름"
+              className="w-full max-w-[15rem]"
+            />
+          </label>
+        </div>
 
-        {/* Save */}
-        <button
-          type="button"
-          className="btn"
-          onClick={() => createItem.mutate()}
-          disabled={!isValid || isLoading}
-        >
-          <FaIcon icon={faFloppyDisk} isLoading={isLoading} value="저장" />
-        </button>
+        <div className="dsy-form-control">
+          <label htmlFor="mimeType" className="dsy-label gap-2 py-1">
+            <span className="dsy-label-text min-w-fit">
+              <FaIcon icon={faShapes} fontSize={16} /> 형식
+            </span>
+            <Input
+              id="mimeType"
+              value={asset.mimeType}
+              placeholder="mimeType"
+              disabled
+              className="w-full max-w-[15rem]"
+            />
+          </label>
+        </div>
+
+        <div className="dsy-modal-action">
+          {/* Close */}
+          <button className="dsy-btn-sm dsy-btn" disabled={isLoading}>
+            <FaIcon icon={faX} isLoading={isLoading} value="닫기" />
+          </button>
+
+          {/* Clear */}
+          <button
+            type="button"
+            className="dsy-btn-sm dsy-btn"
+            disabled={isCleared || isLoading}
+            onClick={assetActions.reset}
+          >
+            <FaIcon icon={faNotdef} rotation={90} isLoading={isLoading} value="초기화" />
+          </button>
+
+          {/* Save */}
+          <button
+            type="button"
+            className="dsy-btn-sm dsy-btn"
+            onClick={() => createItem.mutate()}
+            disabled={!isValid || isLoading}
+          >
+            <FaIcon icon={faFloppyDisk} isLoading={isLoading} value="저장" />
+          </button>
+        </div>
       </form>
     </dialog>
   );

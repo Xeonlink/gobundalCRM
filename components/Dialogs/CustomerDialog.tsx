@@ -7,7 +7,7 @@ import {
   useDeleteCustomer,
   useUpdateCustomer,
 } from "@/api/customers";
-import { ModalProps } from "@/extra/type";
+import { ModalProps } from "@/extra/modal";
 import { diff, toHyphenPhone } from "@/extra/utils";
 import { usePostCodePopup } from "@/hooks/usePostCodePopup";
 import { useTypeSafeReducer } from "@/hooks/useTypeSafeReducer";
@@ -80,112 +80,121 @@ export function CustomerDialog(props: Props) {
   const isLoading = createItem.isLoading || updateItem.isLoading || deleteItem.isLoading;
 
   return (
-    <dialog
-      ref={props.ref}
-      onClose={props.closeSelf}
-      className="max-h-full w-96 max-w-full animate-scaleTo1 rounded-md bg-transparent p-0 backdrop:backdrop-blur-md"
-    >
-      <fieldset className="fieldset">
-        <legend className="legend">
-          <FaIcon icon={faPeopleGroup} fontSize={16} /> 고객 정보
-        </legend>
-
-        <div className="field">
-          <label htmlFor="name" className="label">
-            <FaIcon icon={faSignature} /> 이름
+    <dialog ref={props.ref} className="dsy-modal">
+      <form method="dialog" className="dsy-modal-box w-96 bg-opacity-60 backdrop-blur-md">
+        <div className="dsy-form-control">
+          <label htmlFor="name" className="dsy-label gap-2 py-1">
+            <span className="dsy-label-text min-w-fit">
+              <FaIcon icon={faSignature} /> 이름
+            </span>
+            <Input
+              className="w-full max-w-[15rem]"
+              id="name"
+              placeholder="홍길동"
+              value={customer.name}
+              onChange={customerActions.onNameChange}
+              disabled={isLoading}
+              invalid={customer.name === ""}
+            />
           </label>
-          <Input
-            id="name"
-            placeholder="홍길동"
-            value={customer.name}
-            onChange={customerActions.onNameChange}
-            disabled={isLoading}
-            invalid={customer.name === ""}
-          />
         </div>
 
-        <div className="field">
-          <label htmlFor="phone" className="label">
-            <FaIcon icon={faMobileScreen} /> 전화번호
+        <div className="dsy-form-control">
+          <label htmlFor="phone" className="dsy-label gap-2 py-1">
+            <span className="dsy-label-text min-w-fit">
+              <FaIcon icon={faMobileScreen} /> 전화번호
+            </span>
+            <Input
+              className="w-full max-w-[15rem]"
+              id="phone"
+              type="tel"
+              placeholder="010-xxxx-xxxx"
+              value={customer.phone}
+              onChange={customerActions.onPhoneChange}
+              disabled={isLoading}
+              invalid={customer.phone === ""}
+            />
           </label>
-          <Input
-            id="phone"
-            type="tel"
-            placeholder="010-xxxx-xxxx"
-            value={customer.phone}
-            onChange={customerActions.onPhoneChange}
-            disabled={isLoading}
-            invalid={customer.phone === ""}
-          />
         </div>
 
-        <div className="field">
-          <label htmlFor="receiver-address" className="label">
-            <FaIcon icon={faSignsPost} /> 주소
+        <div className="dsy-form-control">
+          <label htmlFor="receiver-address" className="dsy-label gap-2 py-1">
+            <span className="dsy-label-text min-w-fit">
+              <FaIcon icon={faSignsPost} /> 주소
+            </span>
+            <Input
+              className="w-full max-w-[15rem]"
+              id="receiver-address"
+              placeholder="남원월산로74번길 42"
+              disabled={isLoading}
+              value={customer.address}
+              onChange={postCodePopup.show}
+              onClick={postCodePopup.show}
+              required
+            />
           </label>
-          <Input
-            id="receiver-address"
-            placeholder="남원월산로74번길 42"
-            disabled={isLoading}
-            value={customer.address}
-            onChange={postCodePopup.show}
-            onClick={postCodePopup.show}
-            required
-          />
         </div>
 
-        <div className="field">
-          <label htmlFor="receiver-address-detail" className="label">
-            <FaIcon icon={faBuilding} /> 상세주소
+        <div className="dsy-form-control">
+          <label htmlFor="receiver-address-detail" className="dsy-label gap-2 py-1">
+            <span className="dsy-label-text min-w-fit">
+              <FaIcon icon={faBuilding} /> 상세주소
+            </span>
+            <Input
+              className="w-full max-w-[15rem]"
+              id="receiver-address-detail"
+              placeholder="단독주택, 1층 101호, ..."
+              disabled={isLoading}
+              value={customer.addressDetail}
+              onChange={customerActions.onAddressDetailChange}
+              required
+            />
           </label>
-          <Input
-            id="receiver-address-detail"
-            placeholder="단독주택, 1층 101호, ..."
-            disabled={isLoading}
-            value={customer.addressDetail}
-            onChange={customerActions.onAddressDetailChange}
-            required
-          />
         </div>
-      </fieldset>
 
-      <form method="dialog" className="mt-2 flex justify-end gap-2">
-        {/* Close */}
-        <button className="btn" disabled={isLoading}>
-          <FaIcon icon={faX} isLoading={isLoading} value="닫기" />
-        </button>
-
-        {/* Clear */}
-        <button
-          type="button"
-          className="btn"
-          disabled={isCleared || isLoading}
-          onClick={customerActions.reset}
-        >
-          <FaIcon icon={faNotdef} rotation={90} isLoading={isLoading} value="초기화" />
-        </button>
-
-        {/* Delete */}
-        {mode === "UPDATE" ? (
+        <div className="dsy-modal-action">
+          {/* Close */}
           <button
             type="button"
-            className="btn"
+            className="dsy-btn-sm dsy-btn"
             disabled={isLoading}
-            onClick={() => deleteItem.mutate()}
+            onClick={props.closeSelf}
           >
-            <FaIcon icon={faTrashAlt} isLoading={isLoading} value="삭제" />
+            <FaIcon icon={faX} isLoading={isLoading} value="닫기" />
           </button>
-        ) : null}
 
-        {/* Save */}
-        <button
-          type="button"
-          className="btn"
-          onClick={mode === "CREATE" ? () => createItem.mutate() : () => updateItem.mutate()}
-          disabled={!isValid || isLoading}
-        >
-          <FaIcon icon={faFloppyDisk} isLoading={isLoading} value="저장" />
-        </button>
+          {/* Clear */}
+          <button
+            type="button"
+            className="dsy-btn-sm dsy-btn"
+            disabled={isCleared || isLoading}
+            onClick={customerActions.reset}
+          >
+            <FaIcon icon={faNotdef} rotation={90} isLoading={isLoading} value="초기화" />
+          </button>
+
+          {/* Delete */}
+          {mode === "UPDATE" ? (
+            <button
+              type="button"
+              className="dsy-btn-sm dsy-btn"
+              disabled={isLoading}
+              onClick={() => deleteItem.mutate()}
+            >
+              <FaIcon icon={faTrashAlt} isLoading={isLoading} value="삭제" />
+            </button>
+          ) : null}
+
+          {/* Save */}
+          <button
+            type="button"
+            className="dsy-btn-sm dsy-btn"
+            onClick={mode === "CREATE" ? () => createItem.mutate() : () => updateItem.mutate()}
+            disabled={!isValid || isLoading}
+          >
+            <FaIcon icon={faFloppyDisk} isLoading={isLoading} value="저장" />
+          </button>
+        </div>
       </form>
     </dialog>
   );

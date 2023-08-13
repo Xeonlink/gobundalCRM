@@ -10,25 +10,21 @@ import {
   useOrder,
   useUpdateOrder,
 } from "@/api/orders";
-import { ModalProps } from "@/extra/type";
+import { ModalProps, useModal } from "@/extra/modal";
 import { diff, toHyphenPhone } from "@/extra/utils";
 import { useDebounce } from "@/hooks/useDebounce";
-import { useModal } from "@/hooks/useModal";
 import { usePostCodePopup } from "@/hooks/usePostCodePopup";
 import { useTypeSafeReducer } from "@/hooks/useTypeSafeReducer";
 import {
   faBox,
-  faBoxesStacked,
   faBuilding,
   faCalculator,
   faCalendarAlt,
   faCheck,
   faCoins,
   faCopy,
-  faEquals,
   faFloppyDisk,
   faMobileScreenButton,
-  faNotEqual,
   faNotdef,
   faNoteSticky,
   faPaperPlane,
@@ -39,10 +35,9 @@ import {
   faTrashCan,
   faX,
 } from "@fortawesome/free-solid-svg-icons";
-import { CheckBox } from "../CheckBox";
-import { DateChanger } from "../DateChanger";
 import { FaIcon } from "../FaIcon";
 import { Input } from "../Input";
+import { NewDateChanger } from "../NewDateChanger";
 import { ProductSelector } from "../Selectors/ProductSelector";
 
 type ProductPayload<T extends HTMLElement> = { index: number; e: React.ChangeEvent<T> };
@@ -104,7 +99,7 @@ export function OrderDialog(props: Props) {
         if (newQuantity < 0) return;
         state.products[payload.index].quantity = newQuantity;
       },
-      onMemoChange: (state, e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      onMemoChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
         state.memo = e.target.value;
       },
       reset: () => (mode === "CREATE" ? defaultOrder : originOrder!),
@@ -129,13 +124,11 @@ export function OrderDialog(props: Props) {
   const openProductSelector = () => {
     modalCtrl.open(
       <ProductSelector
-        onSelect={({ name, price }) => {
-          orderActions.addProduct({ name, price, quantity: 1 });
-        }}
+        onSelect={({ name, price }) => orderActions.addProduct({ name, price, quantity: 1 })}
       />,
     );
   };
-  const openOrderCopyDialog = () => {
+  const openItemCopyDialog = () => {
     modalCtrl.open(<OrderDialog mode="CREATE" base={order} />);
   };
 
@@ -154,287 +147,300 @@ export function OrderDialog(props: Props) {
   const isLoading = createItem.isLoading || updateItem.isLoading || deleteItem.isLoading;
 
   return (
-    <dialog ref={props.ref} onClose={props.closeSelf} className="dialog">
-      <div className="mb-3 flex min-w-max flex-row flex-nowrap gap-3">
-        <div className="w-72 space-y-3">
-          <fieldset className="fieldset">
-            <legend className="legend">
-              <FaIcon icon={faPaperPlane} fontSize={16} /> 보내는 사람
-            </legend>
-
-            <div className="field">
-              <label htmlFor="sender-name" className="label">
-                <FaIcon icon={faSignature} /> 이름
-              </label>
-              <Input
-                id="sender-name"
-                placeholder="홍길동"
-                disabled={createItem.isLoading}
-                value={order.senderName}
-                onChange={orderActions.onSenderNameChange}
-                invalid={order.senderName === ""}
-              />
-            </div>
-
-            <div className="field">
-              <label htmlFor="sender-phone" className="label">
-                <FaIcon icon={faMobileScreenButton} /> 전화번호
-              </label>
-              <Input
-                id="sender-phone"
-                list="sender-phone-list"
-                type="tel"
-                placeholder="010-xxxx-xxxx"
-                disabled={createItem.isLoading}
-                value={order.senderPhone}
-                onChange={orderActions.onSenderPhoneChange}
-                invalid={order.senderPhone === ""}
-              />
-              <datalist id="sender-phone-list">
-                {customers?.data?.data?.map((customer) => (
-                  <option key={customer.id} value={customer.phone}></option>
-                ))}
-              </datalist>
-            </div>
-          </fieldset>
-
-          <fieldset className="fieldset">
-            <legend className="legend">
-              <FaIcon icon={faPaperPlane} fontSize={16} /> 받는 사람
-            </legend>
-
-            <div className="field">
-              <label htmlFor="same-as-sender" className="label">
-                <FaIcon icon={faPaperPlane} /> 보내는 사람과
-              </label>
-              <CheckBox
-                checked={order.sameAsSender}
-                disable={createItem.isLoading}
-                toggleFn={orderActions.toggleSameAsSender}
-                trueContents={[faEquals, " 같음"]}
-                falseContents={[faNotEqual, " 같지 않음"]}
-              />
-            </div>
-
-            <div className="field">
-              <label htmlFor="receiver-name" className="label">
-                <FaIcon icon={faSignature} /> 이름
-              </label>
-              <Input
-                id="receiver-name"
-                placeholder="홍길동"
-                disabled={order.sameAsSender || createItem.isLoading}
-                value={order.receiverName}
-                onChange={orderActions.onReceiverNameChange}
-                invalid={order.receiverName === ""}
-              />
-            </div>
-
-            <div className="field">
-              <label htmlFor="receiver-phone" className="label">
-                <FaIcon icon={faMobileScreenButton} /> 전화번호
-              </label>
-              <Input
-                id="receiver-phone"
-                placeholder="010-xxxx-xxxx"
-                disabled={order.sameAsSender || createItem.isLoading}
-                value={order.receiverPhone}
-                onChange={orderActions.onReceiverPhoneChange}
-                invalid={order.receiverPhone === ""}
-              />
-            </div>
-
-            <div className="field">
-              <label htmlFor="receiver-address" className="label">
-                <FaIcon icon={faSignsPost} /> 주소
-              </label>
-              <Input
-                id="receiver-address"
-                placeholder="남원월산로74번길 42"
-                disabled={createItem.isLoading}
-                value={order.receiverAddress}
-                onChange={postCodePopup.show}
-                onClick={postCodePopup.show}
-                invalid={order.receiverAddress === ""}
-              />
-            </div>
-
-            <div className="field">
-              <label htmlFor="receiver-address-detail" className="label">
-                <FaIcon icon={faBuilding} /> 상세주소
-              </label>
-              <Input
-                id="receiver-address-detail"
-                placeholder="단독주택, 1층 101호, ..."
-                disabled={createItem.isLoading}
-                value={order.receiverAddressDetail}
-                onChange={orderActions.onReceiverAddressDetailChange}
-                invalid={order.receiverAddressDetail === ""}
-              />
-            </div>
-          </fieldset>
+    <dialog ref={props.ref} onClose={props.closeSelf} className="dsy-modal">
+      <form
+        method="dialog"
+        className="dsy-modal-box max-h-screen w-full bg-opacity-60 backdrop-blur-md"
+      >
+        <div className="dsy-form-control">
+          <label htmlFor="date" className="dsy-label py-1 pt-0">
+            <span className="dsy-label-text min-w-fit">
+              <FaIcon icon={faCalendarAlt} /> 주문날짜
+            </span>
+            <NewDateChanger
+              date={order.date}
+              onChange={orderActions.setDate}
+              className="w-full max-w-[15rem]"
+            />
+          </label>
         </div>
 
-        <div>
-          <fieldset className="fieldset">
-            <legend className="legend">
-              <FaIcon icon={faBoxesStacked} /> 배송물품
-            </legend>
-
-            <table className="grid grid-cols-[10rem_7rem_5rem_2.5rem] gap-1">
-              <thead className="contents">
-                <tr className="contents">
-                  <th className="font-normal">
-                    <FaIcon icon={faBox} /> 상품명
-                  </th>
-                  <th className="font-normal">
-                    <FaIcon icon={faCoins} /> 가격(원)
-                  </th>
-                  <th className="font-normal">
-                    <FaIcon icon={faCalculator} /> 수량(개)
-                  </th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody className="contents">
-                {order.products.map((product, index, arr) => (
-                  <tr key={index} className="contents">
-                    <td className="text-center">
-                      <Input
-                        id="product-name"
-                        list="product-name-list"
-                        className="text-center"
-                        disabled={createItem.isLoading}
-                        value={product.name}
-                        onChange={(e) => orderActions.onProductNameChange({ index, e })}
-                        invalid={product.name.length <= 0}
-                      />
-                    </td>
-                    <td className="relative">
-                      <Input
-                        id="product-price"
-                        className="text-center"
-                        value={product.price.toLocaleString()}
-                        onChange={(e) => orderActions.onProductPriceChange({ index, e })}
-                      />
-                    </td>
-                    <td className="relative">
-                      <Input
-                        id="product-quantity"
-                        type="number"
-                        className="text-center"
-                        disabled={createItem.isLoading}
-                        value={product.quantity.toLocaleString()}
-                        onChange={(e) => orderActions.onProductQuantityChange({ index, e })}
-                        required
-                        invalid={product.quantity <= 0}
-                      />
-                    </td>
-                    <td>
-                      <button
-                        type="button"
-                        className="btn h-full w-10 shadow-none"
-                        onClick={() => orderActions.removeProduct(index)}
-                      >
-                        <FaIcon icon={faTrashCan} />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-
-            <div className="space-x-2 text-end">
-              <button
-                type="button"
-                className="btn mt-2 inline-block shadow-none"
-                onClick={() => orderActions.addProduct(undefined)}
-              >
-                <FaIcon icon={faPlus} /> 추가하기
-              </button>
-              <button
-                type="button"
-                className="btn mt-2 inline-block shadow-none"
-                onClick={openProductSelector}
-              >
-                <FaIcon icon={faCheck} /> 선택하기
-              </button>
-            </div>
-          </fieldset>
+        <div className="dsy-form-control">
+          <label htmlFor="sender-name" className="dsy-label gap-2 py-1">
+            <span className="dsy-label-text min-w-fit">
+              <FaIcon icon={faSignature} /> 이름
+            </span>
+            <Input
+              className="w-full max-w-[15rem]"
+              id="sender-name"
+              placeholder="홍길동"
+              disabled={createItem.isLoading}
+              value={order.senderName}
+              onChange={orderActions.onSenderNameChange}
+              invalid={order.senderName === ""}
+            />
+          </label>
         </div>
 
-        <div className="w-72 space-y-3">
-          <fieldset className="fieldset">
-            <legend className="legend">
-              <FaIcon icon={faPaperPlane} fontSize={16} /> 기타 정보
-            </legend>
-
-            <div className="field">
-              <label htmlFor="date" className="label">
-                <FaIcon icon={faCalendarAlt} /> 주문날짜
-              </label>
-              <DateChanger date={order.date} onChange={orderActions.setDate} />
-            </div>
-
-            <div className="field">
-              <label htmlFor="memo" className="label">
-                <FaIcon icon={faNoteSticky} /> 메모
-              </label>
-              <textarea
-                id="memo"
-                placeholder="메모"
-                className="min-h-max w-full rounded-md p-2"
-                disabled={createItem.isLoading}
-                value={order.memo}
-                onChange={orderActions.onMemoChange}
-              />
-            </div>
-          </fieldset>
+        <div className="dsy-form-control">
+          <label htmlFor="sender-phone" className="dsy-label gap-2 py-1">
+            <span className="dsy-label-text min-w-fit">
+              <FaIcon icon={faMobileScreenButton} /> 전화번호
+            </span>
+            <Input
+              className="w-full max-w-[15rem]"
+              id="sender-phone"
+              list="sender-phone-list"
+              type="tel"
+              placeholder="010-xxxx-xxxx"
+              disabled={createItem.isLoading}
+              value={order.senderPhone}
+              onChange={orderActions.onSenderPhoneChange}
+              invalid={order.senderPhone === ""}
+            />
+            <datalist id="sender-phone-list">
+              {customers?.data?.data?.map((customer) => (
+                <option key={customer.id} value={customer.phone}></option>
+              ))}
+            </datalist>
+          </label>
         </div>
-      </div>
 
-      <form method="dialog" className="flex justify-center gap-2">
-        {/* Close */}
-        <button className="btn" disabled={isLoading}>
-          <FaIcon icon={faX} isLoading={isLoading} value="닫기" />
-        </button>
+        <div className="dsy-divider">{/* <FaIcon icon={faPaperPlane} /> From */}</div>
 
-        {/* Clear */}
-        <button
-          type="button"
-          className="btn"
-          disabled={isCleared || isLoading}
-          onClick={orderActions.reset}
-        >
-          <FaIcon icon={faNotdef} rotation={90} isLoading={isLoading} value="초기화" />
-        </button>
+        <div className="dsy-form-control">
+          <label htmlFor="same-as-sender" className="dsy-label gap-2 py-1">
+            <span className="dsy-label-text min-w-fit">
+              <FaIcon icon={faPaperPlane} /> 보내는 사람과 같음
+            </span>
+            <input
+              type="checkbox"
+              name="sameAsSender"
+              id="same-as-sender"
+              className="dsy-toggle-success dsy-toggle"
+              checked={order.sameAsSender}
+              onChange={orderActions.toggleSameAsSender}
+            />
+          </label>
+        </div>
 
-        {/* Clear */}
-        <button type="button" className="btn" disabled={isLoading} onClick={openOrderCopyDialog}>
-          <FaIcon icon={faCopy} isLoading={isLoading} value="복제" />
-        </button>
+        <div className="dsy-form-control">
+          <label htmlFor="receiver-name" className="dsy-label gap-2 py-1">
+            <span className="dsy-label-text min-w-fit">
+              <FaIcon icon={faSignature} /> 이름
+            </span>
+            <Input
+              className="w-full max-w-[15rem]"
+              id="receiver-name"
+              placeholder="홍길동"
+              disabled={order.sameAsSender || createItem.isLoading}
+              value={order.receiverName}
+              onChange={orderActions.onReceiverNameChange}
+              invalid={order.receiverName === ""}
+            />
+          </label>
+        </div>
 
-        {/* Delete */}
-        {mode === "UPDATE" ? (
+        <div className="dsy-form-control">
+          <label htmlFor="receiver-phone" className="dsy-label gap-2 py-1">
+            <span className="dsy-label-text min-w-fit">
+              <FaIcon icon={faMobileScreenButton} /> 전화번호
+            </span>
+            <Input
+              className="w-full max-w-[15rem]"
+              id="receiver-phone"
+              placeholder="010-xxxx-xxxx"
+              disabled={order.sameAsSender || createItem.isLoading}
+              value={order.receiverPhone}
+              onChange={orderActions.onReceiverPhoneChange}
+              invalid={order.receiverPhone === ""}
+            />
+          </label>
+        </div>
+
+        <div className="dsy-form-control">
+          <label htmlFor="receiver-address" className="dsy-label gap-2 py-1">
+            <span className="dsy-label-text min-w-fit">
+              <FaIcon icon={faSignsPost} /> 주소
+            </span>
+            <Input
+              className="w-full max-w-[15rem]"
+              id="receiver-address"
+              placeholder="남원월산로74번길 42"
+              disabled={createItem.isLoading}
+              value={order.receiverAddress.replace(/^[^\s]+\s/, "")}
+              onChange={postCodePopup.show}
+              onClick={postCodePopup.show}
+              invalid={order.receiverAddress === ""}
+            />
+          </label>
+        </div>
+
+        <div className="dsy-form-control">
+          <label htmlFor="receiver-address-detail" className="dsy-label gap-2 py-1">
+            <span className="dsy-label-text min-w-fit">
+              <FaIcon icon={faBuilding} /> 상세주소
+            </span>
+            <Input
+              className="w-full max-w-[15rem]"
+              id="receiver-address-detail"
+              placeholder="단독주택, 1층 101호, ..."
+              disabled={createItem.isLoading}
+              value={order.receiverAddressDetail}
+              onChange={orderActions.onReceiverAddressDetailChange}
+              invalid={order.receiverAddressDetail === ""}
+            />
+          </label>
+        </div>
+
+        <div className="dsy-form-control">
+          <label htmlFor="memo" className="dsy-label gap-2 py-1">
+            <span className="dsy-label-text min-w-fit">
+              <FaIcon icon={faNoteSticky} /> 메모
+            </span>
+            <Input
+              className="w-full max-w-[15rem]"
+              id="memo"
+              placeholder="메모"
+              disabled={createItem.isLoading}
+              value={order.memo}
+              onChange={orderActions.onMemoChange}
+            />
+          </label>
+        </div>
+
+        <div className="dsy-divider">{/* <FaIcon icon={faPaperPlane} rotation={90} /> To */}</div>
+
+        <table className="grid w-full grid-cols-[1fr_6rem_4rem_auto]">
+          <thead className="contents">
+            <tr className="contents">
+              <th className="text-sm font-normal">
+                <FaIcon icon={faBox} /> 상품명
+              </th>
+              <th className="text-sm font-normal">
+                <FaIcon icon={faCoins} /> 가격(원)
+              </th>
+              <th className="text-sm font-normal">
+                <FaIcon icon={faCalculator} /> 수량
+              </th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody className="contents">
+            {order.products.map((product, index, arr) => (
+              <tr key={index} className="contents">
+                <td className="text-center">
+                  <Input
+                    id="product-name"
+                    list="product-name-list"
+                    className="w-full text-center"
+                    disabled={createItem.isLoading}
+                    value={product.name}
+                    onChange={(e) => orderActions.onProductNameChange({ index, e })}
+                    invalid={product.name.length <= 0}
+                  />
+                </td>
+                <td className="relative">
+                  <Input
+                    id="product-price"
+                    className="w-full text-center"
+                    value={product.price.toLocaleString()}
+                    onChange={(e) => orderActions.onProductPriceChange({ index, e })}
+                  />
+                </td>
+                <td className="relative">
+                  <Input
+                    id="product-quantity"
+                    type="number"
+                    className="w-full text-center"
+                    disabled={createItem.isLoading}
+                    value={product.quantity.toLocaleString()}
+                    onChange={(e) => orderActions.onProductQuantityChange({ index, e })}
+                    required
+                    invalid={product.quantity <= 0}
+                  />
+                </td>
+                <td>
+                  <button
+                    type="button"
+                    className="dsy-btn-sm dsy-btn"
+                    onClick={() => orderActions.removeProduct(index)}
+                  >
+                    <FaIcon icon={faTrashCan} />
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        <div className="mt-2 text-end">
+          <div className="dsy-join inline-block">
+            <button
+              type="button"
+              className="dsy-btn-sm dsy-join-item dsy-btn"
+              onClick={() => orderActions.addProduct(undefined)}
+            >
+              <FaIcon icon={faPlus} /> 추가하기
+            </button>
+            <button
+              type="button"
+              className="dsy-btn-sm dsy-join-item dsy-btn"
+              onClick={openProductSelector}
+            >
+              <FaIcon icon={faCheck} /> 선택하기
+            </button>
+          </div>
+        </div>
+
+        <div className="dsy-modal-action">
+          {/* Close */}
+          <button className="dsy-btn-sm dsy-btn" disabled={isLoading}>
+            <FaIcon icon={faX} isLoading={isLoading} value="닫기" />
+          </button>
+
+          {/* Clear */}
           <button
             type="button"
-            className="btn"
-            disabled={isLoading}
-            onClick={() => deleteItem.mutate()}
+            className="dsy-btn-sm dsy-btn"
+            disabled={isCleared || isLoading}
+            onClick={orderActions.reset}
           >
-            <FaIcon icon={faTrashAlt} isLoading={isLoading} value="삭제" />
+            <FaIcon icon={faNotdef} rotation={90} isLoading={isLoading} value="초기화" />
           </button>
-        ) : null}
 
-        {/* Save */}
-        <button
-          type="button"
-          className="btn"
-          onClick={mode === "CREATE" ? () => createItem.mutate() : () => updateItem.mutate()}
-          disabled={!isValid || isLoading}
-        >
-          <FaIcon icon={faFloppyDisk} isLoading={isLoading} value="저장" />
-        </button>
+          {/* Copy */}
+          <button
+            type="button"
+            className="dsy-btn-sm dsy-btn"
+            disabled={isLoading}
+            onClick={openItemCopyDialog}
+          >
+            <FaIcon icon={faCopy} isLoading={isLoading} value="복제" />
+          </button>
+
+          {/* Delete */}
+          {mode === "UPDATE" ? (
+            <button
+              type="button"
+              className="dsy-btn-sm dsy-btn"
+              disabled={isLoading}
+              onClick={() => deleteItem.mutate()}
+            >
+              <FaIcon icon={faTrashAlt} isLoading={isLoading} value="삭제" />
+            </button>
+          ) : null}
+
+          {/* Save */}
+          <button
+            type="button"
+            className="dsy-btn-sm dsy-btn"
+            onClick={mode === "CREATE" ? () => createItem.mutate() : () => updateItem.mutate()}
+            disabled={!isValid || isLoading}
+          >
+            <FaIcon icon={faFloppyDisk} isLoading={isLoading} value="저장" />
+          </button>
+        </div>
       </form>
     </dialog>
   );

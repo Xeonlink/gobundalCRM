@@ -7,14 +7,15 @@ import {
   useProduct,
   useUpdateProduct,
 } from "@/api/products";
-import { ModalProps } from "@/extra/type";
+import { ModalProps } from "@/extra/modal";
 import { diff } from "@/extra/utils";
-import { useModal } from "@/hooks/useModal";
+import { useModal } from "@/extra/modal";
 import { useTypeSafeReducer } from "@/hooks/useTypeSafeReducer";
 import {
   faBoxes,
   faCheck,
   faCoins,
+  faCopy,
   faEye,
   faEyeSlash,
   faFloppyDisk,
@@ -44,7 +45,9 @@ const defaultProduct: RawProduct = {
   imgSrc: "",
 };
 
-type Props = ModalProps<{ mode: "CREATE" } | { mode: "UPDATE"; productId: string }>;
+type Props = ModalProps<
+  { mode: "CREATE"; base?: RawProduct } | { mode: "UPDATE"; productId: string }
+>;
 
 export function ProductDialog(props: Props) {
   const { mode } = props;
@@ -53,33 +56,36 @@ export function ProductDialog(props: Props) {
   const { data: originProduct } = useProduct(mode === "UPDATE" ? props.productId : "", {
     enabled: mode === "UPDATE",
   });
-  const [product, productActions] = useTypeSafeReducer(originProduct || defaultProduct, {
-    toggleEnabled: (state) => {
-      state.enabled = !state.enabled;
+  const [product, productActions] = useTypeSafeReducer(
+    mode === "CREATE" ? props.base || defaultProduct : originProduct!,
+    {
+      toggleEnabled: (state) => {
+        state.enabled = !state.enabled;
+      },
+      onNameChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
+        state.name = e.target.value;
+      },
+      onPriceChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
+        state.price = parseInt(e.target.value.replaceAll(",", "")) || 0;
+      },
+      toggleIsSale: (state) => {
+        state.isSale = !state.isSale;
+      },
+      onSalePriceChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
+        state.salePrice = parseInt(e.target.value.replaceAll(",", "")) || 0;
+      },
+      toggleRemainInfinite: (state) => {
+        state.remain = state.remain < 0 ? 0 : -1;
+      },
+      onRemainChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
+        state.remain = parseInt(e.target.value.replaceAll(",", "")) || 0;
+      },
+      setImgSrc: (state, src: string) => {
+        state.imgSrc = src;
+      },
+      reset: () => (mode === "CREATE" ? defaultProduct : originProduct!),
     },
-    onNameChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
-      state.name = e.target.value;
-    },
-    onPriceChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
-      state.price = parseInt(e.target.value.replaceAll(",", "")) || 0;
-    },
-    toggleIsSale: (state) => {
-      state.isSale = !state.isSale;
-    },
-    onSalePriceChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
-      state.salePrice = parseInt(e.target.value.replaceAll(",", "")) || 0;
-    },
-    toggleRemainInfinite: (state) => {
-      state.remain = state.remain < 0 ? 0 : -1;
-    },
-    onRemainChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
-      state.remain = parseInt(e.target.value.replaceAll(",", "")) || 0;
-    },
-    setImgSrc: (state, src: string) => {
-      state.imgSrc = src;
-    },
-    reset: () => (mode === "CREATE" ? defaultProduct : originProduct!),
-  });
+  );
   const createItem = useCreateProduct(product, {
     onSuccess: () => props.closeSelf?.(),
   });
@@ -93,8 +99,10 @@ export function ProductDialog(props: Props) {
     modalCtrl.open(<AssetSelector onSelect={(asset) => productActions.setImgSrc(asset.src)} />);
   };
   const openAssetPreviewDialog = (src: string) => {
-    console.log(src);
     modalCtrl.open(<AssetPreviewDialog src={src} />);
+  };
+  const openProductCopyDialog = () => {
+    modalCtrl.open(<ProductDialog mode="CREATE" base={product} />);
   };
 
   const validity = {
@@ -107,178 +115,207 @@ export function ProductDialog(props: Props) {
   const isLoading = createItem.isLoading || updateItem.isLoading || deleteItem.isLoading;
 
   return (
-    <dialog
-      ref={props.ref}
-      onClose={props.closeSelf}
-      className="max-h-full max-w-full animate-scaleTo1 overflow-auto rounded-md bg-transparent p-0 backdrop:backdrop-blur-md"
-    >
-      <div className="mb-3 flex min-w-max flex-row flex-nowrap gap-3">
-        <div className="w-96 space-y-3">
-          <fieldset className="fieldset">
-            <legend className="legend">
-              <FaIcon icon={faPaperPlane} fontSize={16} /> 상품정보
-            </legend>
-
-            <div className="field">
-              <label htmlFor="name" className="label">
-                <FaIcon icon={faSignature} /> 상품명
-              </label>
-              <Input
-                id="name"
-                placeholder="한라봉청 3kg"
-                disabled={isLoading}
-                value={product.name}
-                onChange={productActions.onNameChange}
-                invalid={!validity.name}
-              />
-            </div>
-
-            <div className="field">
-              <label htmlFor="price" className="label">
-                <FaIcon icon={faWon} /> 상품가격
-              </label>
-              <Input
-                id="price"
-                placeholder="10,000원"
-                disabled={isLoading}
-                value={product.price.toLocaleString()}
-                onChange={productActions.onPriceChange}
-                required
-              />
-              <div className="absolute bottom-2 right-3">원</div>
-            </div>
-
-            <div className="field">
-              <label htmlFor="is-sale" className="label">
-                <FaIcon icon={faCoins} /> 할인여부
-              </label>
-              <CheckBox
-                checked={product.isSale}
-                disable={isLoading}
-                toggleFn={productActions.toggleIsSale}
-                trueContents={[null, "할인중"]}
-                falseContents={[null, "정가"]}
-              />
-            </div>
-
-            <div className="field">
-              <label htmlFor="sale-price" className="label">
-                <FaIcon icon={faWon} /> 할인가격
-              </label>
-              <Input
-                id="sale-price"
-                placeholder="10,000원"
-                disabled={isLoading}
-                value={product.salePrice.toLocaleString()}
-                onChange={productActions.onSalePriceChange}
-                required
-                invalid={!validity.salePrice}
-              />
-              <div className="absolute bottom-2 right-3">원</div>
-            </div>
-
-            <div className="field">
-              <label htmlFor="is-sale" className="label">
-                <FaIcon icon={faBoxes} /> 재고
-              </label>
-              <CheckBox
-                checked={product.remain === -1}
-                disable={isLoading}
-                toggleFn={productActions.toggleRemainInfinite}
-                trueContents={[faInfinity, "무한"]}
-                falseContents={[faListOl, "수량"]}
-              />
-              <Input
-                id="remain"
-                placeholder="10,000개"
-                disabled={isLoading || product.remain === -1}
-                value={product.remain.toLocaleString()}
-                onChange={productActions.onRemainChange}
-                required
-                invalid={!validity.remain}
-              />
-              <div className="absolute bottom-2 right-3">개</div>
-            </div>
-
-            <div className="field">
-              <label htmlFor="enabled" className="label">
-                <FaIcon icon={product.enabled ? faEye : faEyeSlash} /> 활성화 여부
-              </label>
-              <CheckBox
-                checked={product.enabled}
-                disable={isLoading}
-                toggleFn={productActions.toggleEnabled}
-                trueContents={[faEye, "보여짐"]}
-                falseContents={[faEyeSlash, "안보여짐"]}
-              />
-            </div>
-          </fieldset>
+    <dialog ref={props.ref} onClose={props.closeSelf} className="dsy-modal">
+      <form method="dialog" className="dsy-modal-box w-96 bg-opacity-60 backdrop-blur-md">
+        <div className="dsy-form-control">
+          <label htmlFor="name" className="dsy-label relative py-1">
+            <span className="dsy-label-text min-w-fit">
+              <FaIcon icon={faSignature} /> 상품명
+            </span>
+            <Input
+              id="name"
+              placeholder="한라봉청 3kg"
+              disabled={isLoading}
+              value={product.name}
+              onChange={productActions.onNameChange}
+              invalid={!validity.name}
+              className="w-full max-w-[15rem]"
+            />
+          </label>
         </div>
 
-        <div className="w-80 space-y-3">
-          <fieldset className="fieldset">
-            <legend className="legend">
-              <FaIcon icon={faImage} fontSize={16} /> 상품이미지
-            </legend>
+        <div className="dsy-form-control">
+          <label htmlFor="price" className="dsy-label relative py-1">
+            <span className="dsy-label-text min-w-fit">
+              <FaIcon icon={faWon} /> 상품가격
+            </span>
+            <Input
+              id="price"
+              placeholder="10,000원"
+              disabled={isLoading}
+              value={product.price.toLocaleString()}
+              onChange={productActions.onPriceChange}
+              required
+              className="w-full max-w-[15rem]"
+            />
+            <div className="absolute bottom-2 right-3">원</div>
+          </label>
+        </div>
 
-            {product.imgSrc === "" ? (
-              <div className="flex min-h-[8rem] items-center justify-center">
-                <FaIcon icon={faImage} className="mr-2" /> 상품이미지를 선택해주세요.
-              </div>
-            ) : (
-              <button
-                type="button"
-                className="mb-3 w-full"
-                onDoubleClick={() => openAssetPreviewDialog(product.imgSrc)}
-              >
-                <img src={product.imgSrc} alt="상품이미지" className="m-auto" />
-              </button>
-            )}
+        <div className="dsy-form-control">
+          <label htmlFor="is-sale" className="dsy-label gap-2 py-1">
+            <span className="dsy-label-text min-w-fit">
+              <FaIcon icon={faCoins} /> 할인여부
+            </span>
+            <input
+              type="checkbox"
+              name="isSale"
+              id="is-sale"
+              className="dsy-toggle-success dsy-toggle"
+              disabled={isLoading}
+              checked={product.isSale}
+              onChange={productActions.toggleIsSale}
+            />
+          </label>
+        </div>
 
-            <button type="button" className="btn shadow-none" onClick={openAssetSelector}>
+        <div className="dsy-form-control">
+          <label htmlFor="sale-price" className="dsy-label relative py-1">
+            <span className="dsy-label-text min-w-fit">
+              <FaIcon icon={faWon} /> 할인가격
+            </span>
+            <Input
+              id="sale-price"
+              placeholder="10,000원"
+              disabled={isLoading}
+              value={product.salePrice.toLocaleString()}
+              onChange={productActions.onSalePriceChange}
+              required
+              invalid={!validity.salePrice}
+              className="w-full max-w-[15rem]"
+            />
+            <div className="absolute bottom-2 right-3">원</div>
+          </label>
+        </div>
+
+        <div className="dsy-form-control">
+          <label htmlFor="remain" className="dsy-label gap-2 py-1">
+            <span className="dsy-label-text min-w-fit">
+              <FaIcon icon={faInfinity} /> 무한재고
+            </span>
+            <input
+              type="checkbox"
+              name="remain"
+              id="remain"
+              className="dsy-toggle-success dsy-toggle"
+              disabled={isLoading}
+              onChange={productActions.toggleRemainInfinite}
+            />
+          </label>
+        </div>
+
+        <div className="dsy-form-control">
+          <label htmlFor="is-sale" className="dsy-label relative py-1">
+            <span className="dsy-label-text min-w-fit">
+              <FaIcon icon={faBoxes} /> 재고
+            </span>
+            <Input
+              id="remain"
+              placeholder="10,000개"
+              disabled={isLoading || product.remain === -1}
+              value={product.remain.toLocaleString()}
+              onChange={productActions.onRemainChange}
+              required
+              invalid={!validity.remain}
+              className="w-full max-w-[15rem]"
+            />
+            <div className="absolute bottom-2 right-3">개</div>
+          </label>
+        </div>
+
+        <div className="dsy-form-control">
+          <label htmlFor="enabled" className="dsy-label gap-2 py-1">
+            <span className="dsy-label-text min-w-fit">
+              <FaIcon icon={product.enabled ? faEye : faEyeSlash} /> 활성화
+            </span>
+            <input
+              type="checkbox"
+              name="enabled"
+              id="enabled"
+              className="dsy-toggle-success dsy-toggle"
+              disabled={isLoading}
+              checked={product.enabled}
+              onChange={productActions.toggleEnabled}
+            />
+          </label>
+        </div>
+
+        <div className="dsy-divider"></div>
+
+        <div>
+          {product.imgSrc === "" ? (
+            <div className="flex min-h-[8rem] items-center justify-center rounded-md bg-[#f0f0f0]">
+              <FaIcon icon={faImage} className="mr-2" /> 상품이미지를 선택해주세요.
+            </div>
+          ) : (
+            <button
+              type="button"
+              onDoubleClick={() => openAssetPreviewDialog(product.imgSrc)}
+              className="w-full"
+            >
+              <img src={product.imgSrc} alt="상품이미지" className="m-auto max-h-40" />
+            </button>
+          )}
+
+          <div className="text-right">
+            <button
+              type="button"
+              className="dsy-btn-sm dsy-btn mt-2 inline-block"
+              onClick={openAssetSelector}
+            >
               <FaIcon icon={faCheck} /> 이미지 선택
             </button>
-          </fieldset>
+          </div>
         </div>
-      </div>
 
-      <form method="dialog" className="flex justify-center gap-2">
-        {/* Close */}
-        <button className="btn" disabled={isLoading}>
-          <FaIcon icon={faX} isLoading={isLoading} value="닫기" />
-        </button>
+        <div className="dsy-modal-action">
+          {/* Close */}
+          <button className="dsy-btn-sm dsy-btn" disabled={isLoading}>
+            <FaIcon icon={faX} isLoading={isLoading} value="닫기" />
+          </button>
 
-        {/* Clear */}
-        <button
-          type="button"
-          className="btn"
-          disabled={isCleared || isLoading}
-          onClick={productActions.reset}
-        >
-          <FaIcon icon={faNotdef} rotation={90} isLoading={isLoading} value="초기화" />
-        </button>
-
-        {/* Delete */}
-        {mode === "UPDATE" ? (
+          {/* Clear */}
           <button
             type="button"
-            className="btn"
-            disabled={isLoading}
-            onClick={() => deleteItem.mutate()}
+            className="dsy-btn-sm dsy-btn"
+            disabled={isCleared || isLoading}
+            onClick={productActions.reset}
           >
-            <FaIcon icon={faTrashAlt} isLoading={isLoading} value="삭제" />
+            <FaIcon icon={faNotdef} rotation={90} isLoading={isLoading} value="초기화" />
           </button>
-        ) : null}
 
-        {/* Save */}
-        <button
-          type="button"
-          className="btn"
-          onClick={mode === "CREATE" ? () => createItem.mutate() : () => updateItem.mutate()}
-          disabled={!isValid || isLoading}
-        >
-          <FaIcon icon={faFloppyDisk} isLoading={isLoading} value="저장" />
-        </button>
+          {/* Copy */}
+          <button
+            type="button"
+            className="dsy-btn-sm dsy-btn"
+            disabled={isLoading}
+            onClick={openProductCopyDialog}
+          >
+            <FaIcon icon={faCopy} isLoading={isLoading} value="복제" />
+          </button>
+
+          {/* Delete */}
+          {mode === "UPDATE" ? (
+            <button
+              type="button"
+              className="dsy-btn-sm dsy-btn"
+              disabled={isLoading}
+              onClick={() => deleteItem.mutate()}
+            >
+              <FaIcon icon={faTrashAlt} isLoading={isLoading} value="삭제" />
+            </button>
+          ) : null}
+
+          {/* Save */}
+          <button
+            type="button"
+            className="dsy-btn-sm dsy-btn"
+            onClick={mode === "CREATE" ? () => createItem.mutate() : () => updateItem.mutate()}
+            disabled={!isValid || isLoading}
+          >
+            <FaIcon icon={faFloppyDisk} isLoading={isLoading} value="저장" />
+          </button>
+        </div>
       </form>
     </dialog>
   );

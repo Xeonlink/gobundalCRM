@@ -1,7 +1,9 @@
 /** @type {import('next').NextConfig} */
 
 module.exports = {
-  async redirects() {
+  reactStrictMode: false,
+
+  redirects: async () => {
     return [
       {
         source: "/",

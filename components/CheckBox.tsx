@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "@/extra/utils";
 import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -9,16 +10,20 @@ type CheckBoxProps = {
   toggleFn: () => void;
   trueContents: [IconDefinition | undefined | null, string];
   falseContents: [IconDefinition | undefined | null, string];
+  className?: string;
 };
 
 export function CheckBox(props: CheckBoxProps) {
-  const { checked, toggleFn, trueContents, falseContents } = props;
+  const { checked, toggleFn, trueContents, falseContents, className } = props;
 
   return (
-    <div className="mb-3 flex gap-3 disabled:opacity-40" aria-disabled={props.disable}>
+    <div
+      className={cn("flex overflow-hidden rounded-md disabled:opacity-40", className)}
+      aria-disabled={props.disable}
+    >
       <button
         type="button"
-        className="btn w-full p-2 shadow-none"
+        className="btn w-full rounded-none p-2 shadow-none"
         disabled={checked}
         onClick={toggleFn}
       >
@@ -26,7 +31,7 @@ export function CheckBox(props: CheckBoxProps) {
       </button>
       <button
         type="button"
-        className="btn w-full p-2 shadow-none"
+        className="btn w-full rounded-none p-2 shadow-none"
         disabled={!checked}
         onClick={toggleFn}
       >

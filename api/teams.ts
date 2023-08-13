@@ -1,8 +1,18 @@
-import { useAutoInvalidateMutation } from "@/hooks/useAutoInvalidateMutation";
 import { MutateOption, QueryOptions } from "@/extra/type";
-import { useAuth } from "@/hooks/useAuth";
+import { useAutoInvalidateMutation } from "@/hooks/useAutoInvalidateMutation";
 import { useQuery } from "@tanstack/react-query";
+import dayjs from "dayjs";
 import { GetResponse, apiRoot } from "./utils";
+
+export const defaultTeam: RawTeam = {
+  date: dayjs().format("YYYY-MM-DD"),
+  leaderName: "",
+  leaderPhone: "",
+  coupon: "",
+  population: 1,
+  isApproved: false,
+  isLeave: false,
+};
 
 export interface Team {
   id: string;

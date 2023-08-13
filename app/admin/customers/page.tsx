@@ -9,7 +9,7 @@ import { cn } from "@/extra/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { useExcel } from "@/hooks/useExcel";
 import { useItemSelection } from "@/hooks/useItemSelection";
-import { useModal } from "@/hooks/useModal";
+import { useModal } from "@/extra/modal";
 import IcoExcel from "@/public/icons/excel.png";
 import {
   faArrowsRotate,
@@ -26,19 +26,15 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useRef, useState } from "react";
 
-type SearchParams = {
-  view: "card" | "table";
-  name: string;
-};
+type SearchParams = { name: string };
 
 export default function Page(props: PageProps<any, SearchParams>) {
   const { searchParams } = props;
-  const { view = "table", name = "" } = searchParams;
+  const { name = "" } = searchParams;
 
   const auth = useAuth();
   const excel = useExcel();
   const modalCtrl = useModal();
-  const navigate = useRouter();
   const nameRef = useRef<HTMLInputElement>(null);
   const selected = useItemSelection();
   const items = useCustomersByName(name, {
@@ -48,9 +44,6 @@ export default function Page(props: PageProps<any, SearchParams>) {
     onSuccess: () => selected.clear(),
   });
 
-  const onViewStyleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    navigate.replace(`customers?view=${e.target.value}`);
-  };
   const openCustomerCreateDialog = () => {
     modalCtrl.open(<CustomerDialog mode="CREATE" />);
   };
@@ -70,16 +63,6 @@ export default function Page(props: PageProps<any, SearchParams>) {
     <main className="h-full flex-1 overflow-auto p-3">
       {/* Toolbar */}
       <div className="mb-3 flex flex-wrap items-center gap-3">
-        {/* Change ViewStyle */}
-        <select
-          className="btn appearance-none text-center"
-          value={view}
-          onChange={onViewStyleChange}
-        >
-          <option value="table">표로 보기</option>
-          <option value="card">카드로 보기</option>
-        </select>
-
         {/* Cratet New Order */}
         <button type="button" className="btn" onClick={openCustomerCreateDialog}>
           <FaIcon icon={faPlus} /> 고객 추가하기
@@ -105,71 +88,79 @@ export default function Page(props: PageProps<any, SearchParams>) {
           />
 
           {/* Search */}
-          <Link href={`customers?view=${view}&name=${nameRef.current?.value}`} className="btn">
+          <Link href={`customers?name=${nameRef.current?.value}`} className="btn">
             <FaIcon icon={faMagnifyingGlass} /> 검색
           </Link>
         </div>
       </div>
 
-      {view === "table" ? (
-        <table className="grid w-full grid-cols-[repeat(4,_auto)] gap-1">
-          <thead className="contents">
-            <tr className="contents">
-              <th className="th bg-orange-50">
+      <div className="max-w-full overflow-x-auto">
+        <table className="table">
+          <thead>
+            <tr>
+              <th className="rounded-l-md bg-orange-50">
+                <input type="checkbox" name="" id="" className="dsy-checkbox dsy-checkbox-xs" />
+              </th>
+              <th className="bg-orange-50">
                 <FaIcon icon={faSignature} /> 이름
               </th>
-              <th className="th bg-orange-50">
+              <th className="bg-orange-50">
                 <FaIcon icon={faMobileScreen} /> 전화번호
               </th>
-              <th className="th bg-green-50">
+              <th className="bg-green-50">
                 <FaIcon icon={faSignsPost} /> 주소
               </th>
-              <th className="th bg-green-50">
+              <th className="rounded-r-md bg-green-50">
                 <FaIcon icon={faBuilding} /> 상세주소
               </th>
             </tr>
           </thead>
-          <tbody className="contents">
+          <tbody>
             {items.data?.data.map((item) => (
               <tr
                 key={item.id}
-                className="tr_selected contents cursor-pointer"
                 onClick={selected.onItemClick(item.id)}
                 onDoubleClick={() => openCustomerUpdateDialog(item.id)}
                 onTouchEnd={() => openCustomerUpdateDialog(item.id)}
-                aria-selected={selected.includes(item.id)}
               >
-                <td className="td">{item.name}</td>
-                <td className="td">{item.phone}</td>
-                <td className="td">{item.address}</td>
-                <td className="td">{item.addressDetail}</td>
+                <td className="max-sm:absolute max-sm:right-3 max-sm:top-3">
+                  <input
+                    type="checkbox"
+                    name=""
+                    id=""
+                    className="dsy-checkbox dsy-checkbox-xs"
+                    checked={selected.ids.includes(item.id)}
+                  />
+                </td>
+                <td>
+                  <label>
+                    <FaIcon icon={faSignature} /> 이름
+                  </label>
+                  <span>{item.name}</span>
+                </td>
+                <td>
+                  <label>
+                    <FaIcon icon={faMobileScreen} /> 전화번호
+                  </label>
+                  <span>{item.phone}</span>
+                </td>
+                <td>
+                  <label>
+                    <FaIcon icon={faSignsPost} /> 주소
+                  </label>
+                  <span>{item.address}</span>
+                </td>
+                <td>
+                  <label>
+                    <FaIcon icon={faBuilding} /> 상세주소
+                  </label>
+                  <span>{item.addressDetail}</span>
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
-      ) : null}
-
-      {view === "card" ? (
-        <ol className="grid grid-cols-[repeat(auto-fill,_minmax(250px,_1fr))] items-start gap-3">
-          {items.data?.data.map((item) => (
-            <li
-              key={item.id}
-              className={cn("btn bg-transparent p-2 text-start active:scale-90", {
-                "bg-white bg-opacity-70": selected.includes(item.id),
-              })}
-              onClick={selected.onItemClick(item.id)}
-              onDoubleClick={() => openCustomerUpdateDialog(item.id)}
-            >
-              <p className="mb-2 rounded-md bg-orange-200 p-2">
-                <b className="text-lg">{item.name}</b> {item.phone}
-              </p>
-              <p className="mb-2 rounded-md bg-green-200 p-2">
-                {item.address}, {item.addressDetail}
-              </p>
-            </li>
-          ))}
-        </ol>
-      ) : null}
+      </div>
     </main>
   );
 }

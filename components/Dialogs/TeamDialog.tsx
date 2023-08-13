@@ -1,12 +1,20 @@
 "use client";
 
-import { RawTeam, useCreateTeam, useDeleteTeam, useTeam, useUpdateTeam } from "@/api/teams";
-import { ModalProps } from "@/extra/type";
+import {
+  RawTeam,
+  defaultTeam,
+  useCreateTeam,
+  useDeleteTeam,
+  useTeam,
+  useUpdateTeam,
+} from "@/api/teams";
+import { ModalProps, useModal } from "@/extra/modal";
 import { diff, toHyphenPhone } from "@/extra/utils";
 import { useTypeSafeReducer } from "@/hooks/useTypeSafeReducer";
 import {
   faBuilding,
   faCalendarAlt,
+  faCopy,
   faDoorClosed,
   faDoorOpen,
   faFloppyDisk,
@@ -19,54 +27,46 @@ import {
   faTrashAlt,
   faX,
 } from "@fortawesome/free-solid-svg-icons";
-import dayjs from "dayjs";
-import { CheckBox } from "../CheckBox";
-import { DateChanger } from "../DateChanger";
 import { FaIcon } from "../FaIcon";
 import { Input } from "../Input";
+import { NewDateChanger } from "../NewDateChanger";
 
-const defaultTeam: RawTeam = {
-  date: dayjs().format("YYYY-MM-DD"),
-  leaderName: "",
-  leaderPhone: "",
-  coupon: "",
-  population: 1,
-  isApproved: false,
-  isLeave: false,
-};
-
-type Props = ModalProps<{ mode: "CREATE" } | { mode: "UPDATE"; teamId: string }>;
+type Props = ModalProps<{ mode: "CREATE"; base?: RawTeam } | { mode: "UPDATE"; teamId: string }>;
 
 export function TeamDialog(props: Props) {
   const { mode } = props;
 
+  const modalCtrl = useModal();
   const { data: originTeam } = useTeam(mode === "UPDATE" ? props.teamId : "", {
     enabled: mode === "UPDATE",
   });
-  const [team, teamActions] = useTypeSafeReducer(originTeam || defaultTeam, {
-    setDate: (state, date: string) => {
-      state.date = date;
+  const [team, teamActions] = useTypeSafeReducer(
+    mode === "CREATE" ? props.base || defaultTeam : originTeam!,
+    {
+      setDate: (state, date: string) => {
+        state.date = date;
+      },
+      onLeaderNameChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
+        state.leaderName = e.target.value;
+      },
+      onLeaderPhoneChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
+        state.leaderPhone = toHyphenPhone(e.target.value);
+      },
+      onCouponChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
+        state.coupon = e.target.value;
+      },
+      onPopulationChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
+        state.population = parseInt(e.target.value) || state.population;
+      },
+      toggleIsApproved: (state) => {
+        state.isApproved = !state.isApproved;
+      },
+      toggleIsLeave: (state) => {
+        state.isLeave = !state.isLeave;
+      },
+      reset: () => (mode === "CREATE" ? defaultTeam : originTeam!),
     },
-    onLeaderNameChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
-      state.leaderName = e.target.value;
-    },
-    onLeaderPhoneChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
-      state.leaderPhone = toHyphenPhone(e.target.value);
-    },
-    onCouponChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
-      state.coupon = e.target.value;
-    },
-    onPopulationChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
-      state.population = parseInt(e.target.value) || state.population;
-    },
-    toggleIsApproved: (state) => {
-      state.isApproved = !state.isApproved;
-    },
-    toggleIsLeave: (state) => {
-      state.isLeave = !state.isLeave;
-    },
-    reset: () => (mode === "CREATE" ? defaultTeam : originTeam!),
-  });
+  );
   const createTeam = useCreateTeam(team, {
     onSuccess: () => props.closeSelf?.(),
   });
@@ -76,6 +76,9 @@ export function TeamDialog(props: Props) {
   const deleteTeam = useDeleteTeam(originTeam?.id!, {
     onSuccess: () => props.closeSelf?.(),
   });
+  const openItemCopyDialog = () => {
+    modalCtrl.open(<TeamDialog mode="CREATE" base={team} />);
+  };
 
   const validity = {
     leaderName: team.leaderName !== "",
@@ -88,141 +91,173 @@ export function TeamDialog(props: Props) {
   const isLoading = createTeam.isLoading || updateTeam.isLoading || deleteTeam.isLoading;
 
   return (
-    <dialog ref={props.ref} onClose={props.closeSelf} className="dialog w-96">
-      <fieldset className="fieldset">
-        <legend className="legend">
-          <FaIcon icon={faPeopleGroup} fontSize={16} /> 팀 생성
-        </legend>
+    <dialog ref={props.ref} onClose={props.closeSelf} className="dsy-modal">
+      <form
+        method="dialog"
+        className="dsy-modal-box max-h-screen w-full bg-opacity-60 backdrop-blur-md"
+      >
+        <div className=" bg-transparent pt-2">
+          {/* 해당 날짜로 검색 */}
+          <div className="dsy-form-control">
+            <label htmlFor="date" className="dsy-label gap-2 py-1">
+              <span className="dsy-label-text min-w-fit">
+                <FaIcon icon={faCalendarAlt} /> 날짜
+              </span>
+              <NewDateChanger date={team.date} onChange={teamActions.setDate} />
+            </label>
+          </div>
 
-        {/* 해당 날짜로 검색 */}
-        <div className="field">
-          <label htmlFor="date" className="label">
-            <FaIcon icon={faCalendarAlt} /> 날짜
-          </label>
-          <DateChanger date={team.date} onChange={teamActions.setDate} />
+          <div className="dsy-form-control">
+            <label htmlFor="leader-name" className="dsy-label gap-2 py-1">
+              <span className="dsy-label-text min-w-fit">
+                <FaIcon icon={faSignature} /> 이름
+              </span>
+              <Input
+                className="w-full max-w-[15rem]"
+                id="leader-name"
+                placeholder="홍길동"
+                value={team.leaderName}
+                onChange={teamActions.onLeaderNameChange}
+                disabled={isLoading}
+                invalid={team.leaderName === ""}
+              />
+            </label>
+          </div>
+
+          <div className="dsy-form-control">
+            <label htmlFor="leader-phone" className="dsy-label gap-2 py-1">
+              <span className="dsy-label-text min-w-fit">
+                <FaIcon icon={faMobileScreenButton} /> 전화번호
+              </span>
+              <Input
+                className="w-full max-w-[15rem]"
+                id="leader-phone"
+                type="tel"
+                placeholder="010-xxxx-xxxx"
+                value={team.leaderPhone}
+                onChange={teamActions.onLeaderPhoneChange}
+                disabled={isLoading}
+                invalid={team.leaderPhone === ""}
+              />
+            </label>
+          </div>
+
+          <div className="dsy-form-control">
+            <label htmlFor="coupon" className="dsy-label gap-2 py-1">
+              <span className="dsy-label-text min-w-fit">
+                <FaIcon icon={faBuilding} /> 쿠폰사
+              </span>
+              <Input
+                className="w-full max-w-[15rem]"
+                id="coupon"
+                value={team.coupon}
+                onChange={teamActions.onCouponChange}
+                disabled={isLoading}
+                placeholder="쿠폰사"
+                invalid={team.coupon === ""}
+              />
+            </label>
+          </div>
+
+          <div className="dsy-form-control">
+            <label htmlFor="population" className="dsy-label gap-2 py-1">
+              <span className="dsy-label-text min-w-fit">
+                <FaIcon icon={faPeopleGroup} /> 인원수
+              </span>
+              <Input
+                className="w-full max-w-[15rem]"
+                id="population"
+                type="number"
+                value={team.population}
+                onChange={teamActions.onPopulationChange}
+                disabled={isLoading}
+                placeholder="인원수"
+              />
+            </label>
+          </div>
+
+          <div className="dsy-form-control">
+            <label htmlFor="is-approved" className="dsy-label gap-2 py-1">
+              <span className="dsy-label-text min-w-fit">
+                <FaIcon icon={team.isApproved ? faThumbsUp : faThumbsDown} /> 쿠폰이 승인되었습니까?
+              </span>
+              <input
+                type="checkbox"
+                name="isApproved"
+                id="is-approved"
+                className="dsy-toggle-success dsy-toggle"
+                checked={team.isApproved}
+                onChange={teamActions.toggleIsApproved}
+              />
+            </label>
+          </div>
+
+          <div className="dsy-form-control">
+            <label htmlFor="is-leave" className="dsy-label gap-2 py-1">
+              <span className="dsy-label-text min-w-fit">
+                <FaIcon icon={team.isLeave ? faDoorOpen : faDoorClosed} /> 손님이 체험장을
+                나갔습니까?
+              </span>
+              <input
+                type="checkbox"
+                name="isLeave"
+                id="is-leave"
+                className="dsy-toggle-success dsy-toggle"
+                checked={team.isLeave}
+                onChange={teamActions.toggleIsLeave}
+              />
+            </label>
+          </div>
         </div>
 
-        <div className="field">
-          <label htmlFor="leader-name" className="label">
-            <FaIcon icon={faSignature} /> 이름
-          </label>
-          <Input
-            id="leader-name"
-            placeholder="홍길동"
-            value={team.leaderName}
-            onChange={teamActions.onLeaderNameChange}
-            disabled={isLoading}
-            invalid={team.leaderName === ""}
-          />
-        </div>
+        <div className="dsy-modal-action">
+          {/* Close */}
+          <button className="dsy-btn-sm dsy-btn" disabled={isLoading}>
+            <FaIcon icon={faX} isLoading={isLoading} value="닫기" />
+          </button>
 
-        <div className="field">
-          <label htmlFor="leader-phone" className="label">
-            <FaIcon icon={faMobileScreenButton} /> 전화번호
-          </label>
-          <Input
-            id="leader-phone"
-            type="tel"
-            placeholder="010-xxxx-xxxx"
-            value={team.leaderPhone}
-            onChange={teamActions.onLeaderPhoneChange}
-            disabled={isLoading}
-            invalid={team.leaderPhone === ""}
-          />
-        </div>
-
-        <div className="field">
-          <label htmlFor="coupon" className="label">
-            <FaIcon icon={faBuilding} /> 쿠폰사
-          </label>
-          <Input
-            id="coupon"
-            value={team.coupon}
-            onChange={teamActions.onCouponChange}
-            disabled={isLoading}
-            placeholder="쿠폰사"
-            invalid={team.coupon === ""}
-          />
-        </div>
-
-        <div className="field">
-          <label htmlFor="population" className="label">
-            <FaIcon icon={faPeopleGroup} /> 인원수
-          </label>
-          <Input
-            id="population"
-            type="number"
-            value={team.population}
-            onChange={teamActions.onPopulationChange}
-            disabled={isLoading}
-            placeholder="인원수"
-          />
-        </div>
-
-        <div className="field">
-          <label htmlFor="is-approved" className="label">
-            <FaIcon icon={team.isApproved ? faThumbsUp : faThumbsDown} /> 쿠폰이 승인되었습니까?
-          </label>
-          <CheckBox
-            disable={isLoading}
-            checked={team.isApproved}
-            toggleFn={teamActions.toggleIsApproved}
-            trueContents={[faThumbsUp, " 승인완료"]}
-            falseContents={[faThumbsDown, " 승인대기"]}
-          />
-        </div>
-
-        <div className="field">
-          <label htmlFor="is-approved" className="label">
-            <FaIcon icon={team.isLeave ? faDoorOpen : faDoorClosed} /> 손님이 체험장을 나갔습니까?
-          </label>
-          <CheckBox
-            disable={isLoading}
-            checked={team.isLeave}
-            toggleFn={teamActions.toggleIsLeave}
-            trueContents={[faDoorOpen, " 나갔음"]}
-            falseContents={[faDoorClosed, " 나가지 않음"]}
-          />
-        </div>
-      </fieldset>
-
-      <form method="dialog" className="mt-2 flex justify-end gap-2">
-        {/* Close */}
-        <button className="btn" disabled={isLoading}>
-          <FaIcon icon={faX} isLoading={isLoading} value="닫기" />
-        </button>
-
-        {/* Clear */}
-        <button
-          type="button"
-          className="btn"
-          disabled={isCleared || isLoading}
-          onClick={teamActions.reset}
-        >
-          <FaIcon icon={faNotdef} rotation={90} isLoading={isLoading} value="초기화" />
-        </button>
-
-        {/* Delete */}
-        {mode === "UPDATE" ? (
+          {/* Clear */}
           <button
             type="button"
-            className="btn"
-            disabled={isLoading}
-            onClick={() => deleteTeam.mutate()}
+            className="dsy-btn-sm dsy-btn"
+            disabled={isCleared || isLoading}
+            onClick={teamActions.reset}
           >
-            <FaIcon icon={faTrashAlt} isLoading={isLoading} value="삭제" />
+            <FaIcon icon={faNotdef} rotation={90} isLoading={isLoading} value="초기화" />
           </button>
-        ) : null}
 
-        {/* Save */}
-        <button
-          type="button"
-          className="btn"
-          onClick={mode === "CREATE" ? () => createTeam.mutate() : () => updateTeam.mutate()}
-          disabled={!isValid || isLoading}
-        >
-          <FaIcon icon={faFloppyDisk} isLoading={isLoading} value="저장" />
-        </button>
+          {/* Copy */}
+          <button
+            type="button"
+            className="dsy-btn-sm dsy-btn"
+            disabled={isLoading}
+            onClick={openItemCopyDialog}
+          >
+            <FaIcon icon={faCopy} isLoading={isLoading} value="복제" />
+          </button>
+
+          {/* Delete */}
+          {mode === "UPDATE" ? (
+            <button
+              type="button"
+              className="dsy-btn-sm dsy-btn"
+              disabled={isLoading}
+              onClick={() => deleteTeam.mutate()}
+            >
+              <FaIcon icon={faTrashAlt} isLoading={isLoading} value="삭제" />
+            </button>
+          ) : null}
+
+          {/* Save */}
+          <button
+            type="button"
+            className="dsy-btn-sm dsy-btn"
+            onClick={mode === "CREATE" ? () => createTeam.mutate() : () => updateTeam.mutate()}
+            disabled={!isValid || isLoading}
+          >
+            <FaIcon icon={faFloppyDisk} isLoading={isLoading} value="저장" />
+          </button>
+        </div>
       </form>
     </dialog>
   );
