@@ -1,6 +1,6 @@
 "use client";
 
-import React, { SetStateAction, Suspense, useSyncExternalStore } from "react";
+import React, { SetStateAction, Suspense, useEffect, useState, useSyncExternalStore } from "react";
 
 export interface Modal {
   key: number;
@@ -51,14 +51,21 @@ class ModalClient {
   public subscribe = (subscriber: (modals: Modal[]) => any) => {
     const subscriberId = crypto.randomUUID();
     this.subscribers.set(subscriberId, subscriber);
-    return () => this.subscribers.delete(subscriberId);
+    return () => {
+      this.subscribers.delete(subscriberId);
+    };
   };
 }
 
 const modalClient = new ModalClient();
 
 export function ModalPlacer() {
-  const modals = useSyncExternalStore(modalClient.subscribe, () => modalClient.get((prev) => prev));
+  const [modals, setModals] = useState<Modal[]>([]);
+
+  useEffect(() => {
+    const unsubscribe = modalClient.subscribe(setModals);
+    return () => unsubscribe();
+  }, []);
 
   return modals.map((modal) =>
     React.createElement(
