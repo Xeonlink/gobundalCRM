@@ -5,32 +5,32 @@ import { useToggle } from "@/hooks/useToggle";
 import IcoLogo from "@/public/icons/logo_transparent.png";
 import {
   faArrowRightToBracket,
-  faCartPlus,
   faCartShopping,
   faChartLine,
+  faGear,
   faImage,
   faPeopleGroup,
   faPerson,
   faReceipt,
-  faRightLeft,
-  faUserPlus,
+  faRobot,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
 import clsx from "clsx";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ImgIcon } from "./ImgIcon";
 
 const link = (...inputs: clsx.ClassValue[]) => {
   return cn(
-    "p-2 block hover:bg-orange-100 rounded-md transition-all duration-300 hover:text-black hover:bg-opacity-80 aria-selected:shadow-md",
+    "p-2 block bg-orange-100 bg-opacity-0 rounded-md transition-all duration-300 hover:bg-opacity-10 aria-selected:bg-opacity-40 min-w-max",
     ...inputs,
   );
 };
 
 export function AdminNavbar() {
   const path = usePathname();
-  const shrink = useToggle(true);
+  const kioskToggle = useToggle(false);
+  const manageToggle = useToggle(false);
 
   const isDashboard = path.startsWith("/dashboard");
   const isAdminTeams = path.startsWith("/admin/teams");
@@ -40,64 +40,88 @@ export function AdminNavbar() {
   const isAdminAssets = path.startsWith("/admin/assets");
 
   return (
-    <nav
-      className={cn(
-        "overflow-hidden bg-black bg-opacity-70 text-white transition-all duration-500 aria-expanded:w-40 sm:block",
-        shrink.isOn ? "w-12" : "w-40",
-      )}
-      onMouseEnter={shrink.off}
-      onMouseLeave={shrink.on}
-    >
-      <div className="flex h-full flex-col gap-2 p-2">
-        <div className="min-w rounded-md bg-orange-100 bg-opacity-50 text-center">
-          <ImgIcon src={IcoLogo} alt="곱은달 로고" fontSize={60} />
-        </div>
+    <nav className="flex overflow-hidden bg-black bg-opacity-70 text-sm text-white transition-all duration-500 md:h-screen md:w-12 md:flex-col md:flex-wrap md:hover:w-32">
+      <div className="p-2 max-md:h-full md:w-full">
+        <Image
+          src={IcoLogo}
+          alt="곱은달 로고"
+          className="rounded-md bg-orange-100 bg-opacity-50 max-md:w-9"
+        />
+      </div>
 
-        <div className="expander scrollbar-hidden min-w-max flex-1 space-y-2 overflow-auto">
-          <Link href="/dashboard" className={link``} aria-selected={isDashboard}>
-            <FaIcon className="mr-2" width={20} icon={faChartLine} /> 대시보드
-          </Link>
+      <div className="scrollbar-hidden flex w-full flex-1 gap-2 overflow-auto p-2 md:flex-col">
+        <ul className="flex gap-2 md:flex-col">
+          <li>
+            <Link href="/dashboard" className={link``} aria-selected={isDashboard}>
+              <FaIcon className="md:mr-2 md:w-5" icon={faChartLine} /> 대시보드
+            </Link>
+          </li>
+        </ul>
 
-          <Link href="/kiosk/teams" className={link``}>
-            <FaIcon className="mr-2" width={20} icon={faUserPlus} /> 팀 키오스크
-          </Link>
+        <div className="h-5 min-w-[1px] max-w-[8rem] self-center bg-white opacity-40 md:h-[1px] md:w-full"></div>
 
-          <Link href="/kiosk/orders" className={link``}>
-            <FaIcon className="mr-2" width={20} icon={faCartPlus} /> 송장 키오스크
-          </Link>
+        <ul className="flex min-w-max gap-1 md:flex-col">
+          <li className={`peer p-2 opacity-60 ${kioskToggle.isOn && "open"}`}>
+            <button type="button" className="min-w-max" onClick={kioskToggle.toggle}>
+              <FaIcon className="md:mr-2 md:w-5" icon={faRobot} /> 키오스크
+            </button>
+          </li>
+          <li className="hidden peer-[.open]:block md:block">
+            <Link href="/kiosk/teams" className={link``}>
+              <FaIcon className="md:mr-2 md:w-5" icon={faPeopleGroup} /> 팀
+            </Link>
+          </li>
+          <li className="hidden peer-[.open]:block md:block">
+            <Link href="/kiosk/orders" className={link``}>
+              <FaIcon className="md:mr-2 md:w-5" icon={faReceipt} /> 주문
+            </Link>
+          </li>
+        </ul>
 
-          <Link href="teams" className={link``} aria-selected={isAdminTeams}>
-            <FaIcon className="mr-2" width={20} icon={faPeopleGroup} /> 팀 관리
-          </Link>
+        <div className="h-5 min-w-[1px] max-w-[8rem] self-center bg-white opacity-40 md:h-[1px] md:w-full"></div>
 
-          <Link href="orders" className={link``} aria-selected={isAdminOrders}>
-            <FaIcon className="mr-2" width={20} icon={faReceipt} /> 주문 관리
-          </Link>
+        <ul className="flex min-w-max flex-1 gap-1 md:flex-col">
+          <li className={`peer p-2 opacity-60 ${manageToggle.isOn && "open"}`}>
+            <button type="button" className="min-w-max" onClick={manageToggle.toggle}>
+              <FaIcon className="md:mr-2 md:w-5" icon={faGear} /> 관리
+            </button>
+          </li>
+          <li className="hidden peer-[.open]:block md:block">
+            <Link href="teams" className={link``} aria-selected={isAdminTeams}>
+              <FaIcon className="md:mr-2 md:w-5" icon={faPeopleGroup} /> 팀
+            </Link>
+          </li>
+          <li className="hidden peer-[.open]:block md:block">
+            <Link href="orders" className={link``} aria-selected={isAdminOrders}>
+              <FaIcon className="md:mr-2 md:w-5" icon={faReceipt} /> 주문
+            </Link>
+          </li>
+          <li className="hidden peer-[.open]:block md:block">
+            <Link href="products" className={link``} aria-selected={isAdminProducts}>
+              <FaIcon className="md:mr-2 md:w-5" icon={faCartShopping} /> 상품
+            </Link>
+          </li>
+          <li className="hidden peer-[.open]:block md:block">
+            <Link href="customers" className={link``} aria-selected={isAdminCustomers}>
+              <FaIcon className="md:mr-2 md:w-5" icon={faPerson} /> 고객
+            </Link>
+          </li>
+          <li className="hidden peer-[.open]:block md:block">
+            <Link href="assets" className={link``} aria-selected={isAdminAssets}>
+              <FaIcon className="md:mr-2 md:w-5" icon={faImage} /> 자료
+            </Link>
+          </li>
+        </ul>
+      </div>
 
-          <Link href="products" className={link``} aria-selected={isAdminProducts}>
-            <FaIcon className="mr-2" width={20} icon={faCartShopping} /> 상품 관리
-          </Link>
-
-          <Link href="customers" className={link``} aria-selected={isAdminCustomers}>
-            <FaIcon className="mr-2" width={20} icon={faPerson} /> 고객 관리
-          </Link>
-
-          <Link href="assets" className={link``} aria-selected={isAdminAssets}>
-            <FaIcon className="mr-2" width={20} icon={faImage} /> 자료 관리
-          </Link>
-        </div>
-
-        <div className="min-w-max space-y-2">
+      <ul className="p-2">
+        <li>
           <Link href="/login" className={link``}>
-            <FaIcon className="mr-2" width={20} icon={faArrowRightToBracket} rotation={180} />{" "}
+            <FaIcon className="md:mr-2 md:w-5" icon={faArrowRightToBracket} rotation={180} />{" "}
             로그아웃
           </Link>
-
-          <button type="button" className={link`w-full text-start`} onClick={shrink.toggle}>
-            <FaIcon className="mr-2" width={20} icon={faRightLeft} rotation={180} /> 접기
-          </button>
-        </div>
-      </div>
+        </li>
+      </ul>
     </nav>
   );
 }
