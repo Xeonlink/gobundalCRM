@@ -1,4 +1,3 @@
-import { throttle } from "@/extra/utils";
 import { useEffect, useState } from "react";
 
 export function useWindowSize(threshold: { [key: string]: [number, number] }) {

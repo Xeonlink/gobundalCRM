@@ -73,25 +73,20 @@ export default function Page(props: PageProps<any, SearchParams>) {
         <Link href={`teams?date=${dayjs().format("YYYY-MM-DD")}`} className="btn">
           <FaIcon icon={faCalendarDays} /> 오늘
         </Link>
-
         {/* 해당 날짜로 검색 */}
         <DateChanger className="shadow-md" date={date} onChange={onDateChange} />
-
-        {/* Refresh */}
+        {/* Refresh */}w
         <button type="button" className="btn" onClick={() => teams.refetch()}>
           <FaIcon icon={faArrowsRotate} /> 새로고침
         </button>
-
         {/* Cratet New Team */}
         <button type="button" className="btn" onClick={openCreateTeamDialog}>
           <FaIcon icon={faPlus} /> 팀 만들기
         </button>
-
         {/* Delete */}
         <button type="button" className="btn" onClick={onDeleteClick}>
           <FaIcon icon={faTrashCan} /> 선택삭제
         </button>
-
         {/* 엑셀로 다운로드하기 */}
         <button type="button" className="btn" onClick={onDownloadClick}>
           <ImgIcon src={IcoExcel} alt="엑셀로 변환" fontSize={20} /> 엑셀로 변환
