@@ -47,7 +47,7 @@ export default function Page() {
           </thead>
           <tbody>
             {cartProducts.map(({ item, quantity }, idx) => (
-              <tr className="even:bg-white even:bg-opacity-40">
+              <tr className="even:bg-white even:bg-opacity-40" key={item.id}>
                 <td className="py-2 pl-2 pr-2 first-of-type:rounded-l-md last-of-type:rounded-r-md">
                   <figure className="mr-2 inline-block w-28 align-middle">
                     <img

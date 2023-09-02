@@ -8,6 +8,7 @@ import { useItemSelection } from "@/hooks/useItemSelection";
 import { useSimpleWindowSize } from "@/hooks/useWindowSize";
 import { faCartPlus, faCartShopping, faCreditCard } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
+import Image from "next/image";
 import Link from "next/link";
 
 export default function Page() {
@@ -27,7 +28,7 @@ export default function Page() {
     <div className="h-full w-full overflow-auto">
       <ColumnList threashold={[0, 640, 900, 1200, Infinity]}>
         {(count, columnIndex) => (
-          <ol className="w-72 space-y-2">
+          <ol className="w-72 space-y-2" key={columnIndex}>
             {products?.data
               ?.filter((_, index) => index % count === columnIndex)
               .map((item) => (
