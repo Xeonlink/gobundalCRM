@@ -1,11 +1,11 @@
 "use client";
 
 import { OrderProduct, defaultOrder, useCreateOrder } from "@/api/orders";
-import { useProducts } from "@/api/products";
 import { Input } from "@/components/Input";
 import { PageProps } from "@/extra/type";
 import { toHyphenPhone } from "@/extra/utils";
 import { useAuth } from "@/hooks/useAuth";
+import { useCart } from "@/hooks/useCart";
 import { usePostCodePopup } from "@/hooks/usePostCodePopup";
 import { useTypeSafeReducer } from "@/hooks/useTypeSafeReducer";
 import {
@@ -28,9 +28,8 @@ type ProductPayload<T extends HTMLElement> = { index: number; e: React.ChangeEve
 
 export default function Page(_: PageProps) {
   const auth = useAuth();
-  const { data: products } = useProducts({
-    enabled: auth.isSignIn,
-  });
+  const cart = useCart();
+  const { products: cartProducts } = cart;
   const [order, orderActions] = useTypeSafeReducer(defaultOrder, {
     setDate: (state, date: string) => {
       state.date = date;
@@ -83,11 +82,21 @@ export default function Page(_: PageProps) {
     },
     reset: () => defaultOrder,
   });
-  const createItem = useCreateOrder(order, {
-    onSuccess: () => {
-      if (!confirm("송장등록이 완료되었습니다. 계속 등록하시겠습니까?")) orderActions.reset();
+  const createItem = useCreateOrder(
+    {
+      ...order,
+      products: cartProducts.map(({ item, quantity }) => ({
+        name: item.name,
+        price: item.isSale ? item.salePrice : item.price,
+        quantity,
+      })),
     },
-  });
+    {
+      onSuccess: () => {
+        if (!confirm("송장등록이 완료되었습니다. 계속 등록하시겠습니까?")) orderActions.reset();
+      },
+    },
+  );
   const postCodePopup = usePostCodePopup({
     onComplete: (data) => {
       orderActions.setReceiverAddress(data.roadAddress);
@@ -270,11 +279,13 @@ export default function Page(_: PageProps) {
               </tr>
             </thead>
             <tbody>
-              {products?.data.map((product, index, arr) => (
+              {cartProducts.map(({ item, quantity }, index) => (
                 <tr key={index} className="text-center">
-                  <td className="w-28 p-2">{product.name}</td>
-                  <td className="w-14 p-2">{10}</td>
-                  <td className="w-28 p-2">{product.price.toLocaleString()}</td>
+                  <td className="w-28 p-2">{item.name}</td>
+                  <td className="w-14 p-2">{quantity}</td>
+                  <td className="w-28 p-2">
+                    {((item.isSale ? item.salePrice : item.price) * quantity).toLocaleString()}
+                  </td>
                 </tr>
               ))}
             </tbody>
