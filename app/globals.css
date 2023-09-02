@@ -61,7 +61,7 @@ input[type="number"] {
     @apply py-2 first-of-type:rounded-l-md last-of-type:rounded-r-md max-sm:flex max-sm:py-1;
   }
   .table tbody tr td label {
-    @apply w-24 sm:hidden;
+    @apply flex w-24 items-center gap-1 sm:hidden;
   }
   .table tbody tr td span {
     @apply max-sm:flex-1;

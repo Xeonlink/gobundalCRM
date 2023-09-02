@@ -10,10 +10,8 @@ import {
   faNotdef,
   faShapes,
   faSignature,
-  faTrashAlt,
   faX,
 } from "@fortawesome/free-solid-svg-icons";
-import Image from "next/image";
 import { useDropzone } from "react-dropzone";
 import { FaIcon } from "../../FaIcon";
 import { Input } from "../../Input";
