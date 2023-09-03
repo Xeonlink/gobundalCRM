@@ -8,7 +8,7 @@ export const defaultTeam: RawTeam = {
   date: dayjs().format("YYYY-MM-DD"),
   leaderName: "",
   leaderPhone: "",
-  coupon: "",
+  coupon: "none",
   population: 1,
   isApproved: false,
   isLeave: false,

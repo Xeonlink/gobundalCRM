@@ -1,6 +1,6 @@
 "use client";
 
-import React, { SetStateAction, Suspense, useEffect, useState, useSyncExternalStore } from "react";
+import React, { SetStateAction, Suspense, useEffect, useState } from "react";
 
 export interface Modal {
   key: number;
@@ -49,7 +49,7 @@ class ModalClient {
   };
 
   public subscribe = (subscriber: (modals: Modal[]) => any) => {
-    const subscriberId = crypto.randomUUID();
+    const subscriberId = crypto.randomUUID?.() ?? Math.round(Math.random() * 10000).toString();
     this.subscribers.set(subscriberId, subscriber);
     return () => {
       this.subscribers.delete(subscriberId);

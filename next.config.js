@@ -10,6 +10,11 @@ module.exports = {
         destination: "/admin/orders",
         permanent: true,
       },
+      {
+        source: "/kiosk/orders",
+        destination: "/kiosk/orders/products",
+        permanent: true,
+      },
     ];
   },
 };
