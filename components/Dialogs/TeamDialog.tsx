@@ -30,7 +30,6 @@ import {
 import { FaIcon } from "../FaIcon";
 import { Input } from "../Input";
 import { NewDateChanger } from "../NewDateChanger";
-import { create } from "zustand";
 
 type Props = ModalProps<{ mode: "CREATE"; base?: RawTeam } | { mode: "UPDATE"; teamId: string }>;
 
