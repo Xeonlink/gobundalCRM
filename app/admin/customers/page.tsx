@@ -4,15 +4,13 @@ import { useCustomersByName, useDeleteCustomers } from "@/api/customers";
 import { CustomerDialog } from "@/components/Dialogs/CustomerDialog";
 import { ImgIcon } from "@/components/ImgIcon";
 import { Input } from "@/components/Input";
+import { useModal } from "@/extra/modal";
 import { PageProps } from "@/extra/type";
-import { cn } from "@/extra/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { useExcel } from "@/hooks/useExcel";
 import { useItemSelection } from "@/hooks/useItemSelection";
-import { useModal } from "@/extra/modal";
 import IcoExcel from "@/public/icons/excel.png";
 import {
-  faArrowsRotate,
   faBuilding,
   faMagnifyingGlass,
   faMobileScreen,
@@ -23,8 +21,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import React, { useRef, useState } from "react";
+import { useRef } from "react";
 
 type SearchParams = { name: string };
 
@@ -64,31 +61,26 @@ export default function Page(props: PageProps<any, SearchParams>) {
       {/* Toolbar */}
       <div className="mb-3 flex flex-wrap items-center gap-3">
         {/* Cratet New Order */}
-        <button type="button" className="btn" onClick={openCustomerCreateDialog}>
+        <button type="button" className="dsy-btn-sm dsy-btn" onClick={openCustomerCreateDialog}>
           <FaIcon icon={faPlus} /> 고객 추가하기
         </button>
 
         {/* Delete */}
-        <button type="button" className="btn" onClick={onDeleteClick}>
+        <button type="button" className="dsy-btn-sm dsy-btn" onClick={onDeleteClick}>
           <FaIcon icon={faTrashCan} /> 선택삭제
         </button>
 
         {/* 엑셀로 다운로드하기 */}
-        <button type="button" className="btn" onClick={onExcelDownloadClick}>
+        <button type="button" className="dsy-btn-sm dsy-btn" onClick={onExcelDownloadClick}>
           <ImgIcon src={IcoExcel} alt="엑셀로 변환" fontSize={20} /> 엑셀로 변환
         </button>
 
         <div className="space-x-3">
           {/* 고객이름으로 검색 */}
-          <Input
-            className="w-40 shadow-md"
-            placeholder="홍길동"
-            defaultValue={name}
-            ref={nameRef}
-          />
+          <Input className="w-40" placeholder="홍길동" defaultValue={name} ref={nameRef} />
 
           {/* Search */}
-          <Link href={`customers?name=${nameRef.current?.value}`} className="btn">
+          <Link href={`customers?name=${nameRef.current?.value}`} className="dsy-btn-sm dsy-btn">
             <FaIcon icon={faMagnifyingGlass} /> 검색
           </Link>
         </div>

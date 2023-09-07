@@ -20,6 +20,7 @@ import {
   faNoteSticky,
   faPaperPlane,
   faPlus,
+  faRobot,
   faSignature,
   faSignsPost,
   faTrashCan,
@@ -70,32 +71,37 @@ export default function Page(props: PageProps<any, SearchParams>) {
       {/* Toolbar */}
       <div className="mb-3 flex flex-wrap items-center gap-3">
         {/* 오늘 날짜로 재검색 */}
-        <Link href={`orders?date=${dayjs().format("YYYY-MM-DD")}`} className="btn">
+        <Link href={`orders?date=${dayjs().format("YYYY-MM-DD")}`} className="dsy-btn-sm dsy-btn">
           <FaIcon icon={faCalendarDays} /> 오늘
         </Link>
 
         {/* 해당 날짜로 검색 */}
-        <DateChanger date={date} onChange={onDateChange} className="shadow-md" />
+        <DateChanger date={date} onChange={onDateChange} />
 
         {/* Refresh */}
-        <button type="button" className="btn" onClick={() => orders.refetch()}>
+        <button type="button" className="dsy-btn-sm dsy-btn" onClick={() => orders.refetch()}>
           <FaIcon icon={faArrowsRotate} /> 새로고침
         </button>
 
         {/* Cratet New Order */}
-        <button type="button" className="btn" onClick={openOrderCreateDialog}>
+        <button type="button" className="dsy-btn-sm dsy-btn" onClick={openOrderCreateDialog}>
           <FaIcon icon={faPlus} /> 송장 작성하기
         </button>
 
         {/* Delete */}
-        <button type="button" className="btn" onClick={onDeleteClick}>
+        <button type="button" className="dsy-btn-sm dsy-btn" onClick={onDeleteClick}>
           <FaIcon icon={faTrashCan} /> 선택삭제
         </button>
 
         {/* 엑셀로 다운로드하기 */}
-        <button type="button" className="btn" onClick={onDownloadClick}>
+        <button type="button" className="dsy-btn-sm dsy-btn" onClick={onDownloadClick}>
           <ImgIcon src={IcoExcel} alt="엑셀로 변환" fontSize={20} /> 엑셀로 변환
         </button>
+
+        {/* Go To Kiosk */}
+        <Link href="/kiosk/orders" className="dsy-btn-sm dsy-btn">
+          <FaIcon icon={faRobot} /> 키오스크로
+        </Link>
       </div>
 
       <div className="max-w-full overflow-x-auto">

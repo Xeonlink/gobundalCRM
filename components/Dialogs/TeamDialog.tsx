@@ -27,9 +27,9 @@ import {
   faTrashAlt,
   faX,
 } from "@fortawesome/free-solid-svg-icons";
+import { DateChanger } from "../DateChanger";
 import { FaIcon } from "../FaIcon";
 import { Input } from "../Input";
-import { NewDateChanger } from "../NewDateChanger";
 
 type Props = ModalProps<{ mode: "CREATE"; base?: RawTeam } | { mode: "UPDATE"; teamId: string }>;
 
@@ -103,7 +103,7 @@ export function TeamDialog(props: Props) {
               <span className="dsy-label-text min-w-fit">
                 <FaIcon icon={faCalendarAlt} /> 날짜
               </span>
-              <NewDateChanger date={team.date} onChange={teamActions.setDate} />
+              <DateChanger date={team.date} onChange={teamActions.setDate} />
             </label>
           </div>
 

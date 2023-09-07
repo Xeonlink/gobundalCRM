@@ -15,12 +15,12 @@ export function DateChanger(props: Props) {
   return (
     <div
       id="date"
-      className={cn("flex items-center rounded-md bg-white", {
+      className={cn("dsy-join", {
         [className || ""]: !!className,
       })}
     >
       <select
-        className="btn w-full appearance-none px-3 py-2 shadow-none"
+        className="dsy-select dsy-join-item dsy-select-sm"
         value={+year}
         onChange={(e) => onChange(`${e.target.value}-${month}-${day}}`)}
       >
@@ -30,9 +30,8 @@ export function DateChanger(props: Props) {
           </option>
         ))}
       </select>
-      <span className="text-gray-200">|</span>
       <select
-        className="btn w-full appearance-none px-3 py-2 shadow-none"
+        className="dsy-select dsy-join-item dsy-select-sm"
         value={+month}
         onChange={(e) => onChange(`${year}-${`0${e.target.value}`.slice(-2)}-${day}`)}
       >
@@ -42,9 +41,8 @@ export function DateChanger(props: Props) {
           </option>
         ))}
       </select>
-      <span className="text-gray-200">|</span>
       <select
-        className="btn w-full appearance-none px-3 py-2 shadow-none"
+        className="dsy-select dsy-join-item dsy-select-sm"
         value={+day}
         onChange={(e) => onChange(`${year}-${month}-${`0${e.target.value}`.slice(-2)}`)}
       >
