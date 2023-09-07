@@ -5,15 +5,14 @@ import { useDeleteProducts } from "@/api/products";
 import { AssetCreateDialog } from "@/components/Dialogs/AssetDialog/AssetCreateDialog";
 import { AssetUpdateDialog } from "@/components/Dialogs/AssetDialog/AssetUpdateDialog";
 import { ImgIcon } from "@/components/ImgIcon";
+import { useModal } from "@/extra/modal";
 import { cn } from "@/extra/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { useExcel } from "@/hooks/useExcel";
 import { useItemSelection } from "@/hooks/useItemSelection";
-import { useModal } from "@/extra/modal";
 import IcoExcel from "@/public/icons/excel.png";
 import { faArrowsRotate, faPlus, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
-import Image from "next/image";
 
 export default function Page() {
   const auth = useAuth();
@@ -46,27 +45,27 @@ export default function Page() {
       {/* Toolbar */}
       <div className="mb-3 flex flex-wrap items-center gap-3">
         {/* Refresh */}
-        <button type="button" className="btn" onClick={() => assets.refetch()}>
+        <button type="button" className="dsy-btn-sm dsy-btn" onClick={() => assets.refetch()}>
           <FaIcon icon={faArrowsRotate} /> 새로고침
         </button>
 
         {/* Cratet New Order */}
-        <button type="button" className="btn" onClick={openAssetCreateDialog}>
+        <button type="button" className="dsy-btn-sm dsy-btn" onClick={openAssetCreateDialog}>
           <FaIcon icon={faPlus} /> 자료 추가하기
         </button>
 
         {/* Delete */}
-        <button type="button" className="btn" onClick={onDeleteClick}>
+        <button type="button" className="dsy-btn-sm dsy-btn" onClick={onDeleteClick}>
           <FaIcon icon={faTrashCan} /> 선택삭제
         </button>
 
         {/* 엑셀로 다운로드하기 */}
-        <button type="button" className="btn" onClick={onExcelDownloadClick}>
+        <button type="button" className="dsy-btn-sm dsy-btn" onClick={onExcelDownloadClick}>
           <ImgIcon src={IcoExcel} alt="엑셀로 변환" fontSize={20} /> 엑셀로 변환
         </button>
       </div>
 
-      <ol className="grid grid-cols-[repeat(auto-fill,_200px)] gap-3">
+      <ol className="grid grid-cols-[repeat(auto-fill,_200px)] items-start gap-3">
         {assets.data?.data?.map((item) => (
           <li
             key={item.id}
@@ -76,7 +75,7 @@ export default function Page() {
             onClick={selected.onItemClick(item.id)}
             onDoubleClick={() => openAssetUpdateDialog(item.id)}
           >
-            <img src={item.src} alt={item.name} className="m-auto h-40 object-contain" />
+            <img src={item.src} alt={item.name} className="m-auto object-contain" />
             <h1 className="overflow-hidden text-ellipsis font-bold">{item.name}</h1>
             <p className="text-sm">{item.mimeType}</p>
           </li>

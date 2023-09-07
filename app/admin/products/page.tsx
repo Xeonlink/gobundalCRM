@@ -54,22 +54,22 @@ export default function Page() {
       {/* Toolbar */}
       <div className="mb-3 flex flex-wrap items-center gap-3">
         {/* Refresh */}
-        <button type="button" className="btn" onClick={() => products.refetch()}>
+        <button type="button" className="dsy-btn-sm dsy-btn" onClick={() => products.refetch()}>
           <FaIcon icon={faArrowsRotate} /> 새로고침
         </button>
 
         {/* Cratet New Order */}
-        <button type="button" className="btn" onClick={openProductCreateDialog}>
+        <button type="button" className="dsy-btn-sm dsy-btn" onClick={openProductCreateDialog}>
           <FaIcon icon={faPlus} /> 상품 추가하기
         </button>
 
         {/* Delete */}
-        <button type="button" className="btn" onClick={onDeleteClick}>
+        <button type="button" className="dsy-btn-sm dsy-btn" onClick={onDeleteClick}>
           <FaIcon icon={faTrashCan} /> 선택삭제
         </button>
 
         {/* 엑셀로 다운로드하기 */}
-        <button type="button" className="btn" onClick={onExcelDownloadClick}>
+        <button type="button" className="dsy-btn-sm dsy-btn" onClick={onExcelDownloadClick}>
           <ImgIcon src={IcoExcel} alt="엑셀로 변환" fontSize={20} /> 엑셀로 변환
         </button>
       </div>

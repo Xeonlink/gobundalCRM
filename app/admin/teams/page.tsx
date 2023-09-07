@@ -20,6 +20,7 @@ import {
   faPeopleGroup,
   faPersonWalkingArrowRight,
   faPlus,
+  faRobot,
   faSignature,
   faTicket,
   faTrashCan,
@@ -70,27 +71,36 @@ export default function Page(props: PageProps<any, SearchParams>) {
       {/* Toolbar */}
       <div className="mb-3 flex flex-wrap items-center gap-3">
         {/* 오늘 날짜로 재검색 */}
-        <Link href={`teams?date=${dayjs().format("YYYY-MM-DD")}`} className="btn">
+        <Link href={`teams?date=${dayjs().format("YYYY-MM-DD")}`} className="dsy-btn-sm dsy-btn">
           <FaIcon icon={faCalendarDays} /> 오늘
         </Link>
+
         {/* 해당 날짜로 검색 */}
-        <DateChanger className="shadow-md" date={date} onChange={onDateChange} />
-        {/* Refresh */}w
-        <button type="button" className="btn" onClick={() => teams.refetch()}>
+        <DateChanger date={date} onChange={onDateChange} />
+
+        {/* Refresh */}
+        <button type="button" className="dsy-btn-sm dsy-btn" onClick={() => teams.refetch()}>
           <FaIcon icon={faArrowsRotate} /> 새로고침
         </button>
+
         {/* Cratet New Team */}
-        <button type="button" className="btn" onClick={openCreateTeamDialog}>
+        <button type="button" className="dsy-btn-sm dsy-btn" onClick={openCreateTeamDialog}>
           <FaIcon icon={faPlus} /> 팀 만들기
         </button>
         {/* Delete */}
-        <button type="button" className="btn" onClick={onDeleteClick}>
+        <button type="button" className="dsy-btn-sm dsy-btn" onClick={onDeleteClick}>
           <FaIcon icon={faTrashCan} /> 선택삭제
         </button>
+
         {/* 엑셀로 다운로드하기 */}
-        <button type="button" className="btn" onClick={onDownloadClick}>
+        <button type="button" className="dsy-btn-sm dsy-btn" onClick={onDownloadClick}>
           <ImgIcon src={IcoExcel} alt="엑셀로 변환" fontSize={20} /> 엑셀로 변환
         </button>
+
+        {/* Go To Kiosk */}
+        <Link href="/kiosk/teams" className="dsy-btn-sm dsy-btn">
+          <FaIcon icon={faRobot} /> 키오스크로
+        </Link>
       </div>
 
       <div className="max-w-full overflow-x-auto">
