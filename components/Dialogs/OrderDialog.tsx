@@ -152,6 +152,16 @@ export function OrderDialog(props: Props) {
         method="dialog"
         className="dsy-modal-box max-h-screen w-full bg-opacity-60 backdrop-blur-md"
       >
+        <button
+          type="button"
+          className="dsy-btn-ghost dsy-btn-sm dsy-btn-circle dsy-btn absolute right-6 top-4"
+          onClick={props.closeSelf}
+        >
+          ✕
+        </button>
+
+        <h1 className="text-lg font-bold">주문</h1>
+
         <div className="dsy-form-control">
           <label htmlFor="date" className="dsy-label py-1 pt-0">
             <span className="dsy-label-text min-w-fit">
@@ -394,11 +404,6 @@ export function OrderDialog(props: Props) {
         </div>
 
         <div className="dsy-modal-action">
-          {/* Close */}
-          <button className="dsy-btn-sm dsy-btn" disabled={isLoading}>
-            <FaIcon icon={faX} isLoading={isLoading} value="닫기" />
-          </button>
-
           {/* Clear */}
           <button
             type="button"

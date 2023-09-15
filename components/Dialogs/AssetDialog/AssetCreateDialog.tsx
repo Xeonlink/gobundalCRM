@@ -49,22 +49,32 @@ export function AssetCreateDialog(props: ModalProps) {
   return (
     <dialog ref={props.ref} onClose={props.closeSelf} className="dsy-modal">
       <form method="dialog" className="dsy-modal-box w-96 bg-opacity-60 backdrop-blur-md">
+        <button
+          type="button"
+          className="dsy-btn-ghost dsy-btn-sm dsy-btn-circle dsy-btn absolute right-6 top-4"
+          onClick={props.closeSelf}
+        >
+          ✕
+        </button>
+
+        <h1 className="text-lg font-bold">에셋</h1>
+
         <div {...dropZone.getRootProps()}>
           {!!dropZone.acceptedFiles.length ? (
             <label
               htmlFor="image"
-              className="min-h-[10rem] cursor-pointer overflow-hidden rounded-lg transition-all"
+              className="mt-2 min-h-[10rem] cursor-pointer overflow-hidden rounded-lg transition-all"
             >
               <img
                 src={URL.createObjectURL(dropZone.acceptedFiles[0])}
                 alt="dropped-image"
-                className="m-auto"
+                className="m-auto mt-2"
               />
             </label>
           ) : (
             <label
               htmlFor="image"
-              className="flex min-h-[10rem] cursor-pointer items-center justify-center rounded-lg bg-white bg-opacity-90 transition-colors hover:bg-opacity-100"
+              className="mt-2 flex min-h-[10rem] cursor-pointer items-center justify-center rounded-lg bg-white bg-opacity-90 transition-colors hover:bg-opacity-100"
             >
               <FaIcon icon={faImage} className="mr-1" /> 이미지를 드래그하거나 클릭하세요.
             </label>
@@ -107,11 +117,6 @@ export function AssetCreateDialog(props: ModalProps) {
         </div>
 
         <div className="dsy-modal-action">
-          {/* Close */}
-          <button className="dsy-btn-sm dsy-btn" disabled={isLoading}>
-            <FaIcon icon={faX} isLoading={isLoading} value="닫기" />
-          </button>
-
           {/* Clear */}
           <button
             type="button"

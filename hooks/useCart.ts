@@ -14,6 +14,7 @@ interface CartStore {
   removeProduct: (idx: number) => void;
   increaseQuantity: (idx: number) => void;
   decreaseQuantity: (idx: number) => void;
+  changeQuantity: (payload: { id: string; offset: number }) => void;
   reset: () => void;
 }
 
@@ -42,8 +43,16 @@ export const useCart = create(
         products[idx].quantity++;
         set({ products });
       },
+      changeQuantity: (payload: { id: string; offset: number }) => {
+        const products = [...get().products];
+        const idx = products.findIndex((p) => p.item.id === payload.id);
+        if (idx === -1) return;
+        products[idx].quantity += payload.offset;
+        set({ products });
+      },
       decreaseQuantity: (idx: number) => {
         const products = [...get().products];
+        if (products[idx].quantity === 1) return;
         products[idx].quantity--;
         set({ products });
       },

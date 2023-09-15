@@ -96,6 +96,16 @@ export function TeamDialog(props: Props) {
         method="dialog"
         className="dsy-modal-box max-h-screen w-full bg-opacity-60 backdrop-blur-md"
       >
+        <button
+          type="button"
+          className="dsy-btn-ghost dsy-btn-sm dsy-btn-circle dsy-btn absolute right-6 top-4"
+          onClick={props.closeSelf}
+        >
+          ✕
+        </button>
+
+        <h1 className="text-lg font-bold">팀</h1>
+
         <div className=" bg-transparent pt-2">
           {/* 해당 날짜로 검색 */}
           <div className="dsy-form-control">
@@ -211,11 +221,6 @@ export function TeamDialog(props: Props) {
         </div>
 
         <div className="dsy-modal-action">
-          {/* Close */}
-          <button className="dsy-btn-sm dsy-btn" disabled={isLoading}>
-            <FaIcon icon={faX} isLoading={isLoading} value="닫기" />
-          </button>
-
           {/* Clear */}
           <button
             type="button"

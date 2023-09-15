@@ -52,8 +52,18 @@ export function AssetUpdateDialog(props: ModalProps<{ assetId: string }>) {
   return (
     <dialog ref={props.ref} onClose={props.closeSelf} className="dsy-modal">
       <form method="dialog" className="dsy-modal-box w-96 bg-opacity-60 backdrop-blur-md">
+        <button
+          type="button"
+          className="dsy-btn-ghost dsy-btn-sm dsy-btn-circle dsy-btn absolute right-6 top-4"
+          onClick={props.closeSelf}
+        >
+          ✕
+        </button>
+
+        <h1 className="text-lg font-bold">에셋</h1>
+
         <button type="button" onDoubleClick={() => openAssetPreviewDialog(asset.src)}>
-          <img src={asset.src} alt={asset.name} className="rounded-md" />
+          <img src={asset.src} alt={asset.name} className="mt-2 rounded-md" />
         </button>
 
         <div className="dsy-divider">
@@ -91,11 +101,6 @@ export function AssetUpdateDialog(props: ModalProps<{ assetId: string }>) {
         </div>
 
         <div className="dsy-modal-action">
-          {/* Close */}
-          <button className="dsy-btn-sm dsy-btn" disabled={isLoading}>
-            <FaIcon icon={faX} isLoading={isLoading} value="닫기" />
-          </button>
-
           {/* Clear */}
           <button
             type="button"

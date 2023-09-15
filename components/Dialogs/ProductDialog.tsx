@@ -7,9 +7,8 @@ import {
   useProduct,
   useUpdateProduct,
 } from "@/api/products";
-import { ModalProps } from "@/extra/modal";
+import { ModalProps, useModal } from "@/extra/modal";
 import { diff } from "@/extra/utils";
-import { useModal } from "@/extra/modal";
 import { useTypeSafeReducer } from "@/hooks/useTypeSafeReducer";
 import {
   faBoxes,
@@ -21,15 +20,12 @@ import {
   faFloppyDisk,
   faImage,
   faInfinity,
-  faListOl,
   faNotdef,
-  faPaperPlane,
   faSignature,
   faTrashAlt,
   faWon,
   faX,
 } from "@fortawesome/free-solid-svg-icons";
-import { CheckBox } from "../CheckBox";
 import { FaIcon } from "../FaIcon";
 import { Input } from "../Input";
 import AssetSelector from "../Selectors/AssetSelector";
@@ -117,6 +113,16 @@ export function ProductDialog(props: Props) {
   return (
     <dialog ref={props.ref} onClose={props.closeSelf} className="dsy-modal">
       <form method="dialog" className="dsy-modal-box w-96 bg-opacity-60 backdrop-blur-md">
+        <button
+          type="button"
+          className="dsy-btn-ghost dsy-btn-sm dsy-btn-circle dsy-btn absolute right-6 top-4"
+          onClick={props.closeSelf}
+        >
+          ✕
+        </button>
+
+        <h1 className="text-lg font-bold">상품</h1>
+
         <div className="dsy-form-control">
           <label htmlFor="name" className="dsy-label relative py-1">
             <span className="dsy-label-text min-w-fit">
@@ -269,11 +275,6 @@ export function ProductDialog(props: Props) {
         </div>
 
         <div className="dsy-modal-action">
-          {/* Close */}
-          <button className="dsy-btn-sm dsy-btn" disabled={isLoading}>
-            <FaIcon icon={faX} isLoading={isLoading} value="닫기" />
-          </button>
-
           {/* Clear */}
           <button
             type="button"

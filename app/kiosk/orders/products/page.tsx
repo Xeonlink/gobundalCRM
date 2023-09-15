@@ -1,54 +1,92 @@
 "use client";
 
 import { Product, useProducts } from "@/api/products";
+import { ColumnList } from "@/components/ColumnList";
 import { AssetPreviewDialog } from "@/components/Dialogs/AssetDialog/AssetPreviewDialog";
+import { Input } from "@/components/Input";
 import { useModal } from "@/extra/modal";
+import { cn } from "@/extra/utils";
 import { useCart } from "@/hooks/useCart";
 import { useItemSelection } from "@/hooks/useItemSelection";
-import { useSimpleWindowSize } from "@/hooks/useWindowSize";
-import { faCartPlus, faCartShopping, faCreditCard } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCartPlus,
+  faCartShopping,
+  faCreditCard,
+  faMinus,
+  faPlus,
+  faX,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
-import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 
 export default function Page() {
   const modalCtrl = useModal();
   const { data: products } = useProducts();
   const cart = useCart();
   const selected = useItemSelection();
+  const selectedProduct = products?.data?.find((item) => item.id === selected.ids[0]);
+  const [selectedProductQuantity, setSelectedProductQuantity] = useState(1);
+
+  const increaseSelectedProductQuantity = () => {
+    setSelectedProductQuantity((prev) => prev + 1);
+  };
+  const decreaseSelectedProductQuantity = () => {
+    setSelectedProductQuantity((prev) => (prev === 1 ? prev : prev - 1));
+  };
 
   const openAssetPreviewDialog = (src: string) => {
     modalCtrl.open(<AssetPreviewDialog src={src} />);
   };
   const onProductCartClick = (item: Product) => {
-    cart.addProduct(item);
+    // cart.addProduct(item);
+    selected.select(item.id);
   };
 
   return (
     <div className="h-full w-full overflow-auto">
-      <ColumnList threashold={[0, 640, 900, 1200, Infinity]}>
+      <ColumnList
+        threashold={[0, 2, 640, 900, 1200, Infinity]}
+        className="flex items-start justify-center gap-2 p-2"
+      >
         {(count, columnIndex) => (
-          <ol className="w-72 space-y-2" key={columnIndex}>
+          <ol className="flex-1 space-y-2" key={columnIndex}>
             {products?.data
               ?.filter((_, index) => index % count === columnIndex)
               .map((item) => (
                 <li
                   key={item.id}
                   className="dsy-card dsy-card-compact animate-scaleTo1 overflow-hidden rounded-lg bg-white bg-opacity-40"
-                  onClick={selected.onItemClick(item.id)}
                 >
                   <figure>
                     <img
                       src={item.imgSrc}
                       alt={item.name}
-                      className="m-auto cursor-pointer object-contain transition-all duration-300 hover:scale-105"
+                      className="aspect-[3/2] cursor-pointer object-cover transition-all duration-300 hover:scale-105"
                       onDoubleClick={() => openAssetPreviewDialog(item.imgSrc)}
                     />
                   </figure>
                   <div className="dsy-card-body gap-0">
                     <h2 className="text-lg">{item.name}</h2>
                     <p>
-                      <ProductPrice product={item} />
+                      <span className="text-xl text-[#e63740] max-sm:text-lg">
+                        {item.isSale
+                          ? Math.round((1 - item.salePrice / item.price) * 100) + "%"
+                          : item.price === 0
+                          ? "100%"
+                          : ""}
+                      </span>{" "}
+                      <span className="text-xl font-bold max-sm:text-lg">
+                        {item.isSale
+                          ? item.salePrice.toLocaleString()
+                          : item.price === 0
+                          ? "Free"
+                          : item.price.toLocaleString()}
+                      </span>
+                      {item.price === 0 ? " " : "원 "}
+                      <span className="text-[#999999] line-through">
+                        {item.isSale && item.price.toLocaleString() + "원"}
+                      </span>
                     </p>
                   </div>
                   <div className="dsy-join w-full rounded-none">
@@ -61,7 +99,7 @@ export default function Page() {
                     </button>
                     <button
                       type="button"
-                      className="dsy-join-item dsy-btn flex-1 border-none bg-orange-200"
+                      className="dsy-join-item dsy-btn flex-1 border-none bg-orange-200 max-sm:hidden"
                     >
                       <FaIcon icon={faCreditCard} /> 구매
                     </button>
@@ -72,81 +110,105 @@ export default function Page() {
         )}
       </ColumnList>
 
-      <div className="dsy-drawer dsy-drawer-end">
-        <input id="cart" type="checkbox" className="dsy-drawer-toggle" />
-        <div className="dsy-drawer-content dsy-indicator fixed bottom-10 right-10">
-          <span className="dsy-badge dsy-badge-info dsy-indicator-item py-1">
-            {cart.products.length}
-          </span>
-          <Link
-            href="cart"
-            // htmlFor="cart"
-            className="dsy-drawer-button dsy-btn-md dsy-btn bg-white shadow-md"
-          >
-            <FaIcon icon={faCartShopping} fontSize={16} />
-          </Link>
+      <div className="dsy-indicator fixed bottom-10 right-10">
+        <span className="dsy-badge dsy-badge-info dsy-indicator-item py-1">
+          {cart.products.length}
+        </span>
+        <Link
+          href="cart"
+          // htmlFor="cart"
+          className="dsy-drawer-button dsy-btn-md dsy-btn bg-white shadow-md"
+        >
+          <FaIcon icon={faCartShopping} fontSize={16} />
+        </Link>
+      </div>
+
+      <div
+        className={cn("fixed -bottom-full flex w-screen transition-all duration-300", {
+          "bottom-0": !selected.isEmpty,
+        })}
+      >
+        <div className="dsy-card m-auto w-96 rounded-b-none bg-white bg-opacity-60 backdrop-blur-md">
+          <div className="dsy-card-body">
+            <button
+              type="button"
+              className="dsy-btn-ghost dsy-btn-sm dsy-btn-circle dsy-btn absolute right-6 top-4"
+              onClick={() => {
+                selected.clear();
+                setSelectedProductQuantity(1);
+              }}
+            >
+              ✕
+            </button>
+
+            <h2 className="text-lg">{selectedProduct?.name}</h2>
+            <p>
+              <span className="text-xl text-[#e63740] max-sm:text-lg">
+                {selectedProduct?.isSale
+                  ? Math.round((1 - selectedProduct?.salePrice / selectedProduct?.price) * 100) +
+                    "%"
+                  : selectedProduct?.price === 0
+                  ? "100%"
+                  : ""}
+              </span>{" "}
+              <span className="text-xl font-bold max-sm:text-lg">
+                {selectedProduct?.isSale
+                  ? (selectedProduct?.salePrice * selectedProductQuantity).toLocaleString()
+                  : selectedProduct?.price === 0
+                  ? "Free"
+                  : (selectedProduct?.price || 0 * selectedProductQuantity).toLocaleString()}
+              </span>
+              {selectedProduct?.price === 0 ? " " : "원 "}
+              <span className="text-[#999999] line-through">
+                {selectedProduct?.isSale &&
+                  (selectedProduct?.price * selectedProductQuantity).toLocaleString() + "원"}
+              </span>
+            </p>
+
+            <div className="h-2"></div>
+
+            <div className="dsy-join w-full">
+              <div className="dsy-join-item flex flex-1">
+                <button
+                  type="button"
+                  className="dsy-join-item dsy-btn inline-block flex-1 border-none bg-white"
+                  onClick={decreaseSelectedProductQuantity}
+                >
+                  <FaIcon icon={faMinus} />
+                </button>
+                <Input
+                  className="inline-block h-full w-10 rounded-none border-none"
+                  value={selectedProductQuantity}
+                />
+                <button
+                  type="button"
+                  className="dsy-join-item dsy-btn inline-block flex-1 border-none bg-white"
+                  onClick={increaseSelectedProductQuantity}
+                >
+                  <FaIcon icon={faPlus} />
+                </button>
+              </div>
+
+              <button
+                type="button"
+                className="dsy-join-item dsy-btn flex-1 border-none bg-orange-200"
+                onClick={() => {
+                  if (selectedProduct === undefined) return;
+                  cart.addProduct(selectedProduct);
+                  cart.changeQuantity({
+                    id: selectedProduct.id,
+                    offset: selectedProductQuantity - 1,
+                  });
+                  selected.clear();
+                  setSelectedProductQuantity(1);
+                }}
+              >
+                <FaIcon icon={faCartPlus} /> 담기
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   );
 }
-
-type Props = {
-  threashold: number[];
-  children: (columnCount: number, index: number) => React.ReactNode;
-};
-
-function ColumnList(props: Props) {
-  const { threashold, children } = props;
-
-  const wCount = useSimpleWindowSize(threashold);
-
-  return (
-    <div className="flex items-start justify-center gap-2 p-2">
-      {new Array(wCount).fill(0).map((_, i) => children(wCount, i))}
-    </div>
-  );
-}
-
-function ProductPrice(props: { product: Product }) {
-  const { product: item } = props;
-
-  return (
-    <>
-      <span className="text-xl text-[#e63740]">
-        {item.isSale
-          ? Math.round((1 - item.salePrice / item.price) * 100) + "%"
-          : item.price === 0
-          ? "100%"
-          : ""}
-      </span>{" "}
-      <span className="text-xl font-bold">
-        {item.isSale
-          ? item.salePrice.toLocaleString()
-          : item.price === 0
-          ? "Free"
-          : item.price.toLocaleString()}
-      </span>
-      {item.price === 0 ? " " : "원 "}
-      <span className="text-[#999999] line-through">
-        {item.isSale && item.price.toLocaleString() + "원"}
-      </span>
-    </>
-  );
-}
-
-function SalePercentage(props: { product: Product }) {
-  const { product: item } = props;
-
-  return (
-    <span className="text-xl text-[#e63740]">
-      {item.isSale
-        ? Math.round((1 - item.salePrice / item.price) * 100) + "%"
-        : item.price === 0
-        ? "100%"
-        : ""}
-    </span>
-  );
-}
-
-function ProductPriceSpan(props: { product: Product }) {}

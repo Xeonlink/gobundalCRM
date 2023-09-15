@@ -27,7 +27,7 @@ export default function Page() {
   return (
     <div className="container mx-auto space-y-2 p-2">
       <div className="max-w-full overflow-x-auto">
-        <table className="w-full min-w-max text-sm">
+        <table className="w-full min-w-max text-sm max-sm:hidden">
           <thead>
             <tr>
               <th className="pl-3 text-start font-normal">
@@ -109,10 +109,10 @@ export default function Page() {
                   <span className="min-w-max">
                     <span className="font-bold">
                       {item.isSale
-                        ? item.salePrice.toLocaleString()
+                        ? (item.salePrice * quantity).toLocaleString()
                         : item.price === 0
                         ? "Free"
-                        : item.price.toLocaleString()}
+                        : (item.price * quantity).toLocaleString()}
                     </span>
                     {item.price === 0 ? " " : "원 "}
                   </span>
@@ -130,6 +130,59 @@ export default function Page() {
             ))}
           </tbody>
         </table>
+
+        <ul className="sm:hidden">
+          {cartProducts.map(({ item, quantity }, idx) => (
+            <li className="dsy-card dsy-card-side h-28 even:bg-white even:bg-opacity-40">
+              <figure className="w-1/3 p-2">
+                <img src={item.imgSrc} alt={item.name} className="h-full w-full rounded-lg" />
+              </figure>
+              <div className="dsy-card-body p-6">
+                <h2 className="dsy-card-title text-lg">{item.name}</h2>
+
+                <p className="flex">
+                  <div className="dsy-join">
+                    <button
+                      type="button"
+                      className="dsy-btn-sm dsy-join-item dsy-btn"
+                      onClick={() => cart.decreaseQuantity(idx)}
+                    >
+                      -
+                    </button>
+                    <input
+                      type="number"
+                      className="dsy-join-item w-10 text-center"
+                      value={quantity}
+                    />
+                    <button
+                      type="button"
+                      className="dsy-btn-sm dsy-join-item dsy-btn"
+                      onClick={() => cart.increaseQuantity(idx)}
+                    >
+                      +
+                    </button>
+                  </div>
+                  <span className="flex-1 text-end">
+                    {item.isSale
+                      ? (item.salePrice * quantity).toLocaleString()
+                      : item.price === 0
+                      ? "Free"
+                      : (item.price * quantity).toLocaleString()}
+                  </span>
+                  {item.price === 0 ? " " : "원 "}
+                </p>
+              </div>
+
+              <button
+                type="button"
+                className="absolute right-6 top-6"
+                onClick={() => cart.removeProduct(idx)}
+              >
+                <FaIcon icon={faTrashCan} />
+              </button>
+            </li>
+          ))}
+        </ul>
       </div>
 
       <div className="text-right">
