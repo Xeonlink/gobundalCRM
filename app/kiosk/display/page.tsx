@@ -23,6 +23,7 @@ export default function Page() {
       >
         {products.data?.data.map((item, idx) => (
           <img
+            key={idx}
             src={item.imgSrc}
             alt={"전시용 이미지 " + idx}
             className="h-screen w-full object-contain"
