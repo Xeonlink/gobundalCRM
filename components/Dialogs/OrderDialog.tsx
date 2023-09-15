@@ -35,9 +35,9 @@ import {
   faTrashCan,
   faX,
 } from "@fortawesome/free-solid-svg-icons";
+import { DateChanger } from "../DateChanger";
 import { FaIcon } from "../FaIcon";
 import { Input } from "../Input";
-import { NewDateChanger } from "../NewDateChanger";
 import { ProductSelector } from "../Selectors/ProductSelector";
 
 type ProductPayload<T extends HTMLElement> = { index: number; e: React.ChangeEvent<T> };
@@ -157,7 +157,7 @@ export function OrderDialog(props: Props) {
             <span className="dsy-label-text min-w-fit">
               <FaIcon icon={faCalendarAlt} /> 주문날짜
             </span>
-            <NewDateChanger
+            <DateChanger
               date={order.date}
               onChange={orderActions.setDate}
               className="w-full max-w-[15rem]"

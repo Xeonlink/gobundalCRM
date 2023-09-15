@@ -31,7 +31,7 @@ export default function Page() {
       state.coupon = e.target.value;
     },
     onPopulationChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
-      state.population = parseInt(e.target.value) || state.population;
+      state.population = Number(e.target.value);
     },
     reset: () => defaultTeam,
   });
@@ -168,7 +168,7 @@ export default function Page() {
           <button
             type="button"
             className="dsy-join-item dsy-btn w-1/2 border-none bg-orange-300"
-            onChange={() => createTeam.mutate()}
+            onClick={() => createTeam.mutate()}
             disabled={createTeam.isLoading || !isValid}
           >
             <FaIcon icon={faHandshakeAngle} /> 등록하기
