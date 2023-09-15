@@ -133,7 +133,10 @@ export default function Page() {
 
         <ul className="sm:hidden">
           {cartProducts.map(({ item, quantity }, idx) => (
-            <li className="dsy-card dsy-card-side h-28 even:bg-white even:bg-opacity-40">
+            <li
+              className="dsy-card dsy-card-side h-28 even:bg-white even:bg-opacity-40"
+              key={item.id}
+            >
               <figure className="w-1/3 p-2">
                 <img src={item.imgSrc} alt={item.name} className="h-full w-full rounded-lg" />
               </figure>
