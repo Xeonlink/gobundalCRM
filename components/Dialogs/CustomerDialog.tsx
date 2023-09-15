@@ -82,6 +82,16 @@ export function CustomerDialog(props: Props) {
   return (
     <dialog ref={props.ref} className="dsy-modal">
       <form method="dialog" className="dsy-modal-box w-96 bg-opacity-60 backdrop-blur-md">
+        <button
+          type="button"
+          className="dsy-btn-ghost dsy-btn-sm dsy-btn-circle dsy-btn absolute right-6 top-4"
+          onClick={props.closeSelf}
+        >
+          ✕
+        </button>
+
+        <h1 className="text-lg font-bold">고객</h1>
+
         <div className="dsy-form-control">
           <label htmlFor="name" className="dsy-label gap-2 py-1">
             <span className="dsy-label-text min-w-fit">
@@ -153,16 +163,6 @@ export function CustomerDialog(props: Props) {
         </div>
 
         <div className="dsy-modal-action">
-          {/* Close */}
-          <button
-            type="button"
-            className="dsy-btn-sm dsy-btn"
-            disabled={isLoading}
-            onClick={props.closeSelf}
-          >
-            <FaIcon icon={faX} isLoading={isLoading} value="닫기" />
-          </button>
-
           {/* Clear */}
           <button
             type="button"

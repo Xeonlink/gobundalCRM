@@ -13,6 +13,7 @@ import {
   faPerson,
   faReceipt,
   faRobot,
+  faTv,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
 import clsx from "clsx";
@@ -33,6 +34,7 @@ export function AdminNavbar() {
   const manageToggle = useToggle(false);
 
   const isDashboard = path.startsWith("/dashboard");
+  const isAdminDisplay = path.startsWith("/admin/display");
   const isAdminTeams = path.startsWith("/admin/teams");
   const isAdminOrders = path.startsWith("/admin/orders");
   const isAdminProducts = path.startsWith("/admin/products");
@@ -40,7 +42,7 @@ export function AdminNavbar() {
   const isAdminAssets = path.startsWith("/admin/assets");
 
   return (
-    <nav className="flex overflow-hidden bg-black bg-opacity-70 text-sm text-white transition-all duration-500 md:h-screen md:w-12 md:flex-col md:flex-wrap md:hover:w-32">
+    <nav className="flex overflow-hidden bg-black bg-opacity-70 text-sm text-white transition-all duration-500 md:h-screen md:w-12 md:flex-col md:flex-wrap md:hover:w-40">
       <div className="p-2 max-md:h-full md:w-full">
         <Image
           src={IcoLogo}
@@ -54,6 +56,11 @@ export function AdminNavbar() {
           <li>
             <Link href="/dashboard" className={link``} aria-selected={isDashboard}>
               <FaIcon className="md:mr-2 md:w-5" icon={faChartLine} /> 대시보드
+            </Link>
+          </li>
+          <li>
+            <Link href="/admin/display" className={link``} aria-selected={isAdminDisplay}>
+              <FaIcon className="md:mr-2 md:w-5" icon={faTv} /> 디스플레이
             </Link>
           </li>
         </ul>

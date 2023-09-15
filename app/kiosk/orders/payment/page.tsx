@@ -117,14 +117,14 @@ export default function Page(_: PageProps) {
     <div>
       <h1 className="py-8 text-center text-3xl font-bold">택배 정보</h1>
 
-      <div className="mx-auto flex flex-wrap justify-center gap-2 space-y-3">
-        <fieldset className="m-auto w-80 rounded-lg bg-white bg-opacity-40 p-4">
+      <div className="mx-auto flex flex-wrap items-start justify-evenly gap-2">
+        <fieldset className="mt-3 rounded-lg bg-white bg-opacity-40 p-4">
           <legend className="text-center">
             <FaIcon icon={faPaperPlane} fontSize={16} /> 보내는 사람
           </legend>
 
           <div className="dsy-form-control px-2">
-            <label htmlFor="sender-name" className="dsy-label">
+            <label htmlFor="sender-name" className="dsy-label gap-2">
               <span className="dsy-label-text">
                 <FaIcon icon={faSignature} /> 이름
               </span>
@@ -140,7 +140,7 @@ export default function Page(_: PageProps) {
           </div>
 
           <div className="dsy-form-control px-2">
-            <label htmlFor="sender-phone" className="dsy-label">
+            <label htmlFor="sender-phone" className="dsy-label gap-2">
               <span className="dsy-label-text">
                 <FaIcon icon={faMobileScreenButton} /> 전화번호
               </span>
@@ -157,7 +157,7 @@ export default function Page(_: PageProps) {
           </div>
 
           <div className="dsy-form-control px-2">
-            <label htmlFor="memo" className="dsy-label">
+            <label htmlFor="memo" className="dsy-label gap-2">
               <span className="dsy-label-text">
                 <FaIcon icon={faNoteSticky} /> 메모
               </span>
@@ -172,13 +172,13 @@ export default function Page(_: PageProps) {
           </div>
         </fieldset>
 
-        <fieldset className="m-auto w-80 rounded-lg bg-white bg-opacity-40 p-4">
+        <fieldset className="mt-3 rounded-lg bg-white bg-opacity-40 p-4">
           <legend className="text-center">
             <FaIcon icon={faPaperPlane} fontSize={16} rotation={90} /> 받는 사람
           </legend>
 
           <div className="dsy-form-control px-2">
-            <label htmlFor="same-as-sender" className="dsy-label">
+            <label htmlFor="same-as-sender" className="dsy-label gap-2">
               <span className="dsy-label-text">
                 <FaIcon icon={faPaperPlane} /> 보내는 사람과
               </span>
@@ -194,7 +194,7 @@ export default function Page(_: PageProps) {
           </div>
 
           <div className="dsy-form-control px-2">
-            <label htmlFor="receiver-name" className="dsy-label">
+            <label htmlFor="receiver-name" className="dsy-label gap-2">
               <span className="dsy-label-text">
                 <FaIcon icon={faSignature} /> 이름
               </span>
@@ -210,7 +210,7 @@ export default function Page(_: PageProps) {
           </div>
 
           <div className="dsy-form-control px-2">
-            <label htmlFor="receiver-phone" className="dsy-label">
+            <label htmlFor="receiver-phone" className="dsy-label gap-2">
               <span className="dsy-label-text">
                 <FaIcon icon={faMobileScreenButton} /> 전화번호
               </span>
@@ -226,7 +226,7 @@ export default function Page(_: PageProps) {
           </div>
 
           <div className="dsy-form-control px-2">
-            <label htmlFor="receiver-address" className="dsy-label">
+            <label htmlFor="receiver-address" className="dsy-label gap-2">
               <span className="dsy-label-text">
                 <FaIcon icon={faSignsPost} /> 주소
               </span>
@@ -243,7 +243,7 @@ export default function Page(_: PageProps) {
           </div>
 
           <div className="dsy-form-control px-2">
-            <label htmlFor="receiver-address-detail" className="dsy-label">
+            <label htmlFor="receiver-address-detail" className="dsy-label gap-2">
               <span className="dsy-label-text">
                 <FaIcon icon={faBuilding} /> 상세주소
               </span>
@@ -259,7 +259,7 @@ export default function Page(_: PageProps) {
           </div>
         </fieldset>
 
-        <fieldset className="m-auto max-w-fit rounded-lg bg-white bg-opacity-40 p-4">
+        <fieldset className="mt-3 max-w-fit rounded-lg bg-white bg-opacity-40 p-4">
           <legend className="text-center">
             <FaIcon icon={faBoxesStacked} /> 배송물품
           </legend>
@@ -288,6 +288,19 @@ export default function Page(_: PageProps) {
                   </td>
                 </tr>
               ))}
+              <tr className="text-center">
+                <td className="w-28 p-2"></td>
+                <td className="w-14 p-2"></td>
+                <td className="w-28 p-2">
+                  {cartProducts
+                    .map(
+                      ({ item, quantity }) =>
+                        (item.isSale ? item.salePrice : item.price) * quantity,
+                    )
+                    .reduce((acc, cur) => acc + cur, 0)
+                    .toLocaleString()}
+                </td>
+              </tr>
             </tbody>
           </table>
         </fieldset>

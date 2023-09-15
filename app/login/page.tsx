@@ -88,7 +88,7 @@ export default function Page(props: PageProps<any, SearchParams>) {
       />
 
       <form
-        className="dsy-modal-box m-auto max-w-[20rem] bg-opacity-60 backdrop-blur-md"
+        className="dsy-modal-box m-auto max-w-[20rem] bg-opacity-60 shadow-md backdrop-blur-md"
         onSubmit={(e) => e.preventDefault()}
       >
         <h1 className="mb-4 text-center text-lg">

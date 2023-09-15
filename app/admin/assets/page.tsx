@@ -2,6 +2,7 @@
 
 import { useAssets } from "@/api/assets";
 import { useDeleteProducts } from "@/api/products";
+import { ColumnList } from "@/components/ColumnList";
 import { AssetCreateDialog } from "@/components/Dialogs/AssetDialog/AssetCreateDialog";
 import { AssetUpdateDialog } from "@/components/Dialogs/AssetDialog/AssetUpdateDialog";
 import { ImgIcon } from "@/components/ImgIcon";
@@ -41,9 +42,9 @@ export default function Page() {
   };
 
   return (
-    <main className="h-full flex-1 overflow-auto p-3">
+    <main className="flex h-screen flex-1 flex-col">
       {/* Toolbar */}
-      <div className="mb-3 flex flex-wrap items-center gap-3">
+      <div className="flex flex-wrap items-center gap-3 p-3">
         {/* Refresh */}
         <button type="button" className="dsy-btn-sm dsy-btn" onClick={() => assets.refetch()}>
           <FaIcon icon={faArrowsRotate} /> 새로고침
@@ -65,22 +66,37 @@ export default function Page() {
         </button>
       </div>
 
-      <ol className="grid grid-cols-[repeat(auto-fill,_200px)] items-start gap-3">
-        {assets.data?.data?.map((item) => (
-          <li
-            key={item.id}
-            className={cn("btn bg-transparent p-2 text-start active:scale-90", {
-              "bg-white bg-opacity-70": selected.includes(item.id),
-            })}
-            onClick={selected.onItemClick(item.id)}
-            onDoubleClick={() => openAssetUpdateDialog(item.id)}
-          >
-            <img src={item.src} alt={item.name} className="m-auto object-contain" />
-            <h1 className="overflow-hidden text-ellipsis font-bold">{item.name}</h1>
-            <p className="text-sm">{item.mimeType}</p>
-          </li>
-        ))}
-      </ol>
+      <ColumnList
+        threashold={[0, 640, 900, 1200, Infinity]}
+        className="flex-1 items-start justify-center gap-2 space-x-2 overflow-auto text-center"
+      >
+        {(count, columnIndex) => (
+          <ol className="mb-2 inline-block w-72 space-y-2 text-left align-top">
+            {assets.data?.data
+              ?.filter((_, index) => index % count === columnIndex)
+              .map((item) => (
+                <li
+                  key={item.id}
+                  className="dsy-card dsy-card-compact animate-scaleTo1 cursor-pointer overflow-hidden rounded-lg bg-white bg-opacity-60"
+                  onClick={selected.onItemClick(item.id)}
+                  onDoubleClick={() => openAssetUpdateDialog(item.id)}
+                >
+                  <figure>
+                    <img
+                      src={item.src}
+                      alt={item.name}
+                      className="m-auto cursor-pointer object-contain transition-all hover:scale-105"
+                    />
+                  </figure>
+                  <div className="dsy-card-body gap-0">
+                    <h2 className="font-bold">{item.name}</h2>
+                    <p className="text-sm">{item.mimeType}</p>
+                  </div>
+                </li>
+              ))}
+          </ol>
+        )}
+      </ColumnList>
     </main>
   );
 }
