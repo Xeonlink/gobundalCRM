@@ -1,16 +1,15 @@
 "use client";
 
 import { useDeleteTeams, useTeams } from "@/api/teams";
-import { DateChanger } from "@/components/DateChanger";
 import { TeamDialog } from "@/components/Dialogs/TeamDialog";
 import { ImgIcon } from "@/components/ImgIcon";
+import { Input } from "@/components/Input";
 import { useModal } from "@/extra/modal";
 import { PageProps } from "@/extra/type";
 import { useAuth } from "@/hooks/useAuth";
 import { useExcel } from "@/hooks/useExcel";
 import { useItemSelection } from "@/hooks/useItemSelection";
 import IcoExcel from "@/public/icons/excel.png";
-import { faCalendarDays } from "@fortawesome/free-regular-svg-icons";
 import {
   faArrowsRotate,
   faCheck,
@@ -25,7 +24,7 @@ import {
   faTicket,
   faTrashCan,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import dayjs from "dayjs";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -37,81 +36,87 @@ export default function Page(props: PageProps<any, SearchParams>) {
   const { date = dayjs().format("YYYY-MM-DD") } = searchParams;
 
   const auth = useAuth();
-  const navigate = useRouter();
-  const modalCtrl = useModal();
+  const router = useRouter();
   const selected = useItemSelection();
   const excel = useExcel();
   const teams = useTeams(date, {
     enabled: auth.isSignIn,
   });
-  const eraseTeams = useDeleteTeams(selected.ids, {
+  const deleteItems = useDeleteTeams(selected.ids, {
     onSuccess: () => selected.clear(),
   });
 
-  const onDateChange = (date: string) => {
-    navigate.replace(`teams?date=${date}`);
-  };
-  const openCreateTeamDialog = () => {
-    modalCtrl.open(<TeamDialog mode="CREATE" />);
-  };
-  const openUpdateTeamDialog = (id: string) => {
-    modalCtrl.open(<TeamDialog mode="UPDATE" teamId={id} />);
+  const onDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    router.replace(`teams?date=${e.target.value}`);
   };
   const onDeleteClick = () => {
     if (selected.ids.length === 0) return;
     if (!confirm("정말로 삭제하시겠습니까?")) return;
-    eraseTeams.mutate();
+    deleteItems.mutate();
   };
   const onDownloadClick = () => {
     excel.download(teams.data?.data!, "팀");
   };
 
   return (
-    <main className="h-full flex-1 overflow-auto p-3">
+    <main className="min-h-screen">
       {/* Toolbar */}
-      <div className="mb-3 flex flex-wrap items-center gap-3">
-        {/* 오늘 날짜로 재검색 */}
-        <Link href={`teams?date=${dayjs().format("YYYY-MM-DD")}`} className="dsy-btn-sm dsy-btn">
-          <FaIcon icon={faCalendarDays} /> 오늘
-        </Link>
+      <ul className="flex w-full flex-wrap items-center justify-center bg-base-200">
+        <li className="mr-2">
+          <Input
+            type="date"
+            value={date}
+            onChange={onDateChange}
+            max={dayjs().format("YYYY-MM-DD")}
+            className="dsy-input-sm"
+          />
+        </li>
 
-        {/* 해당 날짜로 검색 */}
-        <DateChanger date={date} onChange={onDateChange} />
+        <li>
+          {/* Refresh */}
+          <button type="button" className="dsy-btn" onClick={() => teams.refetch()}>
+            <FontAwesomeIcon icon={faArrowsRotate} /> 새로고침
+          </button>
+        </li>
 
-        {/* Refresh */}
-        <button type="button" className="dsy-btn-sm dsy-btn" onClick={() => teams.refetch()}>
-          <FaIcon icon={faArrowsRotate} /> 새로고침
-        </button>
+        <li>
+          {/* Cratet New Team */}
+          <Link href="teams/create" className="dsy-btn">
+            <FontAwesomeIcon icon={faPlus} /> 팀 만들기
+          </Link>
+        </li>
 
-        {/* Cratet New Team */}
-        <button type="button" className="dsy-btn-sm dsy-btn" onClick={openCreateTeamDialog}>
-          <FaIcon icon={faPlus} /> 팀 만들기
-        </button>
-        {/* Delete */}
-        <button type="button" className="dsy-btn-sm dsy-btn" onClick={onDeleteClick}>
-          <FaIcon icon={faTrashCan} /> 선택삭제
-        </button>
+        <li>
+          {/* Delete */}
+          <button type="button" className="dsy-btn" onClick={onDeleteClick}>
+            <FontAwesomeIcon icon={faTrashCan} /> 선택삭제
+          </button>
+        </li>
 
-        {/* 엑셀로 다운로드하기 */}
-        <button type="button" className="dsy-btn-sm dsy-btn" onClick={onDownloadClick}>
-          <ImgIcon src={IcoExcel} alt="엑셀로 변환" fontSize={20} /> 엑셀로 변환
-        </button>
+        <li>
+          {/* 엑셀로 다운로드하기 */}
+          <button type="button" className="dsy-btn" onClick={onDownloadClick}>
+            <ImgIcon src={IcoExcel} alt="엑셀로 변환" fontSize={16} /> 엑셀로 변환
+          </button>
+        </li>
 
-        {/* Go To Kiosk */}
-        <Link href="/kiosk/teams" className="dsy-btn-sm dsy-btn">
-          <FaIcon icon={faRobot} /> 키오스크로
-        </Link>
-      </div>
+        <li>
+          {/* Go To Kiosk */}
+          <Link href="/kiosk/teams" className="dsy-btn">
+            <FontAwesomeIcon icon={faRobot} /> 키오스크로
+          </Link>
+        </li>
+      </ul>
 
-      <div className="max-w-full overflow-x-auto">
+      <div className="container m-auto overflow-x-auto p-4">
         <table className="table">
           <thead>
             <tr>
               <th className="rounded-tl-md bg-orange-100" colSpan={3}>
-                <FaIcon icon={faFlag} /> 대표자
+                <FontAwesomeIcon icon={faFlag} /> 대표자
               </th>
               <th className="rounded-tr-md bg-green-100" colSpan={4}>
-                <FaIcon icon={faCircleInfo} /> 정보
+                <FontAwesomeIcon icon={faCircleInfo} /> 정보
               </th>
             </tr>
             <tr>
@@ -119,22 +124,22 @@ export default function Page(props: PageProps<any, SearchParams>) {
                 <input type="checkbox" name="" id="" className="dsy-checkbox dsy-checkbox-xs" />
               </th>
               <th className="bg-orange-50">
-                <FaIcon icon={faSignature} /> 이름
+                <FontAwesomeIcon icon={faSignature} /> 이름
               </th>
               <th className="bg-orange-50">
-                <FaIcon icon={faMobileScreen} /> 전화번호
+                <FontAwesomeIcon icon={faMobileScreen} /> 전화번호
               </th>
               <th className="bg-green-50">
-                <FaIcon icon={faTicket} /> 쿠폰사
+                <FontAwesomeIcon icon={faTicket} /> 쿠폰사
               </th>
               <th className="bg-green-50">
-                <FaIcon icon={faPeopleGroup} /> 인원수
+                <FontAwesomeIcon icon={faPeopleGroup} /> 인원수
               </th>
               <th className="bg-green-50">
-                <FaIcon icon={faCheck} /> 쿠폰승인
+                <FontAwesomeIcon icon={faCheck} /> 쿠폰승인
               </th>
               <th className="rounded-br-md bg-green-50">
-                <FaIcon icon={faPersonWalkingArrowRight} /> 체험완료
+                <FontAwesomeIcon icon={faPersonWalkingArrowRight} /> 체험완료
               </th>
             </tr>
           </thead>
@@ -143,8 +148,7 @@ export default function Page(props: PageProps<any, SearchParams>) {
               <tr
                 key={item.id}
                 onClick={selected.onItemClick(item.id)}
-                onDoubleClick={() => openUpdateTeamDialog(item.id)}
-                onTouchEnd={() => openUpdateTeamDialog(item.id)}
+                onDoubleClick={() => router.push(`teams/${item.id}`)}
               >
                 <td className="max-sm:absolute max-sm:right-3 max-sm:top-3">
                   <input
@@ -157,37 +161,37 @@ export default function Page(props: PageProps<any, SearchParams>) {
                 </td>
                 <td>
                   <label>
-                    <FaIcon icon={faSignature} /> 이름
+                    <FontAwesomeIcon icon={faSignature} /> 이름
                   </label>
                   <span>{item.leaderName}</span>
                 </td>
                 <td>
                   <label>
-                    <FaIcon icon={faMobileScreen} /> 전화번호
+                    <FontAwesomeIcon icon={faMobileScreen} /> 전화번호
                   </label>
                   <span>{item.leaderPhone}</span>
                 </td>
                 <td>
                   <label>
-                    <FaIcon icon={faTicket} /> 쿠폰사
+                    <FontAwesomeIcon icon={faTicket} /> 쿠폰사
                   </label>
                   <span>{item.coupon}</span>
                 </td>
                 <td>
                   <label>
-                    <FaIcon icon={faPeopleGroup} /> 인원수
+                    <FontAwesomeIcon icon={faPeopleGroup} /> 인원수
                   </label>
                   <span>{item.population}</span>
                 </td>
                 <td>
                   <label>
-                    <FaIcon icon={faCheck} /> 쿠폰승인
+                    <FontAwesomeIcon icon={faCheck} /> 쿠폰승인
                   </label>
                   <span>{item.isApproved ? "O" : "X"}</span>
                 </td>
                 <td>
                   <label>
-                    <FaIcon icon={faPersonWalkingArrowRight} /> 체험완료
+                    <FontAwesomeIcon icon={faPersonWalkingArrowRight} /> 체험완료
                   </label>
                   <span>{item.isLeave ? "O" : "X"}</span>
                 </td>

@@ -1,7 +1,6 @@
-import { OrderProduct } from "@/api/orders";
 import { Product } from "@/api/products";
 import { create } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
+import { createJSONStorage, persist } from "zustand/middleware";
 
 type CartProduct = {
   item: Product;
@@ -9,6 +8,9 @@ type CartProduct = {
 };
 
 interface CartStore {
+  candidate: Product | null;
+  setCandidate: (product: Product) => void;
+  clearCandidate: () => void;
   products: CartProduct[];
   addProduct: (product: Product) => void;
   removeProduct: (idx: number) => void;
@@ -21,6 +23,9 @@ interface CartStore {
 export const useCart = create(
   persist<CartStore>(
     (set, get) => ({
+      candidate: null,
+      setCandidate: (product: Product) => set({ candidate: product }),
+      clearCandidate: () => set({ candidate: null }),
       products: [],
       //
       addProduct: (product: Product) => {
@@ -33,11 +38,7 @@ export const useCart = create(
         const newCartProduct = { item: product, quantity: 1 };
         set({ products: [...get().products, newCartProduct] });
       },
-      removeProduct: (idx: number) => {
-        set({
-          products: get().products.filter((_, i) => i !== idx),
-        });
-      },
+      removeProduct: (idx: number) => set({ products: get().products.filter((_, i) => i !== idx) }),
       increaseQuantity: (idx: number) => {
         const products = [...get().products];
         products[idx].quantity++;
@@ -56,9 +57,7 @@ export const useCart = create(
         products[idx].quantity--;
         set({ products });
       },
-      reset: () => {
-        set({ products: [] });
-      },
+      reset: () => set({ products: [] }),
     }),
     {
       name: "cart-storage",

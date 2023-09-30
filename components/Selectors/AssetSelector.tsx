@@ -18,7 +18,7 @@ import {
   faTrashCan,
   faX,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 type Props = ModalProps<{ onSelect?: (asset: Asset) => void }>;
 
@@ -90,17 +90,17 @@ export default function AssetSelector(props: Props) {
         <div className="dsy-modal-action">
           {/* Close */}
           <button className="dsy-btn-sm dsy-btn">
-            <FaIcon icon={faX} /> 닫기
+            <FontAwesomeIcon icon={faX} /> 닫기
           </button>
 
           {/* Cratet New Order */}
           <button type="button" className="dsy-btn-sm dsy-btn" onClick={openAssetCreateDialog}>
-            <FaIcon icon={faPlus} /> 에셋 추가하기
+            <FontAwesomeIcon icon={faPlus} /> 에셋 추가하기
           </button>
 
           {/* Delete */}
           <button type="button" className="dsy-btn-sm dsy-btn" onClick={onDeleteClick}>
-            <FaIcon icon={faTrashCan} /> 선택삭제
+            <FontAwesomeIcon icon={faTrashCan} /> 선택삭제
           </button>
 
           {/* 엑셀로 다운로드하기 */}
@@ -115,7 +115,7 @@ export default function AssetSelector(props: Props) {
             onClick={onConfirmClick}
             disabled={selected.isEmpty}
           >
-            <FaIcon icon={faCheck} /> 선택
+            <FontAwesomeIcon icon={faCheck} /> 선택
           </button>
         </div>
       </form>

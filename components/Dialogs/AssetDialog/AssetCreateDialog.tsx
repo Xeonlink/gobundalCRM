@@ -13,7 +13,7 @@ import {
   faX,
 } from "@fortawesome/free-solid-svg-icons";
 import { useDropzone } from "react-dropzone";
-import { FaIcon } from "../../FaIcon";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Input } from "../../Input";
 
 const defaultAsset: RawAsset = {
@@ -76,20 +76,20 @@ export function AssetCreateDialog(props: ModalProps) {
               htmlFor="image"
               className="mt-2 flex min-h-[10rem] cursor-pointer items-center justify-center rounded-lg bg-white bg-opacity-90 transition-colors hover:bg-opacity-100"
             >
-              <FaIcon icon={faImage} className="mr-1" /> 이미지를 드래그하거나 클릭하세요.
+              <FontAwesomeIcon icon={faImage} className="mr-1" /> 이미지를 드래그하거나 클릭하세요.
             </label>
           )}
           <input id="image" {...dropZone.getInputProps()} />
         </div>
 
         <div className="dsy-divider">
-          <FaIcon icon={faMagnifyingGlass} /> 상세정보
+          <FontAwesomeIcon icon={faMagnifyingGlass} /> 상세정보
         </div>
 
         <div className="dsy-form-control">
           <label htmlFor="name" className="dsy-label gap-2 py-1">
             <span className="dsy-label-text min-w-fit">
-              <FaIcon icon={faSignature} fontSize={16} /> 이름
+              <FontAwesomeIcon icon={faSignature} fontSize={16} /> 이름
             </span>
             <Input
               id="name"
@@ -104,7 +104,7 @@ export function AssetCreateDialog(props: ModalProps) {
         <div className="dsy-form-control">
           <label htmlFor="mimeType" className="dsy-label gap-2 py-1">
             <span className="dsy-label-text min-w-fit">
-              <FaIcon icon={faShapes} fontSize={16} /> 형식
+              <FontAwesomeIcon icon={faShapes} fontSize={16} /> 형식
             </span>
             <Input
               id="mimeType"
@@ -124,7 +124,7 @@ export function AssetCreateDialog(props: ModalProps) {
             disabled={isCleared || isLoading}
             onClick={assetActions.reset}
           >
-            <FaIcon icon={faNotdef} rotation={90} isLoading={isLoading} value="초기화" />
+            <FontAwesomeIcon icon={faNotdef} rotation={90} /> 초기화
           </button>
 
           {/* Save */}
@@ -134,7 +134,7 @@ export function AssetCreateDialog(props: ModalProps) {
             onClick={() => createItem.mutate()}
             disabled={!isValid || isLoading}
           >
-            <FaIcon icon={faFloppyDisk} isLoading={isLoading} value="저장" />
+            <FontAwesomeIcon icon={faFloppyDisk} /> 저장
           </button>
         </div>
       </form>

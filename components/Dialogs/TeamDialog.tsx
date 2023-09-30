@@ -28,7 +28,7 @@ import {
   faX,
 } from "@fortawesome/free-solid-svg-icons";
 import { DateChanger } from "../DateChanger";
-import { FaIcon } from "../FaIcon";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Input } from "../Input";
 
 type Props = ModalProps<{ mode: "CREATE"; base?: RawTeam } | { mode: "UPDATE"; teamId: string }>;
@@ -111,7 +111,7 @@ export function TeamDialog(props: Props) {
           <div className="dsy-form-control">
             <label htmlFor="date" className="dsy-label gap-2 py-1">
               <span className="dsy-label-text min-w-fit">
-                <FaIcon icon={faCalendarAlt} /> 날짜
+                <FontAwesomeIcon icon={faCalendarAlt} /> 날짜
               </span>
               <DateChanger date={team.date} onChange={teamActions.setDate} />
             </label>
@@ -120,7 +120,7 @@ export function TeamDialog(props: Props) {
           <div className="dsy-form-control">
             <label htmlFor="leader-name" className="dsy-label gap-2 py-1">
               <span className="dsy-label-text min-w-fit">
-                <FaIcon icon={faSignature} /> 이름
+                <FontAwesomeIcon icon={faSignature} /> 이름
               </span>
               <Input
                 className="w-full max-w-[15rem]"
@@ -137,7 +137,7 @@ export function TeamDialog(props: Props) {
           <div className="dsy-form-control">
             <label htmlFor="leader-phone" className="dsy-label gap-2 py-1">
               <span className="dsy-label-text min-w-fit">
-                <FaIcon icon={faMobileScreenButton} /> 전화번호
+                <FontAwesomeIcon icon={faMobileScreenButton} /> 전화번호
               </span>
               <Input
                 className="w-full max-w-[15rem]"
@@ -155,7 +155,7 @@ export function TeamDialog(props: Props) {
           <div className="dsy-form-control">
             <label htmlFor="coupon" className="dsy-label gap-2 py-1">
               <span className="dsy-label-text min-w-fit">
-                <FaIcon icon={faBuilding} /> 쿠폰사
+                <FontAwesomeIcon icon={faBuilding} /> 쿠폰사
               </span>
               <Input
                 className="w-full max-w-[15rem]"
@@ -172,7 +172,7 @@ export function TeamDialog(props: Props) {
           <div className="dsy-form-control">
             <label htmlFor="population" className="dsy-label gap-2 py-1">
               <span className="dsy-label-text min-w-fit">
-                <FaIcon icon={faPeopleGroup} /> 인원수
+                <FontAwesomeIcon icon={faPeopleGroup} /> 인원수
               </span>
               <Input
                 className="w-full max-w-[15rem]"
@@ -189,7 +189,8 @@ export function TeamDialog(props: Props) {
           <div className="dsy-form-control">
             <label htmlFor="is-approved" className="dsy-label gap-2 py-1">
               <span className="dsy-label-text min-w-fit">
-                <FaIcon icon={team.isApproved ? faThumbsUp : faThumbsDown} /> 쿠폰이 승인되었습니까?
+                <FontAwesomeIcon icon={team.isApproved ? faThumbsUp : faThumbsDown} /> 쿠폰이
+                승인되었습니까?
               </span>
               <input
                 type="checkbox"
@@ -205,7 +206,7 @@ export function TeamDialog(props: Props) {
           <div className="dsy-form-control">
             <label htmlFor="is-leave" className="dsy-label gap-2 py-1">
               <span className="dsy-label-text min-w-fit">
-                <FaIcon icon={team.isLeave ? faDoorOpen : faDoorClosed} /> 손님이 체험장을
+                <FontAwesomeIcon icon={team.isLeave ? faDoorOpen : faDoorClosed} /> 손님이 체험장을
                 나갔습니까?
               </span>
               <input
@@ -228,7 +229,7 @@ export function TeamDialog(props: Props) {
             disabled={isCleared || isLoading}
             onClick={teamActions.reset}
           >
-            <FaIcon icon={faNotdef} rotation={90} isLoading={isLoading} value="초기화" />
+            <FontAwesomeIcon icon={faNotdef} rotation={90} /> 초기화
           </button>
 
           {/* Copy */}
@@ -238,7 +239,7 @@ export function TeamDialog(props: Props) {
             disabled={isLoading}
             onClick={openItemCopyDialog}
           >
-            <FaIcon icon={faCopy} isLoading={isLoading} value="복제" />
+            <FontAwesomeIcon icon={faCopy} /> 복제
           </button>
 
           {/* Delete */}
@@ -249,7 +250,7 @@ export function TeamDialog(props: Props) {
               disabled={isLoading}
               onClick={() => deleteTeam.mutate()}
             >
-              <FaIcon icon={faTrashAlt} isLoading={isLoading} value="삭제" />
+              <FontAwesomeIcon icon={faTrashAlt} /> 삭제
             </button>
           ) : null}
 
@@ -260,7 +261,7 @@ export function TeamDialog(props: Props) {
             onClick={mode === "CREATE" ? () => createTeam.mutate() : () => updateTeam.mutate()}
             disabled={!isValid || isLoading}
           >
-            <FaIcon icon={faFloppyDisk} isLoading={isLoading} value="저장" />
+            <FontAwesomeIcon icon={faFloppyDisk} /> 저장
           </button>
         </div>
       </form>

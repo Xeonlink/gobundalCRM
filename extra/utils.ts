@@ -1,6 +1,8 @@
 import clsx from "clsx";
 import { twMerge } from "tailwind-merge";
 import { EmptyObject } from "./type";
+import dynamic from "next/dynamic";
+import { CognitoUserAttribute } from "amazon-cognito-identity-js";
 
 export function toHyphenPhone(str: string): string {
   return str
@@ -67,4 +69,32 @@ export function diff<T extends object>(target1: T, target2: T): Partial<T> {
     }
   }
   return result;
+}
+
+export function innerLog<T>(a: T) {
+  console.log(a);
+  return a;
+}
+
+export function csrOnly(importPromise: Promise<any>) {
+  return dynamic(() => importPromise, { ssr: false });
+}
+
+export class CognitoUserAttributeBuilder extends Map<string, string> {
+  public build() {
+    return Object.entries(Object.fromEntries(this)).map(
+      ([key, value]) => new CognitoUserAttribute({ Name: key, Value: value }),
+    );
+  }
+
+  public setIf(condition: boolean, key: string, value: string) {
+    if (condition) {
+      this.set(key, value);
+    }
+    return this;
+  }
+}
+
+export function formDataToJson(formData: FormData) {
+  return Object.entries(formData.entries());
 }

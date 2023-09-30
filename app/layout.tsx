@@ -16,7 +16,7 @@ export default function RootLayout(props: PropsWithChildren) {
   const { children } = props;
 
   return (
-    <html lang="en">
+    <html lang="ko">
       <ReactQueryProvider>
         {children}
         <ModalPlacer />

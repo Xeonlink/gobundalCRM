@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ImgIcon } from "./ImgIcon";
-import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowRightToBracket,
   faCartPlus,
@@ -37,53 +37,53 @@ export function NavBar() {
           </label>
           <ul
             tabIndex={0}
-            className="dropdown-content menu rounded-box menu-sm z-[1] mt-3 w-52 bg-base-100 p-2 shadow"
+            className="dropdown-content menu menu-sm rounded-box z-[1] mt-3 w-52 bg-base-100 p-2 shadow"
           >
             <li>
               <Link href="/kiosk/orders" className="py-2">
-                <FaIcon icon={faDisplay} /> 키오스크
+                <FontAwesomeIcon icon={faDisplay} /> 키오스크
               </Link>
               <ul className="p-2">
                 <li>
                   <Link href="/kiosk/teams" className="py-2">
-                    <FaIcon icon={faUserPlus} /> 팀 키오스크
+                    <FontAwesomeIcon icon={faUserPlus} /> 팀 키오스크
                   </Link>
                 </li>
                 <li>
                   <Link href="/kiosk/orders" className="py-2">
-                    <FaIcon icon={faCartPlus} /> 송장 키오스크
+                    <FontAwesomeIcon icon={faCartPlus} /> 송장 키오스크
                   </Link>
                 </li>
               </ul>
             </li>
             <li>
               <Link href="orders" className="py-2">
-                <FaIcon icon={faTable} /> 관리
+                <FontAwesomeIcon icon={faTable} /> 관리
               </Link>
               <ul className="p-2">
                 <li>
                   <Link href="teams" className="py-2">
-                    <FaIcon icon={faPeopleGroup} /> 팀 관리
+                    <FontAwesomeIcon icon={faPeopleGroup} /> 팀 관리
                   </Link>
                 </li>
                 <li>
                   <Link href="orders" className="py-2">
-                    <FaIcon icon={faReceipt} /> 주문 관리
+                    <FontAwesomeIcon icon={faReceipt} /> 주문 관리
                   </Link>
                 </li>
                 <li>
                   <Link href="products" className="py-2">
-                    <FaIcon icon={faCartShopping} /> 상품 관리
+                    <FontAwesomeIcon icon={faCartShopping} /> 상품 관리
                   </Link>
                 </li>
                 <li>
                   <Link href="customers" className="py-2">
-                    <FaIcon icon={faPerson} /> 고객 관리
+                    <FontAwesomeIcon icon={faPerson} /> 고객 관리
                   </Link>
                 </li>
                 <li>
                   <Link href="assets" className="py-2">
-                    <FaIcon icon={faImage} /> 자료 관리
+                    <FontAwesomeIcon icon={faImage} /> 자료 관리
                   </Link>
                 </li>
               </ul>
@@ -98,7 +98,7 @@ export function NavBar() {
       </div>
       <div className="navbar-end">
         <a className="btn-sm btn">
-          <FaIcon icon={faArrowRightToBracket} rotation={180} /> 로그아웃
+          <FontAwesomeIcon icon={faArrowRightToBracket} rotation={180} /> 로그아웃
         </a>
       </div>
     </div>

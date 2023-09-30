@@ -1,0 +1,7 @@
+.slick-slide {
+  padding: 0px 0.5rem;
+}
+
+.slick-dots {
+  position: static !important;
+}

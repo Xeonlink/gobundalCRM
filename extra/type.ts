@@ -9,10 +9,10 @@ export interface PageProps<P = {}, S = {}> {
   searchParams: S;
 }
 
-export interface LayoutParam<P = {}> {
+export type LayoutParam<P = {}, L = {}> = {
   children?: React.ReactNode;
   params?: PageProps<P>;
-}
+} & L;
 
 export type PropsWithClassName<T = {}> = T & {
   className?: string;
