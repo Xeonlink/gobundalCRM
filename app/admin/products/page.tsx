@@ -307,7 +307,7 @@ export default function Page(props: PageProps<{}, SearchParams>) {
 
           <div className="space-y-2">
             {productCategories?.data.map((item, i) => (
-              <div className="dsy-join w-full">
+              <div className="dsy-join w-full" key={item.id}>
                 <Input
                   id="name"
                   placeholder="한라봉청 3kg"
