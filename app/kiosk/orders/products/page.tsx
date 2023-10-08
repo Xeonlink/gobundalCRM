@@ -16,7 +16,7 @@ import {
   faPlus,
   faX,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -95,13 +95,13 @@ export default function Page() {
                       className="dsy-join-item dsy-btn flex-1 border-none bg-white"
                       onClick={() => onProductCartClick(item)}
                     >
-                      <FaIcon icon={faCartPlus} /> 장바구니
+                      <FontAwesomeIcon icon={faCartPlus} /> 장바구니
                     </button>
                     <button
                       type="button"
                       className="dsy-join-item dsy-btn flex-1 border-none bg-orange-200 max-sm:hidden"
                     >
-                      <FaIcon icon={faCreditCard} /> 구매
+                      <FontAwesomeIcon icon={faCreditCard} /> 구매
                     </button>
                   </div>
                 </li>
@@ -119,7 +119,7 @@ export default function Page() {
           // htmlFor="cart"
           className="dsy-drawer-button dsy-btn-md dsy-btn bg-white shadow-md"
         >
-          <FaIcon icon={faCartShopping} fontSize={16} />
+          <FontAwesomeIcon icon={faCartShopping} fontSize={16} />
         </Link>
       </div>
 
@@ -174,7 +174,7 @@ export default function Page() {
                   className="dsy-join-item dsy-btn inline-block flex-1 border-none bg-white"
                   onClick={decreaseSelectedProductQuantity}
                 >
-                  <FaIcon icon={faMinus} />
+                  <FontAwesomeIcon icon={faMinus} />
                 </button>
                 <Input
                   className="inline-block h-full w-10 rounded-none border-none"
@@ -185,7 +185,7 @@ export default function Page() {
                   className="dsy-join-item dsy-btn inline-block flex-1 border-none bg-white"
                   onClick={increaseSelectedProductQuantity}
                 >
-                  <FaIcon icon={faPlus} />
+                  <FontAwesomeIcon icon={faPlus} />
                 </button>
               </div>
 
@@ -203,7 +203,7 @@ export default function Page() {
                   setSelectedProductQuantity(1);
                 }}
               >
-                <FaIcon icon={faCartPlus} /> 담기
+                <FontAwesomeIcon icon={faCartPlus} /> 담기
               </button>
             </div>
           </div>

@@ -23,7 +23,7 @@ import {
   faX,
 } from "@fortawesome/free-solid-svg-icons";
 import React from "react";
-import { FaIcon } from "../FaIcon";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Input } from "../Input";
 
 const defaultCustomer: RawCustomer = {
@@ -95,7 +95,7 @@ export function CustomerDialog(props: Props) {
         <div className="dsy-form-control">
           <label htmlFor="name" className="dsy-label gap-2 py-1">
             <span className="dsy-label-text min-w-fit">
-              <FaIcon icon={faSignature} /> 이름
+              <FontAwesomeIcon icon={faSignature} /> 이름
             </span>
             <Input
               className="w-full max-w-[15rem]"
@@ -112,7 +112,7 @@ export function CustomerDialog(props: Props) {
         <div className="dsy-form-control">
           <label htmlFor="phone" className="dsy-label gap-2 py-1">
             <span className="dsy-label-text min-w-fit">
-              <FaIcon icon={faMobileScreen} /> 전화번호
+              <FontAwesomeIcon icon={faMobileScreen} /> 전화번호
             </span>
             <Input
               className="w-full max-w-[15rem]"
@@ -130,7 +130,7 @@ export function CustomerDialog(props: Props) {
         <div className="dsy-form-control">
           <label htmlFor="receiver-address" className="dsy-label gap-2 py-1">
             <span className="dsy-label-text min-w-fit">
-              <FaIcon icon={faSignsPost} /> 주소
+              <FontAwesomeIcon icon={faSignsPost} /> 주소
             </span>
             <Input
               className="w-full max-w-[15rem]"
@@ -148,7 +148,7 @@ export function CustomerDialog(props: Props) {
         <div className="dsy-form-control">
           <label htmlFor="receiver-address-detail" className="dsy-label gap-2 py-1">
             <span className="dsy-label-text min-w-fit">
-              <FaIcon icon={faBuilding} /> 상세주소
+              <FontAwesomeIcon icon={faBuilding} /> 상세주소
             </span>
             <Input
               className="w-full max-w-[15rem]"
@@ -170,7 +170,7 @@ export function CustomerDialog(props: Props) {
             disabled={isCleared || isLoading}
             onClick={customerActions.reset}
           >
-            <FaIcon icon={faNotdef} rotation={90} isLoading={isLoading} value="초기화" />
+            <FontAwesomeIcon icon={faNotdef} rotation={90} /> 초기화
           </button>
 
           {/* Delete */}
@@ -181,7 +181,7 @@ export function CustomerDialog(props: Props) {
               disabled={isLoading}
               onClick={() => deleteItem.mutate()}
             >
-              <FaIcon icon={faTrashAlt} isLoading={isLoading} value="삭제" />
+              <FontAwesomeIcon icon={faTrashAlt} /> 삭제
             </button>
           ) : null}
 
@@ -192,7 +192,7 @@ export function CustomerDialog(props: Props) {
             onClick={mode === "CREATE" ? () => createItem.mutate() : () => updateItem.mutate()}
             disabled={!isValid || isLoading}
           >
-            <FaIcon icon={faFloppyDisk} isLoading={isLoading} value="저장" />
+            <FontAwesomeIcon icon={faFloppyDisk} /> 저장
           </button>
         </div>
       </form>

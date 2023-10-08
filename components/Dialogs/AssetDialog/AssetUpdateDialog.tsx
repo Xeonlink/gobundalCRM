@@ -15,7 +15,7 @@ import {
   faTrashAlt,
   faX,
 } from "@fortawesome/free-solid-svg-icons";
-import { FaIcon } from "../../FaIcon";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Input } from "../../Input";
 import { AssetPreviewDialog } from "./AssetPreviewDialog";
 
@@ -67,13 +67,13 @@ export function AssetUpdateDialog(props: ModalProps<{ assetId: string }>) {
         </button>
 
         <div className="dsy-divider">
-          <FaIcon icon={faMagnifyingGlass} /> 상세정보
+          <FontAwesomeIcon icon={faMagnifyingGlass} /> 상세정보
         </div>
 
         <div className="dsy-form-control">
           <label htmlFor="name" className="dsy-label gap-2 py-1">
             <span className="dsy-label-text min-w-fit">
-              <FaIcon icon={faSignature} fontSize={16} /> 이름
+              <FontAwesomeIcon icon={faSignature} fontSize={16} /> 이름
             </span>
             <Input
               id="name"
@@ -88,7 +88,7 @@ export function AssetUpdateDialog(props: ModalProps<{ assetId: string }>) {
         <div className="dsy-form-control">
           <label htmlFor="mimeType" className="dsy-label gap-2 py-1">
             <span className="dsy-label-text min-w-fit">
-              <FaIcon icon={faShapes} fontSize={16} /> 형식
+              <FontAwesomeIcon icon={faShapes} fontSize={16} /> 형식
             </span>
             <Input
               id="mimeType"
@@ -108,7 +108,7 @@ export function AssetUpdateDialog(props: ModalProps<{ assetId: string }>) {
             disabled={isCleared || isLoading}
             onClick={assetActions.reset}
           >
-            <FaIcon icon={faNotdef} rotation={90} isLoading={isLoading} value="초기화" />
+            <FontAwesomeIcon icon={faNotdef} rotation={90} /> 초기화
           </button>
 
           {/* Delete */}
@@ -118,7 +118,7 @@ export function AssetUpdateDialog(props: ModalProps<{ assetId: string }>) {
             disabled={isLoading}
             onClick={() => deleteItem.mutate()}
           >
-            <FaIcon icon={faTrashAlt} isLoading={isLoading} value="삭제" />
+            <FontAwesomeIcon icon={faTrashAlt} /> 삭제
           </button>
 
           {/* Save */}
@@ -128,7 +128,7 @@ export function AssetUpdateDialog(props: ModalProps<{ assetId: string }>) {
             onClick={() => updateItem.mutate()}
             disabled={!isValid || isLoading}
           >
-            <FaIcon icon={faFloppyDisk} isLoading={isLoading} value="저장" />
+            <FontAwesomeIcon icon={faFloppyDisk} /> 저장
           </button>
         </div>
       </form>

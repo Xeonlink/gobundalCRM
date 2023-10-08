@@ -15,7 +15,7 @@ import {
   faSignature,
   faTicket,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 
 export default function Page() {
@@ -64,13 +64,13 @@ export default function Page() {
 
       <fieldset className="mb-14 w-80 max-w-full rounded-lg bg-white bg-opacity-60 p-6 sm:mt-14">
         <legend className="text-center text-lg font-bold">
-          <FaIcon icon={faPeopleRoof} /> 팀 등록
+          <FontAwesomeIcon icon={faPeopleRoof} /> 팀 등록
         </legend>
 
         <div className="dsy-form-control mb-2">
           <label htmlFor="has-coupon" className="dsy-label">
             <span className="dsy-label-text">
-              <FaIcon icon={faTicket} /> 쿠폰이 있으신가요?
+              <FontAwesomeIcon icon={faTicket} /> 쿠폰이 있으신가요?
             </span>
             <input
               type="checkbox"
@@ -86,7 +86,7 @@ export default function Page() {
         <div className={cn("dsy-form-control mb-2", hasCoupon.isOn || "hidden")}>
           <label htmlFor="coupon" className="dsy-label">
             <span className="dsy-label-text">
-              <FaIcon icon={faBuilding} /> 쿠폰 구매처
+              <FontAwesomeIcon icon={faBuilding} /> 쿠폰 구매처
             </span>
           </label>
           <select
@@ -108,7 +108,7 @@ export default function Page() {
         <div className="dsy-form-control mb-2">
           <label htmlFor="leader-name" className="dsy-label">
             <span className="dsy-label-text">
-              <FaIcon icon={faSignature} /> {hasCoupon.isOn ? "쿠폰구매자" : "대표자"} 이름
+              <FontAwesomeIcon icon={faSignature} /> {hasCoupon.isOn ? "쿠폰구매자" : "대표자"} 이름
             </span>
           </label>
           <input
@@ -125,7 +125,8 @@ export default function Page() {
         <div className="dsy-form-control mb-2">
           <label htmlFor="leader-phone" className="dsy-label">
             <span className="dsy-label-text">
-              <FaIcon icon={faMobileScreen} /> {hasCoupon.isOn ? "쿠폰구매자" : "대표자"} 전화번호
+              <FontAwesomeIcon icon={faMobileScreen} /> {hasCoupon.isOn ? "쿠폰구매자" : "대표자"}{" "}
+              전화번호
             </span>
           </label>
           <input
@@ -142,7 +143,7 @@ export default function Page() {
         <div className="dsy-form-control mb-2">
           <label htmlFor="population" className="dsy-label">
             <span className="dsy-label-text">
-              <FaIcon icon={faPeopleGroup} /> 인원수
+              <FontAwesomeIcon icon={faPeopleGroup} /> 인원수
             </span>
           </label>
           <input
@@ -163,7 +164,7 @@ export default function Page() {
             onClick={teamActions.reset}
             disabled={createTeam.isLoading || defaultTeam === team}
           >
-            <FaIcon icon={faNotdef} rotation={90} /> 초기화
+            <FontAwesomeIcon icon={faNotdef} rotation={90} /> 초기화
           </button>
           <button
             type="button"
@@ -171,7 +172,7 @@ export default function Page() {
             onClick={() => createTeam.mutate()}
             disabled={createTeam.isLoading || !isValid}
           >
-            <FaIcon icon={faHandshakeAngle} /> 등록하기
+            <FontAwesomeIcon icon={faHandshakeAngle} /> 등록하기
           </button>
         </div>
       </fieldset>

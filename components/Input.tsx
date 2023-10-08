@@ -18,7 +18,7 @@ export const Input = forwardRef((props: Props, ref?: LegacyRef<HTMLInputElement>
       type="text"
       {...rest}
       className={cn(
-        "dsy-input-bordered dsy-input dsy-input-sm",
+        "dsy-input-bordered dsy-input",
         {
           "dsy-input-error animate-shake": invalid,
         },

@@ -19,7 +19,7 @@ import {
   faSignsPost,
   faTrashCan,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import { useRef } from "react";
 
@@ -62,12 +62,12 @@ export default function Page(props: PageProps<any, SearchParams>) {
       <div className="mb-3 flex flex-wrap items-center gap-3">
         {/* Cratet New Order */}
         <button type="button" className="dsy-btn-sm dsy-btn" onClick={openCustomerCreateDialog}>
-          <FaIcon icon={faPlus} /> 고객 추가하기
+          <FontAwesomeIcon icon={faPlus} /> 고객 추가하기
         </button>
 
         {/* Delete */}
         <button type="button" className="dsy-btn-sm dsy-btn" onClick={onDeleteClick}>
-          <FaIcon icon={faTrashCan} /> 선택삭제
+          <FontAwesomeIcon icon={faTrashCan} /> 선택삭제
         </button>
 
         {/* 엑셀로 다운로드하기 */}
@@ -81,7 +81,7 @@ export default function Page(props: PageProps<any, SearchParams>) {
 
           {/* Search */}
           <Link href={`customers?name=${nameRef.current?.value}`} className="dsy-btn-sm dsy-btn">
-            <FaIcon icon={faMagnifyingGlass} /> 검색
+            <FontAwesomeIcon icon={faMagnifyingGlass} /> 검색
           </Link>
         </div>
       </div>
@@ -94,16 +94,16 @@ export default function Page(props: PageProps<any, SearchParams>) {
                 <input type="checkbox" name="" id="" className="dsy-checkbox dsy-checkbox-xs" />
               </th>
               <th className="bg-orange-50">
-                <FaIcon icon={faSignature} /> 이름
+                <FontAwesomeIcon icon={faSignature} /> 이름
               </th>
               <th className="bg-orange-50">
-                <FaIcon icon={faMobileScreen} /> 전화번호
+                <FontAwesomeIcon icon={faMobileScreen} /> 전화번호
               </th>
               <th className="bg-green-50">
-                <FaIcon icon={faSignsPost} /> 주소
+                <FontAwesomeIcon icon={faSignsPost} /> 주소
               </th>
               <th className="rounded-r-md bg-green-50">
-                <FaIcon icon={faBuilding} /> 상세주소
+                <FontAwesomeIcon icon={faBuilding} /> 상세주소
               </th>
             </tr>
           </thead>
@@ -126,25 +126,25 @@ export default function Page(props: PageProps<any, SearchParams>) {
                 </td>
                 <td>
                   <label>
-                    <FaIcon icon={faSignature} /> 이름
+                    <FontAwesomeIcon icon={faSignature} /> 이름
                   </label>
                   <span>{item.name}</span>
                 </td>
                 <td>
                   <label>
-                    <FaIcon icon={faMobileScreen} /> 전화번호
+                    <FontAwesomeIcon icon={faMobileScreen} /> 전화번호
                   </label>
                   <span>{item.phone}</span>
                 </td>
                 <td>
                   <label>
-                    <FaIcon icon={faSignsPost} /> 주소
+                    <FontAwesomeIcon icon={faSignsPost} /> 주소
                   </label>
                   <span>{item.address}</span>
                 </td>
                 <td>
                   <label>
-                    <FaIcon icon={faBuilding} /> 상세주소
+                    <FontAwesomeIcon icon={faBuilding} /> 상세주소
                   </label>
                   <span>{item.addressDetail}</span>
                 </td>

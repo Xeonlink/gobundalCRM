@@ -1,5 +1,6 @@
 "use client";
 
+import { useProductCategories } from "@/api/product_categories";
 import {
   RawProduct,
   useCreateProduct,
@@ -22,11 +23,11 @@ import {
   faInfinity,
   faNotdef,
   faSignature,
+  faTableCellsLarge,
   faTrashAlt,
   faWon,
-  faX,
 } from "@fortawesome/free-solid-svg-icons";
-import { FaIcon } from "../FaIcon";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Input } from "../Input";
 import AssetSelector from "../Selectors/AssetSelector";
 import { AssetPreviewDialog } from "./AssetDialog/AssetPreviewDialog";
@@ -39,6 +40,7 @@ const defaultProduct: RawProduct = {
   remain: 0,
   enabled: false,
   imgSrc: "",
+  category: "",
 };
 
 type Props = ModalProps<
@@ -52,6 +54,7 @@ export function ProductDialog(props: Props) {
   const { data: originProduct } = useProduct(mode === "UPDATE" ? props.productId : "", {
     enabled: mode === "UPDATE",
   });
+  const productCategories = useProductCategories();
   const [product, productActions] = useTypeSafeReducer(
     mode === "CREATE" ? props.base || defaultProduct : originProduct!,
     {
@@ -79,12 +82,16 @@ export function ProductDialog(props: Props) {
       setImgSrc: (state, src: string) => {
         state.imgSrc = src;
       },
+      onCategoryChange: (state, e: React.ChangeEvent<HTMLSelectElement>) => {
+        state.category = e.target.value;
+      },
       reset: () => (mode === "CREATE" ? defaultProduct : originProduct!),
     },
   );
   const createItem = useCreateProduct(product, {
     onSuccess: () => props.closeSelf?.(),
   });
+  console.log(diff(product, originProduct!), product.category, originProduct?.category);
   const updateItem = useUpdateProduct(originProduct?.id!, diff(product, originProduct!), {
     onSuccess: () => props.closeSelf?.(),
   });
@@ -126,7 +133,7 @@ export function ProductDialog(props: Props) {
         <div className="dsy-form-control">
           <label htmlFor="name" className="dsy-label relative py-1">
             <span className="dsy-label-text min-w-fit">
-              <FaIcon icon={faSignature} /> 상품명
+              <FontAwesomeIcon icon={faSignature} /> 상품명
             </span>
             <Input
               id="name"
@@ -141,9 +148,32 @@ export function ProductDialog(props: Props) {
         </div>
 
         <div className="dsy-form-control">
+          <label htmlFor="name" className="dsy-label relative py-1">
+            <span className="dsy-label-text min-w-fit">
+              <FontAwesomeIcon icon={faTableCellsLarge} /> 카테고리
+            </span>
+            <select
+              id="name"
+              placeholder="한라봉청 3kg"
+              disabled={isLoading}
+              value={product.category || "none"}
+              onChange={productActions.onCategoryChange}
+              className="dsy-select dsy-select-sm w-full max-w-[15rem] font-normal"
+            >
+              <option value="none">없음</option>
+              {productCategories.data?.data.map((item) => (
+                <option key={item.id} value={item.name}>
+                  {item.name}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
+
+        <div className="dsy-form-control">
           <label htmlFor="price" className="dsy-label relative py-1">
             <span className="dsy-label-text min-w-fit">
-              <FaIcon icon={faWon} /> 상품가격
+              <FontAwesomeIcon icon={faWon} /> 상품가격
             </span>
             <Input
               id="price"
@@ -161,7 +191,7 @@ export function ProductDialog(props: Props) {
         <div className="dsy-form-control">
           <label htmlFor="is-sale" className="dsy-label gap-2 py-1">
             <span className="dsy-label-text min-w-fit">
-              <FaIcon icon={faCoins} /> 할인여부
+              <FontAwesomeIcon icon={faCoins} /> 할인여부
             </span>
             <input
               type="checkbox"
@@ -178,7 +208,7 @@ export function ProductDialog(props: Props) {
         <div className="dsy-form-control">
           <label htmlFor="sale-price" className="dsy-label relative py-1">
             <span className="dsy-label-text min-w-fit">
-              <FaIcon icon={faWon} /> 할인가격
+              <FontAwesomeIcon icon={faWon} /> 할인가격
             </span>
             <Input
               id="sale-price"
@@ -197,7 +227,7 @@ export function ProductDialog(props: Props) {
         <div className="dsy-form-control">
           <label htmlFor="remain" className="dsy-label gap-2 py-1">
             <span className="dsy-label-text min-w-fit">
-              <FaIcon icon={faInfinity} /> 무한재고
+              <FontAwesomeIcon icon={faInfinity} /> 무한재고
             </span>
             <input
               type="checkbox"
@@ -213,7 +243,7 @@ export function ProductDialog(props: Props) {
         <div className="dsy-form-control">
           <label htmlFor="is-sale" className="dsy-label relative py-1">
             <span className="dsy-label-text min-w-fit">
-              <FaIcon icon={faBoxes} /> 재고
+              <FontAwesomeIcon icon={faBoxes} /> 재고
             </span>
             <Input
               id="remain"
@@ -232,7 +262,7 @@ export function ProductDialog(props: Props) {
         <div className="dsy-form-control">
           <label htmlFor="enabled" className="dsy-label gap-2 py-1">
             <span className="dsy-label-text min-w-fit">
-              <FaIcon icon={product.enabled ? faEye : faEyeSlash} /> 활성화
+              <FontAwesomeIcon icon={product.enabled ? faEye : faEyeSlash} /> 활성화
             </span>
             <input
               type="checkbox"
@@ -251,7 +281,7 @@ export function ProductDialog(props: Props) {
         <div>
           {product.imgSrc === "" ? (
             <div className="flex min-h-[8rem] items-center justify-center rounded-md bg-[#f0f0f0]">
-              <FaIcon icon={faImage} className="mr-2" /> 상품이미지를 선택해주세요.
+              <FontAwesomeIcon icon={faImage} className="mr-2" /> 상품이미지를 선택해주세요.
             </div>
           ) : (
             <button
@@ -269,7 +299,7 @@ export function ProductDialog(props: Props) {
               className="dsy-btn-sm dsy-btn mt-2 inline-block"
               onClick={openAssetSelector}
             >
-              <FaIcon icon={faCheck} /> 이미지 선택
+              <FontAwesomeIcon icon={faCheck} /> 이미지 선택
             </button>
           </div>
         </div>
@@ -282,7 +312,7 @@ export function ProductDialog(props: Props) {
             disabled={isCleared || isLoading}
             onClick={productActions.reset}
           >
-            <FaIcon icon={faNotdef} rotation={90} isLoading={isLoading} value="초기화" />
+            <FontAwesomeIcon icon={faNotdef} rotation={90} /> 초기화
           </button>
 
           {/* Copy */}
@@ -292,7 +322,7 @@ export function ProductDialog(props: Props) {
             disabled={isLoading}
             onClick={openProductCopyDialog}
           >
-            <FaIcon icon={faCopy} isLoading={isLoading} value="복제" />
+            <FontAwesomeIcon icon={faCopy} /> 복제
           </button>
 
           {/* Delete */}
@@ -303,7 +333,7 @@ export function ProductDialog(props: Props) {
               disabled={isLoading}
               onClick={() => deleteItem.mutate()}
             >
-              <FaIcon icon={faTrashAlt} isLoading={isLoading} value="삭제" />
+              <FontAwesomeIcon icon={faTrashAlt} /> 삭제
             </button>
           ) : null}
 
@@ -314,7 +344,7 @@ export function ProductDialog(props: Props) {
             onClick={mode === "CREATE" ? () => createItem.mutate() : () => updateItem.mutate()}
             disabled={!isValid || isLoading}
           >
-            <FaIcon icon={faFloppyDisk} isLoading={isLoading} value="저장" />
+            <FontAwesomeIcon icon={faFloppyDisk} /> 저장
           </button>
         </div>
       </form>

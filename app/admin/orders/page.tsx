@@ -25,7 +25,7 @@ import {
   faSignsPost,
   faTrashCan,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import dayjs from "dayjs";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -72,7 +72,7 @@ export default function Page(props: PageProps<any, SearchParams>) {
       <div className="mb-3 flex flex-wrap items-center gap-3">
         {/* 오늘 날짜로 재검색 */}
         <Link href={`orders?date=${dayjs().format("YYYY-MM-DD")}`} className="dsy-btn-sm dsy-btn">
-          <FaIcon icon={faCalendarDays} /> 오늘
+          <FontAwesomeIcon icon={faCalendarDays} /> 오늘
         </Link>
 
         {/* 해당 날짜로 검색 */}
@@ -80,17 +80,17 @@ export default function Page(props: PageProps<any, SearchParams>) {
 
         {/* Refresh */}
         <button type="button" className="dsy-btn-sm dsy-btn" onClick={() => orders.refetch()}>
-          <FaIcon icon={faArrowsRotate} /> 새로고침
+          <FontAwesomeIcon icon={faArrowsRotate} /> 새로고침
         </button>
 
         {/* Cratet New Order */}
         <button type="button" className="dsy-btn-sm dsy-btn" onClick={openOrderCreateDialog}>
-          <FaIcon icon={faPlus} /> 송장 작성하기
+          <FontAwesomeIcon icon={faPlus} /> 송장 작성하기
         </button>
 
         {/* Delete */}
         <button type="button" className="dsy-btn-sm dsy-btn" onClick={onDeleteClick}>
-          <FaIcon icon={faTrashCan} /> 선택삭제
+          <FontAwesomeIcon icon={faTrashCan} /> 선택삭제
         </button>
 
         {/* 엑셀로 다운로드하기 */}
@@ -100,7 +100,7 @@ export default function Page(props: PageProps<any, SearchParams>) {
 
         {/* Go To Kiosk */}
         <Link href="/kiosk/orders" className="dsy-btn-sm dsy-btn">
-          <FaIcon icon={faRobot} /> 키오스크로
+          <FontAwesomeIcon icon={faRobot} /> 키오스크로
         </Link>
       </div>
 
@@ -109,13 +109,13 @@ export default function Page(props: PageProps<any, SearchParams>) {
           <thead>
             <tr>
               <th className="rounded-tl-md bg-orange-100" colSpan={3}>
-                <FaIcon icon={faPaperPlane} /> 보내는 사람
+                <FontAwesomeIcon icon={faPaperPlane} /> 보내는 사람
               </th>
               <th className="bg-green-100" colSpan={3}>
-                <FaIcon icon={faPaperPlane} rotation={90} /> 받는 사람
+                <FontAwesomeIcon icon={faPaperPlane} rotation={90} /> 받는 사람
               </th>
               <th className="rounded-tr-md bg-blue-100" colSpan={2}>
-                <FaIcon icon={faBoxes} /> 상품정보
+                <FontAwesomeIcon icon={faBoxes} /> 상품정보
               </th>
             </tr>
             <tr>
@@ -123,25 +123,25 @@ export default function Page(props: PageProps<any, SearchParams>) {
                 <input type="checkbox" name="" id="" className="dsy-checkbox dsy-checkbox-xs" />
               </th>
               <th className="bg-orange-50">
-                <FaIcon icon={faSignature} /> 이름
+                <FontAwesomeIcon icon={faSignature} /> 이름
               </th>
               <th className="bg-orange-50">
-                <FaIcon icon={faMobileScreen} /> 전화번호
+                <FontAwesomeIcon icon={faMobileScreen} /> 전화번호
               </th>
               <th className="bg-green-50">
-                <FaIcon icon={faSignature} /> 이름
+                <FontAwesomeIcon icon={faSignature} /> 이름
               </th>
               <th className="bg-green-50">
-                <FaIcon icon={faMobileScreen} /> 전화번호
+                <FontAwesomeIcon icon={faMobileScreen} /> 전화번호
               </th>
               <th className="bg-green-50">
-                <FaIcon icon={faSignsPost} /> 주소
+                <FontAwesomeIcon icon={faSignsPost} /> 주소
               </th>
               <th className="bg-blue-50">
-                <FaIcon icon={faBox} /> 상품명
+                <FontAwesomeIcon icon={faBox} /> 상품명
               </th>
               <th className="rounded-br-md bg-blue-50">
-                <FaIcon icon={faNoteSticky} /> 메모
+                <FontAwesomeIcon icon={faNoteSticky} /> 메모
               </th>
             </tr>
           </thead>
@@ -164,31 +164,31 @@ export default function Page(props: PageProps<any, SearchParams>) {
                 </td>
                 <td>
                   <label>
-                    <FaIcon icon={faSignature} /> 이름
+                    <FontAwesomeIcon icon={faSignature} /> 이름
                   </label>
                   <span>{item.senderName}</span>
                 </td>
                 <td>
                   <label>
-                    <FaIcon icon={faMobileScreen} /> 전화번호
+                    <FontAwesomeIcon icon={faMobileScreen} /> 전화번호
                   </label>
                   <span>{item.senderPhone}</span>
                 </td>
                 <td>
                   <label>
-                    <FaIcon icon={faSignature} /> 이름
+                    <FontAwesomeIcon icon={faSignature} /> 이름
                   </label>
                   <span>{item.receiverName}</span>
                 </td>
                 <td>
                   <label>
-                    <FaIcon icon={faMobileScreen} /> 전화번호
+                    <FontAwesomeIcon icon={faMobileScreen} /> 전화번호
                   </label>
                   <span>{item.receiverPhone}</span>
                 </td>
                 <td className="text-start">
                   <label>
-                    <FaIcon icon={faSignsPost} /> 주소
+                    <FontAwesomeIcon icon={faSignsPost} /> 주소
                   </label>
                   <span>
                     {item.receiverAddress.replace(/^[^\s]+\s/, "")}, {item.receiverAddressDetail}
@@ -196,13 +196,13 @@ export default function Page(props: PageProps<any, SearchParams>) {
                 </td>
                 <td>
                   <label>
-                    <FaIcon icon={faBox} /> 상품명
+                    <FontAwesomeIcon icon={faBox} /> 상품명
                   </label>
                   <span>{item.products[0].name}</span>
                 </td>
                 <td>
                   <label>
-                    <FaIcon icon={faNoteSticky} /> 메모
+                    <FontAwesomeIcon icon={faNoteSticky} /> 메모
                   </label>
                   <span>{item.memo}</span>
                 </td>

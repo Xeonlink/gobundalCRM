@@ -11,7 +11,7 @@ import {
   faTrashCan,
   faWon,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 
 export default function Page() {
@@ -31,16 +31,16 @@ export default function Page() {
           <thead>
             <tr>
               <th className="pl-3 text-start font-normal">
-                <FaIcon icon={faBox} /> 상품
+                <FontAwesomeIcon icon={faBox} /> 상품
               </th>
               <th className="text-start font-normal">
-                <FaIcon icon={faWon} /> 단가
+                <FontAwesomeIcon icon={faWon} /> 단가
               </th>
               <th className="text-start font-normal">
-                <FaIcon icon={faPlusMinus} /> 수량
+                <FontAwesomeIcon icon={faPlusMinus} /> 수량
               </th>
               <th className="text-start font-normal">
-                <FaIcon icon={faWon} /> 가격
+                <FontAwesomeIcon icon={faWon} /> 가격
               </th>
               <th className="text-start font-normal"></th>
             </tr>
@@ -123,7 +123,7 @@ export default function Page() {
                     className="dsy-btn-outline dsy-btn-sm dsy-btn"
                     onClick={() => cart.removeProduct(idx)}
                   >
-                    <FaIcon icon={faTrashCan} />
+                    <FontAwesomeIcon icon={faTrashCan} />
                   </button>
                 </td>
               </tr>
@@ -181,7 +181,7 @@ export default function Page() {
                 className="absolute right-6 top-6"
                 onClick={() => cart.removeProduct(idx)}
               >
-                <FaIcon icon={faTrashCan} />
+                <FontAwesomeIcon icon={faTrashCan} />
               </button>
             </li>
           ))}
@@ -192,19 +192,19 @@ export default function Page() {
         <div className="inline-block w-96 max-w-full overflow-hidden rounded-md bg-white bg-opacity-40 p-4 text-start">
           <label htmlFor="total-price" className="flex p-2">
             <div>
-              <FaIcon icon={faBoxes} fontSize={14} /> 상품가격 :
+              <FontAwesomeIcon icon={faBoxes} fontSize={14} /> 상품가격 :
             </div>
             <div className="flex-1 text-right">{totalPrice.toLocaleString() + "원"}</div>
           </label>
           <label htmlFor="total-price" className="flex p-2">
             <div>
-              <FaIcon icon={faLandmark} fontSize={14} /> 부가가치세 :
+              <FontAwesomeIcon icon={faLandmark} fontSize={14} /> 부가가치세 :
             </div>
             <div className="flex-1 text-right">{totalTaxPrice.toLocaleString() + "원"}</div>
           </label>
           <label htmlFor="total-price" className="flex p-2">
             <div>
-              <FaIcon icon={faWon} fontSize={14} /> 전체가격 :
+              <FontAwesomeIcon icon={faWon} fontSize={14} /> 전체가격 :
             </div>
             <div className="flex-1 text-right">{totalPrice.toLocaleString() + "원"}</div>
           </label>
@@ -215,14 +215,14 @@ export default function Page() {
               className="dsy-join-item dsy-btn flex-1 border-none bg-white"
               onClick={() => cart.reset()}
             >
-              <FaIcon icon={faNotdef} rotation={90} /> 초기화
+              <FontAwesomeIcon icon={faNotdef} rotation={90} /> 초기화
             </Link>
             <Link
               href="./payment"
               type="button"
               className="dsy-join-item dsy-btn flex-1 border-none bg-orange-200"
             >
-              <FaIcon icon={faCreditCard} /> 구매
+              <FontAwesomeIcon icon={faCreditCard} /> 구매
             </Link>
           </div>
         </div>

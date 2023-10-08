@@ -1,5 +1,5 @@
-import { getIdToken } from "@/hooks/useAuth";
 import axios from "axios";
+import { getIdToken } from "./auth";
 
 export const apiRoot = (() => {
   const apiBase = axios.create({

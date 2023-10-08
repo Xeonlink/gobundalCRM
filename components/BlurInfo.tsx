@@ -1,5 +1,5 @@
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { PropsWithChildren } from "react";
 
 type BlurInfoProps = {
@@ -17,7 +17,7 @@ export function BlurInfo(props: PropsWithChildren<BlurInfoProps>) {
     >
       <span className="mb-4">{children}</span>
       <button type="button" className="btn" onClick={closeFn}>
-        <FaIcon icon={faXmark} /> 닫기
+        <FontAwesomeIcon icon={faXmark} /> 닫기
       </button>
     </div>
   );

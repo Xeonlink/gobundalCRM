@@ -13,7 +13,7 @@ import { useExcel } from "@/hooks/useExcel";
 import { useItemSelection } from "@/hooks/useItemSelection";
 import IcoExcel from "@/public/icons/excel.png";
 import { faArrowsRotate, faPlus, faTrashCan } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Page() {
   const auth = useAuth();
@@ -47,17 +47,17 @@ export default function Page() {
       <div className="flex flex-wrap items-center gap-3 p-3">
         {/* Refresh */}
         <button type="button" className="dsy-btn-sm dsy-btn" onClick={() => assets.refetch()}>
-          <FaIcon icon={faArrowsRotate} /> 새로고침
+          <FontAwesomeIcon icon={faArrowsRotate} /> 새로고침
         </button>
 
         {/* Cratet New Order */}
         <button type="button" className="dsy-btn-sm dsy-btn" onClick={openAssetCreateDialog}>
-          <FaIcon icon={faPlus} /> 자료 추가하기
+          <FontAwesomeIcon icon={faPlus} /> 자료 추가하기
         </button>
 
         {/* Delete */}
         <button type="button" className="dsy-btn-sm dsy-btn" onClick={onDeleteClick}>
-          <FaIcon icon={faTrashCan} /> 선택삭제
+          <FontAwesomeIcon icon={faTrashCan} /> 선택삭제
         </button>
 
         {/* 엑셀로 다운로드하기 */}

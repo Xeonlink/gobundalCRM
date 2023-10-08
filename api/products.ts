@@ -13,7 +13,19 @@ export interface Product {
   remain: number;
   enabled: boolean;
   imgSrc: string;
+  category: string;
 }
+
+export const defaultProduct: RawProduct = {
+  name: "",
+  price: 0,
+  isSale: false,
+  salePrice: 0,
+  remain: 0,
+  enabled: false,
+  imgSrc: "",
+  category: "",
+};
 
 export type RawProduct = Omit<Product, "id">;
 

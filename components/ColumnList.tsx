@@ -1,13 +1,19 @@
-import { useSimpleWindowSize } from "@/hooks/useWindowSize";
+"use client";
 
-type Props = {
-  className: string;
+import { useSimpleWindowSize } from "@/hooks/useWindowSize";
+import React, { FunctionComponent, ReactNode } from "react";
+
+type Props<T extends {}> = {
+  className?: string;
   threashold: number[];
   children: (columnCount: number, index: number) => React.ReactNode;
-};
+  as?: string | FunctionComponent<T>;
+} & T;
 
-export function ColumnList(props: Props) {
-  const { threashold, children, className } = props;
+type InferProps<T> = T extends FunctionComponent<infer P> ? P : any;
+
+export function ColumnList<T extends {}>(props: Props<T>) {
+  const { threashold, children, className, as = "div" } = props;
 
   const wCount = useSimpleWindowSize(threashold);
 

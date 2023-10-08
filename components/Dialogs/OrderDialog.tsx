@@ -36,7 +36,7 @@ import {
   faX,
 } from "@fortawesome/free-solid-svg-icons";
 import { DateChanger } from "../DateChanger";
-import { FaIcon } from "../FaIcon";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Input } from "../Input";
 import { ProductSelector } from "../Selectors/ProductSelector";
 
@@ -165,7 +165,7 @@ export function OrderDialog(props: Props) {
         <div className="dsy-form-control">
           <label htmlFor="date" className="dsy-label py-1 pt-0">
             <span className="dsy-label-text min-w-fit">
-              <FaIcon icon={faCalendarAlt} /> 주문날짜
+              <FontAwesomeIcon icon={faCalendarAlt} /> 주문날짜
             </span>
             <DateChanger
               date={order.date}
@@ -178,7 +178,7 @@ export function OrderDialog(props: Props) {
         <div className="dsy-form-control">
           <label htmlFor="sender-name" className="dsy-label gap-2 py-1">
             <span className="dsy-label-text min-w-fit">
-              <FaIcon icon={faSignature} /> 이름
+              <FontAwesomeIcon icon={faSignature} /> 이름
             </span>
             <Input
               className="w-full max-w-[15rem]"
@@ -195,7 +195,7 @@ export function OrderDialog(props: Props) {
         <div className="dsy-form-control">
           <label htmlFor="sender-phone" className="dsy-label gap-2 py-1">
             <span className="dsy-label-text min-w-fit">
-              <FaIcon icon={faMobileScreenButton} /> 전화번호
+              <FontAwesomeIcon icon={faMobileScreenButton} /> 전화번호
             </span>
             <Input
               className="w-full max-w-[15rem]"
@@ -216,12 +216,12 @@ export function OrderDialog(props: Props) {
           </label>
         </div>
 
-        <div className="dsy-divider">{/* <FaIcon icon={faPaperPlane} /> From */}</div>
+        <div className="dsy-divider">{/* <FontAwesomeIcon icon={faPaperPlane} /> From */}</div>
 
         <div className="dsy-form-control">
           <label htmlFor="same-as-sender" className="dsy-label gap-2 py-1">
             <span className="dsy-label-text min-w-fit">
-              <FaIcon icon={faPaperPlane} /> 보내는 사람과 같음
+              <FontAwesomeIcon icon={faPaperPlane} /> 보내는 사람과 같음
             </span>
             <input
               type="checkbox"
@@ -237,7 +237,7 @@ export function OrderDialog(props: Props) {
         <div className="dsy-form-control">
           <label htmlFor="receiver-name" className="dsy-label gap-2 py-1">
             <span className="dsy-label-text min-w-fit">
-              <FaIcon icon={faSignature} /> 이름
+              <FontAwesomeIcon icon={faSignature} /> 이름
             </span>
             <Input
               className="w-full max-w-[15rem]"
@@ -254,7 +254,7 @@ export function OrderDialog(props: Props) {
         <div className="dsy-form-control">
           <label htmlFor="receiver-phone" className="dsy-label gap-2 py-1">
             <span className="dsy-label-text min-w-fit">
-              <FaIcon icon={faMobileScreenButton} /> 전화번호
+              <FontAwesomeIcon icon={faMobileScreenButton} /> 전화번호
             </span>
             <Input
               className="w-full max-w-[15rem]"
@@ -271,7 +271,7 @@ export function OrderDialog(props: Props) {
         <div className="dsy-form-control">
           <label htmlFor="receiver-address" className="dsy-label gap-2 py-1">
             <span className="dsy-label-text min-w-fit">
-              <FaIcon icon={faSignsPost} /> 주소
+              <FontAwesomeIcon icon={faSignsPost} /> 주소
             </span>
             <Input
               className="w-full max-w-[15rem]"
@@ -289,7 +289,7 @@ export function OrderDialog(props: Props) {
         <div className="dsy-form-control">
           <label htmlFor="receiver-address-detail" className="dsy-label gap-2 py-1">
             <span className="dsy-label-text min-w-fit">
-              <FaIcon icon={faBuilding} /> 상세주소
+              <FontAwesomeIcon icon={faBuilding} /> 상세주소
             </span>
             <Input
               className="w-full max-w-[15rem]"
@@ -306,7 +306,7 @@ export function OrderDialog(props: Props) {
         <div className="dsy-form-control">
           <label htmlFor="memo" className="dsy-label gap-2 py-1">
             <span className="dsy-label-text min-w-fit">
-              <FaIcon icon={faNoteSticky} /> 메모
+              <FontAwesomeIcon icon={faNoteSticky} /> 메모
             </span>
             <Input
               className="w-full max-w-[15rem]"
@@ -319,19 +319,21 @@ export function OrderDialog(props: Props) {
           </label>
         </div>
 
-        <div className="dsy-divider">{/* <FaIcon icon={faPaperPlane} rotation={90} /> To */}</div>
+        <div className="dsy-divider">
+          {/* <FontAwesomeIcon icon={faPaperPlane} rotation={90} /> To */}
+        </div>
 
         <table className="grid w-full grid-cols-[1fr_6rem_4rem_auto]">
           <thead className="contents">
             <tr className="contents">
               <th className="text-sm font-normal">
-                <FaIcon icon={faBox} /> 상품명
+                <FontAwesomeIcon icon={faBox} /> 상품명
               </th>
               <th className="text-sm font-normal">
-                <FaIcon icon={faCoins} /> 가격(원)
+                <FontAwesomeIcon icon={faCoins} /> 가격(원)
               </th>
               <th className="text-sm font-normal">
-                <FaIcon icon={faCalculator} /> 수량
+                <FontAwesomeIcon icon={faCalculator} /> 수량
               </th>
               <th></th>
             </tr>
@@ -376,7 +378,7 @@ export function OrderDialog(props: Props) {
                     className="dsy-btn-sm dsy-btn"
                     onClick={() => orderActions.removeProduct(index)}
                   >
-                    <FaIcon icon={faTrashCan} />
+                    <FontAwesomeIcon icon={faTrashCan} />
                   </button>
                 </td>
               </tr>
@@ -391,14 +393,14 @@ export function OrderDialog(props: Props) {
               className="dsy-btn-sm dsy-join-item dsy-btn"
               onClick={() => orderActions.addProduct(undefined)}
             >
-              <FaIcon icon={faPlus} /> 추가하기
+              <FontAwesomeIcon icon={faPlus} /> 추가하기
             </button>
             <button
               type="button"
               className="dsy-btn-sm dsy-join-item dsy-btn"
               onClick={openProductSelector}
             >
-              <FaIcon icon={faCheck} /> 선택하기
+              <FontAwesomeIcon icon={faCheck} /> 선택하기
             </button>
           </div>
         </div>
@@ -411,7 +413,7 @@ export function OrderDialog(props: Props) {
             disabled={isCleared || isLoading}
             onClick={orderActions.reset}
           >
-            <FaIcon icon={faNotdef} rotation={90} isLoading={isLoading} value="초기화" />
+            <FontAwesomeIcon icon={faNotdef} rotation={90} /> 초기화
           </button>
 
           {/* Copy */}
@@ -421,7 +423,7 @@ export function OrderDialog(props: Props) {
             disabled={isLoading}
             onClick={openItemCopyDialog}
           >
-            <FaIcon icon={faCopy} isLoading={isLoading} value="복제" />
+            <FontAwesomeIcon icon={faCopy} /> 복제
           </button>
 
           {/* Delete */}
@@ -432,7 +434,7 @@ export function OrderDialog(props: Props) {
               disabled={isLoading}
               onClick={() => deleteItem.mutate()}
             >
-              <FaIcon icon={faTrashAlt} isLoading={isLoading} value="삭제" />
+              <FontAwesomeIcon icon={faTrashAlt} /> 삭제
             </button>
           ) : null}
 
@@ -443,7 +445,7 @@ export function OrderDialog(props: Props) {
             onClick={mode === "CREATE" ? () => createItem.mutate() : () => updateItem.mutate()}
             disabled={!isValid || isLoading}
           >
-            <FaIcon icon={faFloppyDisk} isLoading={isLoading} value="저장" />
+            <FontAwesomeIcon icon={faFloppyDisk} /> 저장
           </button>
         </div>
       </form>

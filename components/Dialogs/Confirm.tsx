@@ -2,7 +2,7 @@
 
 import { ModalProps } from "@/extra/modal";
 import { faCheck, faFloppyDisk, faX } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon as FaIcon } from "@fortawesome/react-fontawesome";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 type Props = ModalProps<{
   msg: string;
@@ -28,12 +28,12 @@ export function Confirm(props: Props) {
         <div className="dsy-modal-action">
           {/* Close */}
           <button className="dsy-btn-sm dsy-btn">
-            <FaIcon icon={faX} /> 닫기
+            <FontAwesomeIcon icon={faX} /> 닫기
           </button>
 
           {/* Save */}
           <button type="button" className="dsy-btn-sm dsy-btn">
-            <FaIcon icon={faCheck} /> 확인
+            <FontAwesomeIcon icon={faCheck} /> 확인
           </button>
         </div>
       </form>
