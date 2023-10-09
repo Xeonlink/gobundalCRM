@@ -1,5 +1,4 @@
 import { MutateOption, QueryOptions } from "@/extra/type";
-import { useAuth } from "@/hooks/useAuth";
 import { MutateOptions, useQuery } from "@tanstack/react-query";
 import { useAutoInvalidateMutation } from "../hooks/useAutoInvalidateMutation";
 import { GetResponse, apiRoot } from "./utils";

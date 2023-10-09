@@ -15,10 +15,11 @@ export default function Layout(props: PropsWithChildren) {
         />
         <div className="dsy-hero-content text-center text-neutral-content">
           <div className="max-w-lg">
-            <h1 className="mb-5 text-4xl font-bold">상품관리</h1>
+            <h1 className="mb-5 text-4xl font-bold">고객관리</h1>
             <p className="">
-              홈페이지에서 고객에게 보여질 상품을 등록하고 관리합니다. <br />
-              상품을 등록하고 활성화하지 않으면 상품이 홈페이지에 노출되지 않습니다.
+              상품을 구해했던 고객에 대한 정보를 관리합니다. <br />
+              상품을 1번이상 보낸 사람은 고객으로 자동 등록되며, 웹사이트에 가입한 사용자와는 별도로
+              관리됩니다.
             </p>
           </div>
         </div>

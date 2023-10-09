@@ -1,10 +1,8 @@
 "use client";
 
 import { useDeleteTeams, useTeams } from "@/api/teams";
-import { TeamDialog } from "@/components/Dialogs/TeamDialog";
 import { ImgIcon } from "@/components/ImgIcon";
 import { Input } from "@/components/Input";
-import { useModal } from "@/extra/modal";
 import { PageProps } from "@/extra/type";
 import { useAuth } from "@/hooks/useAuth";
 import { useExcel } from "@/hooks/useExcel";
@@ -31,14 +29,13 @@ import { useRouter } from "next/navigation";
 
 type SearchParams = { date: `${string}-${string}-${string}` };
 
-export default function Page(props: PageProps<any, SearchParams>) {
-  const { searchParams } = props;
-  const { date = dayjs().format("YYYY-MM-DD") } = searchParams;
+export default function Page(props: PageProps<{}, SearchParams>) {
+  const { date = dayjs().format("YYYY-MM-DD") } = props.searchParams;
 
   const auth = useAuth();
+  const excel = useExcel();
   const router = useRouter();
   const selected = useItemSelection();
-  const excel = useExcel();
   const teams = useTeams(date, {
     enabled: auth.isSignIn,
   });
@@ -157,6 +154,7 @@ export default function Page(props: PageProps<any, SearchParams>) {
                     id=""
                     className="dsy-checkbox dsy-checkbox-xs"
                     checked={selected.ids.includes(item.id)}
+                    onChange={() => {}}
                   />
                 </td>
                 <td>

@@ -4,6 +4,13 @@ import { useQuery } from "@tanstack/react-query";
 import { useAutoInvalidateMutation } from "../hooks/useAutoInvalidateMutation";
 import { GetResponse, apiRoot } from "./utils";
 
+export const defaultCustomer: RawCustomer = {
+  name: "",
+  phone: "",
+  address: "",
+  addressDetail: "",
+};
+
 export interface Customer {
   id: string;
   name: string;

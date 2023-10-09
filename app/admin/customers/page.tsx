@@ -1,18 +1,19 @@
 "use client";
 
 import { useCustomersByName, useDeleteCustomers } from "@/api/customers";
-import { CustomerDialog } from "@/components/Dialogs/CustomerDialog";
 import { ImgIcon } from "@/components/ImgIcon";
 import { Input } from "@/components/Input";
-import { useModal } from "@/extra/modal";
 import { PageProps } from "@/extra/type";
 import { useAuth } from "@/hooks/useAuth";
 import { useExcel } from "@/hooks/useExcel";
 import { useItemSelection } from "@/hooks/useItemSelection";
 import IcoExcel from "@/public/icons/excel.png";
 import {
+  faArrowsRotate,
   faBuilding,
+  faCheckCircle,
   faMagnifyingGlass,
+  faMinusCircle,
   faMobileScreen,
   faPlus,
   faSignature,
@@ -21,6 +22,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useRef } from "react";
 
 type SearchParams = { name: string };
@@ -31,66 +33,85 @@ export default function Page(props: PageProps<any, SearchParams>) {
 
   const auth = useAuth();
   const excel = useExcel();
-  const modalCtrl = useModal();
-  const nameRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
   const selected = useItemSelection();
-  const items = useCustomersByName(name, {
+  const nameRef = useRef<HTMLInputElement>(null);
+  const customers = useCustomersByName(name, {
     enabled: name !== "" && auth.isSignIn,
   });
   const deleteItems = useDeleteCustomers(selected.ids, {
     onSuccess: () => selected.clear(),
   });
-
-  const openCustomerCreateDialog = () => {
-    modalCtrl.open(<CustomerDialog mode="CREATE" />);
-  };
-  const openCustomerUpdateDialog = (customerId: string) => {
-    modalCtrl.open(<CustomerDialog mode="UPDATE" customerId={customerId} />);
-  };
   const onDeleteClick = () => {
     if (selected.ids.length === 0) return;
     if (!confirm("정말로 삭제하시겠습니까?")) return;
     deleteItems.mutate();
   };
-  const onExcelDownloadClick = () => {
-    excel.download(items.data?.data!, "고객");
+  const onDownloadClick = () => {
+    excel.download(customers.data?.data!, "고객");
   };
 
   return (
-    <main className="h-full flex-1 overflow-auto p-3">
+    <main className="min-h-screen">
       {/* Toolbar */}
-      <div className="mb-3 flex flex-wrap items-center gap-3">
-        {/* Cratet New Order */}
-        <button type="button" className="dsy-btn-sm dsy-btn" onClick={openCustomerCreateDialog}>
-          <FontAwesomeIcon icon={faPlus} /> 고객 추가하기
-        </button>
+      <ul className="flex w-full flex-wrap items-center justify-center bg-base-200">
+        <li>
+          {/* Refresh */}
+          <button type="button" className="dsy-btn" onClick={() => customers.refetch()}>
+            <FontAwesomeIcon icon={faArrowsRotate} /> 새로고침
+          </button>
+        </li>
 
-        {/* Delete */}
-        <button type="button" className="dsy-btn-sm dsy-btn" onClick={onDeleteClick}>
-          <FontAwesomeIcon icon={faTrashCan} /> 선택삭제
-        </button>
+        <li>
+          {/* Cratet New Order */}
+          <Link href="customers/create" className="dsy-btn">
+            <FontAwesomeIcon icon={faPlus} /> 고객 추가하기
+          </Link>
+        </li>
 
-        {/* 엑셀로 다운로드하기 */}
-        <button type="button" className="dsy-btn-sm dsy-btn" onClick={onExcelDownloadClick}>
-          <ImgIcon src={IcoExcel} alt="엑셀로 변환" fontSize={20} /> 엑셀로 변환
-        </button>
+        <li>
+          {/* Delete */}
+          <button type="button" className="dsy-btn" onClick={onDeleteClick}>
+            <FontAwesomeIcon icon={faTrashCan} /> 선택삭제
+          </button>
+        </li>
 
-        <div className="space-x-3">
+        <li>
+          {/* 엑셀로 다운로드하기 */}
+          <button type="button" className="dsy-btn" onClick={onDownloadClick}>
+            <ImgIcon src={IcoExcel} alt="엑셀로 변환" fontSize={16} /> 엑셀로 변환
+          </button>
+        </li>
+
+        <li className="space-x-3">
           {/* 고객이름으로 검색 */}
-          <Input className="w-40" placeholder="홍길동" defaultValue={name} ref={nameRef} />
+          <Input
+            className="dsy-input-sm w-40"
+            placeholder="홍길동"
+            defaultValue={name}
+            ref={nameRef}
+          />
 
           {/* Search */}
-          <Link href={`customers?name=${nameRef.current?.value}`} className="dsy-btn-sm dsy-btn">
+          <Link href={`customers?name=${nameRef.current?.value}`} className="dsy-btn">
             <FontAwesomeIcon icon={faMagnifyingGlass} /> 검색
           </Link>
-        </div>
-      </div>
+        </li>
+      </ul>
 
-      <div className="max-w-full overflow-x-auto">
+      <div className="container m-auto overflow-x-auto p-4">
         <table className="table">
           <thead>
             <tr>
-              <th className="rounded-l-md bg-orange-50">
+              <th className="rounded-tl-md bg-orange-100" colSpan={3}>
+                <FontAwesomeIcon icon={faCheckCircle} /> 필수
+              </th>
+              <th className="rounded-tr-md bg-green-100" colSpan={2}>
+                <FontAwesomeIcon icon={faMinusCircle} /> 선택
+              </th>
+            </tr>
+            <tr>
+              <th className="rounded-bl-md bg-orange-50">
                 <input type="checkbox" name="" id="" className="dsy-checkbox dsy-checkbox-xs" />
               </th>
               <th className="bg-orange-50">
@@ -108,12 +129,11 @@ export default function Page(props: PageProps<any, SearchParams>) {
             </tr>
           </thead>
           <tbody>
-            {items.data?.data.map((item) => (
+            {customers.data?.data.map((item) => (
               <tr
                 key={item.id}
                 onClick={selected.onItemClick(item.id)}
-                onDoubleClick={() => openCustomerUpdateDialog(item.id)}
-                onTouchEnd={() => openCustomerUpdateDialog(item.id)}
+                onDoubleClick={() => router.push(`customers/${item.id}`)}
               >
                 <td className="max-sm:absolute max-sm:right-3 max-sm:top-3">
                   <input
@@ -122,6 +142,7 @@ export default function Page(props: PageProps<any, SearchParams>) {
                     id=""
                     className="dsy-checkbox dsy-checkbox-xs"
                     checked={selected.ids.includes(item.id)}
+                    onChange={() => {}}
                   />
                 </td>
                 <td>

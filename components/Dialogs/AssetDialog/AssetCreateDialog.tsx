@@ -1,6 +1,6 @@
 "use client";
 
-import { RawAsset, useCreateAsset } from "@/api/assets";
+import { defaultAsset, useCreateAsset } from "@/api/assets";
 import { ModalProps } from "@/extra/modal";
 import { useTypeSafeReducer } from "@/hooks/useTypeSafeReducer";
 import {
@@ -10,16 +10,10 @@ import {
   faNotdef,
   faShapes,
   faSignature,
-  faX,
 } from "@fortawesome/free-solid-svg-icons";
-import { useDropzone } from "react-dropzone";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useDropzone } from "react-dropzone";
 import { Input } from "../../Input";
-
-const defaultAsset: RawAsset = {
-  name: "",
-  mimeType: "",
-};
 
 export function AssetCreateDialog(props: ModalProps) {
   const [asset, assetActions] = useTypeSafeReducer(defaultAsset, {

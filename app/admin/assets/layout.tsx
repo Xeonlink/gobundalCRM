@@ -15,10 +15,11 @@ export default function Layout(props: PropsWithChildren) {
         />
         <div className="dsy-hero-content text-center text-neutral-content">
           <div className="max-w-lg">
-            <h1 className="mb-5 text-4xl font-bold">상품관리</h1>
+            <h1 className="mb-5 text-4xl font-bold">자료관리</h1>
             <p className="">
-              홈페이지에서 고객에게 보여질 상품을 등록하고 관리합니다. <br />
-              상품을 등록하고 활성화하지 않으면 상품이 홈페이지에 노출되지 않습니다.
+              상품이미지 및 상품설명 등에 사용되는 자료를 관리합니다. <br />
+              상품에서 사용되고 있는 자료를 삭제할 경우 상품의 이미지가 없어질 수 있으므로, 자료를
+              삭제할 때는 주의하여야 합니다.
             </p>
           </div>
         </div>

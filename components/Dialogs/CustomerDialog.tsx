@@ -1,7 +1,7 @@
 "use client";
 
 import {
-  RawCustomer,
+  defaultCustomer,
   useCreateCustomer,
   useCustomer,
   useDeleteCustomer,
@@ -16,22 +16,13 @@ import {
   faFloppyDisk,
   faMobileScreen,
   faNotdef,
-  faPeopleGroup,
   faSignature,
   faSignsPost,
   faTrashAlt,
-  faX,
 } from "@fortawesome/free-solid-svg-icons";
-import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React from "react";
 import { Input } from "../Input";
-
-const defaultCustomer: RawCustomer = {
-  name: "",
-  phone: "",
-  address: "",
-  addressDetail: "",
-};
 
 type Props = ModalProps<{ mode: "CREATE" } | { mode: "UPDATE"; customerId: string }>;
 

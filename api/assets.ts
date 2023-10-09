@@ -4,10 +4,19 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { GetResponse, apiRoot } from "./utils";
 
+export const defaultAsset: RawAsset = {
+  name: "",
+  mimeType: "",
+  width: 0,
+  height: 0,
+};
+
 export interface Asset {
   id: string;
   name: string;
   mimeType: string;
+  width: number;
+  height: number;
   src: string;
   refCount: number;
 }

@@ -98,3 +98,15 @@ export class CognitoUserAttributeBuilder extends Map<string, string> {
 export function formDataToJson(formData: FormData) {
   return Object.entries(formData.entries());
 }
+
+export function getSizeFromImg(file: File) {
+  return new Promise<[number, number]>((resolve) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      resolve([img.width, img.height]);
+    };
+    img.src = url;
+  });
+}

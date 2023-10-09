@@ -109,6 +109,7 @@ export function ProductSelector(props: Props) {
                     id=""
                     className="dsy-checkbox dsy-checkbox-xs"
                     checked={selected.ids.includes(item.id)}
+                    onChange={() => {}}
                   />
                 </td>
                 <td>
