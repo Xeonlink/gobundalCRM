@@ -75,3 +75,17 @@ export function useTypeSafeReducer<S extends object, RS extends Reducers<S>>(
 const cloneDeep = <T extends object>(data: T): T => {
   return JSON.parse(JSON.stringify(data));
 };
+
+export function formReducer<E extends HTMLInputElement | HTMLSelectElement>(
+  preprocessor: (value: string) => any = (v) => v,
+) {
+  return (state: any, e: React.ChangeEvent<E>) => {
+    state[e.target.name] = preprocessor(e.target.value);
+  };
+}
+
+export function setReducer<T extends any>(key: string, preprocessor: (payload: T) => T = (v) => v) {
+  return (state: any, payload: T) => {
+    state[key] = preprocessor(payload);
+  };
+}

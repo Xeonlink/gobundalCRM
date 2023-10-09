@@ -144,7 +144,7 @@ export default function Page() {
           </div>
 
           <div className="dsy-form-control">
-            <label htmlFor="name" className="dsy-label">
+            <label htmlFor="leader-name" className="dsy-label">
               <strong className="dsy-label-text">
                 <FontAwesomeIcon icon={faSignature} /> 대표자 이름&nbsp;
                 <span className="align-top text-xs text-orange-500">* 필수</span>

@@ -38,7 +38,7 @@ export default function Layout(props: LayoutParam) {
                 <Link href="/dashboard">대시보드</Link>
               </li>
               <li>
-                <Link href="/admin/display">디스플레이</Link>
+                <Link href="admin/display">디스플레이</Link>
               </li>
               <li>
                 <NavLink href="/kiosk/teams" check="/kiosk">
@@ -54,21 +54,21 @@ export default function Layout(props: LayoutParam) {
                 </ul>
               </li>
               <li>
-                <NavLink href="/admin/teams" check="/admin">
+                <NavLink href="teams" check="/admin">
                   관리
                 </NavLink>
                 <ul className="p-2">
                   <li>
-                    <NavLink href="/admin/teams">팀</NavLink>
+                    <NavLink href="teams">팀</NavLink>
                   </li>
                   <li>
-                    <NavLink href="/admin/orders">주문</NavLink>
+                    <NavLink href="orders">주문</NavLink>
                   </li>
                   <li>
-                    <NavLink href="/admin/products">상품</NavLink>
+                    <NavLink href="products">상품</NavLink>
                   </li>
                   <li>
-                    <NavLink href="/admin/customers">고객</NavLink>
+                    <NavLink href="customers">고객</NavLink>
                   </li>
                 </ul>
               </li>
@@ -83,12 +83,12 @@ export default function Layout(props: LayoutParam) {
         <div className="dsy-navbar-center hidden lg:flex">
           <ul className="dsy-menu dsy-menu-horizontal px-1">
             <li tabIndex={0}>
-              <Link href="/dashboard">
+              <Link href="dashboard">
                 <FontAwesomeIcon icon={faChartLine} /> 대시보드
               </Link>
             </li>
             <li tabIndex={1}>
-              <Link href="/admin/display">
+              <Link href="display">
                 <FontAwesomeIcon icon={faTv} /> 디스플레이
               </Link>
             </li>
@@ -118,27 +118,27 @@ export default function Layout(props: LayoutParam) {
                 </summary>
                 <ul className="w-full min-w-max p-2">
                   <li>
-                    <NavLink href="/admin/teams">
+                    <NavLink href="teams">
                       <FontAwesomeIcon icon={faPeopleGroup} /> 팀
                     </NavLink>
                   </li>
                   <li>
-                    <NavLink href="/admin/orders">
+                    <NavLink href="orders">
                       <FontAwesomeIcon icon={faReceipt} /> 주문
                     </NavLink>
                   </li>
                   <li>
-                    <NavLink href="/admin/products">
+                    <NavLink href="products">
                       <FontAwesomeIcon icon={faCartShopping} /> 상품
                     </NavLink>
                   </li>
                   <li>
-                    <NavLink href="/admin/customers">
+                    <NavLink href="customers">
                       <FontAwesomeIcon icon={faPerson} /> 고객
                     </NavLink>
                   </li>
                   <li>
-                    <NavLink href="/admin/assets">
+                    <NavLink href="assets">
                       <FontAwesomeIcon icon={faImage} /> 자료
                     </NavLink>
                   </li>
@@ -149,7 +149,7 @@ export default function Layout(props: LayoutParam) {
         </div>
 
         <div className="dsy-navbar-end">
-          <Link href="/login" className="dsy-btn-ghost dsy-btn">
+          <Link href="/login?url=/admin/teams" className="dsy-btn-ghost dsy-btn">
             <FontAwesomeIcon icon={faArrowRightFromBracket} />
             <span className="max-[420px]:hidden">&nbsp;로그아웃</span>
           </Link>
@@ -157,7 +157,6 @@ export default function Layout(props: LayoutParam) {
       </nav>
 
       {children}
-      {/* <AdminNavbar /> */}
 
       <footer className="dsy-footer dsy-footer-center bg-base-200 p-4 text-base-content">
         <aside>

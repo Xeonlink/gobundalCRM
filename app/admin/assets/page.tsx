@@ -3,22 +3,21 @@
 import { useAssets } from "@/api/assets";
 import { useDeleteProducts } from "@/api/products";
 import { ColumnList } from "@/components/ColumnList";
-import { AssetCreateDialog } from "@/components/Dialogs/AssetDialog/AssetCreateDialog";
-import { AssetUpdateDialog } from "@/components/Dialogs/AssetDialog/AssetUpdateDialog";
 import { ImgIcon } from "@/components/ImgIcon";
-import { useModal } from "@/extra/modal";
-import { cn } from "@/extra/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { useExcel } from "@/hooks/useExcel";
 import { useItemSelection } from "@/hooks/useItemSelection";
 import IcoExcel from "@/public/icons/excel.png";
 import { faArrowsRotate, faPlus, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
   const auth = useAuth();
   const excel = useExcel();
-  const modalCtrl = useModal();
+  const router = useRouter();
   const selected = useItemSelection();
   const assets = useAssets({
     enabled: auth.isSignIn,
@@ -26,13 +25,7 @@ export default function Page() {
   const deleteItems = useDeleteProducts(selected.ids, {
     onSuccess: () => selected.clear(),
   });
-  const openAssetCreateDialog = () => {
-    modalCtrl.open(<AssetCreateDialog />);
-  };
-  const openAssetUpdateDialog = (assetId: string) => {
-    modalCtrl.open(<AssetUpdateDialog assetId={assetId} />);
-  };
-  const onExcelDownloadClick = () => {
+  const onDownloadClick = () => {
     excel.download(assets.data?.data!, "상품");
   };
   const onDeleteClick = () => {
@@ -42,56 +35,67 @@ export default function Page() {
   };
 
   return (
-    <main className="flex h-screen flex-1 flex-col">
+    <main className="min-h-screen">
       {/* Toolbar */}
-      <div className="flex flex-wrap items-center gap-3 p-3">
-        {/* Refresh */}
-        <button type="button" className="dsy-btn-sm dsy-btn" onClick={() => assets.refetch()}>
-          <FontAwesomeIcon icon={faArrowsRotate} /> 새로고침
-        </button>
+      <ul className="flex w-full flex-wrap items-center justify-center bg-base-200">
+        <li>
+          {/* Refresh */}
+          <button type="button" className="dsy-btn" onClick={() => assets.refetch()}>
+            <FontAwesomeIcon icon={faArrowsRotate} /> 새로고침
+          </button>
+        </li>
 
-        {/* Cratet New Order */}
-        <button type="button" className="dsy-btn-sm dsy-btn" onClick={openAssetCreateDialog}>
-          <FontAwesomeIcon icon={faPlus} /> 자료 추가하기
-        </button>
+        <li>
+          {/* Cratet New Team */}
+          <Link href="assets/create" className="dsy-btn">
+            <FontAwesomeIcon icon={faPlus} /> 자료등록
+          </Link>
+        </li>
 
-        {/* Delete */}
-        <button type="button" className="dsy-btn-sm dsy-btn" onClick={onDeleteClick}>
-          <FontAwesomeIcon icon={faTrashCan} /> 선택삭제
-        </button>
+        <li>
+          {/* Delete */}
+          <button type="button" className="dsy-btn" onClick={onDeleteClick}>
+            <FontAwesomeIcon icon={faTrashCan} /> 선택삭제
+          </button>
+        </li>
 
-        {/* 엑셀로 다운로드하기 */}
-        <button type="button" className="dsy-btn-sm dsy-btn" onClick={onExcelDownloadClick}>
-          <ImgIcon src={IcoExcel} alt="엑셀로 변환" fontSize={20} /> 엑셀로 변환
-        </button>
-      </div>
+        <li>
+          {/* 엑셀로 다운로드하기 */}
+          <button type="button" className="dsy-btn" onClick={onDownloadClick}>
+            <ImgIcon src={IcoExcel} alt="엑셀로 변환" fontSize={16} /> 엑셀로 변환
+          </button>
+        </li>
+      </ul>
 
       <ColumnList
-        threashold={[0, 640, 900, 1200, Infinity]}
-        className="flex-1 items-start justify-center gap-2 space-x-2 overflow-auto text-center"
+        threashold={new Array(32)
+          .fill(0)
+          .map((_, index) => index * 256)
+          .concat(Infinity)}
+        className="flex justify-center gap-1 py-1"
       >
         {(count, columnIndex) => (
-          <ol className="mb-2 inline-block w-72 space-y-2 text-left align-top">
+          <ol className="flex flex-1 flex-col gap-1" key={columnIndex}>
             {assets.data?.data
               ?.filter((_, index) => index % count === columnIndex)
               .map((item) => (
-                <li
-                  key={item.id}
-                  className="dsy-card dsy-card-compact animate-scaleTo1 cursor-pointer overflow-hidden rounded-lg bg-white bg-opacity-60"
-                  onClick={selected.onItemClick(item.id)}
-                  onDoubleClick={() => openAssetUpdateDialog(item.id)}
-                >
-                  <figure>
-                    <img
+                <li key={item.id} className="animate-scaleTo1 text-center">
+                  <button
+                    type="button"
+                    className="transition-all hover:scale-105"
+                    onClick={selected.onItemClick(item.id)}
+                    onDoubleClick={() => router.push(`assets/${item.id}`)}
+                  >
+                    <Image
                       src={item.src}
                       alt={item.name}
-                      className="m-auto cursor-pointer object-contain transition-all hover:scale-105"
+                      width={item.width}
+                      height={item.height}
+                      priority
+                      placeholder="empty"
+                      className="inline-block"
                     />
-                  </figure>
-                  <div className="dsy-card-body gap-0">
-                    <h2 className="font-bold">{item.name}</h2>
-                    <p className="text-sm">{item.mimeType}</p>
-                  </div>
+                  </button>
                 </li>
               ))}
           </ol>

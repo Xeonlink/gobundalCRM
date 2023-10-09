@@ -1,17 +1,15 @@
 "use client";
 
 import { useDeleteOrders, useOrders } from "@/api/orders";
-import { DateChanger } from "@/components/DateChanger";
 import { OrderDialog } from "@/components/Dialogs/OrderDialog";
 import { ImgIcon } from "@/components/ImgIcon";
+import { Input } from "@/components/Input";
+import { useModal } from "@/extra/modal";
 import { PageProps } from "@/extra/type";
-import { cn } from "@/extra/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { useExcel } from "@/hooks/useExcel";
 import { useItemSelection } from "@/hooks/useItemSelection";
-import { useModal } from "@/extra/modal";
 import IcoExcel from "@/public/icons/excel.png";
-import { faCalendarDays } from "@fortawesome/free-regular-svg-icons";
 import {
   faArrowsRotate,
   faBox,
@@ -29,33 +27,25 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import dayjs from "dayjs";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React from "react";
 
 type SearchParams = { date: `${string}-${string}-${string}` };
 
-export default function Page(props: PageProps<any, SearchParams>) {
-  const { searchParams } = props;
-  const { date = dayjs().format("YYYY-MM-DD") } = searchParams;
+export default function Page(props: PageProps<{}, SearchParams>) {
+  const { date = dayjs().format("YYYY-MM-DD") } = props.searchParams;
 
-  const navigate = useRouter();
-  const excel = useExcel();
-  const modalCtrl = useModal();
-  const selected = useItemSelection();
   const auth = useAuth();
+  const excel = useExcel();
+  const router = useRouter();
+  const selected = useItemSelection();
   const orders = useOrders(date, {
     enabled: auth.isSignIn,
   });
   const eraseOrders = useDeleteOrders(selected.ids, {
     onSuccess: () => selected.clear(),
   });
-  const onDateChange = (date: string) => {
-    navigate.replace(`orders?date=${date}`);
-  };
-  const openOrderCreateDialog = () => {
-    modalCtrl.open(<OrderDialog mode="CREATE" />);
-  };
-  const openOrderUpdateDialog = (orderId: string) => {
-    modalCtrl.open(<OrderDialog mode="UPDATE" orderId={orderId} />);
+
+  const onDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    router.replace(`orders?date=${e.target.value}`);
   };
   const onDeleteClick = () => {
     if (selected.ids.length === 0) return;
@@ -67,44 +57,56 @@ export default function Page(props: PageProps<any, SearchParams>) {
   };
 
   return (
-    <main className="h-full flex-1 overflow-auto p-3">
+    <main className="min-h-screen">
       {/* Toolbar */}
-      <div className="mb-3 flex flex-wrap items-center gap-3">
-        {/* 오늘 날짜로 재검색 */}
-        <Link href={`orders?date=${dayjs().format("YYYY-MM-DD")}`} className="dsy-btn-sm dsy-btn">
-          <FontAwesomeIcon icon={faCalendarDays} /> 오늘
-        </Link>
+      <ul className="flex w-full flex-wrap items-center justify-center bg-base-200">
+        <li className="mr-2">
+          <Input
+            type="date"
+            value={date}
+            onChange={onDateChange}
+            max={dayjs().format("YYYY-MM-DD")}
+            className="dsy-input-sm"
+          />
+        </li>
 
-        {/* 해당 날짜로 검색 */}
-        <DateChanger date={date} onChange={onDateChange} />
+        <li>
+          {/* Refresh */}
+          <button type="button" className="dsy-btn" onClick={() => orders.refetch()}>
+            <FontAwesomeIcon icon={faArrowsRotate} /> 새로고침
+          </button>
+        </li>
 
-        {/* Refresh */}
-        <button type="button" className="dsy-btn-sm dsy-btn" onClick={() => orders.refetch()}>
-          <FontAwesomeIcon icon={faArrowsRotate} /> 새로고침
-        </button>
+        <li>
+          {/* Cratet New Order */}
+          <Link href="orders/create" className="dsy-btn">
+            <FontAwesomeIcon icon={faPlus} /> 주문입력
+          </Link>
+        </li>
 
-        {/* Cratet New Order */}
-        <button type="button" className="dsy-btn-sm dsy-btn" onClick={openOrderCreateDialog}>
-          <FontAwesomeIcon icon={faPlus} /> 송장 작성하기
-        </button>
+        <li>
+          {/* Delete */}
+          <button type="button" className="dsy-btn" onClick={onDeleteClick}>
+            <FontAwesomeIcon icon={faTrashCan} /> 선택삭제
+          </button>
+        </li>
 
-        {/* Delete */}
-        <button type="button" className="dsy-btn-sm dsy-btn" onClick={onDeleteClick}>
-          <FontAwesomeIcon icon={faTrashCan} /> 선택삭제
-        </button>
+        <li>
+          {/* 엑셀로 다운로드하기 */}
+          <button type="button" className="dsy-btn" onClick={onDownloadClick}>
+            <ImgIcon src={IcoExcel} alt="엑셀로 변환" fontSize={16} /> 엑셀로 변환
+          </button>
+        </li>
 
-        {/* 엑셀로 다운로드하기 */}
-        <button type="button" className="dsy-btn-sm dsy-btn" onClick={onDownloadClick}>
-          <ImgIcon src={IcoExcel} alt="엑셀로 변환" fontSize={20} /> 엑셀로 변환
-        </button>
+        <li>
+          {/* Go To Kiosk */}
+          <Link href="/kiosk/orders" className="dsy-btn">
+            <FontAwesomeIcon icon={faRobot} /> 키오스크로
+          </Link>
+        </li>
+      </ul>
 
-        {/* Go To Kiosk */}
-        <Link href="/kiosk/orders" className="dsy-btn-sm dsy-btn">
-          <FontAwesomeIcon icon={faRobot} /> 키오스크로
-        </Link>
-      </div>
-
-      <div className="max-w-full overflow-x-auto">
+      <div className="container m-auto overflow-x-auto p-4">
         <table className="table">
           <thead>
             <tr>
@@ -150,8 +152,7 @@ export default function Page(props: PageProps<any, SearchParams>) {
               <tr
                 key={item.id}
                 onClick={selected.onItemClick(item.id)}
-                onDoubleClick={() => openOrderUpdateDialog(item.id)}
-                onTouchEnd={() => openOrderUpdateDialog(item.id)}
+                onDoubleClick={() => router.push(`orders/${item.id}`)}
               >
                 <td className="max-sm:absolute max-sm:right-3 max-sm:top-3">
                   <input
@@ -160,6 +161,7 @@ export default function Page(props: PageProps<any, SearchParams>) {
                     id=""
                     className="dsy-checkbox dsy-checkbox-xs"
                     checked={selected.ids.includes(item.id)}
+                    onChange={() => {}}
                   />
                 </td>
                 <td>

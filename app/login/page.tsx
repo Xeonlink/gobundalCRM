@@ -44,7 +44,7 @@ export default function Page(props: PageProps<any, { url: string }>) {
   }, []);
 
   return (
-    <main className="h-full flex-1 overflow-auto p-3">
+    <main className="p-3">
       <Image
         src={IcoLogo}
         alt="gobundal-logo"
@@ -56,17 +56,17 @@ export default function Page(props: PageProps<any, { url: string }>) {
 
       <form
         onSubmit={onSubmit}
-        className="m-auto max-w-xs rounded-lg bg-white bg-opacity-60 p-6 shadow-md backdrop-blur-md"
+        className="m-auto max-w-xs rounded-lg bg-white bg-opacity-60 p-6 backdrop-blur-md"
       >
-        <h1 className="text-md mb-4 text-center">
+        <h1 className="text-md mb-4 text-center font-bold">
           <FontAwesomeIcon icon={faUserLock} /> 사용자 인증
         </h1>
 
         <div className="dsy-form-control mb-2">
           <label htmlFor="username" className="dsy-label">
-            <span className="dsy-label-text">
+            <strong className="dsy-label-text">
               <FontAwesomeIcon icon={faSignature} /> 사용자 이름
-            </span>
+            </strong>
           </label>
           <input
             id="username"
@@ -74,16 +74,16 @@ export default function Page(props: PageProps<any, { url: string }>) {
             placeholder="id"
             disabled={signIn.isLoading}
             autoFocus
-            className="dsy-input-bordered dsy-input"
+            className="dsy-input"
             required
           />
         </div>
 
         <div className="dsy-form-control">
           <label htmlFor="password" className="dsy-label">
-            <span className="dsy-label-text">
+            <strong className="dsy-label-text">
               <FontAwesomeIcon icon={faKey} /> 비밀번호
-            </span>
+            </strong>
           </label>
           <input
             type="password"
@@ -91,7 +91,7 @@ export default function Page(props: PageProps<any, { url: string }>) {
             name="password"
             placeholder="password"
             disabled={signIn.isLoading}
-            className="dsy-input-bordered dsy-input"
+            className="dsy-input"
             required
           />
         </div>
@@ -130,18 +130,20 @@ export default function Page(props: PageProps<any, { url: string }>) {
 
         {/* Submit Buttons */}
         <div className="dsy-modal-action">
-          <Link href="/user/signup/register" className="dsy-btn">
-            <FontAwesomeIcon icon={faUserPlus} /> 회원가입
-          </Link>
+          <div className="dsy-join w-full">
+            <Link href="/user/signup/register" className="dsy-join-item dsy-btn flex-1">
+              <FontAwesomeIcon icon={faUserPlus} /> 회원가입
+            </Link>
 
-          <button className="dsy-btn" disabled={signIn.isLoading}>
-            {signIn.isLoading ? (
-              <FontAwesomeIcon icon={faSpinner} className="animate-spin" />
-            ) : (
-              <FontAwesomeIcon icon={faArrowRightToBracket} />
-            )}
-            &nbsp;로그인
-          </button>
+            <button className="dsy-join-item dsy-btn flex-1" disabled={signIn.isLoading}>
+              {signIn.isLoading ? (
+                <FontAwesomeIcon icon={faSpinner} className="animate-spin" />
+              ) : (
+                <FontAwesomeIcon icon={faArrowRightToBracket} />
+              )}
+              &nbsp;로그인
+            </button>
+          </div>
         </div>
       </form>
     </main>

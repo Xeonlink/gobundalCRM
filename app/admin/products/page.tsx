@@ -87,7 +87,7 @@ export default function Page(props: PageProps<{}, SearchParams>) {
         </li>
         <li>
           {/* Cratet New Order */}
-          <Link href="/admin/products/create" className="dsy-btn">
+          <Link href="products/create" className="dsy-btn">
             <FontAwesomeIcon icon={faPlus} /> 상품 추가하기
           </Link>
         </li>
@@ -177,6 +177,7 @@ export default function Page(props: PageProps<{}, SearchParams>) {
                       id=""
                       className="dsy-checkbox dsy-checkbox-xs"
                       checked={selected.ids.includes(item.id)}
+                      onChange={() => {}}
                     />
                   </td>
                   <td>
@@ -238,7 +239,7 @@ export default function Page(props: PageProps<{}, SearchParams>) {
               key={item.id}
               className="dsy-card dsy-card-compact animate-scaleTo1 overflow-hidden rounded-none bg-orange-100 bg-opacity-60 transition-all duration-300 max-sm:dsy-card-side sm:rounded-lg"
             >
-              <Link href={`/user/shop/${item.id}`} className="contents">
+              <Link href={`products/${item.id}`} className="contents">
                 <figure>
                   <Image
                     src={item.imgSrc}
