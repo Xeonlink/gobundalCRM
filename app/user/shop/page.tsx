@@ -1,6 +1,8 @@
 "use client";
 
-import { useProducts } from "@/api/products";
+import { useProductCategories } from "@/api/product_categories";
+import { useProducts, useProductsByCategory } from "@/api/products";
+import { PageProps } from "@/extra/type";
 import { useCart } from "@/hooks/useCart";
 import { faCartPlus, faCreditCard } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -8,45 +10,31 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-export default function Page() {
+export default function Page(props: PageProps<{}, { category: string }>) {
+  const { category = "all" } = props.searchParams;
   const navigate = useRouter();
-  const products = useProducts();
+  const products = useProductsByCategory(category);
   const cart = useCart();
+  const { data: productCategories } = useProductCategories();
 
   return (
     <main className="bg-base-100">
       {/* 카테고리 */}
       <ol className="container m-auto flex flex-wrap items-center justify-center gap-2 bg-white p-2 text-center text-sm">
         <li>
-          <Link href="/user/shop?category=all" className="dsy-btn">
+          <Link href="shop?category=all" className="dsy-btn">
             전체상품
           </Link>
         </li>
-        <li>
-          <Link href="/user/shop?categoty=명품제주감귤" className="dsy-btn">
-            명품제주감귤
-          </Link>
-        </li>
-        <li>
-          <Link href="/user/shop?categoty=수산물" className="dsy-btn">
-            수산물
-          </Link>
-        </li>
-        <li>
-          <Link href="/user/shop?categoty=제주수제상품" className="dsy-btn">
-            제주수제상품
-          </Link>
-        </li>
-        <li>
-          <Link href="/user/shop?categoty=제주청정농산물" className="dsy-btn">
-            제주청정농산물
-          </Link>
-        </li>
-        <li>
-          <Link href="/user/shop?categoty=제주특산물" className="dsy-btn">
-            제주특산물
-          </Link>
-        </li>
+        {productCategories?.data
+          .filter((item) => item.enabled)
+          .map((item) => (
+            <li key={item.id}>
+              <Link replace href={`shop?category=${item.name}`} className="dsy-btn">
+                {item.name}
+              </Link>
+            </li>
+          ))}
       </ol>
 
       {/* 상품 진열장 */}
@@ -57,7 +45,7 @@ export default function Page() {
             className="dsy-card dsy-card-compact animate-scaleTo1 overflow-hidden rounded-lg bg-orange-100 bg-opacity-40 transition-all duration-300 max-sm:dsy-card-side"
             onDoubleClick={() => navigate.push(`./shop/${item.id}`)}
           >
-            <Link href={`/user/shop/${item.id}`} className="contents">
+            <Link href={`shop/${item.id}`} className="contents">
               <figure>
                 <Image
                   src={item.imgSrc}
@@ -65,6 +53,7 @@ export default function Page() {
                   width={450}
                   height={300}
                   className="aspect-[3/2] cursor-pointer object-cover transition-all duration-300 hover:scale-105 max-sm:w-40"
+                  priority
                 />
               </figure>
               <div className="dsy-card-body gap-0">

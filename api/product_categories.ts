@@ -9,7 +9,12 @@ export interface ProductCategory {
   enabled: boolean;
 }
 
-export type RawProduct = Omit<ProductCategory, "id">;
+export const defaultProductCategory: RawProductCategory = {
+  name: "",
+  enabled: true,
+};
+
+export type RawProductCategory = Omit<ProductCategory, "id">;
 
 const base_uri = "/product_categories";
 
@@ -26,7 +31,7 @@ export function useProductCategories(options?: QueryOptions<GetResponse<ProductC
   });
 }
 
-export function useCreateProductCategory(item: RawProduct, options?: MutateOption) {
+export function useCreateProductCategory(item: RawProductCategory, options?: MutateOption) {
   const mutationFn = async () => {
     const uri = base_uri;
     const body = item;
@@ -38,19 +43,13 @@ export function useCreateProductCategory(item: RawProduct, options?: MutateOptio
 }
 
 export function useUpdateProductCategory(
-  id?: string,
-  item?: Partial<ProductCategory>,
-  options?: Omit<
-    UseMutationOptions<any, unknown, { id: string; item: Partial<ProductCategory> }, unknown>,
-    "mutationFn" | "mutationKey"
-  >,
+  id: string,
+  item: Partial<ProductCategory>,
+  options?: Omit<UseMutationOptions<any, unknown, void, unknown>, "mutationFn" | "mutationKey">,
 ) {
-  const mutationFn = async (variables: { id: string; item: Partial<ProductCategory> }) => {
-    if (!id && !variables.id) throw new Error("id is null");
-    if (!item && !variables.item) throw new Error("item is null");
-
-    const uri = `${base_uri}/${variables.id || id}`;
-    const body = variables.item || item;
+  const mutationFn = async () => {
+    const uri = `${base_uri}/${id}`;
+    const body = item;
     const res = await apiRoot.patch(uri, body);
     return res.data;
   };

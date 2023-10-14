@@ -6,11 +6,12 @@ import { useConfirmRegistration } from "@/api/auth";
 import { useSignUp } from "@/api/auth";
 import { usePostCodePopup } from "@/hooks/usePostCodePopup";
 import { useTypeSafeReducer } from "@/hooks/useTypeSafeReducer";
-import { faCircleCheck, faEnvelope } from "@fortawesome/free-solid-svg-icons";
+import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
 import { useRef } from "react";
+import { faCircleCheck, faCircleQuestion } from "@fortawesome/free-regular-svg-icons";
 
 const defaultSigUpForm = {
   id: "",
@@ -91,11 +92,22 @@ export default function Page() {
 
   const invalid = {
     id: form.id.length < 4,
-    password: form.password.length < 8,
+    password:
+      form.password.length < 8 || // 비밀번호의 길이가 8자리 이하일 경우
+      form.password.search(/[0-9]/g) < 0 || // 숫자가 없을 경우
+      form.password.search(/[a-z]/gi) < 0 || // 영문이 없을 경우
+      form.password.search(/[`~!@@#$%^&*|₩₩₩'₩";:₩/?]/gi) < 0, // 특수문자가 없을 경우
     passwordConfirm: form.password !== form.passwordConfirm || form.passwordConfirm.length < 8,
     email: !form.email.includes("@"),
   };
   const isValid = Object.values(invalid).every((v) => !v);
+
+  const openPasswordRequirement = () => {
+    const passwordRequirement = document.querySelector(
+      "#password-requirement",
+    ) as HTMLDialogElement;
+    passwordRequirement.showModal();
+  };
 
   return (
     <main className="bg-base-100">
@@ -111,9 +123,9 @@ export default function Page() {
           <tbody className="contents">
             <tr className="contents">
               <td className="flex items-center border-b bg-base-200 p-2 sm:w-32">아이디</td>
-              <td className="border-b p-2 sm:col-span-3">
+              <td className="space-y-1 border-b p-2 sm:col-span-3">
                 <Input
-                  className="text-center max-sm:w-full"
+                  className="dsy-input-sm max-w-[182px] text-center max-sm:w-full"
                   value={form.id}
                   onChange={formActions.onIdChange}
                   invalid={invalid.id}
@@ -123,11 +135,20 @@ export default function Page() {
               </td>
             </tr>
             <tr className="contents">
-              <td className="flex items-center border-b bg-base-200 p-2 sm:w-32">비밀번호</td>
+              <td className="flex items-center border-b bg-base-200 p-2 sm:w-32">
+                비밀번호
+                <button
+                  type="button"
+                  className="dsy-btn-ghost dsy-btn-sm dsy-btn-circle dsy-btn"
+                  onClick={openPasswordRequirement}
+                >
+                  <FontAwesomeIcon icon={faCircleQuestion} />
+                </button>
+              </td>
               <td className="border-b p-2">
                 <Input
                   type="password"
-                  className="text-center max-sm:w-full"
+                  className="dsy-input-sm max-w-[182px] text-center max-sm:w-full"
                   value={form.password}
                   onChange={formActions.onPasswordChange}
                   invalid={invalid.password}
@@ -143,7 +164,7 @@ export default function Page() {
               <td className="border-b p-2">
                 <Input
                   type="password"
-                  className="text-center max-sm:w-full"
+                  className="dsy-input-sm max-w-[182px] text-center max-sm:w-full"
                   onChange={formActions.onPasswordConfirmChange}
                   value={form.passwordConfirm}
                   invalid={invalid.passwordConfirm}
@@ -157,7 +178,7 @@ export default function Page() {
               <td className="flex-1 p-2 sm:col-span-3">
                 <Input
                   type="email"
-                  className="w-full max-w-[182px] text-center"
+                  className="dsy-input-sm w-full max-w-[182px] text-center"
                   value={form.email}
                   onChange={formActions.onEmailChange}
                   invalid={invalid.email}
@@ -184,7 +205,7 @@ export default function Page() {
               </td>
               <td className="flex-1 rounded-tr-md border-b p-2">
                 <Input
-                  className="w-full max-w-[182px] text-center"
+                  className="dsy-input-sm w-full max-w-[182px] text-center"
                   value={form.name}
                   onChange={formActions.onNameChange}
                   placeholder="홍길동"
@@ -198,7 +219,7 @@ export default function Page() {
               </td>
               <td className="flex-1 border-b p-2">
                 <Input
-                  className="w-full max-w-[182px] text-center"
+                  className="dsy-input-sm w-full max-w-[182px] text-center"
                   value={form.nickname}
                   onChange={formActions.onNickNameChange}
                   placeholder="동서에번쩍"
@@ -213,7 +234,7 @@ export default function Page() {
                   type="date"
                   pattern="\d{4}-\d{2}-\d{2}"
                   max={dayjs().subtract(10, "year").format("YYYY-MM-DD")}
-                  className="w-full max-w-[182px] text-center"
+                  className="dsy-input-sm w-full max-w-[182px] text-center"
                   value={form.birthday}
                   onChange={formActions.onBirthdayChange}
                   disabled={signUp.isLoading}
@@ -225,7 +246,7 @@ export default function Page() {
               <td className="flex-1 border-b p-2 sm:col-span-3">
                 <Input
                   type="tel"
-                  className="w-full max-w-[182px] text-center"
+                  className="dsy-input-sm w-full max-w-[182px] text-center"
                   value={form.phone}
                   onChange={formActions.onPhoneChange}
                   placeholder="010-0000-0000"
@@ -237,7 +258,7 @@ export default function Page() {
               <td className="flex items-center bg-base-200 p-2 max-sm:border-b sm:w-32">주소</td>
               <td className="flex-1 p-2 max-sm:border-b">
                 <Input
-                  className="w-full max-w-[182px] text-center"
+                  className="dsy-input-sm w-full max-w-[182px] text-center"
                   value={form.address}
                   onChange={postCodePopup.show}
                   onClick={postCodePopup.show}
@@ -252,7 +273,7 @@ export default function Page() {
               </td>
               <td className="flex-1 p-2">
                 <Input
-                  className="w-full max-w-[182px] text-center"
+                  className="dsy-input-sm w-full max-w-[182px] text-center"
                   value={form.addressDetail}
                   onChange={formActions.onAddressDetailChange}
                   placeholder="단독주택"
@@ -276,7 +297,7 @@ export default function Page() {
               <td className="flex items-center rounded-tl-md border-b bg-base-200 p-2 sm:w-32">
                 메일서비스
               </td>
-              <td className="flex w-[198px] items-center gap-2 rounded-tr-md border-b p-2">
+              <td className="flex w-[198px] items-center gap-2 rounded-tr-md p-2 max-sm:border-b">
                 <input
                   type="checkbox"
                   className="dsy-checkbox dsy-checkbox-sm text-center"
@@ -362,6 +383,34 @@ export default function Page() {
               확인
             </button>
           </div>
+        </form>
+      </dialog>
+
+      {/* 비밀번호 조건 모달 */}
+      <dialog id="password-requirement" className="dsy-modal dsy-modal-top sm:dsy-modal-middle">
+        <div className="dsy-modal-box">
+          <h3 className="mb-2 text-lg font-bold text-orange-500">비밀번호는?</h3>
+          <ul className="">
+            <li className="min-w-max">
+              1. <strong>8자리 이상</strong>이어야 합니다.
+            </li>
+            <li className="min-w-max">
+              2. <strong>특수문자</strong>를 포함해야합니다.
+            </li>
+            <li className="min-w-max">
+              3. <strong>숫자</strong>를 포함해야합니다.
+            </li>
+            <li className="min-w-max">
+              4. <strong>영문</strong>를 포함해야합니다.
+            </li>
+            <li className="min-w-max">
+              4. <strong>공백이 없어야</strong> 합니다.
+            </li>
+          </ul>
+        </div>
+        <form method="dialog" className="dsy-modal-backdrop">
+          {/* if there is a button in form, it will close the modal */}
+          <button>Close</button>
         </form>
       </dialog>
     </main>

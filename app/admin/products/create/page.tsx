@@ -25,8 +25,10 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
+  const router = useRouter();
   const modalCtrl = useModal();
   const { data: productCategories } = useProductCategories();
   const [product, productActions] = useTypeSafeReducer(defaultProduct, {
@@ -59,7 +61,9 @@ export default function Page() {
     },
     reset: () => defaultProduct,
   });
-  const createItem = useCreateProduct(product);
+  const createItem = useCreateProduct(product, {
+    onSuccess: () => router.back(),
+  });
   const isLoading = createItem.isLoading;
 
   const validity = {
@@ -75,7 +79,7 @@ export default function Page() {
   };
 
   return (
-    <main>
+    <main className="min-h-screen">
       {/* Toolbar */}
       <ul className="flex w-full flex-wrap justify-center bg-base-200 py-2">
         <li>
@@ -143,6 +147,7 @@ export default function Page() {
             type="button"
             className="dst-btn-ghost dsy-btn disabled:bg-transparent"
             disabled={!isValid || isLoading}
+            onClick={() => createItem.mutate()}
           >
             <FontAwesomeIcon icon={faFloppyDisk} /> 저장
           </button>

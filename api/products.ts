@@ -96,3 +96,20 @@ export function useDeleteProducts(ids: string[], options?: MutateOption) {
 
   return useAutoInvalidateMutation(["products"], mutationFn, options);
 }
+
+export function useProductsByCategory(
+  category: string,
+  options?: QueryOptions<GetResponse<Product>>,
+) {
+  const queryFn = async () => {
+    const uri = `/products`;
+    const config = { params: { category } };
+    const res = await apiRoot.get<GetResponse<Product>>(uri, config);
+    return res.data;
+  };
+
+  return useQuery(["products", category], queryFn, {
+    suspense: true,
+    ...options,
+  });
+}

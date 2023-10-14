@@ -65,16 +65,6 @@ export default function Page(props: PageProps<{}, SearchParams>) {
     deleteItems.mutate();
   };
 
-  const { data: productCategories } = useProductCategories();
-  const [categories, categoryActions] = useTypeSafeReducer(productCategories?.data!, {
-    onNameChange: (state, payload: { index: number; value: string }) => {
-      const { index, value } = payload;
-      state[index].name = value;
-    },
-  });
-  const deleteCategory = useDeleteProductCategory();
-  const updateCategory = useUpdateProductCategory();
-
   return (
     <main className="min-h-screen">
       {/* Toolbar */}
@@ -104,19 +94,13 @@ export default function Page(props: PageProps<{}, SearchParams>) {
           </button>
         </li>
         <li>
-          {/* 카테고리 관리 */}
-          <button type="button" className="dsy-btn" onClick={openProductCategoryDialog}>
-            <FontAwesomeIcon icon={faTableCellsLarge} /> 카테고리 관리
-          </button>
-        </li>
-        <li>
           {/* 보기 설정 */}
           {view === "table" ? (
-            <Link href={{ query: { view: "card" } }} className="dsy-btn font-normal">
+            <Link href={{ query: { view: "card" } }} className="dsy-btn">
               <FontAwesomeIcon icon={faAddressCard} /> 카드로 보기
             </Link>
           ) : (
-            <Link href={{ query: { view: "table" } }} className="dsy-btn font-normal">
+            <Link href={{ query: { view: "table" } }} className="dsy-btn">
               <FontAwesomeIcon icon={faTableCellsLarge} /> 표로 보기
             </Link>
           )}
@@ -275,80 +259,29 @@ export default function Page(props: PageProps<{}, SearchParams>) {
                 </div>
               </Link>
               {/* <div className="dsy-join w-full rounded-none max-sm:hidden">
-              <button
-                type="button"
-                className="dsy-join-item dsy-btn flex-1 border-none bg-orange-100"
-                // onClick={() => cart.setCandidate(item)}
-              >
-                <FontAwesomeIcon icon={faCartPlus} /> 장바구니
-              </button>
-              <Link
-                href="/user/payment"
-                type="button"
-                className="dsy-join-item dsy-btn flex-1 border-none bg-orange-200"
-                onClick={() => {
-                  // cart.reset();
-                  // cart.addProduct(item);
-                }}
-              >
-                <FontAwesomeIcon icon={faCreditCard} /> 구매
-              </Link>
-            </div> */}
+                <button
+                  type="button"
+                  className="dsy-join-item dsy-btn flex-1 border-none bg-orange-100"
+                  // onClick={() => cart.setCandidate(item)}
+                >
+                  <FontAwesomeIcon icon={faCartPlus} /> 장바구니
+                </button>
+                <Link
+                  href="/user/payment"
+                  type="button"
+                  className="dsy-join-item dsy-btn flex-1 border-none bg-orange-200"
+                  onClick={() => {
+                    // cart.reset();
+                    // cart.addProduct(item);
+                  }}
+                >
+                  <FontAwesomeIcon icon={faCreditCard} /> 구매
+                </Link>
+              </div> */}
             </li>
           ))}
         </ol>
       ) : null}
-
-      {/* 카테고리 관리 모달 */}
-      <dialog id="product-category-dialog" className="dsy-modal max-sm:dsy-modal-bottom">
-        <form method="dialog" className="dsy-modal-box">
-          <h3 className="mb-6 text-center text-lg font-bold" tabIndex={0}>
-            카테고리 관리
-          </h3>
-
-          <div className="space-y-2">
-            {productCategories?.data.map((item, i) => (
-              <div className="dsy-join w-full" key={item.id}>
-                <Input
-                  id="name"
-                  placeholder="한라봉청 3kg"
-                  value={item.name}
-                  onChange={(e) =>
-                    categoryActions.onNameChange({ index: i, value: e.target.value })
-                  }
-                  required
-                  className="dsy-join-item w-full"
-                />
-                <button
-                  type="button"
-                  className="dsy-join-item dsy-btn"
-                  onClick={() => updateCategory.mutate({ id: item.id, item: { name: item.name } })}
-                >
-                  <FontAwesomeIcon icon={faFloppyDisk} />
-                </button>
-                <button
-                  type="button"
-                  className="dsy-join-item dsy-btn"
-                  onClick={() => deleteCategory.mutate(item.id)}
-                >
-                  <FontAwesomeIcon icon={faTrashCan} />
-                </button>
-              </div>
-            ))}
-          </div>
-
-          <div className="dsy-modal-action">
-            <button type="button" className="dsy-btn">
-              <FontAwesomeIcon icon={faPlus} />
-              추가하기
-            </button>
-            <button type="submit" className="dsy-btn">
-              <FontAwesomeIcon icon={faClose} />
-              닫기
-            </button>
-          </div>
-        </form>
-      </dialog>
     </main>
   );
 }

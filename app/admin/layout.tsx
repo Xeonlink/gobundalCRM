@@ -7,6 +7,7 @@ import {
   faChartLine,
   faGear,
   faImage,
+  faLayerGroup,
   faMobileScreen,
   faPeopleGroup,
   faPerson,
@@ -66,6 +67,9 @@ export default function Layout(props: LayoutParam) {
                   </li>
                   <li>
                     <NavLink href="products">상품</NavLink>
+                  </li>
+                  <li>
+                    <NavLink href="product_categories">상품 카테고리</NavLink>
                   </li>
                   <li>
                     <NavLink href="customers">고객</NavLink>
@@ -130,6 +134,11 @@ export default function Layout(props: LayoutParam) {
                   <li>
                     <NavLink href="products">
                       <FontAwesomeIcon icon={faCartShopping} /> 상품
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink href="product_categories">
+                      <FontAwesomeIcon icon={faLayerGroup} /> 상품 카테고리
                     </NavLink>
                   </li>
                   <li>
