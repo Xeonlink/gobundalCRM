@@ -32,7 +32,7 @@ export function FloatingMenu() {
           <li key={item.id}>
             <a href={`/user/shop/${item.id}`}>
               <Image
-                src={item.imgSrc}
+                src={item.images[0].src}
                 alt={item.name}
                 width={72}
                 height={48}

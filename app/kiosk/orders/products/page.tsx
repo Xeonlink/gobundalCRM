@@ -17,6 +17,7 @@ import {
   faX,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -59,11 +60,13 @@ export default function Page() {
                   className="dsy-card dsy-card-compact animate-scaleTo1 overflow-hidden rounded-lg bg-white bg-opacity-40"
                 >
                   <figure>
-                    <img
-                      src={item.imgSrc}
+                    <Image
+                      src={item.images[0].src}
                       alt={item.name}
+                      width={item.images[0].width}
+                      height={item.images[0].height}
                       className="aspect-[3/2] cursor-pointer object-cover transition-all duration-300 hover:scale-105"
-                      onDoubleClick={() => openAssetPreviewDialog(item.imgSrc)}
+                      onDoubleClick={() => openAssetPreviewDialog(item.images[0].src)}
                     />
                   </figure>
                   <div className="dsy-card-body gap-0">

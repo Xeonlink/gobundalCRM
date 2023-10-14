@@ -71,6 +71,8 @@ export function ProductCountToCart() {
             <Input
               className="inline-block h-full w-10 rounded-none border-none bg-transparent text-center"
               value={productQuantity}
+              readOnly
+              onChange={() => {}}
             />
             <button
               type="button"

@@ -1,5 +1,6 @@
 "use client";
 
+import { Asset } from "@/api/assets";
 import { useProductCategories } from "@/api/product_categories";
 import { defaultProduct, useCreateProduct } from "@/api/products";
 import { Input } from "@/components/Input";
@@ -53,8 +54,27 @@ export default function Page() {
     onRemainChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
       state.remain = parseInt(e.target.value.replaceAll(",", "")) || 0;
     },
-    setImgSrc: (state, src: string) => {
-      state.imgSrc = src;
+    setDescriptionImage: (state, asset: Asset) => {
+      state.descriptionImage = {
+        id: asset.id,
+        src: asset.src,
+        width: asset.width,
+        height: asset.height,
+      };
+    },
+    removeDescriptionImage: (state) => {
+      state.descriptionImage = defaultProduct.descriptionImage;
+    },
+    addProductImage: (state, asset: Asset) => {
+      state.images.push({
+        id: asset.id,
+        src: asset.src,
+        width: asset.width,
+        height: asset.height,
+      });
+    },
+    removeProductImage: (state, id: string) => {
+      state.images = state.images.filter((item) => item.id !== id);
     },
     onCategoryChange: (state, e: React.ChangeEvent<HTMLSelectElement>) => {
       state.category = e.target.value;
@@ -68,14 +88,20 @@ export default function Page() {
 
   const validity = {
     name: product.name !== "",
-    imgSrc: product.imgSrc !== "",
+    images: product.images.length > 0,
     salePrice: product.salePrice === 0 || product.salePrice < product.price,
     remain: product.remain >= -1,
+    descriptionImage: product.descriptionImage.src !== "",
   };
   const isValid = Object.values(validity).every((v) => v);
 
-  const openAssetSelector = () => {
-    modalCtrl.open(<AssetSelector onSelect={(asset) => productActions.setImgSrc(asset.src)} />);
+  const openProductImageSelector = () => {
+    modalCtrl.open(<AssetSelector onSelect={(asset) => productActions.addProductImage(asset)} />);
+  };
+  const openDescriptionImageSelector = () => {
+    modalCtrl.open(
+      <AssetSelector onSelect={(asset) => productActions.setDescriptionImage(asset)} />,
+    );
   };
 
   return (
@@ -180,33 +206,34 @@ export default function Page() {
                 <span className="align-top text-xs text-orange-500">* 필수</span>
               </strong>
             </label>
-            {product.imgSrc === "" ? (
+            <div className="flex flex-wrap items-center gap-2">
+              {product.images.map((item) => (
+                <figure className="relative h-28 w-fit overflow-hidden rounded-md shadow-md">
+                  <Image
+                    src={item.src}
+                    alt="상품이미지"
+                    className="h-full w-full object-cover"
+                    width={item.width}
+                    height={item.height}
+                  />
+                  <button
+                    type="button"
+                    className="dsy-btn-sm dsy-btn absolute right-0 top-0 rounded-none rounded-bl-md border-none bg-white"
+                    onClick={() => productActions.removeProductImage(item.id)}
+                  >
+                    x
+                  </button>
+                </figure>
+              ))}
               <button
                 type="button"
                 className="dsy-btn h-28 w-28 flex-col rounded-lg bg-transparent"
-                onClick={openAssetSelector}
+                onClick={openProductImageSelector}
               >
                 <FontAwesomeIcon icon={faImage} />
                 <span className="text-sm">사진추가</span>
               </button>
-            ) : (
-              <figure className="relative h-28 w-fit overflow-hidden rounded-md shadow-md">
-                <Image
-                  src={product.imgSrc}
-                  alt="상품이미지"
-                  className="h-full w-full object-cover"
-                  width={200}
-                  height={150}
-                />
-                <button
-                  type="button"
-                  className="dsy-btn-sm dsy-btn absolute right-0 top-0 rounded-none rounded-bl-md border-none bg-white"
-                  onClick={() => productActions.setImgSrc("")}
-                >
-                  x
-                </button>
-              </figure>
-            )}
+            </div>
           </div>
 
           <div className="dsy-form-control">
@@ -293,6 +320,42 @@ export default function Page() {
               <div className="absolute bottom-1/2 right-4 translate-y-1/2">원</div>
             </div>
           </div>
+
+          <div className="dsy-form-control">
+            <label htmlFor="name" className="dsy-label">
+              <strong className="dsy-label-text">
+                상품설명 이미지를 추가해 보세요.&nbsp;
+                <span className="align-top text-xs text-orange-500">* 필수</span>
+              </strong>
+            </label>
+            {product.descriptionImage.src === "" ? (
+              <button
+                type="button"
+                className="dsy-btn h-28 w-28 flex-col rounded-lg bg-transparent"
+                onClick={openDescriptionImageSelector}
+              >
+                <FontAwesomeIcon icon={faImage} />
+                <span className="text-sm">사진추가</span>
+              </button>
+            ) : (
+              <figure className="relative h-28 w-fit overflow-hidden rounded-md shadow-md">
+                <Image
+                  src={product.descriptionImage.src}
+                  alt="상품설명 이미지"
+                  className="h-full w-full object-cover"
+                  width={product.descriptionImage.width}
+                  height={product.descriptionImage.height}
+                />
+                <button
+                  type="button"
+                  className="dsy-btn-sm dsy-btn absolute right-0 top-0 rounded-none rounded-bl-md border-none bg-white"
+                  onClick={() => productActions.removeDescriptionImage()}
+                >
+                  x
+                </button>
+              </figure>
+            )}
+          </div>
         </form>
 
         <div className="w-80 space-y-4">
@@ -301,10 +364,10 @@ export default function Page() {
           <div className="dsy-card dsy-card-compact animate-scaleTo1 overflow-hidden rounded-lg bg-orange-100 bg-opacity-40 transition-all duration-300">
             <figure>
               <Image
-                src={product.imgSrc || ImgNoImg}
+                src={product.images[0].src || ImgNoImg}
                 alt={product.name}
-                width={450}
-                height={300}
+                width={product.images[0].width || 450}
+                height={product.images[0].height || 300}
                 className="aspect-[3/2] cursor-pointer object-cover transition-all duration-300 hover:scale-105"
               />
             </figure>
@@ -351,10 +414,10 @@ export default function Page() {
           <div className="dsy-card dsy-card-side dsy-card-compact animate-scaleTo1 overflow-hidden rounded-lg bg-orange-100 bg-opacity-40 transition-all duration-300">
             <figure>
               <Image
-                src={product.imgSrc || ImgNoImg}
+                src={product.images[0] || ImgNoImg}
                 alt={product.name}
-                width={450}
-                height={300}
+                width={product.images[0].width || 450}
+                height={product.images[0].height || 300}
                 className="aspect-[3/2] w-40 cursor-pointer object-cover transition-all duration-300 hover:scale-105"
               />
             </figure>

@@ -2,6 +2,7 @@
 
 import { useProducts } from "@/api/products";
 import { ProductPrice } from "@/components/ProductCard/ProductPrice";
+import { useCart } from "@/hooks/useCart";
 import {
   faBoxes,
   faCaretLeft,
@@ -17,16 +18,21 @@ import Link from "next/link";
 
 export default function Page() {
   const products = useProducts();
+  const cart = useCart();
 
-  const totalPrice = 100000000;
-  const totalTaxPrice = 100000;
+  const totalProductPrice = cart.products.reduce(
+    (acc, item) => acc + item.item.price * item.quantity,
+    0,
+  );
+  const totalTaxPrice = totalProductPrice / 10;
+  const totalPrice = totalProductPrice + totalTaxPrice;
 
   return (
     <main className="bg-base-100">
       <h2 className="py-6 text-center text-3xl font-bold">장바구니</h2>
 
       {/* 상품 진열장 */}
-      <ol className="container m-auto grid max-w-6xl grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-2 p-2 pt-0 sm:gap-4 sm:p-4 sm:pt-0">
+      <ol className="container m-auto grid max-w-6xl grid-cols-[repeat(auto-fit,minmax(220px,max-content))] gap-2 p-2 pt-0 sm:gap-4 sm:p-4 sm:pt-0">
         {products?.data?.data.map((item) => (
           <li
             key={item.id}
@@ -34,7 +40,7 @@ export default function Page() {
           >
             <figure>
               <Image
-                src={item.imgSrc}
+                src={item.images[0].src}
                 alt={item.name}
                 width={450}
                 height={300}
@@ -73,7 +79,7 @@ export default function Page() {
             <div>
               <FontAwesomeIcon icon={faBoxes} fontSize={14} /> 상품가격 :
             </div>
-            <div className="flex-1 text-right">{totalPrice.toLocaleString() + "원"}</div>
+            <div className="flex-1 text-right">{totalProductPrice.toLocaleString() + "원"}</div>
           </label>
           <label htmlFor="total-price" className="flex p-2 px-6">
             <div>
@@ -92,7 +98,7 @@ export default function Page() {
               href="/user/shop"
               type="button"
               className="dsy-join-item dsy-btn flex-1 border-none bg-orange-100"
-              // onClick={() => cart.reset()}
+              onClick={() => cart.reset()}
             >
               <FontAwesomeIcon icon={faNotdef} rotation={90} /> 초기화
             </Link>

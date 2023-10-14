@@ -67,7 +67,7 @@ export default function AssetSelector(props: Props) {
         method="dialog"
         className="dsy-modal-box max-h-screen w-full max-w-[45rem] bg-opacity-60 backdrop-blur-md"
       >
-        <ul className="grid grid-cols-[repeat(auto-fill,_minmax(200px,_1fr))] text-sm">
+        <ul className="grid grid-cols-[repeat(auto-fill,_minmax(200px,1fr))] text-sm">
           {assets?.data?.map((item) => (
             <li
               key={item.id}

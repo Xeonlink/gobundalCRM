@@ -12,6 +12,7 @@ import {
   faWon,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Image from "next/image";
 import Link from "next/link";
 
 export default function Page() {
@@ -50,9 +51,11 @@ export default function Page() {
               <tr className="even:bg-white even:bg-opacity-40" key={item.id}>
                 <td className="py-2 pl-2 pr-2 first-of-type:rounded-l-md last-of-type:rounded-r-md">
                   <figure className="mr-2 inline-block w-28 align-middle">
-                    <img
-                      src={item.imgSrc}
+                    <Image
+                      src={item.images[0].src}
                       alt={item.name}
+                      width={item.images[0].width}
+                      height={item.images[0].height}
                       className="rounded-md object-cover object-center"
                     />
                   </figure>
@@ -138,7 +141,13 @@ export default function Page() {
               key={item.id}
             >
               <figure className="w-1/3 p-2">
-                <img src={item.imgSrc} alt={item.name} className="h-full w-full rounded-lg" />
+                <Image
+                  src={item.images[0].src}
+                  alt={item.name}
+                  width={item.images[0].width}
+                  height={item.images[0].height}
+                  className="h-full w-full rounded-lg"
+                />
               </figure>
               <div className="dsy-card-body p-6">
                 <h2 className="dsy-card-title text-lg">{item.name}</h2>

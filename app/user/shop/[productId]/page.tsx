@@ -25,7 +25,7 @@ export default function Page(props: PageProps<{ productId: string }>) {
         <div className="relative">
           <button type="button" className="sm:w-96" onDoubleClick={openBigImgDialog}>
             <Image
-              src={product?.imgSrc!}
+              src={product?.images!?.[0]!.src}
               width={400}
               height={300}
               alt="이미지"
@@ -104,7 +104,13 @@ export default function Page(props: PageProps<{ productId: string }>) {
       {/* 이미지 크게보기 모달 */}
       <dialog id="big-image" className="dsy-modal dsy-modal-top sm:dsy-modal-middle">
         <div className="dsy-modal-box p-0">
-          <img src={product?.imgSrc!} alt="이미지" className="h-full w-full rounded-lg" />
+          <Image
+            src={product?.images!?.[0].src}
+            alt="이미지"
+            width={product?.images!?.[0].width}
+            height={product?.images!?.[0].height}
+            className="h-full w-full rounded-lg"
+          />
         </div>
         <form method="dialog" className="dsy-modal-backdrop">
           <button>Close</button>

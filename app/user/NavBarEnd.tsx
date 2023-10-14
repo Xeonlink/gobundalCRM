@@ -23,7 +23,7 @@ export default function NavBarEnd() {
   );
 
   return (
-    <div className="dsy-navbar-end">
+    <>
       {auth.isSignIn ? (
         // 장바구니 버튼
         <div className="dsy-dropdown-end dsy-dropdown">
@@ -69,6 +69,6 @@ export default function NavBarEnd() {
           <span className="max-[420px]:hidden">&nbsp;로그인</span>
         </Link>
       )}
-    </div>
+    </>
   );
 }

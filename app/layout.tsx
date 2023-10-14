@@ -1,10 +1,10 @@
-import { ReactQueryProvider } from "@/components/ReactQueryProvider";
 import { ModalPlacer } from "@/extra/modal";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import type { Metadata } from "next";
 import { PropsWithChildren } from "react";
 import "./globals.css";
+import { ReactQueryProvider } from "./ReactQueryProvider";
 config.autoAddCss = false;
 
 export const metadata: Metadata = {

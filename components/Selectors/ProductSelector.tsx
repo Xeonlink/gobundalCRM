@@ -1,14 +1,12 @@
 "use client";
 
 import { Product, useDeleteProducts, useProducts } from "@/api/products";
-import { ModalProps } from "@/extra/modal";
+import { ModalProps, useModal } from "@/extra/modal";
 import { useExcel } from "@/hooks/useExcel";
 import { useItemSelection } from "@/hooks/useItemSelection";
-import { useModal } from "@/extra/modal";
 import IcoExcel from "@/public/icons/excel.png";
 import {
   faBoxes,
-  faBoxesStacked,
   faCheck,
   faCoins,
   faInfinity,
@@ -20,8 +18,8 @@ import {
   faX,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { ProductDialog } from "../Dialogs/ProductDialog";
 import { ImgIcon } from "../ImgIcon";
+import Link from "next/link";
 
 type Props = ModalProps<{ onSelect?: (product: Product) => void }>;
 
@@ -36,12 +34,6 @@ export function ProductSelector(props: Props) {
     onSuccess: () => selected.clear(),
   });
 
-  const openProductCreateDialog = () => {
-    modalCtrl.open(<ProductDialog mode="CREATE" />);
-  };
-  const onItemDoubleClick = (product: Product) => () => {
-    modalCtrl.open(<ProductDialog mode="UPDATE" productId={product.id} />);
-  };
   const onConfirmClick = () => {
     if (selected.ids.length > 1) {
       alert("다중 선택은 아직 지원하지 않습니다.");
@@ -98,7 +90,7 @@ export function ProductSelector(props: Props) {
             {products?.data.map((item) => (
               <tr
                 key={item.id}
-                onDoubleClick={onItemDoubleClick(item)}
+                // onDoubleClick={onItemDoubleClick(item)}
                 onClick={selected.onItemClick(item.id)}
                 aria-selected={selected.includes(item.id)}
               >
@@ -159,9 +151,9 @@ export function ProductSelector(props: Props) {
           </button>
 
           {/* Cratet New Order */}
-          <button type="button" className="dsy-btn-sm dsy-btn" onClick={openProductCreateDialog}>
+          <Link href="/admin/products/create" className="dsy-btn-sm dsy-btn">
             <FontAwesomeIcon icon={faPlus} /> 상품 추가하기
-          </button>
+          </Link>
 
           {/* Delete */}
           <button type="button" className="dsy-btn-sm dsy-btn" onClick={onDeleteClick}>

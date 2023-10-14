@@ -4,6 +4,7 @@ import { useProducts } from "@/api/products";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import Image from "next/image";
 
 export default function Page() {
   const products = useProducts();
@@ -21,14 +22,19 @@ export default function Page() {
         lazyLoad="ondemand"
         className="h-full w-full"
       >
-        {products.data?.data.map((item, idx) => (
-          <img
-            key={idx}
-            src={item.imgSrc}
-            alt={"전시용 이미지 " + idx}
-            className="h-screen w-full object-contain"
-          />
-        ))}
+        {products.data?.data
+          .map((item) => item.images)
+          .flat()
+          .map((item, idx) => (
+            <Image
+              key={item.id + idx}
+              src={item.src}
+              alt={"전시용 이미지 " + idx}
+              width={item.width}
+              height={item.height}
+              className="h-screen w-full object-contain"
+            />
+          ))}
       </Slider>
     </main>
   );

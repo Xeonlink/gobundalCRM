@@ -1,27 +1,18 @@
 "use client";
 
-import {
-  useDeleteProductCategory,
-  useProductCategories,
-  useUpdateProductCategory,
-} from "@/api/product_categories";
 import { useDeleteProducts, useProducts } from "@/api/products";
 import { ImgIcon } from "@/components/ImgIcon";
-import { Input } from "@/components/Input";
 import { PageProps } from "@/extra/type";
 import { useAuth } from "@/hooks/useAuth";
 import { useExcel } from "@/hooks/useExcel";
 import { useItemSelection } from "@/hooks/useItemSelection";
-import { useTypeSafeReducer } from "@/hooks/useTypeSafeReducer";
 import IcoExcel from "@/public/icons/excel.png";
 import { faAddressCard } from "@fortawesome/free-regular-svg-icons";
 import {
   faArrowsRotate,
   faBox,
   faBoxes,
-  faClose,
   faCoins,
-  faFloppyDisk,
   faInfinity,
   faPlus,
   faSignature,
@@ -217,7 +208,7 @@ export default function Page(props: PageProps<{}, SearchParams>) {
 
       {/* 상품 진열장 */}
       {view === "card" ? (
-        <ol className="container m-auto grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] pt-4 max-sm:space-y-2 sm:gap-4 sm:p-4">
+        <ol className="container m-auto grid grid-cols-[repeat(auto-fit,minmax(220px,max-content))] pt-4 max-sm:space-y-2 sm:gap-4 sm:p-4">
           {products?.data?.data.map((item) => (
             <li
               key={item.id}
@@ -226,10 +217,10 @@ export default function Page(props: PageProps<{}, SearchParams>) {
               <Link href={`products/${item.id}`} className="contents">
                 <figure>
                   <Image
-                    src={item.imgSrc}
+                    src={item.images[0].src}
                     alt={item.name}
-                    width={450}
-                    height={300}
+                    width={item.images[0].width || 450}
+                    height={item.images[0].height || 300}
                     className="aspect-[3/2] cursor-pointer object-cover transition-all duration-300 hover:scale-105 max-sm:w-40"
                   />
                 </figure>
@@ -258,26 +249,6 @@ export default function Page(props: PageProps<{}, SearchParams>) {
                   </p>
                 </div>
               </Link>
-              {/* <div className="dsy-join w-full rounded-none max-sm:hidden">
-                <button
-                  type="button"
-                  className="dsy-join-item dsy-btn flex-1 border-none bg-orange-100"
-                  // onClick={() => cart.setCandidate(item)}
-                >
-                  <FontAwesomeIcon icon={faCartPlus} /> 장바구니
-                </button>
-                <Link
-                  href="/user/payment"
-                  type="button"
-                  className="dsy-join-item dsy-btn flex-1 border-none bg-orange-200"
-                  onClick={() => {
-                    // cart.reset();
-                    // cart.addProduct(item);
-                  }}
-                >
-                  <FontAwesomeIcon icon={faCreditCard} /> 구매
-                </Link>
-              </div> */}
             </li>
           ))}
         </ol>

@@ -9,6 +9,7 @@ import { ReactNode } from "react";
 import { NavLink } from "./NavLink";
 import { ShowBusinessInfoBtn } from "./ShowBusinessInfoBtn";
 const NavBarEnd = csrOnly(import("./NavBarEnd"));
+const ProductCategoryList = csrOnly(import("./ProductCategoryList"));
 
 type Props = LayoutParam<{}, { footer: ReactNode; navbar: ReactNode }>;
 
@@ -49,26 +50,7 @@ export default function Layout(props: Props) {
                 <NavLink href="/user/shop?category=all" check="/user/shop">
                   상품쇼핑
                 </NavLink>
-                <ul className="p-2">
-                  <li>
-                    <NavLink href="/user/shop?category=all">전체상품</NavLink>
-                  </li>
-                  <li>
-                    <NavLink href="/user/shop?category=명품제주감귤">명품제주감귤</NavLink>
-                  </li>
-                  <li>
-                    <NavLink href="/user/shop?category=수산물">수산물</NavLink>
-                  </li>
-                  <li>
-                    <NavLink href="/user/shop?category=제주수제상품">제주수제상품</NavLink>
-                  </li>
-                  <li>
-                    <NavLink href="/user/shop?category=제주청정농산물">제주청정농산물</NavLink>
-                  </li>
-                  <li>
-                    <NavLink href="/user/shop?category=제주특산물">제주특산물</NavLink>
-                  </li>
-                </ul>
+                <ProductCategoryList className="p-2" />
               </li>
               <li>
                 <Link href="#">
@@ -110,26 +92,7 @@ export default function Layout(props: Props) {
             <li tabIndex={1}>
               <details className="z-10 w-36">
                 <summary className="justify-center hover:text-orange-400">상품쇼핑</summary>
-                <ul className="w-full min-w-max p-2">
-                  <li>
-                    <NavLink href="/user/shop?category=all">전체상품</NavLink>
-                  </li>
-                  <li>
-                    <NavLink href="/user/shop?category=명품제주감귤">명품제주감귤</NavLink>
-                  </li>
-                  <li>
-                    <NavLink href="/user/shop?category=수산물">수산물</NavLink>
-                  </li>
-                  <li>
-                    <NavLink href="/user/shop?category=제주수제상품">제주수제상품</NavLink>
-                  </li>
-                  <li>
-                    <NavLink href="/user/shop?category=제주청정농산물">제주청정농산물</NavLink>
-                  </li>
-                  <li>
-                    <NavLink href="/user/shop?category=제주특산물">제주특산물</NavLink>
-                  </li>
-                </ul>
+                <ProductCategoryList className="w-full min-w-max p-2" />
               </details>
             </li>
             <li>
@@ -141,7 +104,9 @@ export default function Layout(props: Props) {
           </ul>
         </div>
 
-        <NavBarEnd />
+        <div className="dsy-navbar-end">
+          <NavBarEnd />
+        </div>
       </nav>
 
       {/* 내부 페이지 */}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useProductCategories } from "@/api/product_categories";
-import { useProducts, useProductsByCategory } from "@/api/products";
+import { useProductsByCategory } from "@/api/products";
 import { PageProps } from "@/extra/type";
 import { useCart } from "@/hooks/useCart";
 import { faCartPlus, faCreditCard } from "@fortawesome/free-solid-svg-icons";
@@ -13,12 +13,14 @@ import { useRouter } from "next/navigation";
 export default function Page(props: PageProps<{}, { category: string }>) {
   const { category = "all" } = props.searchParams;
   const navigate = useRouter();
-  const products = useProductsByCategory(category);
+  const productCategories = useProductCategories();
+  const products = useProductsByCategory(category, {
+    enabled: productCategories.isSuccess,
+  });
   const cart = useCart();
-  const { data: productCategories } = useProductCategories();
 
   return (
-    <main className="bg-base-100">
+    <main className="min-h-screen">
       {/* 카테고리 */}
       <ol className="container m-auto flex flex-wrap items-center justify-center gap-2 bg-white p-2 text-center text-sm">
         <li>
@@ -26,7 +28,7 @@ export default function Page(props: PageProps<{}, { category: string }>) {
             전체상품
           </Link>
         </li>
-        {productCategories?.data
+        {productCategories.data?.data
           .filter((item) => item.enabled)
           .map((item) => (
             <li key={item.id}>
@@ -38,7 +40,7 @@ export default function Page(props: PageProps<{}, { category: string }>) {
       </ol>
 
       {/* 상품 진열장 */}
-      <ol className="container m-auto mb-4 grid max-w-6xl grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-2 px-2 sm:gap-4 sm:px-4">
+      <ol className="container m-auto mb-4 grid max-w-6xl grid-cols-[repeat(auto-fit,minmax(220px,max-content))] gap-2 px-2 sm:gap-4 sm:px-4">
         {products?.data?.data.map((item) => (
           <li
             key={item.id}
@@ -48,7 +50,7 @@ export default function Page(props: PageProps<{}, { category: string }>) {
             <Link href={`shop/${item.id}`} className="contents">
               <figure>
                 <Image
-                  src={item.imgSrc}
+                  src={item.images[0].src}
                   alt={item.name}
                   width={450}
                   height={300}

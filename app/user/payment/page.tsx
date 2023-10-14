@@ -12,6 +12,7 @@ import {
   faWon,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Image from "next/image";
 import Link from "next/link";
 
 export default function Page() {
@@ -111,9 +112,11 @@ export default function Page() {
               <tr key={item.id}>
                 <td className="max-sm:px-0">
                   <figure className="mr-2 inline-block w-28 align-middle">
-                    <img
-                      src={item.imgSrc}
+                    <Image
+                      src={item.images[0].src}
                       alt={item.name}
+                      width={item.images[0].width}
+                      height={item.images[0].height}
                       className="rounded-md object-cover object-center"
                     />
                   </figure>

@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import { twMerge } from "tailwind-merge";
 import { EmptyObject } from "./type";
-import dynamic from "next/dynamic";
+import dynamic, { LoaderComponent } from "next/dynamic";
 import { CognitoUserAttribute } from "amazon-cognito-identity-js";
 
 export function toHyphenPhone(str: string): string {
@@ -76,8 +76,8 @@ export function innerLog<T>(a: T) {
   return a;
 }
 
-export function csrOnly(importPromise: Promise<any>) {
-  return dynamic(() => importPromise, { ssr: false });
+export function csrOnly<T>(importPromise: LoaderComponent<T>) {
+  return dynamic<T>(() => importPromise, { ssr: false });
 }
 
 export class CognitoUserAttributeBuilder extends Map<string, string> {

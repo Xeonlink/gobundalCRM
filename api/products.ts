@@ -3,6 +3,13 @@ import { MutateOptions, useQuery } from "@tanstack/react-query";
 import { useAutoInvalidateMutation } from "../hooks/useAutoInvalidateMutation";
 import { GetResponse, apiRoot } from "./utils";
 
+export interface ProductImage {
+  id: string;
+  src: string;
+  width: number;
+  height: number;
+}
+
 export interface Product {
   id: string;
   name: string;
@@ -11,8 +18,9 @@ export interface Product {
   salePrice: number;
   remain: number;
   enabled: boolean;
-  imgSrc: string;
   category: string;
+  images: ProductImage[];
+  descriptionImage: ProductImage;
 }
 
 export const defaultProduct: RawProduct = {
@@ -22,8 +30,14 @@ export const defaultProduct: RawProduct = {
   salePrice: 0,
   remain: 0,
   enabled: false,
-  imgSrc: "",
   category: "",
+  images: [],
+  descriptionImage: {
+    id: "",
+    src: "",
+    width: 0,
+    height: 0,
+  },
 };
 
 export type RawProduct = Omit<Product, "id">;

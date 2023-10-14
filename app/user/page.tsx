@@ -1,6 +1,6 @@
 "use client";
 
-import { useProducts } from "@/api/products";
+import { useProducts, useProductsByCategory } from "@/api/products";
 import Img블로그광고 from "@/public/images/blog_ads.jpg";
 import Img수산물 from "@/public/images/fishes.jpg";
 import Img수제상품 from "@/public/images/hand_made_product.jpg";
@@ -16,7 +16,7 @@ import "slick-carousel/slick/slick.css";
 import "./style.css";
 
 export default function Page() {
-  const products = useProducts();
+  const products = useProductsByCategory("명품제주감귤");
 
   return (
     <div>
@@ -37,35 +37,36 @@ export default function Page() {
       </div>
 
       <div className="mb-20 flex flex-col">
-        <h2 className="py-10 text-center text-3xl font-bold">자주찾는 상품</h2>
+        <h2 className="py-10 text-center text-3xl font-bold">추천 상품</h2>
         <Slider centerMode variableWidth dots swipeToSlide className="pb-4" centerPadding="0px">
           {products.data?.data?.map((item) => (
             <Link
               href={`/user/shop/${item.id}`}
               key={item.id}
-              className="dsy-card dsy-card-compact animate-scaleTo1 overflow-hidden rounded-lg bg-opacity-40"
+              className="dsy-card dsy-card-compact animate-scaleTo1 overflow-hidden rounded-lg bg-orange-100 bg-opacity-40"
               style={{ width: "16rem" }}
             >
               <figure>
                 <Image
-                  src={item.imgSrc}
+                  src={item.images[0].src}
                   alt={item.name}
                   width={240}
                   height={160}
                   className="aspect-[3/2] object-cover transition-all duration-300 hover:scale-105"
                 />
               </figure>
-              <div className="dsy-card-body gap-0 bg-orange-50">
-                <h2 className="text-lg">{item.name}</h2>
-                <p>
-                  <span className="text-xl text-[#e63740] max-sm:text-lg">
+              <div className="dsy-card-body gap-0">
+                <span className="text-orange-500">무료배송</span>
+                <h2>{item.name}</h2>
+                <p className="min-w-max">
+                  <span className="text-lg text-[#e63740]">
                     {item.isSale
                       ? Math.round((1 - item.salePrice / item.price) * 100) + "%"
                       : item.price === 0
                       ? "100%"
                       : ""}
                   </span>{" "}
-                  <span className="text-xl font-bold max-sm:text-lg">
+                  <span className="text-xl font-bold">
                     {item.isSale
                       ? item.salePrice.toLocaleString()
                       : item.price === 0
@@ -73,7 +74,7 @@ export default function Page() {
                       : item.price.toLocaleString()}
                   </span>
                   {item.price === 0 ? " " : "원 "}
-                  <span className="text-[#999999] line-through">
+                  <span className="text-[#999999] line-through max-sm:hidden">
                     {item.isSale && item.price.toLocaleString() + "원"}
                   </span>
                 </p>
@@ -135,29 +136,33 @@ export default function Page() {
         <h2 className="py-10 text-center text-3xl font-bold">명품제주감귤</h2>
         <Slider centerMode variableWidth dots swipeToSlide className="pb-4" centerPadding="0px">
           {products.data?.data?.map((item) => (
-            <div
+            <Link
+              href={`/user/shop/${item.id}`}
               key={item.id}
-              className="dsy-card dsy-card-compact animate-scaleTo1 overflow-hidden rounded-lg bg-opacity-40"
+              className="dsy-card dsy-card-compact animate-scaleTo1 overflow-hidden rounded-lg bg-orange-100 bg-opacity-40"
               style={{ width: "16rem" }}
             >
               <figure>
-                <img
-                  src={item.imgSrc}
+                <Image
+                  src={item.images[0].src}
                   alt={item.name}
+                  width={item.images[0].width}
+                  height={item.images[0].height}
                   className="aspect-[3/2] cursor-pointer object-cover transition-all duration-300 hover:scale-105"
                 />
               </figure>
-              <div className="dsy-card-body gap-0 bg-orange-50">
-                <h2 className="text-lg">{item.name}</h2>
-                <p>
-                  <span className="text-xl text-[#e63740] max-sm:text-lg">
+              <div className="dsy-card-body gap-0">
+                <span className="text-orange-500">무료배송</span>
+                <h2>{item.name}</h2>
+                <p className="min-w-max">
+                  <span className="text-lg text-[#e63740]">
                     {item.isSale
                       ? Math.round((1 - item.salePrice / item.price) * 100) + "%"
                       : item.price === 0
                       ? "100%"
                       : ""}
                   </span>{" "}
-                  <span className="text-xl font-bold max-sm:text-lg">
+                  <span className="text-xl font-bold">
                     {item.isSale
                       ? item.salePrice.toLocaleString()
                       : item.price === 0
@@ -165,7 +170,7 @@ export default function Page() {
                       : item.price.toLocaleString()}
                   </span>
                   {item.price === 0 ? " " : "원 "}
-                  <span className="text-[#999999] line-through">
+                  <span className="text-[#999999] line-through max-sm:hidden">
                     {item.isSale && item.price.toLocaleString() + "원"}
                   </span>
                 </p>
@@ -185,7 +190,7 @@ export default function Page() {
                   <FontAwesomeIcon icon={faCreditCard} /> 구매
                 </button>
               </div>
-            </div>
+            </Link>
           ))}
         </Slider>
         <Link href="/user/shop?category=명품제주감귤" className="dsy-btn m-auto">
