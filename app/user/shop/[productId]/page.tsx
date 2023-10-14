@@ -3,7 +3,6 @@
 import { useProduct } from "@/api/products";
 import { PageProps } from "@/extra/type";
 import { useCart } from "@/hooks/useCart";
-import Img상품상세정보 from "@/public/images/prouct_detail.jpg";
 import { faCartPlus, faCreditCard, faExpand } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
@@ -19,7 +18,7 @@ export default function Page(props: PageProps<{ productId: string }>) {
   };
 
   return (
-    <main>
+    <main className="min-h-screen">
       {/* 상품정보 컨테이너 */}
       <div className="mx-2 my-6 flex max-w-max flex-wrap rounded-2xl bg-orange-50 p-4 shadow-lg sm:mx-auto">
         <div className="relative">
@@ -98,7 +97,13 @@ export default function Page(props: PageProps<{ productId: string }>) {
 
       {/* 상세정보 컨테이너 */}
       <div className="container m-auto text-center">
-        <Image src={Img상품상세정보} alt="상품 상세정보" className="inline-block" />
+        <Image
+          src={product!.descriptionImage.src}
+          alt="상품 상세정보"
+          width={product!.descriptionImage.width}
+          height={product!.descriptionImage.height}
+          className="inline-block"
+        />
       </div>
 
       {/* 이미지 크게보기 모달 */}

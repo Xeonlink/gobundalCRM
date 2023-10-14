@@ -14,9 +14,7 @@ interface CartStore {
   products: CartProduct[];
   addProduct: (product: Product) => void;
   removeProduct: (idx: number) => void;
-  increaseQuantity: (idx: number) => void;
-  decreaseQuantity: (idx: number) => void;
-  changeQuantity: (payload: { id: string; offset: number }) => void;
+  setQuantity: (payload: { id: string; value: number | ((prev: number) => number) }) => void;
   reset: () => void;
 }
 
@@ -26,12 +24,12 @@ export const useCart = create(
       candidate: null,
       setCandidate: (product: Product) => set({ candidate: product }),
       clearCandidate: () => set({ candidate: null }),
-      products: [],
       //
+      products: [],
       addProduct: (product: Product) => {
         const idx = get().products.findIndex((p) => p.item.id === product.id);
         if (idx !== -1) {
-          get().increaseQuantity(idx);
+          get().setQuantity({ id: product.id, value: (prev) => prev + 1 });
           return;
         }
 
@@ -39,22 +37,14 @@ export const useCart = create(
         set({ products: [...get().products, newCartProduct] });
       },
       removeProduct: (idx: number) => set({ products: get().products.filter((_, i) => i !== idx) }),
-      increaseQuantity: (idx: number) => {
-        const products = [...get().products];
-        products[idx].quantity++;
-        set({ products });
-      },
-      changeQuantity: (payload: { id: string; offset: number }) => {
-        const products = [...get().products];
-        const idx = products.findIndex((p) => p.item.id === payload.id);
+      setQuantity: (payload) => {
+        const { id, value } = payload;
+        const idx = get().products.findIndex((p) => p.item.id === id);
         if (idx === -1) return;
-        products[idx].quantity += payload.offset;
-        set({ products });
-      },
-      decreaseQuantity: (idx: number) => {
         const products = [...get().products];
-        if (products[idx].quantity === 1) return;
-        products[idx].quantity--;
+        const quantity = typeof value === "function" ? value(products[idx].quantity) : value;
+        if (quantity < 1) return;
+        products[idx].quantity = quantity;
         set({ products });
       },
       reset: () => set({ products: [] }),

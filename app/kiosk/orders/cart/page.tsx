@@ -90,7 +90,7 @@ export default function Page() {
                     <button
                       type="button"
                       className="dsy-btn-outline dsy-btn-sm dsy-btn"
-                      onClick={() => cart.decreaseQuantity(idx)}
+                      onClick={() => cart.setQuantity({ id: item.id, value: (prev) => prev - 1 })}
                     >
                       -
                     </button>
@@ -102,7 +102,7 @@ export default function Page() {
                     <button
                       type="button"
                       className="dsy-btn-outline dsy-btn-sm dsy-btn"
-                      onClick={() => cart.increaseQuantity(idx)}
+                      onClick={() => cart.setQuantity({ id: item.id, value: (prev) => prev + 1 })}
                     >
                       +
                     </button>
@@ -157,7 +157,7 @@ export default function Page() {
                     <button
                       type="button"
                       className="dsy-btn-sm dsy-join-item dsy-btn"
-                      onClick={() => cart.decreaseQuantity(idx)}
+                      onClick={() => cart.setQuantity({ id: item.id, value: (prev) => prev - 1 })}
                     >
                       -
                     </button>
@@ -169,7 +169,7 @@ export default function Page() {
                     <button
                       type="button"
                       className="dsy-btn-sm dsy-join-item dsy-btn"
-                      onClick={() => cart.increaseQuantity(idx)}
+                      onClick={() => cart.setQuantity({ id: item.id, value: (prev) => prev + 1 })}
                     >
                       +
                     </button>

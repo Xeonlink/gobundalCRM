@@ -9,20 +9,20 @@ import { useEffect, useRef, useState } from "react";
 export function ProductCountToCart() {
   const cart = useCart();
   const product = cart.candidate;
-  const [productQuantity, setproductQuantity] = useState(1);
+  const [productQuantity, setProductQuantity] = useState(1);
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   const increaseProductQuantity = () => {
-    setproductQuantity((prev) => prev + 1);
+    setProductQuantity((prev) => prev + 1);
   };
   const decreaseProductQuantity = () => {
-    setproductQuantity((prev) => (prev === 1 ? prev : prev - 1));
+    setProductQuantity((prev) => (prev === 1 ? prev : prev - 1));
   };
 
   useEffect(() => {
     if (cart.candidate === null) return;
     dialogRef.current?.showModal();
-    setproductQuantity(1);
+    setProductQuantity(1);
   }, [cart.candidate]);
 
   return (
@@ -89,10 +89,7 @@ export function ProductCountToCart() {
             onClick={() => {
               if (product === null) return;
               cart.addProduct(product);
-              cart.changeQuantity({
-                id: product.id,
-                offset: productQuantity - 1,
-              });
+              cart.setQuantity({ id: product.id, value: productQuantity });
               cart.clearCandidate();
               dialogRef.current?.close();
             }}

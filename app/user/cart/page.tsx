@@ -1,6 +1,5 @@
 "use client";
 
-import { useProducts } from "@/api/products";
 import { ProductPrice } from "@/components/ProductCard/ProductPrice";
 import { useCart } from "@/hooks/useCart";
 import {
@@ -10,15 +9,17 @@ import {
   faCreditCard,
   faLandmark,
   faNotdef,
+  faTrash,
   faWon,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
-  const products = useProducts();
   const cart = useCart();
+  const router = useRouter();
 
   const totalProductPrice = cart.products.reduce(
     (acc, item) => acc + item.item.price * item.quantity,
@@ -28,12 +29,12 @@ export default function Page() {
   const totalPrice = totalProductPrice + totalTaxPrice;
 
   return (
-    <main className="bg-base-100">
+    <main className="min-h-screen">
       <h2 className="py-6 text-center text-3xl font-bold">장바구니</h2>
 
       {/* 상품 진열장 */}
       <ol className="container m-auto grid max-w-6xl grid-cols-[repeat(auto-fit,minmax(220px,max-content))] gap-2 p-2 pt-0 sm:gap-4 sm:p-4 sm:pt-0">
-        {products?.data?.data.map((item) => (
+        {cart.products.map(({ item, quantity }, idx) => (
           <li
             key={item.id}
             className="dsy-card dsy-card-compact animate-scaleTo1 overflow-hidden rounded-lg bg-orange-100 bg-opacity-40 transition-all duration-300 max-sm:dsy-card-side"
@@ -56,17 +57,34 @@ export default function Page() {
                   <button
                     type="button"
                     className="dsy-btn-sm dsy-join-item dsy-btn flex-1 border-none bg-orange-100"
+                    onClick={() => cart.setQuantity({ id: item.id, value: (prev) => prev - 1 })}
                   >
                     <FontAwesomeIcon icon={faCaretLeft} />
                   </button>
-                  <input type="number" className="w-10 text-center" value={0} />
+                  <input
+                    type="number"
+                    className="dsy-join-item w-10 text-center"
+                    value={quantity}
+                    onChange={(e) =>
+                      cart.setQuantity({ id: item.id, value: parseInt(e.target.value) })
+                    }
+                  />
                   <button
                     type="button"
                     className="dsy-btn-sm dsy-join-item dsy-btn flex-1 border-none bg-orange-200"
+                    onClick={() => cart.setQuantity({ id: item.id, value: (prev) => prev + 1 })}
                   >
                     <FontAwesomeIcon icon={faCaretRight} />
                   </button>
                 </div>
+                <div className="flex-1"></div>
+                <button
+                  type="button"
+                  className="dsy-btn-ghost dsy-btn-sm dsy-btn-circle dsy-btn"
+                  onClick={() => cart.removeProduct(idx)}
+                >
+                  <FontAwesomeIcon icon={faTrash} className="text-orange-300" />
+                </button>
               </div>
             </div>
           </li>
@@ -102,13 +120,14 @@ export default function Page() {
             >
               <FontAwesomeIcon icon={faNotdef} rotation={90} /> 초기화
             </Link>
-            <Link
-              href="./payment"
+            <button
               type="button"
               className="dsy-join-item dsy-btn flex-1 border-none bg-orange-200"
+              onClick={() => router.push("payment")}
+              disabled={cart.products.length === 0}
             >
               <FontAwesomeIcon icon={faCreditCard} /> 결제하기
-            </Link>
+            </button>
           </div>
         </div>
       </div>

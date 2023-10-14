@@ -198,10 +198,7 @@ export default function Page() {
                 onClick={() => {
                   if (selectedProduct === undefined) return;
                   cart.addProduct(selectedProduct);
-                  cart.changeQuantity({
-                    id: selectedProduct.id,
-                    offset: selectedProductQuantity - 1,
-                  });
+                  cart.setQuantity({ id: selectedProduct.id, value: selectedProductQuantity });
                   selected.clear();
                   setSelectedProductQuantity(1);
                 }}
