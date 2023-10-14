@@ -18,6 +18,7 @@ import {
   faCheck,
   faCoins,
   faFloppyDisk,
+  faMobileScreen,
   faMobileScreenButton,
   faNotdef,
   faNoteSticky,
@@ -190,7 +191,7 @@ export default function Page() {
           <div className="dsy-form-control">
             <label htmlFor="sender-phone" className="dsy-label">
               <strong className="dsy-label-text">
-                <FontAwesomeIcon icon={faWon} /> 보내는 사람 전화번호&nbsp;
+                <FontAwesomeIcon icon={faMobileScreen} /> 보내는 사람 전화번호&nbsp;
                 <span className="align-top text-xs text-orange-500">* 필수</span>
               </strong>
             </label>

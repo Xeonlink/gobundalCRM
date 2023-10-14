@@ -1,92 +1,278 @@
 "use client";
 
+import { OrderProduct, defaultOrder, useCreateOrder } from "@/api/orders";
 import { Input } from "@/components/Input";
+import { toHyphenPhone } from "@/extra/utils";
 import { useCart } from "@/hooks/useCart";
+import { usePostCodePopup } from "@/hooks/usePostCodePopup";
+import { useTypeSafeReducer } from "@/hooks/useTypeSafeReducer";
 import {
   faBox,
   faBoxes,
+  faBuilding,
   faCreditCard,
   faLandmark,
+  faMobileScreen,
+  faMobileScreenButton,
   faNotdef,
+  faNoteSticky,
+  faPaperPlane,
+  faPerson,
   faPlusMinus,
+  faSignature,
+  faSignsPost,
   faWon,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+
+type ProductPayload<T extends HTMLElement> = { index: number; e: React.ChangeEvent<T> };
 
 export default function Page() {
   const cart = useCart();
+  const router = useRouter();
 
-  const totalPrice = 100000000;
-  const totalTaxPrice = 100000;
+  const totalProductPrice = cart.products.reduce((acc, { item, quantity }) => {
+    return acc + (item.isSale ? item.salePrice : item.price) * quantity;
+  }, 0);
+  const totalTaxPrice = Math.round(totalProductPrice * 0.1);
+  const totalPrice = totalProductPrice + totalTaxPrice;
+
+  const [order, orderActions] = useTypeSafeReducer(defaultOrder, {
+    onDateChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
+      state.date = e.target.value;
+    },
+    onSenderNameChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
+      state.senderName = e.target.value;
+      state.receiverName = !state.sameAsSender ? state.receiverName : e.target.value;
+    },
+    onSenderPhoneChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
+      const newPhone = toHyphenPhone(e.target.value);
+      state.senderPhone = newPhone;
+      state.receiverPhone = !state.sameAsSender ? state.receiverPhone : newPhone;
+    },
+    toggleSameAsSender: (state) => {
+      state.receiverName = !state.sameAsSender ? state.senderName : "";
+      state.receiverPhone = !state.sameAsSender ? state.senderPhone : "";
+      state.sameAsSender = !state.sameAsSender;
+    },
+    onReceiverNameChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
+      state.receiverName = e.target.value;
+    },
+    onReceiverPhoneChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
+      state.receiverPhone = toHyphenPhone(e.target.value);
+    },
+    setReceiverAddress: (state, receiverAddress: string) => {
+      state.receiverAddress = receiverAddress;
+    },
+    onReceiverAddressDetailChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
+      state.receiverAddressDetail = e.target.value;
+    },
+    addProduct: (state, product: OrderProduct = { ...defaultOrder.products[0] }) => {
+      state.products.push(product);
+    },
+    removeProduct: (state, index: number) => {
+      state.products.splice(index, 1);
+    },
+    onProductNameChange: (state, payload: ProductPayload<HTMLInputElement>) => {
+      state.products[payload.index].name = payload.e.target.value;
+    },
+    onProductPriceChange: (state, payload: ProductPayload<HTMLInputElement>) => {
+      state.products[payload.index].price = Number(payload.e.target.value.replaceAll(",", ""));
+    },
+    onProductQuantityChange: (state, payload: ProductPayload<HTMLInputElement>) => {
+      const newQuantity = Number(payload.e.target.value.replaceAll(",", ""));
+      if (newQuantity < 0) return;
+      state.products[payload.index].quantity = newQuantity;
+    },
+    onMemoChange: (state, e: React.ChangeEvent<HTMLInputElement>) => {
+      state.memo = e.target.value;
+    },
+    reset: () => defaultOrder,
+  });
+  const postCodePopup = usePostCodePopup({
+    onComplete: (data) => orderActions.setReceiverAddress(data.roadAddress),
+  });
+
+  const validity = {
+    date: order.date !== "",
+    senderName: order.senderName.length > 0,
+    senderPhone: order.senderPhone.length > 0,
+    receiverName: order.receiverName.length > 0,
+    receiverPhone: order.receiverPhone.length > 0,
+    receiverAddress: order.receiverAddress.length > 0,
+    receiverAddressDetail: order.receiverAddressDetail.length > 0,
+    products:
+      order.products.length > 0 && order.products.every((p) => p.name.length > 0 && p.quantity > 0),
+  };
+  const isValid = Object.values(validity).every((v) => v);
+
+  const createItem = useCreateOrder(order, {
+    onSuccess: () => router.replace("/user"),
+  });
+  const isLoading = createItem.isLoading;
 
   return (
     <main className="bg-base-100">
-      <h2 className="py-6 text-center text-3xl font-bold">결제정보</h2>
+      <h2 className="py-6 text-center text-3xl font-bold">주문정보</h2>
 
-      <section className="container m-auto max-w-4xl px-2">
-        <h3 className="flex items-center p-2">
-          <span className="flex-1 text-lg font-bold">보내는 사람</span>
-        </h3>
-        <table className="block w-full rounded-md border-[1px] text-sm">
-          <tbody className="block w-full">
-            <tr className="flex w-full">
-              <td className="w-20 rounded-tl-md border-[1px] bg-base-200 p-2 sm:w-32">이름</td>
-              <td className="flex-1 rounded-tr-md border-[1px] p-2">
-                <Input className="w-full max-w-[182px] text-center" />
-              </td>
-            </tr>
-            <tr className="flex w-full">
-              <td className="w-20 rounded-bl-md border-[1px] bg-base-200 p-2 sm:w-32">전화번호</td>
-              <td className="flex-1 rounded-br-md border-[1px] p-2">
-                <Input className="w-full max-w-[182px] text-center" />
-              </td>
-            </tr>
-          </tbody>
-        </table>
+      <form className="m-auto flex flex-wrap items-start justify-center gap-6 px-2">
+        <fieldset className="w-[350px] rounded-xl border bg-white px-8 py-6">
+          <legend className="font-bold">
+            <FontAwesomeIcon icon={faPaperPlane} /> 보내는 사람
+          </legend>
 
-        <h3 className="flex items-center p-2">
-          <span className="flex-1 text-lg font-bold">받는 사람</span>
-          <span className="mr-2 text-sm">보내는 사람과 동일</span>
-          <input
-            type="checkbox"
-            name="same-as-sender"
-            id="same-as-sender"
-            className="dsy-toggle-success dsy-toggle"
-            // checked={order.sameAsSender}
-            // onChange={orderActions.toggleSameAsSender}
-          />
-        </h3>
-        <table className="block w-full rounded-md border-[1px] text-sm">
-          <tbody className="block w-full">
-            <tr className="flex w-full border-b-[1px] last:border-none">
-              <td className="w-20 rounded-tl-md bg-base-200 p-2 sm:w-32">이름</td>
-              <td className="flex-1 rounded-tr-md p-2">
-                <Input className="w-full max-w-[182px] text-center" />
-              </td>
-            </tr>
-            <tr className="flex w-full border-b-[1px] last:border-none">
-              <td className="w-20 bg-base-200 p-2 sm:w-32">전화번호</td>
-              <td className="flex-1 p-2">
-                <Input className="w-full max-w-[182px] text-center" />
-              </td>
-            </tr>
-            <tr className="flex w-full border-b-[1px] last:border-none">
-              <td className="w-20 bg-base-200 p-2 sm:w-32">주소</td>
-              <td className="flex-1 p-2">
-                <Input className="w-full max-w-[182px] text-center" />
-              </td>
-            </tr>
-            <tr className="flex w-full border-b-[1px] last:border-none">
-              <td className="w-20 rounded-bl-md bg-base-200 p-2 sm:w-32">상세주소</td>
-              <td className="flex-1 rounded-br-md p-2">
-                <Input className="w-full max-w-[182px] text-center" />
-              </td>
-            </tr>
-          </tbody>
-        </table>
+          <button type="button" className="dsy-btn-sm dsy-btn">
+            <FontAwesomeIcon icon={faPerson} /> 프로필에서 가져오기
+          </button>
 
+          <div className="dsy-form-control mt-6">
+            <label htmlFor="sender-name" className="dsy-label">
+              <strong className="dsy-label-text">
+                <FontAwesomeIcon icon={faSignature} /> 보내는 사람 이름&nbsp;
+                <span className="align-top text-xs text-orange-500">* 필수</span>
+              </strong>
+            </label>
+            <Input
+              id="sender-name"
+              placeholder="홍길동"
+              disabled={isLoading}
+              value={order.senderName}
+              onChange={orderActions.onSenderNameChange}
+              invalid={!validity.senderName}
+            />
+          </div>
+
+          <div className="dsy-form-control mt-6">
+            <label htmlFor="sender-phone" className="dsy-label">
+              <strong className="dsy-label-text">
+                <FontAwesomeIcon icon={faMobileScreen} /> 보내는 사람 전화번호&nbsp;
+                <span className="align-top text-xs text-orange-500">* 필수</span>
+              </strong>
+            </label>
+            <Input
+              id="sender-phone"
+              type="tel"
+              placeholder="010-0000-0000"
+              disabled={isLoading}
+              value={order.senderPhone}
+              invalid={!validity.senderPhone}
+              onChange={orderActions.onSenderPhoneChange}
+              required
+            />
+          </div>
+
+          <div className="dsy-form-control mt-6">
+            <label htmlFor="memo" className="dsy-label">
+              <strong className="dsy-label-text">
+                <FontAwesomeIcon icon={faNoteSticky} /> 메모
+              </strong>
+            </label>
+            <Input
+              id="memo"
+              placeholder="메모"
+              disabled={createItem.isLoading}
+              value={order.memo}
+              onChange={orderActions.onMemoChange}
+            />
+          </div>
+        </fieldset>
+
+        <fieldset className="w-[350px] rounded-xl border bg-white px-8 py-6">
+          <legend className="font-bold">
+            <FontAwesomeIcon icon={faPaperPlane} rotation={90} /> 받는 사람
+          </legend>
+
+          <div className="dsy-form-control">
+            <label htmlFor="same-as-sender" className="dsy-label">
+              <strong className="dsy-label-text">
+                <FontAwesomeIcon icon={faPaperPlane} /> 보내는 사람과 같음
+              </strong>
+              <input
+                type="checkbox"
+                name="sameAsSender"
+                id="same-as-sender"
+                className="dsy-toggle-success dsy-toggle"
+                checked={order.sameAsSender}
+                onChange={orderActions.toggleSameAsSender}
+              />
+            </label>
+          </div>
+
+          <div className="dsy-form-control mt-6">
+            <label htmlFor="receiver-name" className="dsy-label">
+              <strong className="dsy-label-text">
+                <FontAwesomeIcon icon={faSignature} /> 받는 사람 이름&nbsp;
+                <span className="align-top text-xs text-orange-500">* 필수</span>
+              </strong>
+            </label>
+            <Input
+              id="receiver-name"
+              placeholder="홍길동"
+              disabled={order.sameAsSender || createItem.isLoading}
+              value={order.receiverName}
+              onChange={orderActions.onReceiverNameChange}
+              invalid={order.receiverName === ""}
+            />
+          </div>
+
+          <div className="dsy-form-control mt-6">
+            <label htmlFor="receiver-phone" className="dsy-label">
+              <strong className="dsy-label-text">
+                <FontAwesomeIcon icon={faMobileScreenButton} /> 받는 사람 전화번호&nbsp;
+                <span className="align-top text-xs text-orange-500">* 필수</span>
+              </strong>
+            </label>
+            <Input
+              id="receiver-phone"
+              placeholder="010-0000-0000"
+              disabled={order.sameAsSender || createItem.isLoading}
+              value={order.receiverPhone}
+              onChange={orderActions.onReceiverPhoneChange}
+              invalid={order.receiverPhone === ""}
+            />
+          </div>
+
+          <div className="dsy-form-control mt-6">
+            <label htmlFor="receiver-address" className="dsy-label">
+              <strong className="dsy-label-text">
+                <FontAwesomeIcon icon={faSignsPost} /> 주소&nbsp;
+                <span className="align-top text-xs text-orange-500">* 필수</span>
+              </strong>
+            </label>
+            <Input
+              id="receiver-address"
+              placeholder="남원월산로74번길 42"
+              disabled={createItem.isLoading}
+              value={order.receiverAddress.replace(/^[^\s]+\s/, "")}
+              onChange={postCodePopup.show}
+              onClick={postCodePopup.show}
+              invalid={order.receiverAddress === ""}
+            />
+          </div>
+
+          <div className="dsy-form-control mt-6">
+            <label htmlFor="receiver-address-detail" className="dsy-label">
+              <strong className="dsy-label-text">
+                <FontAwesomeIcon icon={faBuilding} /> 상세주소&nbsp;
+                <span className="align-top text-xs text-orange-500">* 필수</span>
+              </strong>
+            </label>
+            <Input
+              id="receiver-address-detail"
+              placeholder="단독주택, 1층 101호, ..."
+              disabled={createItem.isLoading}
+              value={order.receiverAddressDetail}
+              onChange={orderActions.onReceiverAddressDetailChange}
+              invalid={order.receiverAddressDetail === ""}
+            />
+          </div>
+        </fieldset>
+      </form>
+
+      <section className="container m-auto mt-6 max-w-4xl px-2">
         <h3 className="mt-4 flex items-center p-2 sm:hidden">
           <span className="flex-1 text-lg font-bold">배송상품</span>
         </h3>
@@ -170,7 +356,7 @@ export default function Page() {
               <div>
                 <FontAwesomeIcon icon={faBoxes} fontSize={14} /> 상품가격 :
               </div>
-              <div className="flex-1 text-right">{totalPrice.toLocaleString() + "원"}</div>
+              <div className="flex-1 text-right">{totalProductPrice.toLocaleString() + "원"}</div>
             </label>
             <label htmlFor="total-price" className="flex p-2 px-6">
               <div>
@@ -189,17 +375,17 @@ export default function Page() {
                 href="/user/shop"
                 type="button"
                 className="dsy-join-item dsy-btn flex-1 border-none bg-orange-100"
-                // onClick={() => cart.reset()}
+                onClick={() => cart.reset()}
               >
                 <FontAwesomeIcon icon={faNotdef} rotation={90} /> 초기화
               </Link>
-              <Link
-                href="./payment"
+              <button
                 type="button"
                 className="dsy-join-item dsy-btn flex-1 border-none bg-orange-200"
+                disabled={!isValid || isLoading}
               >
                 <FontAwesomeIcon icon={faCreditCard} /> 결제하기
-              </Link>
+              </button>
             </div>
           </div>
         </div>

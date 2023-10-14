@@ -89,7 +89,7 @@ export function ProductCountToCart() {
             onClick={() => {
               if (product === null) return;
               cart.addProduct(product);
-              cart.setQuantity({ id: product.id, value: productQuantity });
+              cart.setQuantity({ id: product.id, value: (prev) => prev + productQuantity - 1 });
               cart.clearCandidate();
               dialogRef.current?.close();
             }}
