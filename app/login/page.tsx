@@ -28,7 +28,9 @@ export default function Page(props: PageProps<any, { url: string }>) {
     unAuthorizedRedirect: false,
   });
   const signIn = useSignIn({
-    onSuccess: () => naviate.push(url),
+    onSuccess: (data) => {
+      naviate.push(url);
+    },
   });
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -97,6 +99,12 @@ export default function Page(props: PageProps<any, { url: string }>) {
         </div>
 
         {/* Messages */}
+        {signIn.error?.code === "NotAuthorizedException" ? (
+          <p className="mt-3 w-full pl-1">
+            <FontAwesomeIcon icon={faCircleCheck} className="text-red-500" /> 비밀번호가 일치하지
+            않습니다.
+          </p>
+        ) : null}
         {signIn.error?.code === "UserNotConfirmedException" ? (
           <p className="mt-3 w-full pl-1">
             <FontAwesomeIcon icon={faCircleCheck} className="text-red-500" /> 승인되지 않은 사용자

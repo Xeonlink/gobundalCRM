@@ -9,7 +9,7 @@ import { useModal } from "@/extra/modal";
 import { PageProps } from "@/extra/type";
 import { diff } from "@/extra/utils";
 import { useTypeSafeReducer } from "@/hooks/useTypeSafeReducer";
-import ImgNoImg from "@/public/images/no_image.avif";
+import ImgNoImg from "@/public/images/no_image.png";
 import {
   faBoxes,
   faCartPlus,

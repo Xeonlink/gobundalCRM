@@ -1,13 +1,14 @@
-import { UseMutationOptions, useMutation } from "@tanstack/react-query";
+import { QueryOptions } from "@/extra/type";
+import { UseMutationOptions, UseQueryOptions, useMutation, useQuery } from "@tanstack/react-query";
 import {
   AuthenticationDetails,
   CognitoUser,
   CognitoUserAttribute,
+  CognitoUserPool,
   CognitoUserSession,
   GetSessionOptions,
   ISignUpResult,
 } from "amazon-cognito-identity-js";
-import { CognitoUserPool } from "amazon-cognito-identity-js";
 // import { promisify } from "util";
 
 /**
@@ -113,6 +114,60 @@ export function useConfirmRegistration(
   };
 
   return useMutation(["confirmRegistration"], mutationFn, options);
+}
+
+export function useUserAttributes(
+  user: CognitoUser | null,
+  options?: QueryOptions<{ [key: string]: string }>,
+) {
+  const queryFn = () => {
+    return new Promise<{ [key: string]: string }>((resolve, reject) => {
+      if (user === null) return reject(new Error("NullUserException"));
+
+      user.getSession((err1: Error | null) => {
+        if (err1) return reject(err1);
+        user.getUserAttributes((err2, attributes) => {
+          if (err2) return reject(err2);
+          const result: { [key: string]: string } = {};
+          attributes?.forEach((attribute) => {
+            result[attribute.getName()] = attribute.getValue();
+          });
+          resolve(result);
+        });
+      });
+    });
+  };
+
+  return useQuery(["user", "attributes"], queryFn, {
+    suspense: true,
+    ...options,
+  });
+}
+
+export function useUpdateUserAttributes(
+  userAttributes: { [key: string]: string },
+  options?: Omit<UseMutationOptions<string, Error, void, unknown>, "mutationKey" | "mutationFn">,
+) {
+  const mutationFn = () => {
+    return new Promise<string>((resolve, reject) => {
+      const user = Pool.getCurrentUser();
+      if (!user) return reject();
+      user.getSession((err: any) => {
+        if (err) return reject(err);
+        const attributes = Object.entries(userAttributes).map(
+          ([Name, Value]) => new CognitoUserAttribute({ Name, Value }),
+        );
+
+        user.updateAttributes(attributes, (err, data) => {
+          if (err) return reject(err);
+          if (!data) return reject(new Error("NoDataException"));
+          resolve(data);
+        });
+      });
+    });
+  };
+
+  return useMutation(["updateUserAttributes"], mutationFn, options);
 }
 
 /**

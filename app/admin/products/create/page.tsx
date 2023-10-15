@@ -7,7 +7,7 @@ import { Input } from "@/components/Input";
 import AssetSelector from "@/components/Selectors/AssetSelector";
 import { useModal } from "@/extra/modal";
 import { useTypeSafeReducer } from "@/hooks/useTypeSafeReducer";
-import ImgNoImg from "@/public/images/no_image.avif";
+import ImgNoImg from "@/public/images/no_image.png";
 import {
   faBoxes,
   faCartPlus,
