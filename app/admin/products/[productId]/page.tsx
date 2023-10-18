@@ -112,7 +112,7 @@ export default function Page(props: PageProps<{ productId: string }, {}>) {
   return (
     <main className="min-h-screen">
       {/* Toolbar */}
-      <ul className="flex w-full flex-wrap justify-center bg-base-200 py-2">
+      <ul className="flex w-full flex-wrap items-center justify-center bg-base-200 py-2 max-sm:flex-col">
         <li>
           {/* 활성화 */}
           <label className="dst-btn-ghost dsy-btn disabled:bg-transparent">

@@ -54,7 +54,7 @@ export default function Page(props: PageProps<any, SearchParams>) {
   return (
     <main className="min-h-screen">
       {/* Toolbar */}
-      <ul className="flex w-full flex-wrap items-center justify-center bg-base-200">
+      <ul className="flex w-full flex-wrap items-center justify-center bg-base-200 py-2 max-sm:flex-col">
         <li>
           {/* Refresh */}
           <button type="button" className="dsy-btn" onClick={() => customers.refetch()}>

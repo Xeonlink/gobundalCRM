@@ -36,7 +36,7 @@ export function useTeams(date: string, options?: QueryOptions<GetResponse<Team>>
   };
 
   return useQuery(["teams", date], queryFn, {
-    suspense: true,
+    // suspense: true,
     ...options,
   });
 }

@@ -124,7 +124,7 @@ export default function Page() {
   return (
     <main>
       {/* Toolbar */}
-      <ul className="flex w-full flex-wrap justify-center bg-base-200 py-2 max-sm:flex-col">
+      <ul className="flex w-full flex-wrap items-center justify-center bg-base-200 py-2  max-sm:flex-col">
         <li>
           {/* Clear */}
           <button
