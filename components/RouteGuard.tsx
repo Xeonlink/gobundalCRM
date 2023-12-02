@@ -6,7 +6,7 @@ export async function RouteGuard(props: PropsWithChildren) {
   const session = await getServerSession();
 
   if (!session || !session.user) {
-    redirect("/login");
+    redirect("/auth/signin");
   }
 
   return <>{props.children}</>;

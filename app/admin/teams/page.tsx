@@ -25,19 +25,27 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import dayjs from "dayjs";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 type SearchParams = { date: `${string}-${string}-${string}` };
 
-export default function Page(props: PageProps<{}, SearchParams>) {
+export default async function Page(props: PageProps<{}, SearchParams>) {
+  const { data: session } = useSession({
+    required: true,
+    onUnauthenticated() {
+      redirect("/auth/signin?callbackUrl=/admin/teams");
+    },
+  });
+
   const { date = dayjs().format("YYYY-MM-DD") } = props.searchParams;
 
-  const auth = useAuth();
+  // const auth = useAuth();
   const excel = useExcel();
   const router = useRouter();
   const selected = useItemSelection();
   const teams = useTeams(date, {
-    enabled: auth.isSignIn,
+    enabled: !!session,
   });
   const deleteItems = useDeleteTeams(selected.ids, {
     onSuccess: () => selected.clear(),

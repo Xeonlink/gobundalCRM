@@ -27,6 +27,10 @@ module.exports = {
         protocol: "https",
         hostname: "gobundalcrmstack-crmbucket11d59937-zyxwpe9qg2xl.s3.ap-northeast-2.amazonaws.com",
       },
+      {
+        protocol: "https",
+        hostname: "ssl.pstatic.net",
+      },
     ],
   },
 };

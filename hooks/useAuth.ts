@@ -21,7 +21,7 @@ export function useAuth(
   useEffect(() => {
     if (options.unAuthorizedRedirect === false) return;
     if (isSignIn === true) return;
-    navigate.push(`/login?url=${path}`);
+    navigate.push(`/auth/signin?url=${path}`);
   }, []);
 
   return {

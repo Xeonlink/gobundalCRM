@@ -18,12 +18,14 @@ export type RawProductCategory = Omit<ProductCategory, "id">;
 
 const base_uri = "/product_categories";
 
+export async function getProductCategories() {
+  const uri = base_uri;
+  const res = await apiRoot.get<GetResponse<ProductCategory>>(uri);
+  return res.data;
+}
+
 export function useProductCategories(options?: QueryOptions<GetResponse<ProductCategory>>) {
-  const queryFn = async () => {
-    const uri = base_uri;
-    const res = await apiRoot.get<GetResponse<ProductCategory>>(uri);
-    return res.data;
-  };
+  const queryFn = getProductCategories;
 
   return useQuery(["product_categories"], queryFn, {
     suspense: true,

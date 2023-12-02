@@ -111,16 +111,18 @@ export function useDeleteProducts(ids: string[], options?: MutateOption) {
   return useAutoInvalidateMutation(["products"], mutationFn, options);
 }
 
+export async function getPrdocutsByCategory(category: string) {
+  const uri = `/products`;
+  const config = { params: { category } };
+  const res = await apiRoot.get<GetResponse<Product>>(uri, config);
+  return res.data;
+}
+
 export function useProductsByCategory(
   category: string,
   options?: QueryOptions<GetResponse<Product>>,
 ) {
-  const queryFn = async () => {
-    const uri = `/products`;
-    const config = { params: { category } };
-    const res = await apiRoot.get<GetResponse<Product>>(uri, config);
-    return res.data;
-  };
+  const queryFn = () => getPrdocutsByCategory(category);
 
   return useQuery(["products", category], queryFn, {
     suspense: true,

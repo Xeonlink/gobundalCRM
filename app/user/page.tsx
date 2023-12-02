@@ -1,6 +1,4 @@
-"use client";
-
-import { useProducts, useProductsByCategory } from "@/api/products";
+import { getPrdocutsByCategory } from "@/api/products";
 import Img블로그광고 from "@/public/images/blog_ads.jpg";
 import Img수산물 from "@/public/images/fishes.jpg";
 import Img수제상품 from "@/public/images/hand_made_product.jpg";
@@ -10,13 +8,13 @@ import { faCartPlus, faCreditCard } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import Link from "next/link";
-import Slider from "react-slick";
 import "slick-carousel/slick/slick-theme.css";
 import "slick-carousel/slick/slick.css";
 import "./style.css";
+import { ClientSlider } from "@/components/ClientSlider";
 
-export default function Page() {
-  const products = useProductsByCategory("명품제주감귤");
+export default async function Page() {
+  const products = await getPrdocutsByCategory("명품제주감귤");
 
   return (
     <div>
@@ -38,8 +36,15 @@ export default function Page() {
 
       <div className="mb-20 flex flex-col">
         <h2 className="py-10 text-center text-3xl font-bold">추천 상품</h2>
-        <Slider centerMode variableWidth dots swipeToSlide className="pb-4" centerPadding="0px">
-          {products.data?.data?.map((item) => (
+        <ClientSlider
+          centerMode
+          variableWidth
+          dots
+          swipeToSlide
+          className="pb-4"
+          centerPadding="0px"
+        >
+          {products.data.map((item) => (
             <Link
               href={`/user/shop/${item.id}`}
               key={item.id}
@@ -95,7 +100,7 @@ export default function Page() {
               </div>
             </Link>
           ))}
-        </Slider>
+        </ClientSlider>
         <Link href="/user/shop?category=all" className="dsy-btn m-auto">
           전체보기
         </Link>
@@ -134,8 +139,15 @@ export default function Page() {
 
       <div className="mb-20 flex flex-col">
         <h2 className="py-10 text-center text-3xl font-bold">명품제주감귤</h2>
-        <Slider centerMode variableWidth dots swipeToSlide className="pb-4" centerPadding="0px">
-          {products.data?.data?.map((item) => (
+        <ClientSlider
+          centerMode
+          variableWidth
+          dots
+          swipeToSlide
+          className="pb-4"
+          centerPadding="0px"
+        >
+          {products.data.map((item) => (
             <Link
               href={`/user/shop/${item.id}`}
               key={item.id}
@@ -192,7 +204,7 @@ export default function Page() {
               </div>
             </Link>
           ))}
-        </Slider>
+        </ClientSlider>
         <Link href="/user/shop?category=명품제주감귤" className="dsy-btn m-auto">
           전체보기
         </Link>
