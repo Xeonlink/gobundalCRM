@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import { PropsWithChildren } from "react";
 import "./globals.css";
 import { ReactQueryProvider } from "./ReactQueryProvider";
+import { ClientSessionProvider } from "@/components/ClientSessionProvider";
 config.autoAddCss = false;
 
 export const metadata: Metadata = {
@@ -18,8 +19,10 @@ export default function RootLayout(props: PropsWithChildren) {
   return (
     <html lang="ko">
       <ReactQueryProvider>
-        {children}
-        <ModalPlacer />
+        <ClientSessionProvider>
+          {children}
+          <ModalPlacer />
+        </ClientSessionProvider>
       </ReactQueryProvider>
     </html>
   );

@@ -29,6 +29,7 @@ export default function Page(props: PageProps<any, { url: string }>) {
   });
   const signIn = useSignIn({
     onSuccess: (data) => {
+      console.log("login success");
       naviate.push(url);
     },
   });
