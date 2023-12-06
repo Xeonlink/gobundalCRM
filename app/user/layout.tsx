@@ -21,6 +21,9 @@ export default async function Layout(props: PropsWithChildren) {
   const productCategories = await getProductCategories();
   const session = await getServerSession(authOptions);
 
+  const 아바타_이미지 =
+    session?.user?.image ?? "https://ssl.pstatic.net/static/pwe/address/img_profile.png";
+
   return (
     <body className="relative">
       {/* 네비게이션 바 */}
@@ -155,10 +158,7 @@ export default async function Layout(props: PropsWithChildren) {
                   <figure className="w-10">
                     <Image
                       alt="아바타 이미지"
-                      src={
-                        session.user?.image ??
-                        "https://ssl.pstatic.net/static/pwe/address/img_profile.png"
-                      }
+                      src={아바타_이미지}
                       width={40}
                       height={40}
                       className="rounded-full"
@@ -178,7 +178,7 @@ export default async function Layout(props: PropsWithChildren) {
                     </Link>
                   </li>
                   <li>
-                    <Link href="/auth/signin">
+                    <Link href="/auth/signout">
                       <FontAwesomeIcon icon={faArrowRightFromBracket} /> 로그아웃
                     </Link>
                   </li>

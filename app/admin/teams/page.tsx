@@ -4,7 +4,7 @@ import { useDeleteTeams, useTeams } from "@/api/teams";
 import { ImgIcon } from "@/components/ImgIcon";
 import { Input } from "@/components/Input";
 import { PageProps } from "@/extra/type";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuthSession } from "@/hooks/useAuthSession";
 import { useExcel } from "@/hooks/useExcel";
 import { useItemSelection } from "@/hooks/useItemSelection";
 import IcoExcel from "@/public/icons/excel.png";
@@ -25,22 +25,14 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import dayjs from "dayjs";
 import Link from "next/link";
-import { redirect, useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 type SearchParams = { date: `${string}-${string}-${string}` };
 
-export default async function Page(props: PageProps<{}, SearchParams>) {
-  const { data: session } = useSession({
-    required: true,
-    onUnauthenticated() {
-      redirect("/auth/signin?callbackUrl=/admin/teams");
-    },
-  });
-
+export default function Page(props: PageProps<{}, SearchParams>) {
   const { date = dayjs().format("YYYY-MM-DD") } = props.searchParams;
 
-  // const auth = useAuth();
+  const { data: session } = useAuthSession();
   const excel = useExcel();
   const router = useRouter();
   const selected = useItemSelection();
@@ -162,7 +154,7 @@ export default async function Page(props: PageProps<{}, SearchParams>) {
                     id=""
                     className="dsy-checkbox dsy-checkbox-xs"
                     checked={selected.ids.includes(item.id)}
-                    onChange={() => {}}
+                    onChange={() => selected.select(item.id)}
                   />
                 </td>
                 <td>

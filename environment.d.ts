@@ -8,5 +8,11 @@ namespace NodeJS {
     // Naver
     NAVER_CLIENT_ID: string;
     NAVER_CLIENT_SECRET: string;
+    // Kakao
+    KAKAO_CLIENT_ID: string;
+    KAKAO_CLIENT_SECRET: string;
+    // Google
+    GOOGLE_CLIENT_ID: string;
+    GOOGLE_CLIENT_SECRET: string;
   }
 }
