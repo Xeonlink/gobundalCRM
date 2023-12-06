@@ -17,7 +17,7 @@ import {
  */
 export const Pool = new CognitoUserPool({
   UserPoolId: process.env.COGNITO_USERPOOL_ID || "ap-northeast-2_yz3jQTqtY",
-  ClientId: process.env.COGNITO_CLIENT_ID || "1rf47tjrrqo0fhhq46700vmf01",
+  ClientId: process.env.COGNITO_CLIENT_ID || "2i153pq34520j2ot8nc20e5kpf",
   /**
    * Storage는 로그인 정보를 저장하는 곳이다.
    * getCurrentUser를 호출하면, 해당 스토리지를 검사한다.

@@ -1,21 +1,18 @@
 "use client";
 
 import { cn } from "@/extra/utils";
-import Link from "next/link";
+import Link, { LinkProps } from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { PropsWithChildren } from "react";
 
-export function NavLink(
-  props: PropsWithChildren<{ href: string; exact?: boolean; check?: string }>,
-) {
-  const { href, exact = false, children } = props;
+export function NavLink(props: PropsWithChildren<LinkProps & { check?: string }>) {
+  const { href, children, check } = props;
 
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const path = decodeURI(pathname + "?" + searchParams);
 
-  const candidate = props.check ?? href;
-  const isMyLink = exact ? path === candidate : path.startsWith(candidate);
+  const isMyLink = path.includes(check ?? href.toString());
 
   return (
     <Link

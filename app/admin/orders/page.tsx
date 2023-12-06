@@ -1,12 +1,10 @@
 "use client";
 
 import { useDeleteOrders, useOrders } from "@/api/orders";
-import { OrderDialog } from "@/components/Dialogs/OrderDialog";
 import { ImgIcon } from "@/components/ImgIcon";
 import { Input } from "@/components/Input";
-import { useModal } from "@/extra/modal";
 import { PageProps } from "@/extra/type";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuthSession } from "@/hooks/useAuthSession";
 import { useExcel } from "@/hooks/useExcel";
 import { useItemSelection } from "@/hooks/useItemSelection";
 import IcoExcel from "@/public/icons/excel.png";
@@ -33,12 +31,12 @@ type SearchParams = { date: `${string}-${string}-${string}` };
 export default function Page(props: PageProps<{}, SearchParams>) {
   const { date = dayjs().format("YYYY-MM-DD") } = props.searchParams;
 
-  const auth = useAuth();
+  const session = useAuthSession();
   const excel = useExcel();
   const router = useRouter();
   const selected = useItemSelection();
   const orders = useOrders(date, {
-    enabled: auth.isSignIn,
+    enabled: !!session,
   });
   const eraseOrders = useDeleteOrders(selected.ids, {
     onSuccess: () => selected.clear(),
@@ -161,7 +159,7 @@ export default function Page(props: PageProps<{}, SearchParams>) {
                     id=""
                     className="dsy-checkbox dsy-checkbox-xs"
                     checked={selected.ids.includes(item.id)}
-                    onChange={() => {}}
+                    onChange={() => selected.select(item.id)}
                   />
                 </td>
                 <td>

@@ -1,3 +1,4 @@
+import { NavLink } from "@/components/NavLink";
 import { LayoutParam } from "@/extra/type";
 import ImgLogo from "@/public/icons/ci.png";
 import {
@@ -17,7 +18,6 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import Link from "next/link";
-import { NavLink } from "../user/NavLink";
 
 export default function Layout(props: LayoutParam) {
   const { children } = props;
@@ -158,7 +158,7 @@ export default function Layout(props: LayoutParam) {
         </div>
 
         <div className="dsy-navbar-end">
-          <Link href="/login?url=/admin/teams" className="dsy-btn-ghost dsy-btn">
+          <Link href="/api/auth/signout" className="dsy-btn-ghost dsy-btn">
             <FontAwesomeIcon icon={faArrowRightFromBracket} />
             <span className="max-[420px]:hidden">&nbsp;로그아웃</span>
           </Link>

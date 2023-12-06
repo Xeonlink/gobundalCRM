@@ -1,19 +1,29 @@
-import { LayoutParam } from "@/extra/type";
-import { csrOnly } from "@/extra/utils";
+import { getProductCategories } from "@/api/product_categories";
+import { DialogOpener } from "@/components/DialogOpener";
+import { NavLink } from "@/components/NavLink";
 import ImgLogo from "@/public/icons/ci.png";
-import { faBars } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowRightFromBracket,
+  faArrowRightToBracket,
+  faBars,
+  faGear,
+  faUserPlus,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { getServerSession } from "next-auth";
 import Image from "next/image";
 import Link from "next/link";
-import { ReactNode } from "react";
-import { NavLink } from "./NavLink";
-import { ShowBusinessInfoBtn } from "./ShowBusinessInfoBtn";
-const NavBarEnd = csrOnly(import("./NavBarEnd"));
-const ProductCategoryList = csrOnly(import("./ProductCategoryList"));
+import { PropsWithChildren } from "react";
+import { authOptions } from "../api/auth/[...nextauth]/route";
+import { CartLink } from "./CartLink";
 
-type Props = LayoutParam<{}, { footer: ReactNode; navbar: ReactNode }>;
+export default async function Layout(props: PropsWithChildren) {
+  const productCategories = await getProductCategories();
+  const session = await getServerSession(authOptions);
 
-export default function Layout(props: Props) {
+  const 아바타_이미지 =
+    session?.user?.image ?? "https://ssl.pstatic.net/static/pwe/address/img_profile.png";
+
   return (
     <body className="relative">
       {/* 네비게이션 바 */}
@@ -50,7 +60,16 @@ export default function Layout(props: Props) {
                 <NavLink href="/user/shop?category=all" check="/user/shop">
                   상품쇼핑
                 </NavLink>
-                <ProductCategoryList className="p-2" />
+                <ul className="p-2">
+                  <li>
+                    <NavLink href="/user/shop?category=all">전체상품</NavLink>
+                  </li>
+                  {productCategories.data.map((item) => (
+                    <li key={item.id}>
+                      <NavLink href={`/user/shop?category=${item.name}`}>{item.name}</NavLink>
+                    </li>
+                  ))}
+                </ul>
               </li>
               <li>
                 <Link href="#">
@@ -92,7 +111,16 @@ export default function Layout(props: Props) {
             <li tabIndex={1}>
               <details className="z-10 w-36">
                 <summary className="justify-center hover:text-orange-400">상품쇼핑</summary>
-                <ProductCategoryList className="w-full min-w-max p-2" />
+                <ul className="w-full min-w-max p-2">
+                  <li>
+                    <NavLink href="/user/shop?category=all">전체상품</NavLink>
+                  </li>
+                  {productCategories.data.map((item) => (
+                    <li key={item.id}>
+                      <NavLink href={`/user/shop?category=${item.name}`}>{item.name}</NavLink>
+                    </li>
+                  ))}
+                </ul>
               </details>
             </li>
             <li>
@@ -105,7 +133,59 @@ export default function Layout(props: Props) {
         </div>
 
         <div className="dsy-navbar-end">
-          <NavBarEnd />
+          {!session ? (
+            <>
+              <Link href="/user/signup/register" className="dsy-btn-ghost dsy-btn">
+                <FontAwesomeIcon icon={faUserPlus} />
+                <span className="max-[420px]:hidden">&nbsp;회원가입</span>
+              </Link>
+
+              <Link href="/auth/signin" className="dsy-btn-ghost dsy-btn">
+                <FontAwesomeIcon icon={faArrowRightToBracket} />
+                <span className="max-[420px]:hidden">&nbsp;로그인</span>
+              </Link>
+            </>
+          ) : (
+            <>
+              <CartLink />
+
+              <div className="dsy-dropdown-end dsy-dropdown">
+                <button
+                  type="button"
+                  tabIndex={0}
+                  className="dsy-btn-ghost dsy-btn-circle dsy-avatar dsy-btn duration-1000"
+                >
+                  <figure className="w-10">
+                    <Image
+                      alt="아바타 이미지"
+                      src={아바타_이미지}
+                      width={40}
+                      height={40}
+                      className="rounded-full"
+                      priority
+                    />
+                  </figure>
+                </button>
+                <ul
+                  tabIndex={0}
+                  className="dsy-dropdown-content dsy-menu rounded-box z-[1] mt-3 w-48 bg-base-100 p-2 shadow"
+                >
+                  <li>
+                    <Link href="/user">
+                      <FontAwesomeIcon icon={faGear} />
+                      <span className="line-through">설정</span>{" "}
+                      <span className="dsy-badge">준비중</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/auth/signout">
+                      <FontAwesomeIcon icon={faArrowRightFromBracket} /> 로그아웃
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+            </>
+          )}
         </div>
       </nav>
 
@@ -135,51 +215,51 @@ export default function Layout(props: Props) {
         </ul>
         <ul className="container m-auto flex flex-wrap items-center justify-center gap-2 sm:hidden">
           <li>
-            <ShowBusinessInfoBtn className="dsy-btn-sm dsy-btn bg-base-300">
+            <DialogOpener target="#business-info" className="dsy-btn-sm dsy-btn bg-base-300">
               대표자
-            </ShowBusinessInfoBtn>
+            </DialogOpener>
           </li>
           <li className="text-gray-400">|</li>
           <li>
-            <ShowBusinessInfoBtn className="dsy-btn-sm dsy-btn bg-base-300">
+            <DialogOpener target="#business-info" className="dsy-btn-sm dsy-btn bg-base-300">
               주소
-            </ShowBusinessInfoBtn>
+            </DialogOpener>
           </li>
           <li className="text-gray-400">|</li>
           <li>
-            <ShowBusinessInfoBtn className="dsy-btn-sm dsy-btn bg-base-300">
+            <DialogOpener target="#business-info" className="dsy-btn-sm dsy-btn bg-base-300">
               고객센터
-            </ShowBusinessInfoBtn>
+            </DialogOpener>
           </li>
           <li className="text-gray-400">|</li>
           <li>
-            <ShowBusinessInfoBtn className="dsy-btn-sm dsy-btn bg-base-300">
+            <DialogOpener target="#business-info" className="dsy-btn-sm dsy-btn bg-base-300">
               계좌번호
-            </ShowBusinessInfoBtn>
+            </DialogOpener>
           </li>
           <li className="text-gray-400">|</li>
           <li>
-            <ShowBusinessInfoBtn className="dsy-btn-sm dsy-btn bg-base-300">
+            <DialogOpener target="#business-info" className="dsy-btn-sm dsy-btn bg-base-300">
               사업자등록번호
-            </ShowBusinessInfoBtn>
+            </DialogOpener>
           </li>
           <li className="text-gray-400">|</li>
           <li>
-            <ShowBusinessInfoBtn className="dsy-btn-sm dsy-btn bg-base-300">
+            <DialogOpener target="#business-info" className="dsy-btn-sm dsy-btn bg-base-300">
               통신판매업번호
-            </ShowBusinessInfoBtn>
+            </DialogOpener>
           </li>
           <li className="text-gray-400">|</li>
           <li>
-            <ShowBusinessInfoBtn className="dsy-btn-sm dsy-btn bg-base-300">
+            <DialogOpener target="#business-info" className="dsy-btn-sm dsy-btn bg-base-300">
               이메일
-            </ShowBusinessInfoBtn>
+            </DialogOpener>
           </li>
           <li className="text-gray-400">|</li>
           <li>
-            <ShowBusinessInfoBtn className="dsy-btn-sm dsy-btn bg-base-300">
+            <DialogOpener target="#business-info" className="dsy-btn-sm dsy-btn bg-base-300">
               카카오톡
-            </ShowBusinessInfoBtn>
+            </DialogOpener>
           </li>
         </ul>
         <aside>

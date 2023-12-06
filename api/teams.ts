@@ -27,13 +27,28 @@ export interface Team {
 
 export type RawTeam = Omit<Team, "id">;
 
+/**
+ * 특정 날짜에 입장한 팀에 대한 정보를 서버에서 가져오는 함수
+ * @author 오지민
+ * @param date YYYY-MM-DD 가져올 팀이 입장한 날짜
+ * @returns 해당날짜에 입장한 팀들의 정보
+ */
+export async function getTeams(date: string) {
+  const uri = `/teams`;
+  const config = { params: { date } };
+  const response = await apiRoot.get<GetResponse<Team>>(uri, config);
+  return response.data;
+}
+
+/**
+ * 특정 날짜에 입장한 팀에 대한 벙볼르 서버에서 가져오는 react-query hook
+ * @author 오지민
+ * @param date YYYY-MM-DD 가져올 팀이 입장한 날짜
+ * @param options 쿼리옵션을 담은 객체
+ * @returns 해당날짜에 입장한 팀들의 정보
+ */
 export function useTeams(date: string, options?: QueryOptions<GetResponse<Team>>) {
-  const queryFn = async () => {
-    const uri = `/teams`;
-    const config = { params: { date } };
-    const res = await apiRoot.get<GetResponse<Team>>(uri, config);
-    return res.data;
-  };
+  const queryFn = async () => getTeams(date);
 
   return useQuery(["teams", date], queryFn, {
     // suspense: true,
