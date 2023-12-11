@@ -1,11 +1,11 @@
 import { cn } from "@/extra/utils";
-import { DetailedHTMLProps, InputHTMLAttributes, LegacyRef, forwardRef } from "react";
+import { ComponentPropsWithoutRef, LegacyRef, forwardRef } from "react";
 
-interface Props extends DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> {
+export type InputProps = ComponentPropsWithoutRef<"input"> & {
   invalid?: boolean;
-}
+};
 
-export const Input = forwardRef((props: Props, ref?: LegacyRef<HTMLInputElement>) => {
+export const Input = forwardRef((props: InputProps, ref?: LegacyRef<HTMLInputElement>) => {
   const { invalid, ...rest } = props;
 
   return (

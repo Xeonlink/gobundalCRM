@@ -1,9 +1,10 @@
 import axios from "axios";
 import { getIdToken } from "./auth";
+import { PrismaClient } from "@prisma/client";
 
 export const apiRoot = (() => {
   const apiBase = axios.create({
-    baseURL: "https://ntm02yf619.execute-api.ap-northeast-2.amazonaws.com/prod",
+    baseURL: "/api",
   });
 
   apiBase.interceptors.request.use(async (config) => {

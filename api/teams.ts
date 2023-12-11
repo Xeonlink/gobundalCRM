@@ -1,8 +1,10 @@
 import { MutateOption, QueryOptions } from "@/extra/type";
 import { useAutoInvalidateMutation } from "@/hooks/useAutoInvalidateMutation";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
 import dayjs from "dayjs";
 import { GetResponse, apiRoot } from "./utils";
+import { db } from "@/prisma/db";
 
 export const defaultTeam: RawTeam = {
   date: dayjs().format("YYYY-MM-DD"),
@@ -34,10 +36,40 @@ export type RawTeam = Omit<Team, "id">;
  * @returns 해당날짜에 입장한 팀들의 정보
  */
 export async function getTeams(date: string) {
-  const uri = `/teams`;
-  const config = { params: { date } };
-  const response = await apiRoot.get<GetResponse<Team>>(uri, config);
-  return response.data;
+  // const res = await fetch(
+  //   "https://ntm02yf619.execute-api.ap-northeast-2.amazonaws.com/prod" + "/teams" + "?date=" + date,
+  //   {
+  //     next: {
+  //       revalidate: 0,
+  //     },
+  //     cache: "no-store",
+  //   },
+  // );
+
+  // const uri = `/api/teams`;
+  // const config = { params: { date } };
+  // const response = await axios.get<GetResponse<Team>>(uri, config);
+  // return response.data;
+
+  const teams = await db.team.findMany({
+    where: {
+      createdAt: {
+        gte: dayjs(date).toDate(),
+        lt: dayjs(date).add(1, "day").toDate(),
+      },
+    },
+  });
+
+  return { data: teams } satisfies GetResponse<{
+    id: number;
+    createdAt: Date;
+    updatedAt: Date;
+    leaderName: string;
+    leaderPhone: string;
+    population: number;
+    isApproved: boolean;
+    isLeave: boolean;
+  }>;
 }
 
 /**
@@ -47,22 +79,28 @@ export async function getTeams(date: string) {
  * @param options 쿼리옵션을 담은 객체
  * @returns 해당날짜에 입장한 팀들의 정보
  */
-export function useTeams(date: string, options?: QueryOptions<GetResponse<Team>>) {
-  const queryFn = async () => getTeams(date);
+// export function useTeams(date: string, options?: QueryOptions<GetResponse<Team>>) {
+//   const queryFn = async () => {
+//     const res = await fetch("/api/teams" + "?date=" + date);
+//     const data = await res.json();
+//     return data;
+//   };
 
-  return useQuery(["teams", date], queryFn, {
-    // suspense: true,
-    ...options,
-  });
+//   return useQuery(["teams", date], queryFn, {
+//     // suspense: true,
+//     ...options,
+//   });
+// }
+
+export async function postTeam(rawTeam: RawTeam) {
+  const uri = `/teams`;
+  const body = rawTeam;
+  const res = await axios.post("/api" + uri, body);
+  return res.data;
 }
 
 export function useCreateTeam(rawTeam: RawTeam, options?: MutateOption) {
-  const mutationFn = async () => {
-    const uri = `/teams`;
-    const body = rawTeam;
-    const res = await apiRoot.post(uri, body);
-    return res.data;
-  };
+  const mutationFn = async () => postTeam(rawTeam);
 
   return useAutoInvalidateMutation(["teams"], mutationFn, options);
 }
@@ -90,6 +128,22 @@ export function useDeleteTeam(id: string, options?: MutateOption) {
   };
 
   return useAutoInvalidateMutation(["teams"], mutationFn, options);
+}
+
+export function useDeleteTeam2() {
+  const queryClient = useQueryClient();
+
+  const mutationFn = async (id: string) => {
+    const uri = `/teams/${id}`;
+    const res = await apiRoot.delete(uri);
+    return res.data;
+  };
+
+  return useMutation(["teams"], mutationFn, {
+    onSuccess: (data, id) => {
+      queryClient.invalidateQueries(["teams"]);
+    },
+  });
 }
 
 export function useTeam(id: string, options?: QueryOptions<Team>) {
