@@ -19,7 +19,7 @@ export function DateChanger(props: ComponentProps<"input">) {
       value={searchParams.get("date") ?? dayjs().format("YYYY-MM-DD")}
       onChange={onDateChange}
       max={dayjs().format("YYYY-MM-DD")}
-      className="dsy-input-sm"
+      className="dsy-input dsy-input-sm"
     />
   );
 }

@@ -95,8 +95,17 @@ export class CognitoUserAttributeBuilder extends Map<string, string> {
   }
 }
 
-export function formDataToJson(formData: FormData) {
-  return Object.entries(formData.entries());
+export function formDataToJson<T extends { [key: string]: any }>(formData: FormData) {
+  console.log(formData.entries());
+  console.log(Object.entries(formData.entries()));
+
+  return Object.entries(formData.entries()).reduce(
+    (acc, [key, value]) => {
+      acc[key] = value;
+      return acc;
+    },
+    {} as { [key: string]: any },
+  ) as T;
 }
 
 export function getSizeFromImg(file: File) {

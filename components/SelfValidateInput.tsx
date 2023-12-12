@@ -1,52 +1,35 @@
 "use client";
 
 import { cn, toHyphenPhone } from "@/extra/utils";
-import { ComponentProps, useState } from "react";
+import { ComponentProps, useRef } from "react";
 
-export function SelfValidateInput(props: ComponentProps<"input">) {
-  const patternRegex = !!props.pattern ? new RegExp(props.pattern) : null;
-  const defaultInvalid = (props.required && !!props.value) || patternRegex?.test(`${props.value}`);
+type Props = Omit<ComponentProps<"input">, "value" | "onChange" | "ref">;
 
-  const [value, setValue] = useState(props.value);
-  const [invalid, setInvalid] = useState(defaultInvalid);
+export function SelfValidateInput(props: Props) {
+  if (props.type === "tel") {
+    return (
+      <input
+        {...props}
+        className={cn(
+          "dsy-input-bordered dsy-input invalid:dsy-input-error invalid:animate-shake",
+          props.className,
+        )}
+        onChange={(e) => (e.target.value = toHyphenPhone(e.target.value))}
+      />
+    );
+  }
 
-  props.value = value;
-  props.autoComplete = "off";
-  props.autoCorrect = "off";
-  props.autoCapitalize = "off";
-  props.spellCheck = false;
-  props.className = cn(
-    "dsy-input-bordered dsy-input",
-    invalid && "dsy-input-error animate-shake",
-    props.className,
+  return (
+    <input
+      {...props}
+      autoComplete="off"
+      autoCorrect="off"
+      autoCapitalize="off"
+      spellCheck="false"
+      className={cn(
+        "dsy-input-bordered dsy-input invalid:dsy-input-error invalid:animate-shake",
+        props.className,
+      )}
+    />
   );
-
-  props.onChange = (e) => {
-    setInvalid((prev) => (props.required && !!prev) || patternRegex?.test(`${prev}`));
-
-    if (props.type === "tel") {
-      setValue(toHyphenPhone(e.target.value));
-      return;
-    }
-    if (props.type === "number") {
-      const value = parseInt(e.target.value);
-
-      if (!value) {
-        return;
-      }
-
-      if (!!props.min && value < +props.min) {
-        return;
-      }
-
-      if (!!props.max && value > +props.max) {
-        return;
-      }
-
-      setValue(value);
-      return;
-    }
-  };
-
-  return <input {...props} />;
 }

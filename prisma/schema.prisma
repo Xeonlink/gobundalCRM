@@ -9,13 +9,14 @@ datasource db {
 }
 
 model Team {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  leaderName String 
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  date        String
+  leaderName  String 
   leaderPhone String 
-  population Int 
-  coupont String
-  isApproved Boolean @default(false)
-  isLeave Boolean @default(false)
+  population  Int 
+  coupon      String
+  isApproved  Boolean @default(false)
+  isLeave     Boolean @default(false)
 }

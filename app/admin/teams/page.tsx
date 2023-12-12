@@ -1,9 +1,9 @@
-import { getTeams } from "@/api/teams";
 import { DateChanger } from "@/components/DateChanger";
 import { DownloadExcel } from "@/components/DownloadExcel";
 import { ImgIcon } from "@/components/ImgIcon";
 import { Refresh } from "@/components/Refresh";
 import { PageProps } from "@/extra/type";
+import { db } from "@/prisma/db";
 import IcoExcel from "@/public/icons/excel.png";
 import {
   faArrowsRotate,
@@ -38,7 +38,7 @@ export default async function Page(props: PageProps<{}, SearchParams>) {
     redirect("/auth/signin?callbackUrl=/admin/teams");
   }
 
-  const teams = await getTeams(date);
+  const teams = await db.team.findMany({ where: { date } });
 
   return (
     <main className="min-h-screen">
@@ -65,7 +65,7 @@ export default async function Page(props: PageProps<{}, SearchParams>) {
 
           <li>
             {/* 엑셀로 다운로드하기 */}
-            <DownloadExcel className="dsy-btn" data={teams.data} filename="팀">
+            <DownloadExcel className="dsy-btn" data={teams} filename="팀">
               <ImgIcon src={IcoExcel} alt="엑셀로 변환" fontSize={16} /> 엑셀로 변환
             </DownloadExcel>
           </li>
@@ -114,7 +114,7 @@ export default async function Page(props: PageProps<{}, SearchParams>) {
               </tr>
             </thead>
             <tbody>
-              {teams.data.map((item) => (
+              {teams.map((item) => (
                 <tr key={item.id}>
                   <td>
                     <label>
@@ -132,7 +132,7 @@ export default async function Page(props: PageProps<{}, SearchParams>) {
                     <label>
                       <FontAwesomeIcon icon={faTicket} /> 쿠폰사
                     </label>
-                    {/* <span>{item.coupon}</span> */}
+                    <span>{item.coupon}</span>
                   </td>
                   <td>
                     <label>
@@ -156,11 +156,7 @@ export default async function Page(props: PageProps<{}, SearchParams>) {
                     <Link href={`teams/${item.id}`} className="dsy-btn-sm dsy-btn">
                       <FontAwesomeIcon icon={faPen} />
                     </Link>
-                    <button
-                      className="dsy-btn-sm dsy-btn"
-                      formAction={deleteTeam(+item.id)}
-                      // onClick={() => deleteTeam.mutate(item.id)}
-                    >
+                    <button className="dsy-btn-sm dsy-btn" formAction={deleteTeam(+item.id)}>
                       <FontAwesomeIcon icon={faTrashCan} />
                     </button>
                   </td>

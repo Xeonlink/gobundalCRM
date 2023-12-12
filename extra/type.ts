@@ -9,6 +9,11 @@ export interface PageProps<P = {}, S = {}> {
   searchParams: S;
 }
 
+export interface ErrorProps {
+  error: Error;
+  reset: () => void;
+}
+
 export type LayoutParam<P = {}, L = {}> = {
   children?: React.ReactNode;
   params?: PageProps<P>;
