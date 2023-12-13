@@ -1,7 +1,7 @@
 "use client";
 
 import { cn, toHyphenPhone } from "@/extra/utils";
-import { ComponentProps, useRef } from "react";
+import { ComponentProps } from "react";
 
 type Props = Omit<ComponentProps<"input">, "value" | "onChange" | "ref">;
 
@@ -11,7 +11,7 @@ export function SelfValidateInput(props: Props) {
       <input
         {...props}
         className={cn(
-          "dsy-input-bordered dsy-input invalid:dsy-input-error invalid:animate-shake",
+          "dsy-input-bordered dsy-input invalid:dsy-input-error disabled:dsy-input-disabled invalid:animate-shake",
           props.className,
         )}
         onChange={(e) => (e.target.value = toHyphenPhone(e.target.value))}
@@ -27,7 +27,7 @@ export function SelfValidateInput(props: Props) {
       autoCapitalize="off"
       spellCheck="false"
       className={cn(
-        "dsy-input-bordered dsy-input invalid:dsy-input-error invalid:animate-shake",
+        "dsy-input-bordered dsy-input invalid:dsy-input-error disabled:dsy-input-disabled invalid:animate-shake",
         props.className,
       )}
     />

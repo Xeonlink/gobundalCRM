@@ -1,12 +1,10 @@
+"use server";
+
 import { db } from "@/prisma/db";
 import { revalidatePath } from "next/cache";
 
-export function deleteTeam(id: number) {
-  return async (_: FormData) => {
-    "use server";
+export async function deleteTeam(id: number) {
+  await db.team.delete({ where: { id } });
 
-    await db.team.delete({ where: { id } });
-
-    revalidatePath("/admin/teams", "page");
-  };
+  revalidatePath("/admin/teams", "page");
 }

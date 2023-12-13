@@ -156,7 +156,10 @@ export default async function Page(props: PageProps<{}, SearchParams>) {
                     <Link href={`teams/${item.id}`} className="dsy-btn-sm dsy-btn">
                       <FontAwesomeIcon icon={faPen} />
                     </Link>
-                    <button className="dsy-btn-sm dsy-btn" formAction={deleteTeam(+item.id)}>
+                    <button
+                      className="dsy-btn-sm dsy-btn"
+                      formAction={deleteTeam.bind(null, +item.id)}
+                    >
                       <FontAwesomeIcon icon={faTrashCan} />
                     </button>
                   </td>
