@@ -1,5 +1,5 @@
 import { NavLink } from "@/components/NavLink";
-import { LayoutParam } from "@/extra/type";
+import { LayoutProps } from "@/extra/type";
 import ImgLogo from "@/public/icons/ci.png";
 import {
   faArrowRightFromBracket,
@@ -19,7 +19,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import Link from "next/link";
 
-export default function Layout(props: LayoutParam) {
+export default function Layout(props: LayoutProps) {
   const { children } = props;
 
   return (

@@ -1,8 +1,8 @@
-import { LayoutParam } from "@/extra/type";
+import { LayoutProps } from "@/extra/type";
 import ImgBanner from "@/public/images/banner1.jpg";
 import { ProductCountToCart } from "./ProductCountToCart";
 
-export default function Layout(props: LayoutParam) {
+export default function Layout(props: LayoutProps) {
   return (
     <>
       <header

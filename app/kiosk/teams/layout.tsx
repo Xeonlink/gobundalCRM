@@ -1,8 +1,8 @@
 import Image from "next/image";
 import IcoLogo from "@/public/icons/logo_transparent.png";
-import { LayoutParam } from "@/extra/type";
+import { LayoutProps } from "@/extra/type";
 
-export default function Layout(props: LayoutParam) {
+export default function Layout(props: LayoutProps) {
   return (
     <main className="flex h-full min-h-screen items-center justify-center max-sm:flex-col">
       <div className="sm:mr-10">

@@ -14,9 +14,9 @@ export interface ErrorProps {
   reset: () => void;
 }
 
-export type LayoutParam<P = {}, L = {}> = {
+export type LayoutProps<P = {}, L = {}> = {
   children?: React.ReactNode;
-  params?: PageProps<P>;
+  params?: P;
 } & L;
 
 export type PropsWithClassName<T = {}> = T & {

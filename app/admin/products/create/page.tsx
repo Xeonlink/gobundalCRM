@@ -31,7 +31,7 @@ import { useRouter } from "next/navigation";
 export default function Page() {
   const router = useRouter();
   const modalCtrl = useModal();
-  const { data: productCategories } = useProductCategories();
+  // const { data: productCategories } = useProductCategories();
   const [product, productActions] = useTypeSafeReducer(defaultProduct, {
     toggleEnabled: (state) => {
       state.enabled = !state.enabled;
@@ -251,11 +251,11 @@ export default function Page() {
               className="dsy-select-bordered dsy-select w-full"
             >
               <option value="none">없음</option>
-              {productCategories?.data.map((item) => (
+              {/* {productCategories?.data.map((item) => (
                 <option key={item.id} value={item.name}>
                   {item.name}
                 </option>
-              ))}
+              ))} */}
             </select>
           </div>
 
@@ -364,10 +364,10 @@ export default function Page() {
           <div className="dsy-card dsy-card-compact animate-scaleTo1 overflow-hidden rounded-lg bg-orange-100 bg-opacity-40 transition-all duration-300">
             <figure>
               <Image
-                src={product.images[0].src || ImgNoImg}
+                src={product.images[0]?.src || ImgNoImg}
                 alt={product.name}
-                width={product.images[0].width || 450}
-                height={product.images[0].height || 300}
+                width={product.images[0]?.width || 450}
+                height={product.images[0]?.height || 300}
                 className="aspect-[3/2] cursor-pointer object-cover transition-all duration-300 hover:scale-105"
               />
             </figure>
@@ -379,15 +379,15 @@ export default function Page() {
                   {product.isSale
                     ? Math.round((1 - product.salePrice / product.price) * 100) + "%"
                     : product.price === 0
-                    ? "100%"
-                    : ""}
+                      ? "100%"
+                      : ""}
                 </span>{" "}
                 <span className="text-xl font-bold">
                   {product.isSale
                     ? product.salePrice.toLocaleString()
                     : product.price === 0
-                    ? "Free"
-                    : product.price.toLocaleString()}
+                      ? "Free"
+                      : product.price.toLocaleString()}
                 </span>
                 {product.price === 0 ? " " : "원 "}
                 <span className="text-[#999999] line-through">
@@ -416,8 +416,8 @@ export default function Page() {
               <Image
                 src={product.images[0] || ImgNoImg}
                 alt={product.name}
-                width={product.images[0].width || 450}
-                height={product.images[0].height || 300}
+                width={product.images[0]?.width || 450}
+                height={product.images[0]?.height || 300}
                 className="aspect-[3/2] w-40 cursor-pointer object-cover transition-all duration-300 hover:scale-105"
               />
             </figure>
@@ -429,15 +429,15 @@ export default function Page() {
                   {product.isSale
                     ? Math.round((1 - product.salePrice / product.price) * 100) + "%"
                     : product.price === 0
-                    ? "100%"
-                    : ""}
+                      ? "100%"
+                      : ""}
                 </span>{" "}
                 <span className="text-xl font-bold">
                   {product.isSale
                     ? product.salePrice.toLocaleString()
                     : product.price === 0
-                    ? "Free"
-                    : product.price.toLocaleString()}
+                      ? "Free"
+                      : product.price.toLocaleString()}
                 </span>
                 {product.price === 0 ? " " : "원 "}
               </p>

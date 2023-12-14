@@ -1,8 +1,8 @@
-import { LayoutParam } from "@/extra/type";
+import { LayoutProps } from "@/extra/type";
 import Image from "next/image";
 import IcoLogo from "@/public/icons/logo_transparent.png";
 
-export default function Layout(props: LayoutParam) {
+export default function Layout(props: LayoutProps) {
   const { children } = props;
 
   return (

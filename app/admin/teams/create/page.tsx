@@ -1,4 +1,4 @@
-import { SelfValidateInput } from "@/components/SelfValidateInput";
+import { SelfValidateInput } from "@/components/Input/SelfValidateInput";
 import {
   faBuilding,
   faCalendarAlt,
@@ -79,7 +79,6 @@ export default function Page() {
                 id="date"
                 name="date"
                 type="date"
-                placeholder="한라봉청 3kg"
                 required
                 max={dayjs().format("YYYY-MM-DD")}
                 defaultValue={dayjs().format("YYYY-MM-DD")}
@@ -93,7 +92,7 @@ export default function Page() {
                   <span className="align-top text-xs text-orange-500">* 필수</span>
                 </strong>
               </label>
-              <SelfValidateInput //
+              <SelfValidateInput
                 id="leader-name"
                 name="leaderName"
                 placeholder="홍길동"

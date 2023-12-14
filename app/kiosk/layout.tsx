@@ -1,6 +1,6 @@
-import { LayoutParam } from "@/extra/type";
+import { LayoutProps } from "@/extra/type";
 
-export default function Layout(props: LayoutParam) {
+export default function Layout(props: LayoutProps) {
   const { children } = props;
 
   return (

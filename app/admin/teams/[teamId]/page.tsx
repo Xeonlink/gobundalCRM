@@ -1,4 +1,4 @@
-import { SelfValidateInput } from "@/components/SelfValidateInput";
+import { SelfValidateInput } from "@/components/Input/SelfValidateInput";
 import {
   faBuilding,
   faCalendarAlt,

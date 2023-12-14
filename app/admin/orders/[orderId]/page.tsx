@@ -2,7 +2,6 @@
 
 import { useCustomersByName } from "@/api/customers";
 import { OrderProduct, useOrder, useUpdateOrder } from "@/api/orders";
-import { defaultTeam } from "@/api/teams";
 import { Input } from "@/components/Input";
 import { ProductSelector } from "@/components/Selectors/ProductSelector";
 import { useModal } from "@/extra/modal";
@@ -30,6 +29,7 @@ import {
   faWon,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
 
 type ProductPayload<T extends HTMLElement> = { index: number; e: React.ChangeEvent<T> };
@@ -171,7 +171,7 @@ export default function Page(props: PageProps<Params, {}>) {
               defaultValue={originOrder!.date}
               onChange={orderActions.onDateChange}
               invalid={!validity.date}
-              max={defaultTeam.date}
+              max={dayjs().format("YYYY-MM-DD")}
             />
           </div>
 

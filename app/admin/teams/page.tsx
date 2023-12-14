@@ -33,8 +33,8 @@ type SearchParams = { date: `${string}-${string}-${string}` };
 export default async function Page(props: PageProps<{}, SearchParams>) {
   const { date = dayjs().format("YYYY-MM-DD") } = props.searchParams;
 
-  const sesssion = await getServerSession();
-  if (!sesssion) {
+  const session = await getServerSession();
+  if (!session) {
     redirect("/auth/signin?callbackUrl=/admin/teams");
   }
 
@@ -65,7 +65,7 @@ export default async function Page(props: PageProps<{}, SearchParams>) {
 
           <li>
             {/* 엑셀로 다운로드하기 */}
-            <DownloadExcel className="dsy-btn" data={teams} filename="팀">
+            <DownloadExcel data={teams} filename="팀" className="dsy-btn">
               <ImgIcon src={IcoExcel} alt="엑셀로 변환" fontSize={16} /> 엑셀로 변환
             </DownloadExcel>
           </li>

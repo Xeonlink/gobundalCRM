@@ -1,6 +1,6 @@
 "use client";
 
-import { SelfValidateInput } from "@/components/SelfValidateInput";
+import { SelfValidateInput } from "@/components/Input/SelfValidateInput";
 import { cn } from "@/extra/utils";
 import { useToggle } from "@/hooks/useToggle";
 import {
