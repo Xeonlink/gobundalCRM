@@ -7,8 +7,8 @@ export function ImgIcon(props: Props) {
 
   return (
     <Image
-      width={w}
-      height={h}
+      width={fontSize}
+      height={fontSize}
       alt={alt}
       {...otherProps}
       className={`inline-block h-auto w-[1em] align-text-bottom ${props.className}`}

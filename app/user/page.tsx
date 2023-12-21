@@ -1,4 +1,6 @@
-import { getPrdocutsByCategory } from "@/api/products";
+import { ProductPrice } from "@/components/ProductCard/ProductPrice";
+import { ProductRegularPrice } from "@/components/ProductCard/ProductRegularPrice";
+import { ProductSalePercentage } from "@/components/ProductCard/ProductSalePercentage";
 import Img블로그광고 from "@/public/images/blog_ads.jpg";
 import Img수산물 from "@/public/images/fishes.jpg";
 import Img수제상품 from "@/public/images/hand_made_product.jpg";
@@ -8,16 +10,15 @@ import { faCartPlus, faCreditCard } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import Link from "next/link";
-import "slick-carousel/slick/slick-theme.css";
-import "slick-carousel/slick/slick.css";
-import "./style.css";
-import { ClientSlider } from "@/components/ClientSlider";
+import { getRandomCategoryWithProducts, getRecommandedProducts } from "./action";
+import { ProductName } from "@/components/ProductCard/ProductName";
 
 export default async function Page() {
-  const products = await getPrdocutsByCategory("명품제주감귤");
+  const recommandedProducts = await getRecommandedProducts();
+  const randomCategory = await getRandomCategoryWithProducts();
 
   return (
-    <div>
+    <main>
       <div
         className="dsy-hero h-[450px]"
         style={{ backgroundImage: `url(${ImgHello2.src})`, backgroundPosition: "top" }}
@@ -36,71 +37,58 @@ export default async function Page() {
 
       <div className="mb-20 flex flex-col">
         <h2 className="py-10 text-center text-3xl font-bold">추천 상품</h2>
-        <ClientSlider
-          centerMode
-          variableWidth
-          dots
-          swipeToSlide
-          className="pb-4"
-          centerPadding="0px"
-        >
-          {products.data.map((item) => (
-            <Link
-              href={`/user/shop/${item.id}`}
-              key={item.id}
-              className="dsy-card dsy-card-compact animate-scaleTo1 overflow-hidden rounded-lg bg-orange-100 bg-opacity-40"
-              style={{ width: "16rem" }}
-            >
-              <figure>
-                <Image
-                  src={item.images[0].src}
-                  alt={item.name}
-                  width={240}
-                  height={160}
-                  className="aspect-[3/2] object-cover transition-all duration-300 hover:scale-105"
-                />
-              </figure>
-              <div className="dsy-card-body gap-0">
-                <span className="text-orange-500">무료배송</span>
-                <h2>{item.name}</h2>
-                <p className="min-w-max">
-                  <span className="text-lg text-[#e63740]">
-                    {item.isSale
-                      ? Math.round((1 - item.salePrice / item.price) * 100) + "%"
-                      : item.price === 0
-                      ? "100%"
-                      : ""}
-                  </span>{" "}
-                  <span className="text-xl font-bold">
-                    {item.isSale
-                      ? item.salePrice.toLocaleString()
-                      : item.price === 0
-                      ? "Free"
-                      : item.price.toLocaleString()}
-                  </span>
-                  {item.price === 0 ? " " : "원 "}
-                  <span className="text-[#999999] line-through max-sm:hidden">
-                    {item.isSale && item.price.toLocaleString() + "원"}
-                  </span>
-                </p>
-              </div>
-              <div className="dsy-join w-full rounded-none">
-                <button
-                  type="button"
-                  className="dsy-join-item dsy-btn flex-1 border-none bg-orange-100"
-                >
-                  <FontAwesomeIcon icon={faCartPlus} /> 장바구니
-                </button>
-                <button
-                  type="button"
-                  className="dsy-join-item dsy-btn flex-1 border-none bg-orange-200 max-sm:hidden"
-                >
-                  <FontAwesomeIcon icon={faCreditCard} /> 구매
-                </button>
-              </div>
-            </Link>
+        <ul className="dsy-carousel-center dsy-carousel justify-center space-x-4 p-4">
+          {recommandedProducts.map((item) => (
+            <li className="dsy-carousel-item">
+              <Link
+                href={`/user/shop/${item.id}`}
+                key={item.id}
+                className="dsy-card dsy-card-compact animate-scaleTo1 overflow-hidden rounded-lg bg-orange-100 bg-opacity-40"
+              >
+                <figure>
+                  <Image
+                    src={item.images[0].src}
+                    alt={item.name}
+                    width={240}
+                    height={160}
+                    className="aspect-[3/2] object-cover transition-all duration-300 hover:scale-105"
+                  />
+                </figure>
+                <div className="dsy-card-body gap-0">
+                  <span className="text-orange-500">무료배송</span>
+                  <h2>{item.name}</h2>
+                  <p className="min-w-max">
+                    <ProductSalePercentage
+                      isSale={item.isSale}
+                      price={item.price}
+                      salePrice={item.salePrice}
+                    />
+                    <ProductPrice
+                      isSale={item.isSale}
+                      price={item.price}
+                      salePrice={item.salePrice}
+                    />
+                    <ProductRegularPrice isSale={item.isSale} price={item.price} />
+                  </p>
+                </div>
+                <div className="dsy-join w-full rounded-none">
+                  <button
+                    type="button"
+                    className="dsy-join-item dsy-btn flex-1 border-none bg-orange-100"
+                  >
+                    <FontAwesomeIcon icon={faCartPlus} /> 장바구니
+                  </button>
+                  <button
+                    type="button"
+                    className="dsy-join-item dsy-btn flex-1 border-none bg-orange-200 max-sm:hidden"
+                  >
+                    <FontAwesomeIcon icon={faCreditCard} /> 구매
+                  </button>
+                </div>
+              </Link>
+            </li>
           ))}
-        </ClientSlider>
+        </ul>
         <Link href="/user/shop?category=all" className="dsy-btn m-auto">
           전체보기
         </Link>
@@ -137,78 +125,66 @@ export default async function Page() {
         </li>
       </ul>
 
-      <div className="mb-20 flex flex-col">
-        <h2 className="py-10 text-center text-3xl font-bold">명품제주감귤</h2>
-        <ClientSlider
-          centerMode
-          variableWidth
-          dots
-          swipeToSlide
-          className="pb-4"
-          centerPadding="0px"
-        >
-          {products.data.map((item) => (
-            <Link
-              href={`/user/shop/${item.id}`}
-              key={item.id}
-              className="dsy-card dsy-card-compact animate-scaleTo1 overflow-hidden rounded-lg bg-orange-100 bg-opacity-40"
-              style={{ width: "16rem" }}
-            >
-              <figure>
-                <Image
-                  src={item.images[0].src}
-                  alt={item.name}
-                  width={item.images[0].width}
-                  height={item.images[0].height}
-                  className="aspect-[3/2] cursor-pointer object-cover transition-all duration-300 hover:scale-105"
-                />
-              </figure>
-              <div className="dsy-card-body gap-0">
-                <span className="text-orange-500">무료배송</span>
-                <h2>{item.name}</h2>
-                <p className="min-w-max">
-                  <span className="text-lg text-[#e63740]">
-                    {item.isSale
-                      ? Math.round((1 - item.salePrice / item.price) * 100) + "%"
-                      : item.price === 0
-                      ? "100%"
-                      : ""}
-                  </span>{" "}
-                  <span className="text-xl font-bold">
-                    {item.isSale
-                      ? item.salePrice.toLocaleString()
-                      : item.price === 0
-                      ? "Free"
-                      : item.price.toLocaleString()}
-                  </span>
-                  {item.price === 0 ? " " : "원 "}
-                  <span className="text-[#999999] line-through max-sm:hidden">
-                    {item.isSale && item.price.toLocaleString() + "원"}
-                  </span>
-                </p>
-              </div>
-              <div className="dsy-join w-full rounded-none">
-                <button
-                  type="button"
-                  className="dsy-join-item dsy-btn flex-1 border-none bg-orange-100"
-                  // onClick={() => onProductCartClick(item)}
+      {randomCategory !== null && (
+        <div className="mb-20 flex flex-col">
+          <h2 className="py-10 text-center text-3xl font-bold">{randomCategory.name}</h2>
+          <ul className="dsy-carousel-center dsy-carousel justify-center space-x-4 p-4">
+            {randomCategory.products.map((item) => (
+              <li className="dsy-carousel-item">
+                <Link
+                  href={`/user/shop/${item.id}`}
+                  key={item.id}
+                  className="dsy-card dsy-card-compact animate-scaleTo1 overflow-hidden rounded-lg bg-orange-100 bg-opacity-40"
                 >
-                  <FontAwesomeIcon icon={faCartPlus} /> 장바구니
-                </button>
-                <button
-                  type="button"
-                  className="dsy-join-item dsy-btn flex-1 border-none bg-orange-200 max-sm:hidden"
-                >
-                  <FontAwesomeIcon icon={faCreditCard} /> 구매
-                </button>
-              </div>
-            </Link>
-          ))}
-        </ClientSlider>
-        <Link href="/user/shop?category=명품제주감귤" className="dsy-btn m-auto">
-          전체보기
-        </Link>
-      </div>
-    </div>
+                  <figure>
+                    <Image
+                      src={item.images[0].src}
+                      alt={item.name}
+                      width={240}
+                      height={160}
+                      className="aspect-[3/2] cursor-pointer object-cover transition-all duration-300 hover:scale-105"
+                    />
+                  </figure>
+                  <div className="dsy-card-body gap-0">
+                    <span className="text-orange-500">무료배송</span>
+                    <ProductName product={item} />
+                    <p className="min-w-max">
+                      <ProductSalePercentage
+                        isSale={item.isSale}
+                        price={item.price}
+                        salePrice={item.salePrice}
+                      />
+                      <ProductPrice
+                        isSale={item.isSale}
+                        price={item.price}
+                        salePrice={item.salePrice}
+                      />
+                      <ProductRegularPrice isSale={item.isSale} price={item.price} />
+                    </p>
+                  </div>
+                  <div className="dsy-join w-full rounded-none">
+                    <button
+                      type="button"
+                      className="dsy-join-item dsy-btn flex-1 border-none bg-orange-100"
+                    >
+                      <FontAwesomeIcon icon={faCartPlus} /> 장바구니
+                    </button>
+                    <button
+                      type="button"
+                      className="dsy-join-item dsy-btn flex-1 border-none bg-orange-200 max-sm:hidden"
+                    >
+                      <FontAwesomeIcon icon={faCreditCard} /> 구매
+                    </button>
+                  </div>
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <Link href="/user/shop?category=명품제주감귤" className="dsy-btn m-auto">
+            전체보기
+          </Link>
+        </div>
+      )}
+    </main>
   );
 }

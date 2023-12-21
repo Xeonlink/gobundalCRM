@@ -1,5 +1,7 @@
-export class JSONResponse extends Response {
-  constructor(data: { [key: string]: any }, init: ResponseInit = {}) {
-    super(JSON.stringify(data), init);
-  }
-}
+import { PrismaClient } from "@prisma/client";
+
+export const db = new PrismaClient();
+
+export type Slug<T extends string[]> = {
+  params: Record<T[number], string>;
+};

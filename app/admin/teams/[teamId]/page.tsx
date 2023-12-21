@@ -15,7 +15,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import dayjs from "dayjs";
 import { updateTeam } from "./actions";
-import { db } from "@/prisma/db";
+import { db } from "@/app/api/utils";
 import { PageProps } from "@/extra/type";
 
 export default async function Page(props: PageProps<{ teamId: string }>) {

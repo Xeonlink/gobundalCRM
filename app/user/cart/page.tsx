@@ -1,6 +1,8 @@
 "use client";
 
 import { ProductPrice } from "@/components/ProductCard/ProductPrice";
+import { ProductRegularPrice } from "@/components/ProductCard/ProductRegularPrice";
+import { ProductSalePercentage } from "@/components/ProductCard/ProductSalePercentage";
 import { useCart } from "@/hooks/useCart";
 import {
   faBoxes,
@@ -51,7 +53,22 @@ export default function Page() {
             <div className="dsy-card-body gap-0">
               <span className="text-orange-500 max-sm:hidden">무료배송</span>
               <h2>{item.name}</h2>
-              <ProductPrice item={item} />
+              <p className="min-w-max">
+                <ProductSalePercentage
+                  isSale={item.isSale}
+                  price={item.price}
+                  salePrice={item.salePrice}
+                />
+                <ProductPrice //
+                  isSale={item.isSale}
+                  price={item.price}
+                  salePrice={item.salePrice}
+                />
+                <ProductRegularPrice //
+                  isSale={item.isSale}
+                  price={item.price}
+                />
+              </p>
               <div className="dsy-card-actions mt-2">
                 <div className="dsy-join">
                   <button

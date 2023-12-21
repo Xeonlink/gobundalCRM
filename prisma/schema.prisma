@@ -33,16 +33,18 @@ model Order {
   receiverPhone         String
   receiverAddress       String
   receiverAddressDetail String
-  products              OrderProduct[]
   memo                  String
+  products              OrderProduct[]
 }
 
 model OrderProduct {
-  orderId   Int
-  Order     Order   @relation(fields: [orderId], references: [id])
-  productId Int
-  product   Product @relation(fields: [productId], references: [id])
-  quantity  Int
+  orderId         Int
+  quantity        Int
+  Order           Order   @relation(fields: [orderId], references: [id])
+  name            String
+  price           Int
+  productId       Int
+  originalProduct Product @relation(fields: [productId], references: [id])
 
   @@id([orderId, productId])
   @@index([orderId])
@@ -50,20 +52,22 @@ model OrderProduct {
 }
 
 model Product {
-  id           Int              @id @default(autoincrement())
-  createdAt    DateTime         @default(now())
-  updatedAt    DateTime         @updatedAt
-  name         String
-  categoryId   Int?
-  category     ProductCategory? @relation(fields: [categoryId], references: [id])
-  price        Int
-  isSale       Boolean          @default(false)
-  salePrice    Int
-  remain       Int
-  enabled      Boolean          @default(false)
-  isDeleted    Boolean          @default(false)
-  images       Image[]
-  OrderProduct OrderProduct[]
+  id               Int             @id @default(autoincrement())
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  name             String
+  categoryId       Int
+  price            Int
+  isSale           Boolean         @default(false)
+  salePrice        Int
+  remain           Int
+  enabled          Boolean         @default(false)
+  isDeleted        Boolean         @default(false)
+  isRemainInfinite Boolean         @default(false)
+  isRecommended    Boolean         @default(false)
+  category         ProductCategory @relation(fields: [categoryId], references: [id])
+  images           Image[]
+  OrderProduct     OrderProduct[]
 
   @@index([categoryId])
 }
@@ -79,18 +83,16 @@ model ProductCategory {
 }
 
 model Image {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  src       String
-  name      String
-  mimeType  String
-  width     Int
-  height    Int
-  role      String // product_main | product_detail | product_thumb
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  src         String
+  name        String
+  mimeType    String
+  width       Int
+  height      Int
+  size        Int
+  description String   @default("")
 
-  productId Int?
-  Product   Product? @relation(fields: [productId], references: [id])
-
-  @@index([productId])
+  products Product[]
 }

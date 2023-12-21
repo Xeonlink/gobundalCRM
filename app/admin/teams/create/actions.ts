@@ -1,22 +1,22 @@
 "use server";
 
-import { db } from "@/prisma/db";
+import { db } from "@/app/api/utils";
 import { revalidatePath } from "next/cache";
 import { RedirectType, redirect } from "next/navigation";
 
-export const createTeam = async (formData: FormData) => {
+export async function createTeam(formData: FormData) {
   const _ = await db.team.create({
     data: {
-      date: formData.get("date") as string,
-      leaderName: formData.get("leaderName") as string,
-      leaderPhone: formData.get("leaderPhone") as string,
-      population: parseInt(formData.get("population") as string),
-      coupon: formData.get("coupon") as string,
-      isLeave: !!formData.get("isLeave"),
-      isApproved: !!formData.get("isApproved"),
+      date: String(formData.get("date")),
+      leaderName: String(formData.get("leaderName")),
+      leaderPhone: String(formData.get("leaderPhone")),
+      population: Number(formData.get("population")),
+      coupon: String(formData.get("coupon")),
+      isLeave: Boolean(formData.get("isLeave")),
+      isApproved: Boolean(formData.get("isApproved")),
     },
   });
 
   revalidatePath("/admin/teams", "page");
   redirect("/admin/teams", RedirectType.replace);
-};
+}

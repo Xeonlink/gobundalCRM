@@ -119,3 +119,15 @@ export function getSizeFromImg(file: File) {
     img.src = url;
   });
 }
+
+export class PromiseCache {
+  static promises = new Map<string, Promise<any>>();
+
+  static get<T>(fn: () => Promise<T>) {
+    const key = fn.toString();
+    if (!this.promises.has(key)) {
+      this.promises.set(key, fn());
+    }
+    return this.promises.get(key)! as Promise<T>;
+  }
+}

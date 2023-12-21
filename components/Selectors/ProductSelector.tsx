@@ -1,109 +1,67 @@
 "use client";
 
-import { Product, useDeleteProducts, useProducts } from "@/api/products";
-import { ModalProps, useModal } from "@/extra/modal";
-import { useExcel } from "@/hooks/useExcel";
-import { useItemSelection } from "@/hooks/useItemSelection";
-import IcoExcel from "@/public/icons/excel.png";
+import { useProducts } from "@/app/api/products/accessors";
 import {
+  faBox,
   faBoxes,
   faCheck,
   faCoins,
   faInfinity,
-  faPlus,
   faSignature,
+  faSliders,
   faToggleOn,
-  faTrashCan,
   faWon,
-  faX,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { ImgIcon } from "../ImgIcon";
-import Link from "next/link";
+import { Product } from "@prisma/client";
 
-type Props = ModalProps<{ onSelect?: (product: Product) => void }>;
+type Props = {
+  onSelect?: (item: Product) => void;
+};
 
 export function ProductSelector(props: Props) {
-  const { ref, closeSelf, onSelect } = props;
-
   const { data: products } = useProducts();
-  const selected = useItemSelection();
-  const modalCtrl = useModal();
-  const excel = useExcel();
-  const deleteItems = useDeleteProducts(selected.ids, {
-    onSuccess: () => selected.clear(),
-  });
-
-  const onConfirmClick = () => {
-    if (selected.ids.length > 1) {
-      alert("다중 선택은 아직 지원하지 않습니다.");
-      return;
-    }
-    const product = products?.data.find((product) => product.id === selected.ids[0]);
-    if (!product) {
-      alert("실행도중 오류가 발생했습니다. 다시 시도해주세요. 오류코드: 279384");
-      return;
-    }
-    onSelect?.(product);
-    closeSelf?.();
-  };
-  const onDeleteClick = () => {
-    if (selected.isEmpty) return;
-    if (!confirm("정말로 삭제하시겠습니까?")) return;
-    deleteItems.mutate();
-  };
-  const onExcelDownloadClick = () => {
-    excel.download(products?.data!, "상품");
-  };
 
   return (
-    <dialog ref={ref} onClose={closeSelf} className="dsy-modal">
-      <form
-        method="dialog"
-        className="dsy-modal-box max-h-screen w-full max-w-[50rem] bg-opacity-60 backdrop-blur-md"
-      >
+    <dialog id="product-selector" className="dsy-modal">
+      <form method="dialog" className="dsy-modal-box max-w-none">
         <table className="table">
           <thead>
             <tr>
-              <th className="border-none"></th>
-              <th className="border-none">
+              <th className="rounded-tl-md bg-orange-100" colSpan={4}>
+                <FontAwesomeIcon icon={faBox} /> 상품
+              </th>
+              <th className="rounded-tr-md bg-green-100" colSpan={3}>
+                <FontAwesomeIcon icon={faSliders} /> 상태
+              </th>
+            </tr>
+            <tr>
+              <th className="rounded-bl-md bg-orange-50">
                 <FontAwesomeIcon icon={faSignature} /> 이름
               </th>
-              <th className="border-none">
-                <FontAwesomeIcon icon={faCoins} /> 가격
+              <th className="bg-orange-50">
+                <FontAwesomeIcon icon={faWon} /> 가격
               </th>
-              <th className="border-none">
-                <FontAwesomeIcon icon={faCoins} /> 할인가격
+              <th className="bg-orange-50">
+                <FontAwesomeIcon icon={faWon} /> 할인가격
               </th>
-              <th className="border-none">
+              <th className="bg-orange-50">
                 <FontAwesomeIcon icon={faBoxes} /> 재고
               </th>
-              <th className="border-none">
+              <th className="bg-green-50">
                 <FontAwesomeIcon icon={faCoins} /> 할인중
               </th>
-              <th className="border-none">
+              <th className=" bg-green-50">
                 <FontAwesomeIcon icon={faToggleOn} /> 활성화
+              </th>
+              <th className=" rounded-br-md bg-green-50">
+                <FontAwesomeIcon icon={faCheck} /> 선택
               </th>
             </tr>
           </thead>
           <tbody>
-            {products?.data.map((item) => (
-              <tr
-                key={item.id}
-                // onDoubleClick={onItemDoubleClick(item)}
-                onClick={selected.onItemClick(item.id)}
-                aria-selected={selected.includes(item.id)}
-              >
-                <td className="max-sm:absolute max-sm:right-3 max-sm:top-3">
-                  <input
-                    type="checkbox"
-                    name=""
-                    id=""
-                    className="dsy-checkbox dsy-checkbox-xs"
-                    checked={selected.ids.includes(item.id)}
-                    onChange={() => {}}
-                  />
-                </td>
+            {products!.map((item) => (
+              <tr key={item.id}>
                 <td>
                   <label>
                     <FontAwesomeIcon icon={faSignature} /> 이름
@@ -132,49 +90,28 @@ export function ProductSelector(props: Props) {
                 </td>
                 <td>
                   <label>
-                    <FontAwesomeIcon icon={faToggleOn} /> 활성화
+                    <FontAwesomeIcon icon={faCoins} /> 할인중
                   </label>
                   <span>{item.isSale ? "O" : "X"}</span>
                 </td>
                 <td>
+                  <label>
+                    <FontAwesomeIcon icon={faToggleOn} /> 활성화
+                  </label>
                   <span>{item.enabled ? "O" : "X"}</span>
+                </td>
+                <td>
+                  <button className="dsy-btn-sm dsy-btn" onClick={() => props.onSelect?.(item!)}>
+                    <FontAwesomeIcon icon={faCheck} />
+                  </button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
-
-        <div className="dsy-modal-action">
-          {/* Close */}
-          <button className="dsy-btn-sm dsy-btn">
-            <FontAwesomeIcon icon={faX} /> 닫기
-          </button>
-
-          {/* Cratet New Order */}
-          <Link href="/admin/products/create" className="dsy-btn-sm dsy-btn">
-            <FontAwesomeIcon icon={faPlus} /> 상품 추가하기
-          </Link>
-
-          {/* Delete */}
-          <button type="button" className="dsy-btn-sm dsy-btn" onClick={onDeleteClick}>
-            <FontAwesomeIcon icon={faTrashCan} /> 선택삭제
-          </button>
-
-          {/* 엑셀로 다운로드하기 */}
-          <button type="button" className="dsy-btn-sm dsy-btn" onClick={onExcelDownloadClick}>
-            <ImgIcon src={IcoExcel} alt="엑셀로 변환" fontSize={20} /> 엑셀로 변환
-          </button>
-
-          {/* 확인 */}
-          <button
-            type="button"
-            className="dsy-btn-sm dsy-btn"
-            onClick={onConfirmClick}
-            disabled={selected.isEmpty}
-          >
-            <FontAwesomeIcon icon={faCheck} /> 선택
-          </button>
-        </div>
+      </form>
+      <form method="dialog" className="dsy-modal-backdrop">
+        <button>{/* Close */}</button>
       </form>
     </dialog>
   );

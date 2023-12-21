@@ -76,15 +76,15 @@ export default function Page() {
                         {item.isSale
                           ? Math.round((1 - item.salePrice / item.price) * 100) + "%"
                           : item.price === 0
-                          ? "100%"
-                          : ""}
+                            ? "100%"
+                            : ""}
                       </span>{" "}
                       <span className="text-xl font-bold max-sm:text-lg">
                         {item.isSale
                           ? item.salePrice.toLocaleString()
                           : item.price === 0
-                          ? "Free"
-                          : item.price.toLocaleString()}
+                            ? "Free"
+                            : item.price.toLocaleString()}
                       </span>
                       {item.price === 0 ? " " : "원 "}
                       <span className="text-[#999999] line-through">
@@ -151,15 +151,15 @@ export default function Page() {
                   ? Math.round((1 - selectedProduct?.salePrice / selectedProduct?.price) * 100) +
                     "%"
                   : selectedProduct?.price === 0
-                  ? "100%"
-                  : ""}
+                    ? "100%"
+                    : ""}
               </span>{" "}
               <span className="text-xl font-bold max-sm:text-lg">
                 {selectedProduct?.isSale
                   ? (selectedProduct?.salePrice * selectedProductQuantity).toLocaleString()
                   : selectedProduct?.price === 0
-                  ? "Free"
-                  : (selectedProduct?.price || 0 * selectedProductQuantity).toLocaleString()}
+                    ? "Free"
+                    : (selectedProduct?.price || 0 * selectedProductQuantity).toLocaleString()}
               </span>
               {selectedProduct?.price === 0 ? " " : "원 "}
               <span className="text-[#999999] line-through">

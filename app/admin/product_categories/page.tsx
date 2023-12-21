@@ -1,7 +1,6 @@
 import { DownloadExcel } from "@/components/DownloadExcel";
 import { ImgIcon } from "@/components/ImgIcon";
-import { Refresh } from "@/components/Refresh";
-import { db } from "@/prisma/db";
+import { Refresh } from "@/components/Navigate/Refresh";
 import IcoExcel from "@/public/icons/excel.png";
 import {
   faArrowsRotate,
@@ -20,7 +19,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { getServerSession } from "next-auth";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { deleteProductCategory } from "./actions";
+import { deleteProductCategory, getProductCategories } from "./actions";
 
 export default async function Page() {
   const session = await getServerSession();
@@ -28,7 +27,7 @@ export default async function Page() {
     redirect("/auth/signin?callbackUrl=/admin/product_categories");
   }
 
-  const productCategories = await db.productCategory.findMany({ include: { products: true } });
+  const productCategories = await getProductCategories();
 
   return (
     <main className="min-h-screen">
@@ -42,7 +41,7 @@ export default async function Page() {
         </li>
 
         <li>
-          {/* Cratet New Order */}
+          {/* Create New Order */}
           <Link href="product_categories/create" className="dsy-btn">
             <FontAwesomeIcon icon={faPlus} /> 카테고리 추가하기
           </Link>
@@ -112,17 +111,21 @@ export default async function Page() {
                   </label>
                   <span>{item.enabled ? "O" : "X"}</span>
                 </td>
-                <td className="right-2 top-1 space-x-1 max-sm:absolute">
-                  <Link href={`product_categories/${item.id}`} className="dsy-btn-sm dsy-btn">
-                    <FontAwesomeIcon icon={faPen} />
-                  </Link>
-                  <button
-                    className="dsy-btn-sm dsy-btn"
-                    formAction={deleteProductCategory.bind(null, +item.id)}
-                  >
-                    <FontAwesomeIcon icon={faTrashCan} />
-                  </button>
-                </td>
+                {item.name === "기본" ? (
+                  <td></td>
+                ) : (
+                  <td className="right-2 top-1 space-x-1 max-sm:absolute">
+                    <Link href={`product_categories/${item.id}`} className="dsy-btn-sm dsy-btn">
+                      <FontAwesomeIcon icon={faPen} />
+                    </Link>
+                    <button
+                      className="dsy-btn-sm dsy-btn"
+                      formAction={deleteProductCategory.bind(null, +item.id)}
+                    >
+                      <FontAwesomeIcon icon={faTrashCan} />
+                    </button>
+                  </td>
+                )}
               </tr>
             ))}
           </tbody>

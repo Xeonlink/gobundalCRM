@@ -314,16 +314,16 @@ export default function Page() {
                       {item.isSale
                         ? Math.round((1 - item.salePrice / item.price) * 100) + "%"
                         : item.price === 0
-                        ? "100%"
-                        : ""}
+                          ? "100%"
+                          : ""}
                     </span>
                     <span className="min-w-fit">
                       <span className="font-bold">
                         {item.isSale
                           ? item.salePrice.toLocaleString()
                           : item.price === 0
-                          ? "Free"
-                          : item.price.toLocaleString()}
+                            ? "Free"
+                            : item.price.toLocaleString()}
                       </span>
                       {item.price === 0 ? " " : "원 "}
                     </span>
@@ -339,8 +339,8 @@ export default function Page() {
                       {item.isSale
                         ? (item.salePrice * quantity).toLocaleString()
                         : item.price === 0
-                        ? "Free"
-                        : (item.price * quantity).toLocaleString()}
+                          ? "Free"
+                          : (item.price * quantity).toLocaleString()}
                     </span>
                     {item.price === 0 ? " " : "원 "}
                   </span>

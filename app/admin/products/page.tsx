@@ -1,8 +1,7 @@
 import { DownloadExcel } from "@/components/DownloadExcel";
 import { ImgIcon } from "@/components/ImgIcon";
-import { Refresh } from "@/components/Refresh";
+import { Refresh } from "@/components/Navigate/Refresh";
 import { PageProps } from "@/extra/type";
-import { db } from "@/prisma/db";
 import IcoExcel from "@/public/icons/excel.png";
 import { faAddressCard } from "@fortawesome/free-regular-svg-icons";
 import {
@@ -24,14 +23,14 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import Link from "next/link";
-import { deleteProduct } from "./actions";
+import { deleteProduct, getProducts } from "./actions";
 
 type SearchParams = { view: "table" | "card" };
 
 export default async function Page(props: PageProps<{}, SearchParams>) {
   const { view = "table" } = props.searchParams;
 
-  const products = await db.product.findMany({ include: { category: true, images: true } });
+  const products = await getProducts();
 
   return (
     <main className="min-h-screen">
@@ -45,7 +44,7 @@ export default async function Page(props: PageProps<{}, SearchParams>) {
         </li>
 
         <li>
-          {/* Cratet New Order */}
+          {/* Create New Order */}
           <Link href="products/create" className="dsy-btn">
             <FontAwesomeIcon icon={faPlus} /> 상품 추가하기
           </Link>
@@ -125,7 +124,7 @@ export default async function Page(props: PageProps<{}, SearchParams>) {
                     <label>
                       <FontAwesomeIcon icon={faTableCellsLarge} /> 카테고리
                     </label>
-                    <span>{item.category?.name ?? "X"}</span>
+                    <span>{item.category.name}</span>
                   </td>
                   <td>
                     <label>
@@ -144,7 +143,7 @@ export default async function Page(props: PageProps<{}, SearchParams>) {
                       <FontAwesomeIcon icon={faBoxes} /> 재고
                     </label>
                     <span>
-                      {item.remain < 0 ? <FontAwesomeIcon icon={faInfinity} /> : item.remain}
+                      {item.isRemainInfinite ? <FontAwesomeIcon icon={faInfinity} /> : item.remain}
                     </span>
                   </td>
                   <td>
@@ -180,52 +179,48 @@ export default async function Page(props: PageProps<{}, SearchParams>) {
       {/* 상품 진열장 */}
       {view === "card" ? (
         <ol className="container m-auto grid grid-cols-[repeat(auto-fit,minmax(220px,max-content))] pt-4 max-sm:space-y-2 sm:gap-4 sm:p-4">
-          {products.map((item) => {
-            const mainImages = item.images.filter((image) => image.role === "product_main");
-
-            return (
-              <li
-                key={item.id}
-                className="dsy-card dsy-card-compact animate-scaleTo1 overflow-hidden rounded-none bg-orange-100 bg-opacity-60 transition-all duration-300 max-sm:dsy-card-side sm:rounded-lg"
-              >
-                <Link href={`products/${item.id}`} className="contents">
-                  <figure>
-                    <Image
-                      src={mainImages[0].src}
-                      alt={item.name}
-                      width={mainImages[0].width || 450}
-                      height={mainImages[0].height || 300}
-                      className="aspect-[3/2] cursor-pointer object-cover transition-all duration-300 hover:scale-105 max-sm:w-40"
-                    />
-                  </figure>
-                  <div className="dsy-card-body gap-0">
-                    <span className="text-orange-500">무료배송</span>
-                    <h2>{item.name}</h2>
-                    <p className="min-w-max">
-                      <span className="text-lg text-[#e63740]">
-                        {item.isSale
-                          ? Math.round((1 - item.salePrice / item.price) * 100) + "%"
-                          : item.price === 0
-                            ? "100%"
-                            : ""}
-                      </span>{" "}
-                      <span className="text-xl font-bold">
-                        {item.isSale
-                          ? item.salePrice.toLocaleString()
-                          : item.price === 0
-                            ? "Free"
-                            : item.price.toLocaleString()}
-                      </span>
-                      {item.price === 0 ? " " : "원 "}
-                      <span className="text-[#999999] line-through max-sm:hidden">
-                        {item.isSale && item.price.toLocaleString() + "원"}
-                      </span>
-                    </p>
-                  </div>
-                </Link>
-              </li>
-            );
-          })}
+          {products.map((item) => (
+            <li
+              key={item.id}
+              className="dsy-card dsy-card-compact animate-scaleTo1 overflow-hidden rounded-none bg-orange-100 bg-opacity-60 transition-all duration-300 max-sm:dsy-card-side sm:rounded-lg"
+            >
+              <Link href={`products/${item.id}`} className="contents">
+                <figure>
+                  <Image
+                    src={item.images[0].src}
+                    alt={item.name}
+                    width={item.images[0].width || 450}
+                    height={item.images[0].height || 300}
+                    className="aspect-[3/2] cursor-pointer object-cover transition-all duration-300 hover:scale-105 max-sm:w-40"
+                  />
+                </figure>
+                <div className="dsy-card-body gap-0">
+                  <span className="text-orange-500">무료배송</span>
+                  <h2>{item.name}</h2>
+                  <p className="min-w-max">
+                    <span className="text-lg text-[#e63740]">
+                      {item.isSale
+                        ? Math.round((1 - item.salePrice / item.price) * 100) + "%"
+                        : item.price === 0
+                          ? "100%"
+                          : ""}
+                    </span>{" "}
+                    <span className="text-xl font-bold">
+                      {item.isSale
+                        ? item.salePrice.toLocaleString()
+                        : item.price === 0
+                          ? "Free"
+                          : item.price.toLocaleString()}
+                    </span>
+                    {item.price === 0 ? " " : "원 "}
+                    <span className="text-[#999999] line-through max-sm:hidden">
+                      {item.isSale && item.price.toLocaleString() + "원"}
+                    </span>
+                  </p>
+                </div>
+              </Link>
+            </li>
+          ))}
         </ol>
       ) : null}
     </main>

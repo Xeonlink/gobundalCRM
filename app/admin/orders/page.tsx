@@ -1,9 +1,8 @@
 import { DateChanger } from "@/components/DateChanger";
 import { DownloadExcel } from "@/components/DownloadExcel";
 import { ImgIcon } from "@/components/ImgIcon";
-import { Refresh } from "@/components/Refresh";
+import { Refresh } from "@/components/Navigate/Refresh";
 import { PageProps } from "@/extra/type";
-import { db } from "@/prisma/db";
 import IcoExcel from "@/public/icons/excel.png";
 import {
   faArrowsRotate,
@@ -15,6 +14,7 @@ import {
   faPen,
   faPlus,
   faRobot,
+  faRunning,
   faSignature,
   faSignsPost,
   faTrashCan,
@@ -24,7 +24,7 @@ import dayjs from "dayjs";
 import { getServerSession } from "next-auth";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { deleteOrder } from "./actions";
+import { deleteOrder, getOrders } from "./actions";
 
 type SearchParams = { date: `${string}-${string}-${string}` };
 
@@ -36,7 +36,7 @@ export default async function Page(props: PageProps<{}, SearchParams>) {
     redirect("/auth/signin?callbackUrl=/admin/orders");
   }
 
-  const orders = await db.order.findMany({ where: { date }, include: { products: true } });
+  const orders = await getOrders(date);
 
   return (
     <main className="min-h-screen">
@@ -55,7 +55,7 @@ export default async function Page(props: PageProps<{}, SearchParams>) {
           </li>
 
           <li>
-            {/* Cratet New Order */}
+            {/* Create New Order */}
             <Link href="orders/create" className="dsy-btn">
               <FontAwesomeIcon icon={faPlus} /> 주문입력
             </Link>
@@ -86,7 +86,7 @@ export default async function Page(props: PageProps<{}, SearchParams>) {
                 <th className="bg-green-100" colSpan={3}>
                   <FontAwesomeIcon icon={faPaperPlane} rotation={90} /> 받는 사람
                 </th>
-                <th className="rounded-tr-md bg-blue-100" colSpan={2}>
+                <th className="rounded-tr-md bg-blue-100" colSpan={3}>
                   <FontAwesomeIcon icon={faBoxes} /> 상품정보
                 </th>
               </tr>
@@ -109,8 +109,11 @@ export default async function Page(props: PageProps<{}, SearchParams>) {
                 <th className="bg-blue-50">
                   <FontAwesomeIcon icon={faBox} /> 상품명
                 </th>
-                <th className="rounded-br-md bg-blue-50">
+                <th className="bg-blue-50">
                   <FontAwesomeIcon icon={faNoteSticky} /> 메모
+                </th>
+                <th className="rounded-br-md bg-blue-50">
+                  <FontAwesomeIcon icon={faRunning} /> 액션
                 </th>
               </tr>
             </thead>
@@ -141,7 +144,7 @@ export default async function Page(props: PageProps<{}, SearchParams>) {
                     </label>
                     <span>{item.receiverPhone}</span>
                   </td>
-                  <td className="text-start">
+                  <td>
                     <label>
                       <FontAwesomeIcon icon={faSignsPost} /> 주소
                     </label>
@@ -153,13 +156,19 @@ export default async function Page(props: PageProps<{}, SearchParams>) {
                     <label>
                       <FontAwesomeIcon icon={faBox} /> 상품명
                     </label>
-                    <span>{item.products[0].name}</span>
+                    <span>
+                      {`${item.products[0].name} (${item.products[0].quantity})`}
+                      {item.products.length > 1 ? ` 외 ${item.products.length - 1}개` : ""}
+                    </span>
                   </td>
                   <td>
                     <label>
                       <FontAwesomeIcon icon={faNoteSticky} /> 메모
                     </label>
-                    <span>{item.memo}</span>
+                    <span>
+                      {item.memo.slice(0, 6)}
+                      {item.memo.length > 6 ? "..." : ""}
+                    </span>
                   </td>
                   <td className="right-2 top-1 space-x-1 max-sm:absolute">
                     <Link href={`orders/${item.id}`} className="dsy-btn-sm dsy-btn">

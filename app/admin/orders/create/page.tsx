@@ -1,9 +1,9 @@
 "use client";
 
-import { OrderProduct } from "@/api/orders";
+import { DialogOpener } from "@/components/DialogOpener";
 import { SelfValidateInput } from "@/components/Input/SelfValidateInput";
 import { ProductSelector } from "@/components/Selectors/ProductSelector";
-import { useModal } from "@/extra/modal";
+import { useServerAction } from "@/hooks/useServerActions";
 import {
   faBox,
   faBuilding,
@@ -22,38 +22,57 @@ import {
   faTrashCan,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { OrderProduct, Product } from "@prisma/client";
 import dayjs from "dayjs";
 import { useState } from "react";
 import { createOrder } from "./actions";
 
 export default function Page() {
-  const modalCtrl = useModal();
+  const [products, setProducts] = useState<Omit<OrderProduct, "orderId">[]>([]);
+  const addProduct = (product: Product) => {
+    if (products.some((p) => p.productId === product.id)) return alert("이미 추가된 상품입니다.");
 
-  const [products, setProducts] = useState<OrderProduct[]>([]);
-  const addProduct = (product: OrderProduct) => {
-    setProducts((prev) => [...prev, product]);
+    setProducts((prev) => [
+      ...prev,
+      {
+        productId: product.id,
+        name: product.name,
+        price: product.price,
+        quantity: 1,
+      },
+    ]);
   };
   const removeProduct = (index: number) => {
     setProducts((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const openProductSelector = () => {
-    modalCtrl.open(
-      <ProductSelector onSelect={({ name, price }) => addProduct({ name, price, quantity: 1 })} />,
-    );
+  const [sameAsSender, setSameAsSender] = useState(false);
+
+  const onReset = () => {
+    setProducts([]);
+    setSameAsSender(false);
+  };
+
+  const [isPending, runAction] = useServerAction(createOrder);
+
+  const onSubmit = async (formData: FormData) => {
+    if (products.length === 0) return alert("상품을 추가해주세요.");
+    runAction(formData);
   };
 
   return (
     <main>
-      <form action={createOrder}>
+      <form action={onSubmit} onReset={onReset}>
         {/* Toolbar */}
         <ul className="flex w-full flex-wrap items-center justify-center bg-base-200 py-2  max-sm:flex-col">
           <li>
             {/* Clear */}
-            <label className="dsy-btn-ghost dsy-btn disabled:bg-transparent max-sm:w-full max-sm:rounded-none">
-              <FontAwesomeIcon icon={faNotdef} rotation={90} />{" "}
-              <input type="reset" value="초기화" />
-            </label>
+            <button
+              type="reset"
+              className="dsy-btn-ghost dsy-btn disabled:bg-transparent max-sm:w-full max-sm:rounded-none"
+            >
+              <FontAwesomeIcon icon={faNotdef} rotation={90} /> 초기화
+            </button>
           </li>
 
           <li>
@@ -65,7 +84,7 @@ export default function Page() {
         </ul>
 
         <div className="m-auto flex flex-wrap items-start justify-center gap-6 py-6 max-sm:px-6">
-          <div className="w-[350px] space-y-6 rounded-xl border bg-white px-8 py-6">
+          <div className="w-96 space-y-4 rounded-xl border px-8 py-6">
             <div className="dsy-form-control">
               <label htmlFor="date" className="dsy-label">
                 <strong className="dsy-label-text">
@@ -91,6 +110,7 @@ export default function Page() {
                 </strong>
               </label>
               <SelfValidateInput
+                autoFocus
                 id="sender-name"
                 name="senderName"
                 placeholder="홍길동"
@@ -120,9 +140,9 @@ export default function Page() {
                 ))}
               </datalist> */}
             </div>
+          </div>
 
-            <div className="dsy-divider">{/* <FontAwesomeIcon icon={faPaperPlane} /> From */}</div>
-
+          <div className="w-96 space-y-4 rounded-xl border px-8 py-6">
             <div className="dsy-form-control">
               <label htmlFor="same-as-sender" className="dsy-label">
                 <strong className="dsy-label-text">
@@ -133,6 +153,8 @@ export default function Page() {
                   name="sameAsSender"
                   id="same-as-sender"
                   className="dsy-toggle-success dsy-toggle"
+                  onChange={(e) => setSameAsSender(e.target.checked)}
+                  defaultChecked={sameAsSender}
                 />
               </label>
             </div>
@@ -150,6 +172,7 @@ export default function Page() {
                 placeholder="홍길동"
                 required
                 title="받는 사람 이름"
+                disabled={sameAsSender}
               />
             </div>
 
@@ -163,9 +186,11 @@ export default function Page() {
               <SelfValidateInput
                 id="receiver-phone"
                 name="receiverPhone"
+                type="tel"
                 placeholder="010-0000-0000"
                 required
                 title="받는 사람 전화번호"
+                disabled={sameAsSender}
               />
             </div>
 
@@ -203,17 +228,17 @@ export default function Page() {
             </div>
           </div>
 
-          <div className="rounded-xl border px-8 py-6">
+          <div className="w-96 space-y-4 rounded-xl border px-8 py-6">
             <table className="grid w-full grid-cols-[1fr_minmax(0px,6rem)_minmax(0px,4rem)_auto]">
               <thead className="contents">
                 <tr className="contents">
-                  <th className="text-sm">
+                  <th className="h-8 text-sm">
                     <FontAwesomeIcon icon={faBox} /> 상품명
                   </th>
-                  <th className="text-sm">
+                  <th className="h-8 text-sm">
                     <FontAwesomeIcon icon={faCoins} /> 가격(원)
                   </th>
-                  <th className="text-sm">
+                  <th className="h-8 text-sm">
                     <FontAwesomeIcon icon={faCalculator} /> 수량
                   </th>
                   <th></th>
@@ -221,38 +246,45 @@ export default function Page() {
               </thead>
               <tbody className="contents">
                 {products.map((product, index) => (
-                  <tr key={index} className="contents">
+                  <tr key={product.productId} className="contents">
                     <td className="text-center">
+                      <input
+                        id="productId"
+                        type="hidden"
+                        name="productId"
+                        value={product.productId}
+                      />
                       <SelfValidateInput
-                        id="product-name"
+                        id="productName"
                         type="text"
                         name="productName"
+                        className="dsy-input-ghost dsy-input w-full text-center"
                         required
-                        // list="product-name-list"s
-                        className="w-full text-center"
                         title="상품명"
-                        readOnly
+                        defaultValue={product.name}
                       />
                     </td>
                     <td className="relative">
                       <SelfValidateInput
-                        id="product-price"
-                        type="number"
+                        id="productPrice"
+                        type="text"
                         name="productPrice"
-                        className="w-full text-center"
+                        className="dsy-input-ghost dsy-input w-full text-center"
                         required
                         title="가격"
-                        readOnly
+                        defaultValue={product.price.toLocaleString()}
                       />
                     </td>
                     <td className="relative">
                       <SelfValidateInput
-                        id="product-quantity"
-                        name="productQuantity"
+                        id="quantity"
+                        name="quantity"
                         type="number"
                         className="w-full text-center"
                         required
                         title="수량"
+                        defaultValue={product.quantity}
+                        min={1}
                       />
                     </td>
                     <td>
@@ -269,13 +301,9 @@ export default function Page() {
               </tbody>
             </table>
 
-            <button
-              type="button"
-              className="dsy-btn-wide dsy-join-item dsy-btn mt-2"
-              onClick={openProductSelector}
-            >
+            <DialogOpener target="#product-selector" className="dsy-join-item dsy-btn w-full">
               <FontAwesomeIcon icon={faPlus} /> 추가하기
-            </button>
+            </DialogOpener>
 
             <div className="dsy-form-control">
               <label htmlFor="memo" className="dsy-label">
@@ -288,6 +316,8 @@ export default function Page() {
           </div>
         </div>
       </form>
+
+      <ProductSelector onSelect={addProduct} />
     </main>
   );
 }

@@ -43,15 +43,15 @@ export function ProductCountToCart() {
             {product?.isSale
               ? Math.round((1 - product?.salePrice / product?.price) * 100) + "%"
               : product?.price === 0
-              ? "100%"
-              : ""}
+                ? "100%"
+                : ""}
           </span>{" "}
           <span className="text-xl font-bold max-sm:text-lg">
             {product?.isSale
               ? (product?.salePrice * productQuantity).toLocaleString()
               : product?.price === 0
-              ? "Free"
-              : (product?.price || 0 * productQuantity).toLocaleString()}
+                ? "Free"
+                : (product?.price || 0 * productQuantity).toLocaleString()}
           </span>
           {product?.price === 0 ? " " : "원 "}
           <span className="text-[#999999] line-through">

@@ -63,7 +63,7 @@ export default function Page(props: PageProps<any, SearchParams>) {
         </li>
 
         <li>
-          {/* Cratet New Order */}
+          {/* Create New Order */}
           <Link href="customers/create" className="dsy-btn">
             <FontAwesomeIcon icon={faPlus} /> 고객 추가하기
           </Link>

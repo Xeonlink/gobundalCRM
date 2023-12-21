@@ -7,9 +7,10 @@ export const DialogOpener = (props: ComponentProps<"button"> & { target: string 
 
   return React.createElement("button", {
     ...rest,
+    type: "button",
     onClick: () => {
-      const businessInfo = document.querySelector(target) as HTMLDialogElement;
-      businessInfo?.showModal();
+      const targetElement = document.querySelector(target) as HTMLDialogElement;
+      targetElement?.showModal();
     },
   });
 };

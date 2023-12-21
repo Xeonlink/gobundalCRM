@@ -1,13 +1,12 @@
 "use client";
 
-import { cn, toHyphenPhone } from "@/extra/utils";
-import { ComponentProps, LegacyRef, forwardRef } from "react";
+import { cn } from "@/extra/utils";
+import { ComponentProps } from "react";
 import { AddressInput } from "./AddressInput";
-import { experimental_useFormStatus } from "react-dom";
-import { TelInput } from "./TelInput";
 import { NumberCommaInput } from "./NumberCommaInput";
+import { TelInput } from "./TelInput";
 
-type Props = Omit<ComponentProps<"input">, "value" | "ref">;
+type Props = Omit<ComponentProps<"input">, "ref">;
 
 export function SelfValidateInput(props: Props) {
   if (props.type === "address") {

@@ -10,21 +10,22 @@ import {
   faSignature,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { createProductCategory } from "./actions";
 import { useState } from "react";
+import { createProductCategory } from "./actions";
+import Link from "next/link";
 
 export default function Page() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
 
-  const onResetClick = () => {
+  const onReset = () => {
     setName("");
     setDescription("");
   };
 
   return (
     <main className="min-h-screen">
-      <form action={createProductCategory}>
+      <form action={createProductCategory} onReset={onReset}>
         {/* Toolbar */}
         <ul className="flex w-full flex-wrap items-center justify-center bg-base-200 py-2 max-sm:flex-col">
           <li>
@@ -44,10 +45,23 @@ export default function Page() {
 
           <li>
             {/* Clear */}
-            <label className="dsy-btn-ghost dsy-btn disabled:bg-transparent max-sm:w-full max-sm:rounded-none">
-              <FontAwesomeIcon icon={faNotdef} rotation={90} />{" "}
-              <input type="reset" value="초기화" onClick={onResetClick} />
-            </label>
+            <button
+              type="reset"
+              className="dsy-btn-ghost dsy-btn disabled:bg-transparent max-sm:w-full max-sm:rounded-none"
+            >
+              <FontAwesomeIcon icon={faNotdef} rotation={90} /> 초기화
+            </button>
+          </li>
+
+          <li>
+            {/* Save */}
+            <Link
+              href={{ pathname: "./preview", query: { name, description } }}
+              className="dst-btn-ghost dsy-btn disabled:bg-transparent max-sm:w-full max-sm:rounded-none"
+              scroll={false}
+            >
+              <FontAwesomeIcon icon={faEye} /> 미리보기
+            </Link>
           </li>
 
           <li>
@@ -81,8 +95,7 @@ export default function Page() {
             <div className="dsy-form-control">
               <label htmlFor="description" className="dsy-label">
                 <strong className="dsy-label-text">
-                  <FontAwesomeIcon icon={faQuoteLeft} /> 설명&nbsp;
-                  <span className="align-top text-xs text-orange-500">* 필수</span>
+                  <FontAwesomeIcon icon={faQuoteLeft} /> 설명
                 </strong>
               </label>
               <SelfValidateInput

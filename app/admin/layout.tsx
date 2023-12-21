@@ -20,8 +20,6 @@ import Image from "next/image";
 import Link from "next/link";
 
 export default function Layout(props: LayoutProps) {
-  const { children } = props;
-
   return (
     <body>
       {/* 네비게이션 바 */}
@@ -60,19 +58,19 @@ export default function Layout(props: LayoutProps) {
                 </NavLink>
                 <ul className="p-2">
                   <li>
-                    <NavLink href="teams">팀</NavLink>
+                    <NavLink href="/admin/teams">팀</NavLink>
                   </li>
                   <li>
-                    <NavLink href="orders">주문</NavLink>
+                    <NavLink href="/admin/orders">주문</NavLink>
                   </li>
                   <li>
-                    <NavLink href="products">상품</NavLink>
+                    <NavLink href="/admin/products">상품</NavLink>
                   </li>
                   <li>
-                    <NavLink href="product_categories">상품 카테고리</NavLink>
+                    <NavLink href="/admin/product_categories">상품 카테고리</NavLink>
                   </li>
                   <li>
-                    <NavLink href="customers">고객</NavLink>
+                    <NavLink href="/admin/customers">고객</NavLink>
                   </li>
                 </ul>
               </li>
@@ -122,32 +120,32 @@ export default function Layout(props: LayoutProps) {
                 </summary>
                 <ul className="w-full min-w-max p-2">
                   <li>
-                    <NavLink href="teams">
+                    <NavLink href="/admin/teams">
                       <FontAwesomeIcon icon={faPeopleGroup} /> 팀
                     </NavLink>
                   </li>
                   <li>
-                    <NavLink href="orders">
+                    <NavLink href="/admin/orders">
                       <FontAwesomeIcon icon={faReceipt} /> 주문
                     </NavLink>
                   </li>
                   <li>
-                    <NavLink href="products">
+                    <NavLink href="/admin/products">
                       <FontAwesomeIcon icon={faCartShopping} /> 상품
                     </NavLink>
                   </li>
                   <li>
-                    <NavLink href="product_categories">
+                    <NavLink href="/admin/product_categories">
                       <FontAwesomeIcon icon={faLayerGroup} /> 상품 카테고리
                     </NavLink>
                   </li>
                   <li>
-                    <NavLink href="customers">
+                    <NavLink href="/admin/customers">
                       <FontAwesomeIcon icon={faPerson} /> 고객
                     </NavLink>
                   </li>
                   <li>
-                    <NavLink href="assets">
+                    <NavLink href="/admin/images">
                       <FontAwesomeIcon icon={faImage} /> 자료
                     </NavLink>
                   </li>
@@ -165,7 +163,7 @@ export default function Layout(props: LayoutProps) {
         </div>
       </nav>
 
-      {children}
+      {props.children}
 
       <footer className="dsy-footer dsy-footer-center bg-base-200 p-4 text-base-content">
         <aside>

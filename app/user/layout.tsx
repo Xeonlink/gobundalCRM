@@ -1,4 +1,3 @@
-import { getProductCategories } from "@/api/product_categories";
 import { DialogOpener } from "@/components/DialogOpener";
 import { NavLink } from "@/components/NavLink";
 import ImgLogo from "@/public/icons/ci.png";
@@ -16,6 +15,7 @@ import Link from "next/link";
 import { PropsWithChildren } from "react";
 import { authOptions } from "../api/auth/[...nextauth]/route";
 import { CartLink } from "./CartLink";
+import { getProductCategories } from "./action";
 
 export default async function Layout(props: PropsWithChildren) {
   const productCategories = await getProductCategories();
@@ -64,7 +64,7 @@ export default async function Layout(props: PropsWithChildren) {
                   <li>
                     <NavLink href="/user/shop?category=all">전체상품</NavLink>
                   </li>
-                  {productCategories.data.map((item) => (
+                  {productCategories.map((item) => (
                     <li key={item.id}>
                       <NavLink href={`/user/shop?category=${item.name}`}>{item.name}</NavLink>
                     </li>
@@ -115,7 +115,7 @@ export default async function Layout(props: PropsWithChildren) {
                   <li>
                     <NavLink href="/user/shop?category=all">전체상품</NavLink>
                   </li>
-                  {productCategories.data.map((item) => (
+                  {productCategories.map((item) => (
                     <li key={item.id}>
                       <NavLink href={`/user/shop?category=${item.name}`}>{item.name}</NavLink>
                     </li>

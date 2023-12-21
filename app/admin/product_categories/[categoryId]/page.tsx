@@ -2,6 +2,7 @@
 
 import { SelfValidateInput } from "@/components/Input/SelfValidateInput";
 import { PageProps } from "@/extra/type";
+import { useSimpleServerAction } from "@/hooks/useSimpleServerAction";
 import {
   faEye,
   faEyeSlash,
@@ -11,13 +12,12 @@ import {
   faSignature,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { updateProductCategory } from "./actions";
-import { ProductCategoryContext } from "./ProductCategoryContext";
-import { useSimpleServerAction } from "@/hooks/useSimpleServerAction";
+import { useProductCategory } from "@/app/api/product_category/[categoryId]/acceessors";
 
 export default function Page(props: PageProps<{ categoryId: string }>) {
-  const id = +props.params.categoryId;
+  const id = props.params.categoryId;
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
 
@@ -26,8 +26,8 @@ export default function Page(props: PageProps<{ categoryId: string }>) {
     setDescription("");
   };
 
-  const productCategory = useContext(ProductCategoryContext)!;
-  const [isPending, runAction] = useSimpleServerAction(updateProductCategory.bind(null, id));
+  const { data: productCategory } = useProductCategory(id);
+  const [isPending, runAction] = useSimpleServerAction(updateProductCategory.bind(null, +id));
 
   return (
     <main className="min-h-screen">
@@ -44,7 +44,7 @@ export default function Page(props: PageProps<{ categoryId: string }>) {
                 name="enabled"
                 className="dsy-toggle-success dsy-toggle"
                 title="활성화"
-                defaultChecked={productCategory.enabled}
+                defaultChecked={productCategory!.enabled}
                 disabled={isPending}
               />
               활성화 <FontAwesomeIcon icon={faEye} />
@@ -87,7 +87,7 @@ export default function Page(props: PageProps<{ categoryId: string }>) {
                 title="카테고리 이름"
                 placeholder="명품제주감귤"
                 onChange={(e) => setName(e.target.value)}
-                defaultValue={productCategory.name}
+                defaultValue={productCategory!.name}
                 disabled={isPending}
               />
             </div>
@@ -105,7 +105,7 @@ export default function Page(props: PageProps<{ categoryId: string }>) {
                 name="description"
                 title="카테고리 설명"
                 onChange={(e) => setDescription(e.target.value)}
-                defaultValue={productCategory.description}
+                defaultValue={productCategory!.description}
                 disabled={isPending}
               />
             </div>

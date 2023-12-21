@@ -1,9 +1,9 @@
 import { DateChanger } from "@/components/DateChanger";
 import { DownloadExcel } from "@/components/DownloadExcel";
 import { ImgIcon } from "@/components/ImgIcon";
-import { Refresh } from "@/components/Refresh";
+import { Refresh } from "@/components/Navigate/Refresh";
+import { db } from "@/app/api/utils";
 import { PageProps } from "@/extra/type";
-import { db } from "@/prisma/db";
 import IcoExcel from "@/public/icons/excel.png";
 import {
   faArrowsRotate,
@@ -57,7 +57,7 @@ export default async function Page(props: PageProps<{}, SearchParams>) {
           </li>
 
           <li>
-            {/* Cratet New Team */}
+            {/* Create New Team */}
             <Link href="teams/create" className="dsy-btn">
               <FontAwesomeIcon icon={faPlus} /> 팀 만들기
             </Link>
@@ -66,7 +66,7 @@ export default async function Page(props: PageProps<{}, SearchParams>) {
           <li>
             {/* 엑셀로 다운로드하기 */}
             <DownloadExcel data={teams} filename="팀" className="dsy-btn">
-              <ImgIcon src={IcoExcel} alt="엑셀로 변환" fontSize={16} /> 엑셀로 변환
+              <ImgIcon src={IcoExcel} w={18} h={18} alt="엑셀로 변환" /> 엑셀로 변환
             </DownloadExcel>
           </li>
 

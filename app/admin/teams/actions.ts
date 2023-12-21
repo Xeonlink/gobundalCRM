@@ -1,6 +1,6 @@
 "use server";
 
-import { db } from "@/prisma/db";
+import { db } from "@/app/api/utils";
 import { revalidatePath } from "next/cache";
 
 export async function deleteTeam(id: number) {

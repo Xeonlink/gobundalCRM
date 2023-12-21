@@ -13,7 +13,7 @@ export default function Page() {
           <FontAwesomeIcon icon={faArrowsRotate} /> 새로고침
         </button>
 
-        {/* Cratet New Order */}
+        {/* Create New Order */}
         <button type="button" className="dsy-btn-sm dsy-btn">
           <FontAwesomeIcon icon={faPlus} /> 자료 추가하기
         </button>

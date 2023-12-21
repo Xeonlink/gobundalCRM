@@ -29,5 +29,5 @@ export const useServerAction = <P, R>(
     });
   };
 
-  return [runAction, isPending] as const;
+  return [isPending, runAction] as const;
 };

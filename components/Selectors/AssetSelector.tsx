@@ -93,7 +93,7 @@ export default function AssetSelector(props: Props) {
             <FontAwesomeIcon icon={faX} /> 닫기
           </button>
 
-          {/* Cratet New Order */}
+          {/* Create New Order */}
           <button type="button" className="dsy-btn-sm dsy-btn" onClick={openAssetCreateDialog}>
             <FontAwesomeIcon icon={faPlus} /> 에셋 추가하기
           </button>
