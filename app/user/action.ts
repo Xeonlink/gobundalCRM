@@ -1,5 +1,7 @@
 "use server";
 
+import { getServerSession } from "next-auth";
+import { authOptions } from "../api/auth/[...nextauth]/route";
 import { db } from "../api/utils";
 
 export async function getRecommandedProducts() {
@@ -36,7 +38,31 @@ export async function getRandomCategoryWithProducts() {
 }
 
 export async function getProductCategories() {
-  const categories = await db.productCategory.findMany();
+  const categories = await db.productCategory.findMany({
+    where: {
+      enabled: true,
+    },
+  });
 
   return categories;
+}
+
+export async function getCartProducts() {
+  const sesssion = await getServerSession(authOptions);
+  const userId = sesssion!.user.id;
+
+  const cartProducts = await db.cartProduct.findMany({
+    where: {
+      userId,
+    },
+    include: {
+      product: {
+        include: {
+          images: true,
+        },
+      },
+    },
+  });
+
+  return cartProducts;
 }

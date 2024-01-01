@@ -1,11 +1,6 @@
-import { Product } from "@/api/products";
+import { CartProduct, Product } from "@prisma/client";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-
-type CartProduct = {
-  item: Product;
-  quantity: number;
-};
 
 interface CartStore {
   candidate: Product | null;

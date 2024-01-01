@@ -28,7 +28,7 @@ export default async function Page() {
           <div className="max-w-md">
             <h1 className="mb-5 text-5xl font-bold">곱은달농장</h1>
             <p className="mb-5">곱은달농장은 농부의 마음으로 청정지역의 농산물을 선물합니다.</p>
-            <Link href="/user/shop?category=all" className="dsy-btn-primary dsy-btn">
+            <Link href="/user/shop" className="dsy-btn-primary dsy-btn">
               상품 둘러보기
             </Link>
           </div>
@@ -39,7 +39,7 @@ export default async function Page() {
         <h2 className="py-10 text-center text-3xl font-bold">추천 상품</h2>
         <ul className="dsy-carousel-center dsy-carousel justify-center space-x-4 p-4">
           {recommandedProducts.map((item) => (
-            <li className="dsy-carousel-item">
+            <li className="dsy-carousel-item" key={item.id}>
               <Link
                 href={`/user/shop/${item.id}`}
                 key={item.id}
@@ -89,7 +89,7 @@ export default async function Page() {
             </li>
           ))}
         </ul>
-        <Link href="/user/shop?category=all" className="dsy-btn m-auto">
+        <Link href="/user/shop" className="dsy-btn m-auto">
           전체보기
         </Link>
       </div>
@@ -130,7 +130,7 @@ export default async function Page() {
           <h2 className="py-10 text-center text-3xl font-bold">{randomCategory.name}</h2>
           <ul className="dsy-carousel-center dsy-carousel justify-center space-x-4 p-4">
             {randomCategory.products.map((item) => (
-              <li className="dsy-carousel-item">
+              <li className="dsy-carousel-item" key={item.id}>
                 <Link
                   href={`/user/shop/${item.id}`}
                   key={item.id}
@@ -180,7 +180,7 @@ export default async function Page() {
               </li>
             ))}
           </ul>
-          <Link href="/user/shop?category=명품제주감귤" className="dsy-btn m-auto">
+          <Link href={`/user/shop?category=${randomCategory.id}`} className="dsy-btn m-auto">
             전체보기
           </Link>
         </div>

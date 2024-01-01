@@ -21,20 +21,13 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import dayjs from "dayjs";
-import { getServerSession } from "next-auth";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { deleteOrder, getOrders } from "./actions";
 
 type SearchParams = { date: `${string}-${string}-${string}` };
 
 export default async function Page(props: PageProps<{}, SearchParams>) {
   const { date = dayjs().format("YYYY-MM-DD") } = props.searchParams;
-
-  const session = await getServerSession();
-  if (!session) {
-    redirect("/auth/signin?callbackUrl=/admin/orders");
-  }
 
   const orders = await getOrders(date);
 

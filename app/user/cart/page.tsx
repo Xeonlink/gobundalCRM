@@ -1,13 +1,9 @@
-"use client";
-
 import { ProductPrice } from "@/components/ProductCard/ProductPrice";
 import { ProductRegularPrice } from "@/components/ProductCard/ProductRegularPrice";
 import { ProductSalePercentage } from "@/components/ProductCard/ProductSalePercentage";
-import { useCart } from "@/hooks/useCart";
 import {
+  faArrowsRotate,
   faBoxes,
-  faCaretLeft,
-  faCaretRight,
   faCreditCard,
   faLandmark,
   faNotdef,
@@ -17,14 +13,18 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import {
+  deleteCartProduct,
+  getCartProducts,
+  resetCartProducts,
+  setCartProductQuantity,
+} from "./actions";
 
-export default function Page() {
-  const cart = useCart();
-  const router = useRouter();
+export default async function Page() {
+  const cartProducts = await getCartProducts();
 
-  const totalProductPrice = cart.products.reduce(
-    (acc, item) => acc + item.item.price * item.quantity,
+  const totalProductPrice = cartProducts.reduce(
+    (acc, item) => acc + item.product.price * item.quantity,
     0,
   );
   const totalTaxPrice = totalProductPrice / 10;
@@ -35,16 +35,16 @@ export default function Page() {
       <h2 className="py-6 text-center text-3xl font-bold">장바구니</h2>
 
       {/* 상품 진열장 */}
-      <ol className="container m-auto grid max-w-6xl grid-cols-[repeat(auto-fit,minmax(220px,max-content))] gap-2 p-2 pt-0 sm:gap-4 sm:p-4 sm:pt-0">
-        {cart.products.map(({ item, quantity }, idx) => (
+      <ol className="container m-auto grid max-w-6xl grid-cols-[repeat(auto-fit,minmax(220px,max-content))] justify-center gap-2 p-2 pt-0 sm:gap-4 sm:p-4 sm:pt-0">
+        {cartProducts.map(({ product, quantity }) => (
           <li
-            key={item.id}
+            key={product.id}
             className="dsy-card dsy-card-compact animate-scaleTo1 overflow-hidden rounded-lg bg-orange-100 bg-opacity-40 transition-all duration-300 max-sm:dsy-card-side"
           >
             <figure>
               <Image
-                src={item.images[0].src}
-                alt={item.name}
+                src={product.images[0].src}
+                alt={product.name}
                 width={450}
                 height={300}
                 className="aspect-[3/2] cursor-pointer object-cover transition-all duration-300 hover:scale-105 max-sm:h-full max-sm:w-40"
@@ -52,64 +52,55 @@ export default function Page() {
             </figure>
             <div className="dsy-card-body gap-0">
               <span className="text-orange-500 max-sm:hidden">무료배송</span>
-              <h2>{item.name}</h2>
+              <h2>{product.name}</h2>
               <p className="min-w-max">
                 <ProductSalePercentage
-                  isSale={item.isSale}
-                  price={item.price}
-                  salePrice={item.salePrice}
+                  isSale={product.isSale}
+                  price={product.price}
+                  salePrice={product.salePrice}
                 />
                 <ProductPrice //
-                  isSale={item.isSale}
-                  price={item.price}
-                  salePrice={item.salePrice}
+                  isSale={product.isSale}
+                  price={product.price}
+                  salePrice={product.salePrice}
                 />
                 <ProductRegularPrice //
-                  isSale={item.isSale}
-                  price={item.price}
+                  isSale={product.isSale}
+                  price={product.price}
                 />
               </p>
-              <div className="dsy-card-actions mt-2">
+              <form className="dsy-card-actions mt-2">
                 <div className="dsy-join">
-                  <button
-                    type="button"
-                    className="dsy-btn-sm dsy-join-item dsy-btn flex-1 border-none bg-orange-100"
-                    onClick={() => cart.setQuantity({ id: item.id, value: (prev) => prev - 1 })}
-                  >
-                    <FontAwesomeIcon icon={faCaretLeft} />
-                  </button>
                   <input
+                    id="quantity"
+                    name="quantity"
                     type="number"
-                    className="dsy-join-item w-10 text-center"
-                    value={quantity}
-                    onChange={(e) =>
-                      cart.setQuantity({ id: item.id, value: parseInt(e.target.value) })
-                    }
+                    min={1}
+                    className="dsy-join-item w-20 text-center"
+                    defaultValue={quantity}
                   />
                   <button
-                    type="button"
-                    className="dsy-btn-sm dsy-join-item dsy-btn flex-1 border-none bg-orange-200"
-                    onClick={() => cart.setQuantity({ id: item.id, value: (prev) => prev + 1 })}
+                    className="dsy-btn dsy-btn-sm dsy-join-item border-none bg-orange-200"
+                    formAction={setCartProductQuantity.bind(null, product.id)}
                   >
-                    <FontAwesomeIcon icon={faCaretRight} />
+                    <FontAwesomeIcon icon={faArrowsRotate} /> 변경
                   </button>
                 </div>
                 <div className="flex-1"></div>
                 <button
-                  type="button"
-                  className="dsy-btn-ghost dsy-btn-sm dsy-btn-circle dsy-btn"
-                  onClick={() => cart.removeProduct(idx)}
+                  className="dsy-btn-ghost dsy-btn dsy-btn-sm dsy-btn-circle"
+                  formAction={deleteCartProduct.bind(null, product.id)}
                 >
                   <FontAwesomeIcon icon={faTrash} className="text-orange-300" />
                 </button>
-              </div>
+              </form>
             </div>
           </li>
         ))}
       </ol>
 
       <div className="container m-auto text-right">
-        <div className="my-10 inline-block w-96 max-w-full overflow-hidden rounded-md p-4 text-start text-sm">
+        <form className="my-10 inline-block w-96 max-w-full overflow-hidden rounded-md p-4 text-start text-sm">
           <label htmlFor="total-price" className="flex p-2 px-6">
             <div>
               <FontAwesomeIcon icon={faBoxes} fontSize={14} /> 상품가격 :
@@ -129,24 +120,21 @@ export default function Page() {
             <div className="flex-1 text-right">{totalPrice.toLocaleString() + "원"}</div>
           </label>
           <div className="dsy-join w-full p-2">
-            <Link
-              href="/user/shop"
-              type="button"
-              className="dsy-join-item dsy-btn flex-1 border-none bg-orange-100"
-              onClick={() => cart.reset()}
+            <button
+              className="dsy-btn dsy-join-item flex-1 border-none bg-orange-100"
+              formAction={resetCartProducts}
             >
               <FontAwesomeIcon icon={faNotdef} rotation={90} /> 초기화
-            </Link>
-            <button
-              type="button"
-              className="dsy-join-item dsy-btn flex-1 border-none bg-orange-200"
-              onClick={() => router.push("payment")}
-              disabled={cart.products.length === 0}
+            </button>
+            <Link
+              href="payment"
+              className="dsy-btn dsy-join-item flex-1 border-none bg-orange-200 aria-disabled:dsy-btn-disabled"
+              aria-disabled={cartProducts.length === 0}
             >
               <FontAwesomeIcon icon={faCreditCard} /> 결제하기
-            </button>
+            </Link>
           </div>
-        </div>
+        </form>
       </div>
     </main>
   );

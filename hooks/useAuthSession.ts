@@ -10,7 +10,7 @@ export function useAuthSession(required: boolean = false, onUnauthenticated?: ()
     onUnauthenticated: () => {
       onUnauthenticated?.();
       if (required) {
-        redirect(`/auth/signin?callbackUrl=${pathname}?${searchParams.toString()}`);
+        redirect(`/auth/signin?callbackurl=${pathname}?${searchParams.toString()}`);
       }
     },
   });

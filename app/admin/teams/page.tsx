@@ -1,8 +1,8 @@
+import { db } from "@/app/api/utils";
 import { DateChanger } from "@/components/DateChanger";
 import { DownloadExcel } from "@/components/DownloadExcel";
 import { ImgIcon } from "@/components/ImgIcon";
 import { Refresh } from "@/components/Navigate/Refresh";
-import { db } from "@/app/api/utils";
 import { PageProps } from "@/extra/type";
 import IcoExcel from "@/public/icons/excel.png";
 import {
@@ -23,20 +23,13 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import dayjs from "dayjs";
-import { getServerSession } from "next-auth";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { deleteTeam } from "./actions";
 
 type SearchParams = { date: `${string}-${string}-${string}` };
 
 export default async function Page(props: PageProps<{}, SearchParams>) {
   const { date = dayjs().format("YYYY-MM-DD") } = props.searchParams;
-
-  const session = await getServerSession();
-  if (!session) {
-    redirect("/auth/signin?callbackUrl=/admin/teams");
-  }
 
   const teams = await db.team.findMany({ where: { date } });
 

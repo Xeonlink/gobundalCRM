@@ -1,38 +1,31 @@
-"use client";
-
+import { ProductPrice } from "@/components/ProductCard/ProductPrice";
+import { ProductRegularPrice } from "@/components/ProductCard/ProductRegularPrice";
+import { ProductSalePercentage } from "@/components/ProductCard/ProductSalePercentage";
 import { PageProps } from "@/extra/type";
-import { useCart } from "@/hooks/useCart";
 import { faCartPlus, faCreditCard } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { cache, use } from "react";
 import { getProductCategories } from "../action";
-import { getProductsByCategory } from "./actions";
+import { createCartProduct, getProductsByCategory } from "./actions";
 
-const getProductCategoriesCached = cache(getProductCategories);
-const getProductsByCategoryCached = cache(getProductsByCategory);
-
-export default function Page(props: PageProps<{}, { category: string }>) {
+export default async function Page(props: PageProps<{}, { category: string }>) {
   const categoryId = props.searchParams.category;
-  const navigate = useRouter();
-  const productCategories = use(getProductCategoriesCached());
-  const products = use(getProductsByCategoryCached(+categoryId));
-  const cart = useCart();
+  const productCategories = await getProductCategories();
+  const products = await getProductsByCategory(+categoryId);
 
   return (
     <main className="min-h-screen">
       {/* 카테고리 */}
       <ol className="container m-auto flex flex-wrap items-center justify-center gap-2 bg-white p-2 text-center text-sm">
         <li>
-          <Link href="shop?category=all" className="dsy-btn">
+          <Link href="shop" className="dsy-btn">
             전체상품
           </Link>
         </li>
         {productCategories.map((item) => (
           <li key={item.id}>
-            <Link replace href={`shop?category=${item.name}`} className="dsy-btn">
+            <Link replace href={`shop?category=${item.id}`} className="dsy-btn">
               {item.name}
             </Link>
           </li>
@@ -40,12 +33,11 @@ export default function Page(props: PageProps<{}, { category: string }>) {
       </ol>
 
       {/* 상품 진열장 */}
-      <ol className="container m-auto mb-4 grid max-w-6xl grid-cols-[repeat(auto-fit,minmax(220px,max-content))] gap-2 px-2 sm:gap-4 sm:px-4">
+      <ol className="container m-auto mb-4 grid max-w-6xl grid-cols-[repeat(auto-fit,minmax(220px,max-content))] justify-center gap-2 px-2 sm:gap-4 sm:px-4">
         {products.map((item) => (
           <li
             key={item.id}
             className="dsy-card dsy-card-compact animate-scaleTo1 overflow-hidden rounded-lg bg-orange-100 bg-opacity-40 transition-all duration-300 max-sm:dsy-card-side"
-            onDoubleClick={() => navigate.push(`./shop/${item.id}`)}
           >
             <Link href={`shop/${item.id}`} className="contents">
               <figure>
@@ -62,46 +54,36 @@ export default function Page(props: PageProps<{}, { category: string }>) {
                 <span className="text-orange-500">무료배송</span>
                 <h2>{item.name}</h2>
                 <p className="min-w-max">
-                  <span className="text-lg text-[#e63740]">
-                    {item.isSale
-                      ? Math.round((1 - item.salePrice / item.price) * 100) + "%"
-                      : item.price === 0
-                        ? "100%"
-                        : ""}
-                  </span>{" "}
-                  <span className="text-xl font-bold">
-                    {item.isSale
-                      ? item.salePrice.toLocaleString()
-                      : item.price === 0
-                        ? "Free"
-                        : item.price.toLocaleString()}
-                  </span>
-                  {item.price === 0 ? " " : "원 "}
-                  <span className="text-[#999999] line-through max-sm:hidden">
-                    {item.isSale && item.price.toLocaleString() + "원"}
-                  </span>
+                  <ProductSalePercentage
+                    isSale={item.isSale}
+                    price={item.price}
+                    salePrice={item.salePrice}
+                  />
+                  <ProductPrice
+                    isSale={item.isSale}
+                    price={item.price}
+                    salePrice={item.salePrice}
+                  />
+                  <ProductRegularPrice isSale={item.isSale} price={item.price} />
                 </p>
               </div>
             </Link>
             <div className="dsy-join w-full rounded-none max-sm:hidden">
-              <button
-                type="button"
-                className="dsy-join-item dsy-btn flex-1 border-none bg-orange-100"
-                onClick={() => cart.setCandidate(item)}
+              <Link
+                href={`/user/shop/${item.id}/tocart`}
+                className="dsy-btn dsy-join-item flex-1 border-none bg-orange-100"
+                scroll={false}
               >
                 <FontAwesomeIcon icon={faCartPlus} /> 장바구니
-              </button>
-              <Link
-                href="/user/payment"
-                type="button"
-                className="dsy-join-item dsy-btn flex-1 border-none bg-orange-200"
-                onClick={() => {
-                  cart.reset();
-                  cart.addProduct(item);
-                }}
-              >
-                <FontAwesomeIcon icon={faCreditCard} /> 구매
               </Link>
+              <form className="contents">
+                <button
+                  formAction={createCartProduct.bind(null, item.id)}
+                  className="dsy-btn dsy-join-item flex-1 border-none bg-orange-200"
+                >
+                  <FontAwesomeIcon icon={faCreditCard} /> 구매
+                </button>
+              </form>
             </div>
           </li>
         ))}

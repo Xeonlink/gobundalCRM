@@ -16,17 +16,10 @@ import {
   faTrashCan,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { getServerSession } from "next-auth";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { deleteProductCategory, getProductCategories } from "./actions";
 
 export default async function Page() {
-  const session = await getServerSession();
-  if (!session) {
-    redirect("/auth/signin?callbackUrl=/admin/product_categories");
-  }
-
   const productCategories = await getProductCategories();
 
   return (

@@ -20,7 +20,7 @@ export default async function Page() {
   const session = useSession({
     required: true,
     onUnauthenticated() {
-      redirect("/auth/signin?callbackUrl=/user/profile");
+      redirect("/auth/signin?callbackurl=/user/profile");
     },
   });
   const router = useRouter();

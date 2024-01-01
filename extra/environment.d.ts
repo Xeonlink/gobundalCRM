@@ -1,5 +1,8 @@
 namespace NodeJS {
   interface ProcessEnv {
+    // NextAuth
+    NEXTAUTH_URL: string;
+    NEXTAUTH_SECRET: string;
     // Cognito
     COGNITO_USERPOOL_ID: string;
     COGNITO_CLIENT_ID: string;

@@ -5,10 +5,13 @@ import { faCaretDown, faCaretUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import { useState } from "react";
+import {} from "next/navigation";
 
 const maxRecent = 3;
 
 export function FloatingMenu() {
+  const history = u;
+
   const { data: products } = useProducts();
   const [[start, end], setRecent] = useState([
     0,
@@ -48,7 +51,7 @@ export function FloatingMenu() {
       <div className="dsy-join w-full">
         <button
           type="button"
-          className="dsy-btn-sm dsy-join-item dsy-btn flex-1 rounded-t-none"
+          className="dsy-btn dsy-btn-sm dsy-join-item flex-1 rounded-t-none"
           disabled={isPrevRecentDiabled}
           onClick={prevRecent}
         >
@@ -56,7 +59,7 @@ export function FloatingMenu() {
         </button>
         <button
           type="button"
-          className="dsy-btn-sm dsy-join-item dsy-btn flex-1 rounded-t-none"
+          className="dsy-btn dsy-btn-sm dsy-join-item flex-1 rounded-t-none"
           disabled={isNextRecentDiabled}
           onClick={nextRecent}
         >

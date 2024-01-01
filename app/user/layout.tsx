@@ -5,6 +5,7 @@ import {
   faArrowRightFromBracket,
   faArrowRightToBracket,
   faBars,
+  faCartShopping,
   faGear,
   faUserPlus,
 } from "@fortawesome/free-solid-svg-icons";
@@ -13,9 +14,8 @@ import { getServerSession } from "next-auth";
 import Image from "next/image";
 import Link from "next/link";
 import { PropsWithChildren } from "react";
-import { authOptions } from "../api/auth/[...nextauth]/route";
-import { CartLink } from "./CartLink";
 import { getProductCategories } from "./action";
+import { authOptions } from "../api/auth/[...nextauth]/route";
 
 export default async function Layout(props: PropsWithChildren) {
   const productCategories = await getProductCategories();
@@ -57,12 +57,12 @@ export default async function Layout(props: PropsWithChildren) {
                 </ul>
               </li>
               <li>
-                <NavLink href="/user/shop?category=all" check="/user/shop">
+                <NavLink href="/user/shop" check="/user/shop">
                   상품쇼핑
                 </NavLink>
                 <ul className="p-2">
                   <li>
-                    <NavLink href="/user/shop?category=all">전체상품</NavLink>
+                    <NavLink href="/user/shop">전체상품</NavLink>
                   </li>
                   {productCategories.map((item) => (
                     <li key={item.id}>
@@ -113,7 +113,7 @@ export default async function Layout(props: PropsWithChildren) {
                 <summary className="justify-center hover:text-orange-400">상품쇼핑</summary>
                 <ul className="w-full min-w-max p-2">
                   <li>
-                    <NavLink href="/user/shop?category=all">전체상품</NavLink>
+                    <NavLink href="/user/shop">전체상품</NavLink>
                   </li>
                   {productCategories.map((item) => (
                     <li key={item.id}>
@@ -147,7 +147,10 @@ export default async function Layout(props: PropsWithChildren) {
             </>
           ) : (
             <>
-              <CartLink />
+              <Link href="/user/cart" className="dsy-btn-ghost dsy-btn">
+                <FontAwesomeIcon icon={faCartShopping} />
+                <span className="max-[420px]:hidden">&nbsp;장바구니</span>
+              </Link>
 
               <div className="dsy-dropdown-end dsy-dropdown">
                 <button

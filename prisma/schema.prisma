@@ -8,6 +8,30 @@ datasource db {
   relationMode = "prisma"
 }
 
+model User {
+  id        String        @id
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  role      String        @default("USER")
+  orders    Order[]
+  cart      CartProduct[]
+  tier      Int           @default(0)
+}
+
+model CartProduct {
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  quantity  Int
+  userId    String
+  productId Int
+  product   Product  @relation(fields: [productId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@id([userId, productId])
+  @@index([userId])
+  @@index([productId])
+}
+
 model Team {
   id          Int      @id @default(autoincrement())
   createdAt   DateTime @default(now())
@@ -35,6 +59,10 @@ model Order {
   receiverAddressDetail String
   memo                  String
   products              OrderProduct[]
+  User                  User           @relation(fields: [userId], references: [id])
+  userId                String
+
+  @@index([userId])
 }
 
 model OrderProduct {
@@ -68,6 +96,7 @@ model Product {
   category         ProductCategory @relation(fields: [categoryId], references: [id])
   images           Image[]
   OrderProduct     OrderProduct[]
+  CartProduct      CartProduct[]
 
   @@index([categoryId])
 }

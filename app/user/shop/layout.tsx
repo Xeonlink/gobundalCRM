@@ -1,8 +1,7 @@
 import { LayoutProps } from "@/extra/type";
 import ImgBanner from "@/public/images/banner1.jpg";
-import { ProductCountToCart } from "./ProductCountToCart";
 
-export default function Layout(props: LayoutProps) {
+export default function Layout(props: LayoutProps<{}, { modal: React.ReactNode }>) {
   return (
     <>
       <header
@@ -21,10 +20,9 @@ export default function Layout(props: LayoutProps) {
       </header>
 
       {props.children}
+      {props.modal}
 
       {/* <FloatingMenu /> */}
-
-      <ProductCountToCart />
     </>
   );
 }

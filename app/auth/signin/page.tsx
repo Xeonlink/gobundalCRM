@@ -1,35 +1,29 @@
-"use client";
-
 import { PageProps } from "@/extra/type";
 import IconNaverLogin from "@/public/icons/naver_login.png";
 import IconKakaoLogin from "@/public/icons/kakao_login.png";
 import IconGoogleLogin from "@/public/icons/google_login.png";
-import { signIn } from "next-auth/react";
 import Image from "next/image";
+import { SignInBtn } from "./SignInBtn";
 
-export default function Page(props: PageProps<any, { callbackUrl: string }>) {
-  const { callbackUrl = "/user" } = props.searchParams;
-
-  const onSignInClick = (provider: "naver" | "kakao" | "google") => () => {
-    signIn(provider, { callbackUrl });
-  };
+export default function Page(props: PageProps<any, { callbackurl: string }>) {
+  const { callbackurl = "/user" } = props.searchParams;
 
   return (
-    <ul className="m-auto max-w-xs space-y-2 rounded-lg bg-white bg-opacity-60 p-6 backdrop-blur-md">
-      <li className="text-center">
-        <button onClick={onSignInClick("naver")}>
-          <Image src={IconNaverLogin} alt="네이버로그인" placeholder="blur" className="m-auto" />
-        </button>
+    <ul className="m-auto max-w-xs space-y-2 rounded-lg bg-white bg-opacity-60 p-6">
+      <li>
+        <SignInBtn provider="naver" callbackurl={callbackurl}>
+          <Image src={IconNaverLogin} alt="네이버로그인" placeholder="blur" priority />
+        </SignInBtn>
       </li>
-      <li className="text-center">
-        <button onClick={onSignInClick("kakao")}>
-          <Image src={IconKakaoLogin} alt="카카오로그인" placeholder="blur" className="m-auto" />
-        </button>
+      <li>
+        <SignInBtn provider="kakao" callbackurl={callbackurl}>
+          <Image src={IconKakaoLogin} alt="카카오로그인" placeholder="blur" priority />
+        </SignInBtn>
       </li>
-      <li className="text-center">
-        <button onClick={onSignInClick("google")} className="rounded-md border">
-          <Image src={IconGoogleLogin} alt="구글로그인" placeholder="blur" className="m-auto" />
-        </button>
+      <li>
+        <SignInBtn provider="google" callbackurl={callbackurl}>
+          <Image src={IconGoogleLogin} alt="구글로그인" placeholder="blur" priority />
+        </SignInBtn>
       </li>
     </ul>
   );

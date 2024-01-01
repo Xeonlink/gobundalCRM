@@ -7,7 +7,7 @@ export function Back(props: ComponentProps<"button">) {
   const router = useRouter();
 
   return (
-    <button {...props} type="button" onClick={router.back}>
+    <button type="button" {...props} onClick={router.back}>
       {props.children}
     </button>
   );

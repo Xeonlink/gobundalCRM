@@ -10,9 +10,9 @@ import {
   faSignature,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Link from "next/link";
 import { useState } from "react";
 import { createProductCategory } from "./actions";
-import Link from "next/link";
 
 export default function Page() {
   const [name, setName] = useState("");

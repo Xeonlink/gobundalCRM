@@ -16,10 +16,24 @@ import {
   faTv,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { getServerSession } from "next-auth";
 import Image from "next/image";
 import Link from "next/link";
+import { headers } from "next/headers";
+import { RedirectType, redirect } from "next/navigation";
+import { authOptions } from "../api/auth/[...nextauth]/route";
 
-export default function Layout(props: LayoutProps) {
+export default async function Layout(props: LayoutProps) {
+  const heads = headers();
+  const pathname = heads.get("x-pathname")!;
+  const session = await getServerSession(authOptions);
+  if (!session) {
+    redirect("/auth/signin?callbackurl=" + pathname, RedirectType.push);
+  }
+  if (session.user.role !== "ADMIN") {
+    redirect("/user", RedirectType.replace);
+  }
+
   return (
     <body>
       {/* 네비게이션 바 */}

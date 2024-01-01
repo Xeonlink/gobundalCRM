@@ -1,18 +1,11 @@
-import { Refresh } from "@/components/Navigate/Refresh";
 import { db } from "@/app/api/utils";
+import { Refresh } from "@/components/Navigate/Refresh";
 import { faArrowsRotate, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { getServerSession } from "next-auth";
 import Image from "next/image";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 
 export default async function Page() {
-  const session = await getServerSession();
-  if (!session) {
-    redirect("/auth/signin?callbackUrl=/admin/images");
-  }
-
   const images = await db.image.findMany();
 
   return (
