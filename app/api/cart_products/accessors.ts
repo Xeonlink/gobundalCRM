@@ -1,15 +1,25 @@
-import { CartProduct, Product } from "@prisma/client";
+import { GetResponse } from "@/api/utils";
+import { CartProduct, Image, Product, ProductCategory } from "@prisma/client";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 export async function getCartProducts() {
-  const res = await fetch("http://localhost:3000/api/cart_products", {
-    next: {
-      tags: ["cart_products"],
-    },
+  const res = await axios.get<
+    GetResponse<
+      CartProduct & {
+        product: Product & {
+          images: Image[];
+          category: ProductCategory;
+        };
+      }
+    >
+  >("/api/cart_products");
+  return res.data.data;
+}
+export function useCartProducts() {
+  const query = useQuery(["cart_products"], () => getCartProducts(), {
+    suspense: true,
   });
 
-  const { data } = await res.json();
-
-  return data as (CartProduct & {
-    product: Product;
-  })[];
+  return query.data!;
 }

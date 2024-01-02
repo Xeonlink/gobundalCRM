@@ -8,3 +8,7 @@ export async function deleteTeam(id: number) {
 
   revalidatePath("/admin/teams", "page");
 }
+
+export async function getTeams(date: string) {
+  return await db.team.findMany({ where: { date } });
+}

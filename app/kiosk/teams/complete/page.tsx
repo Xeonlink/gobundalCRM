@@ -1,24 +1,10 @@
-"use client";
-
+import { BackCountDown } from "@/app/kiosk/teams/complete/BackCountDown";
+import { PageProps } from "@/extra/type";
 import { faPeopleRoof } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useRouter } from "next/navigation";
-import { CSSProperties, useEffect, useState } from "react";
 
-export default function Page() {
-  const [countDown, setCountDown] = useState(10);
-  const router = useRouter();
-
-  useEffect(() => {
-    if (countDown < 0) {
-      router.back();
-      return;
-    }
-
-    setTimeout(() => {
-      setCountDown((prev) => prev - 1);
-    }, 1000);
-  }, [countDown]);
+export default function Page(props: PageProps<{}, { leaderName: string }>) {
+  const leaderName = props.searchParams.leaderName;
 
   return (
     <form>
@@ -28,6 +14,12 @@ export default function Page() {
         </legend>
 
         <p className="flex-1 text-center">
+          {!!leaderName ? (
+            <>
+              {leaderName} 님
+              <br />
+            </>
+          ) : null}
           등록이 <strong>완료</strong>되었습니다.
           <br />
           <br />
@@ -40,9 +32,7 @@ export default function Page() {
         <div className="text-center">
           잠시후 이전 화면으로 돌아갑니다.
           <br />
-          <span className="dsy-countdown text-xl">
-            <span style={{ "--value": countDown } as CSSProperties}></span>
-          </span>
+          <BackCountDown className="text-xl" />
         </div>
       </fieldset>
     </form>

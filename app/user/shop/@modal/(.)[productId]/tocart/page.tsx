@@ -1,5 +1,6 @@
 "use client";
 
+import { useProduct } from "@/app/api/products/[productId]/accessors";
 import { Input } from "@/components/Input";
 import { ProductPrice } from "@/components/ProductCard/ProductPrice";
 import { ProductRegularPrice } from "@/components/ProductCard/ProductRegularPrice";
@@ -8,15 +9,12 @@ import { PageProps } from "@/extra/type";
 import { faCartPlus, faMinus, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/navigation";
-import { cache, use, useState } from "react";
+import { useState } from "react";
 import { createCartProductByForm } from "../../../actions";
-import { getProduct } from "./actions";
-
-const getProductCached = cache(getProduct);
 
 export default function Page(props: PageProps<{ productId: string }>) {
   const id = props.params.productId;
-  const product = use(getProductCached(+id));
+  const { data: product } = useProduct(id);
 
   const router = useRouter();
   const [quantity, setQuantity] = useState(1);
@@ -27,7 +25,7 @@ export default function Page(props: PageProps<{ productId: string }>) {
     setQuantity((prev) => (prev === 1 ? prev : prev - 1));
   };
 
-  const { isSale, salePrice, price, name } = product;
+  const { isSale, salePrice, price, name } = product!;
 
   return (
     <dialog
@@ -42,9 +40,20 @@ export default function Page(props: PageProps<{ productId: string }>) {
 
         <h2 className="text-lg">{name}</h2>
         <p className="mb-6 sm:mb-4">
-          <ProductSalePercentage isSale={isSale} salePrice={salePrice} price={price} />
-          <ProductPrice isSale={isSale} salePrice={salePrice} price={price} />
-          <ProductRegularPrice isSale={isSale} price={price} />
+          <ProductSalePercentage
+            isSale={isSale}
+            salePrice={salePrice * quantity}
+            price={price * quantity}
+          />
+          <ProductPrice //
+            isSale={isSale}
+            salePrice={salePrice * quantity}
+            price={price * quantity}
+          />
+          <ProductRegularPrice //
+            isSale={isSale}
+            price={price * quantity}
+          />
         </p>
 
         <div className="dsy-join w-full">
@@ -59,7 +68,7 @@ export default function Page(props: PageProps<{ productId: string }>) {
             <Input
               id="quantity"
               name="quantity"
-              className="inline-block h-full w-10 rounded-none border-none bg-transparent text-center"
+              className="inline-block h-full w-12 rounded-none border-none bg-transparent text-center"
               value={quantity}
               readOnly
             />
@@ -73,7 +82,7 @@ export default function Page(props: PageProps<{ productId: string }>) {
           </div>
 
           <button
-            formAction={createCartProductByForm.bind(null, product.id)}
+            formAction={createCartProductByForm.bind(null, product!.id)}
             className="dsy-btn dsy-join-item flex-1 border-none bg-orange-200"
             onClick={router.back}
           >

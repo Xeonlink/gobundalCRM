@@ -4,10 +4,16 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { db } from "@/app/api/utils";
 import { getServerSession } from "next-auth";
 import { revalidatePath } from "next/cache";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 export async function getCartProducts() {
   const session = await getServerSession(authOptions);
+  if (!session) {
+    const pathname = headers().get("x-pathname");
+    redirect("/user/signin" + (!pathname ? "" : `?callbackurl=${encodeURIComponent(pathname)}`));
+  }
+
   const userId = session!.user.id;
 
   return await db.cartProduct.findMany({

@@ -14,7 +14,12 @@ export async function GET(req: NextRequest) {
       userId,
     },
     include: {
-      product: true,
+      product: {
+        include: {
+          category: true,
+          images: true,
+        },
+      },
     },
   });
 

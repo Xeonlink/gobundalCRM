@@ -13,6 +13,7 @@ export default function Layout(props: LayoutProps) {
           height={250}
           placeholder="blur"
           className="m-auto my-8"
+          priority
         />
       </div>
 

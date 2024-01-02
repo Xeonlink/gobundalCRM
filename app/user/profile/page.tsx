@@ -1,9 +1,7 @@
 "use client";
 
-import { useUpdateUserAttributes, useUserAttributes } from "@/api/auth";
 import { Input } from "@/components/Input";
 import { toHyphenPhone } from "@/extra/utils";
-import { useAuth } from "@/hooks/useAuth";
 import { usePostCodePopup } from "@/hooks/usePostCodePopup";
 import { useTypeSafeReducer } from "@/hooks/useTypeSafeReducer";
 import ImgNoImg from "@/public/images/no_image.png";

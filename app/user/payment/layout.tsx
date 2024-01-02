@@ -1,5 +1,6 @@
 import { LayoutProps } from "@/extra/type";
 import ImgBanner from "@/public/images/banner1.jpg";
+import Script from "next/script";
 
 export default function Layout(props: LayoutProps) {
   return (
@@ -16,6 +17,7 @@ export default function Layout(props: LayoutProps) {
         </div>
       </header>
       {props.children}
+      {/* <Script src="https://cdn.iamport.kr/v1/iamport.js"></Script> */}
     </>
   );
 }

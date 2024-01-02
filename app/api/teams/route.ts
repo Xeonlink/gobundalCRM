@@ -1,5 +1,26 @@
 import { NextRequest } from "next/server";
+import { z } from "zod";
 import { db } from "../utils";
+
+export const teamSchema = z.object({
+  date: z.string({
+    required_error: "date is required",
+  }), // YYYY-MM-DD
+  leaderName: z.string({
+    required_error: "leaderName is required",
+  }),
+  leaderPhone: z.string({
+    required_error: "leaderPhone is required",
+  }),
+  population: z.number({
+    required_error: "population is required",
+  }),
+  coupon: z.string({
+    required_error: "coupon is required",
+  }),
+  isLeave: z.boolean().default(false),
+  isApproved: z.boolean().default(false),
+});
 
 export async function GET(req: NextRequest) {
   const date = req.nextUrl.searchParams.get("date"); // YYYY-MM-DD
@@ -7,23 +28,22 @@ export async function GET(req: NextRequest) {
     return new Response("date is required", { status: 400 });
   }
 
-  const teams = await db.team.findMany({ where: { date } });
+  const teams = await db.team.findMany({
+    where: { date },
+  });
+
   return Response.json({ data: teams });
 }
 
 export async function POST(req: NextRequest) {
-  const formData = await req.formData();
+  const body = await req.json();
+  const teamValidation = teamSchema.safeParse(body);
+  if (!teamValidation.success) {
+    return new Response(teamValidation.error.message, { status: 400 });
+  }
 
   const _ = await db.team.create({
-    data: {
-      date: String(formData.get("date")),
-      leaderName: String(formData.get("leaderName")),
-      leaderPhone: String(formData.get("leaderPhone")),
-      population: Number(formData.get("population")),
-      coupon: String(formData.get("coupon")),
-      isLeave: Boolean(formData.get("isLeave")),
-      isApproved: Boolean(formData.get("isApproved")),
-    },
+    data: teamValidation.data,
   });
 
   return Response.json({ data: "OK" });

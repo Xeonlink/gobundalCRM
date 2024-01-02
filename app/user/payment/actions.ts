@@ -17,7 +17,7 @@ export async function createOrder(formData: FormData) {
   const productNames = formData.getAll("productName") as string[];
   const productPrices = formData.getAll("productPrice") as string[];
 
-  const _ = await db.order.create({
+  const { id } = await db.order.create({
     data: {
       userId,
       date: String(formData.get("date")),
@@ -43,5 +43,6 @@ export async function createOrder(formData: FormData) {
   });
 
   revalidatePath("/admin/orders", "page");
-  redirect("/admin/orders", RedirectType.replace);
+
+  return id;
 }

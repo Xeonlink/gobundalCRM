@@ -1,7 +1,14 @@
 "use client";
 
+import { useCartProducts } from "@/app/api/cart_products/accessors";
 import { SelfValidateInput } from "@/components/Input/SelfValidateInput";
-import { Refresh } from "@/components/Navigate/Refresh";
+import { ProductPrice } from "@/components/ProductCard/ProductPrice";
+import { ProductSalePercentage } from "@/components/ProductCard/ProductSalePercentage";
+import { useServerAction } from "@/hooks/useServerActions";
+import { useToggle } from "@/hooks/useToggle";
+import ImgKakaoPay from "@/public/icons/kakao_pay.png";
+import ImgNaverPay from "@/public/icons/naver_pay.png";
+import ImgTossPay from "@/public/icons/toss_pay.png";
 import {
   faBox,
   faBoxes,
@@ -10,7 +17,6 @@ import {
   faLandmark,
   faMobileScreen,
   faMobileScreenButton,
-  faNotdef,
   faNoteSticky,
   faPaperPlane,
   faPlusMinus,
@@ -19,32 +25,103 @@ import {
   faWon,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { PgProvider } from "@portone/browser-sdk/dist/v2/entity";
+import * as PortOne from "@portone/browser-sdk/v2";
+import axios from "axios";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
-import { getCartProducts } from "../action";
+import { redirect } from "next/navigation";
 import { createOrder } from "./actions";
-import { cache, use } from "react";
-import { useToggle } from "@/hooks/useToggle";
-
-const getCartProductsCached = cache(getCartProducts);
 
 export default function Page() {
-  const cartProducts = use(getCartProductsCached());
+  const session = useSession({
+    required: true,
+    onUnauthenticated() {
+      redirect("/user/signIn?callbackurl=/user");
+    },
+  });
+  const cartProducts = useCartProducts();
 
-  const totalProductPrice = cartProducts.reduce((acc, item) => {
-    return (
-      acc + (item.product.isSale ? item.product.salePrice : item.product.price) * item.quantity
-    );
-  }, 0);
+  const totalProductPrice = cartProducts
+    .map(({ quantity, product: item }) => (item.isSale ? item.salePrice : item.price) * quantity)
+    .reduce((pre, cur) => pre + cur, 0);
   const totalTaxPrice = Math.round(totalProductPrice * 0.1);
   const totalPrice = totalProductPrice + totalTaxPrice;
 
   const sameAsSender = useToggle(false);
+  const [isPending, runAction] = useServerAction(createOrder);
+
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const orderId = await runAction(formData);
+    const pgProvider = String(formData.get("pg")) as PgProvider;
+
+    if (pgProvider === "PG_PROVIDER_KAKAOPAY") {
+      const response = await PortOne.requestPayment({
+        storeId: process.env.NEXT_PUBLIC_STORE_ID,
+        pgProvider,
+        locale: "KO_KR",
+        currency: "CURRENCY_KRW",
+        orderName: `${cartProducts[0].product.name} ${cartProducts[0].quantity}개 외 ${cartProducts
+          .slice(1)
+          .reduce((pre, cur) => pre + cur.quantity, 0)} 개`,
+        paymentId: `payment-${orderId}`,
+        payMethod: "EASY_PAY",
+        totalAmount: totalPrice,
+        isTestChannel: true,
+      });
+      if (!response) {
+        alert("결제에 실패하였습니다. 잠시후 다시 시도해주세요. 에러코드: 87234");
+        return;
+      }
+
+      const { paymentId } = response;
+      const paymentValidationResponse = await axios.post<{ data: string }>("/api/payment/check", {
+        paymentId,
+      });
+      if (paymentValidationResponse.data.data !== "OK") {
+        alert("결제에 실패하였습니다. 잠시후 다시 시도해주세요. 에러코드: 7341");
+        return;
+      }
+    }
+    if (pgProvider === "PG_PROVIDER_NAVERPAY") {
+      const response = await PortOne.requestPayment({
+        storeId: process.env.NEXT_PUBLIC_STORE_ID,
+        pgProvider,
+        locale: "KO_KR",
+        currency: "CURRENCY_KRW",
+        orderName: "테스트 주문",
+        paymentId: `payment-${orderId}`,
+        payMethod: "EASY_PAY",
+        totalAmount: totalPrice,
+        isTestChannel: true,
+      });
+
+      console.log(response);
+    }
+    if (pgProvider === "PG_PROVIDER_TOSSPAY") {
+      const response = await PortOne.requestPayment({
+        storeId: process.env.NEXT_PUBLIC_STORE_ID,
+        pgProvider,
+        locale: "KO_KR",
+        currency: "CURRENCY_KRW",
+        orderName: "테스트 주문",
+        paymentId: `payment-${orderId}`,
+        payMethod: "EASY_PAY",
+        totalAmount: totalPrice,
+        isTestChannel: true,
+      });
+
+      console.log(response);
+    }
+  };
 
   return (
     <main className="bg-base-100">
       <h2 className="py-6 text-center text-3xl font-bold">주문정보</h2>
 
-      <form action={createOrder} className="contents">
+      <form onSubmit={onSubmit} className="contents">
         <section className="m-auto flex flex-wrap items-start justify-center gap-6 px-2">
           <fieldset className="w-[350px] rounded-xl border bg-white px-8 py-6">
             <legend className="font-bold">
@@ -157,7 +234,7 @@ export default function Page() {
               </label>
               <SelfValidateInput
                 id="receiver-address"
-                type="text"
+                type="address"
                 name="receiverAddress"
                 placeholder="남원월산로74번길 42"
                 required
@@ -182,7 +259,7 @@ export default function Page() {
           </fieldset>
         </section>
 
-        <section className="container m-auto mt-6 max-w-4xl px-2">
+        <section className="container m-auto mt-16 max-w-4xl px-2">
           <h3 className="mt-4 flex items-center p-2 sm:hidden">
             <span className="flex-1 text-lg font-bold">배송상품</span>
           </h3>
@@ -224,22 +301,19 @@ export default function Page() {
                   </td>
                   <td>
                     <div className="flex min-w-max gap-2 max-md:flex-col max-md:gap-1">
-                      <span className="min-w-fit text-[#e63740]">
-                        {product.isSale
-                          ? Math.round((1 - product.salePrice / product.price) * 100) + "%"
-                          : product.price === 0
-                            ? "100%"
-                            : ""}
-                      </span>
+                      <ProductSalePercentage
+                        className="min-w-fit"
+                        isSale={product.isSale}
+                        salePrice={product.salePrice}
+                        price={product.price}
+                      />
                       <span className="min-w-fit">
-                        <span className="font-bold">
-                          {product.isSale
-                            ? product.salePrice.toLocaleString()
-                            : product.price === 0
-                              ? "Free"
-                              : product.price.toLocaleString()}
-                        </span>
-                        {product.price === 0 ? " " : "원 "}
+                        <ProductPrice
+                          className="text-inherit"
+                          isSale={product.isSale}
+                          salePrice={product.salePrice}
+                          price={product.price}
+                        />
                       </span>
                       <span className="min-w-fit text-sm text-[#999999] line-through">
                         {(
@@ -266,36 +340,78 @@ export default function Page() {
             </tbody>
           </table>
 
-          <div className="w-full text-end">
-            <div className="my-10 inline-block w-96 max-w-full overflow-hidden rounded-md p-4 text-start text-sm">
-              <label htmlFor="total-price" className="flex p-2 px-6">
+          <div className="text-end">
+            <div className="inline-block w-96 max-w-full overflow-hidden rounded-md p-4 text-start text-sm">
+              <label htmlFor="total-price" className="flex p-1 px-6">
                 <div>
                   <FontAwesomeIcon icon={faBoxes} fontSize={14} /> 상품가격 :
                 </div>
                 <div className="flex-1 text-right">{totalProductPrice.toLocaleString() + "원"}</div>
               </label>
-              <label htmlFor="total-price" className="flex p-2 px-6">
+              <label htmlFor="total-price" className="flex p-1 px-6">
                 <div>
                   <FontAwesomeIcon icon={faLandmark} fontSize={14} /> 부가가치세 :
                 </div>
                 <div className="flex-1 text-right">{totalTaxPrice.toLocaleString() + "원"}</div>
               </label>
-              <label htmlFor="total-price" className="flex p-2 px-6">
+              <label htmlFor="total-price" className="flex p-1 px-6">
                 <div>
                   <FontAwesomeIcon icon={faWon} fontSize={14} /> 전체가격 :
                 </div>
                 <div className="flex-1 text-right">{totalPrice.toLocaleString() + "원"}</div>
               </label>
-              <div className="dsy-join w-full p-2">
-                <Refresh className="dsy-btn dsy-join-item flex-1 border-none bg-orange-100">
-                  <FontAwesomeIcon icon={faNotdef} rotation={90} /> 새로고침
-                </Refresh>
-                <button className="dsy-btn dsy-join-item flex-1 border-none bg-orange-200">
-                  <FontAwesomeIcon icon={faCreditCard} /> 결제하기
-                </button>
-              </div>
             </div>
           </div>
+        </section>
+
+        <section className="container m-auto my-12 max-w-4xl px-2 text-center">
+          <div className="dsy-join-vertical dsy-join w-full">
+            <ol className="dsy-join-item flex flex-wrap justify-center gap-4 rounded-lg border p-2">
+              <li>
+                <label htmlFor="kakao-pay" className="dsy-btn-ghost dsy-btn dsy-btn-lg">
+                  <input
+                    id="kakao-pay"
+                    type="radio"
+                    name="pg"
+                    value="PG_PROVIDER_KAKAOPAY"
+                    className="peer dsy-radio dsy-radio-sm checked:bg-orange-200"
+                    required
+                  />
+                  <Image src={ImgKakaoPay} alt="카카오페이" width={50} />
+                </label>
+              </li>
+              <li>
+                <label htmlFor="naver-pay" className="dsy-btn-ghost dsy-btn dsy-btn-lg">
+                  <input
+                    id="naver-pay"
+                    type="radio"
+                    name="pg"
+                    value="PG_PROVIDER_NAVERPAY"
+                    className="peer dsy-radio dsy-radio-sm checked:bg-orange-200"
+                    required
+                  />
+                  <Image src={ImgNaverPay} alt="네이버페이" width={50} />
+                </label>
+              </li>
+              <li>
+                <label htmlFor="toss-pay" className="dsy-btn-ghost dsy-btn dsy-btn-lg">
+                  <input
+                    id="toss-pay"
+                    type="radio"
+                    name="pg"
+                    value="PG_PROVIDER_TOSSPAY"
+                    className="peer dsy-radio dsy-radio-sm checked:bg-orange-200"
+                    required
+                  />
+                  <Image src={ImgTossPay} alt="토스페이" width={50} className="scale-[1.8]" />
+                </label>
+              </li>
+            </ol>
+          </div>
+
+          <button className="dsy-btn dsy-btn-wide mt-10 border-none bg-orange-200">
+            <FontAwesomeIcon icon={faCreditCard} /> 결제하기
+          </button>
         </section>
       </form>
     </main>
