@@ -1,5 +1,4 @@
 import axios from "axios";
-import { getIdToken } from "./auth";
 import { PrismaClient } from "@prisma/client";
 import { QueryFunction, QueryKey, UseQueryOptions, useQuery } from "@tanstack/react-query";
 
@@ -8,11 +7,11 @@ export const apiRoot = (() => {
     baseURL: "https://ntm02yf619.execute-api.ap-northeast-2.amazonaws.com/prod",
   });
 
-  apiBase.interceptors.request.use(async (config) => {
-    const token = await getIdToken();
-    config.headers.Authorization = token;
-    return config;
-  });
+  // apiBase.interceptors.request.use(async (config) => {
+  //   const token = await getIdToken();
+  //   config.headers.Authorization = token;
+  //   return config;
+  // });
 
   return apiBase;
 })();
