@@ -33,7 +33,7 @@ export function FloatingMenu() {
       <ol className="space-y-2 p-1">
         {products?.data.slice(start, end).map((item) => (
           <li key={item.id}>
-            <a href={`/user/shop/${item.id}`}>
+            <a href={`/shop/${item.id}`}>
               <Image
                 src={item.images[0].src}
                 alt={item.name}

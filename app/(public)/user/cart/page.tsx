@@ -19,15 +19,8 @@ import {
   resetCartProducts,
   setCartProductQuantity,
 } from "./actions";
-import { getServerSession } from "next-auth";
-import { redirect } from "next/navigation";
 
 export default async function Page() {
-  const session = await getServerSession();
-  if (!session) {
-    redirect("/user/signin?callbackurl=/user/cart");
-  }
-
   const cartProducts = await getCartProducts();
 
   const totalProductPrice = cartProducts.reduce(

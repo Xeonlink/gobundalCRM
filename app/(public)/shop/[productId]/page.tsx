@@ -56,7 +56,7 @@ export default async function Page(props: PageProps<{ productId: string }>) {
           </p>
           <div className="dsy-join w-full max-sm:hidden">
             <Link
-              href={`/user/shop/${product.id}/tocart`}
+              href={`/shop/${product.id}/tocart`}
               className="dsy-btn dsy-join-item min-w-max flex-1 border-none bg-orange-100"
               scroll={false}
             >

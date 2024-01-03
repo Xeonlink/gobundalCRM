@@ -35,19 +35,19 @@ export default async function Layout(props: PropsWithChildren) {
             </label>
             <ul
               tabIndex={0}
-              className="dsy-dropdown-content dsy-menu rounded-box dsy-menu-sm z-[1] mt-3 w-52 bg-base-100 p-2 shadow"
+              className="dsy-dropdown-content dsy-menu dsy-menu-sm z-[1] mt-3 w-52 rounded-box bg-base-100 p-2 shadow"
             >
               <li>
-                <NavLink href="/user/experience">곱은달 감귤체험</NavLink>
+                <NavLink href="/experience">곱은달 감귤체험</NavLink>
                 <ul className="p-2">
                   <li>
-                    <NavLink href="/user/experience/hello">인사말</NavLink>
+                    <NavLink href="/experience/hello">인사말</NavLink>
                   </li>
                   <li>
-                    <NavLink href="/user/experience/map">오시는 길</NavLink>
+                    <NavLink href="/experience/map">오시는 길</NavLink>
                   </li>
                   <li>
-                    <NavLink href="/user/experience/guide">체험안내</NavLink>
+                    <NavLink href="/experience/guide">체험안내</NavLink>
                   </li>
                   <li>
                     <NavLink href="https://pcmap.place.naver.com/place/1545445251/ticket">
@@ -57,16 +57,16 @@ export default async function Layout(props: PropsWithChildren) {
                 </ul>
               </li>
               <li>
-                <NavLink href="/user/shop" check="/user/shop">
+                <NavLink href="/shop" check="/shop">
                   상품쇼핑
                 </NavLink>
                 <ul className="p-2">
                   <li>
-                    <NavLink href="/user/shop">전체상품</NavLink>
+                    <NavLink href="/shop">전체상품</NavLink>
                   </li>
                   {productCategories.map((item) => (
                     <li key={item.id}>
-                      <NavLink href={`/user/shop?category=${item.name}`}>{item.name}</NavLink>
+                      <NavLink href={`/shop?category=${item.name}`}>{item.name}</NavLink>
                     </li>
                   ))}
                 </ul>
@@ -92,13 +92,13 @@ export default async function Layout(props: PropsWithChildren) {
                 <summary>곱은달 감귤체험</summary>
                 <ul className="w-full">
                   <li>
-                    <NavLink href="/user/experience/hello">인사말</NavLink>
+                    <NavLink href="/experience/hello">인사말</NavLink>
                   </li>
                   <li>
-                    <NavLink href="/user/experience/map">오시는 길</NavLink>
+                    <NavLink href="/experience/map">오시는 길</NavLink>
                   </li>
                   <li>
-                    <NavLink href="/user/experience/guide">체험안내</NavLink>
+                    <NavLink href="/experience/guide">체험안내</NavLink>
                   </li>
                   <li>
                     <NavLink href="https://pcmap.place.naver.com/place/1545445251/ticket">
@@ -113,11 +113,11 @@ export default async function Layout(props: PropsWithChildren) {
                 <summary className="justify-center hover:text-orange-400">상품쇼핑</summary>
                 <ul className="w-full min-w-max p-2">
                   <li>
-                    <NavLink href="/user/shop">전체상품</NavLink>
+                    <NavLink href="/shop">전체상품</NavLink>
                   </li>
                   {productCategories.map((item) => (
                     <li key={item.id}>
-                      <NavLink href={`/user/shop?category=${item.name}`}>{item.name}</NavLink>
+                      <NavLink href={`/shop?category=${item.name}`}>{item.name}</NavLink>
                     </li>
                   ))}
                 </ul>
@@ -135,7 +135,7 @@ export default async function Layout(props: PropsWithChildren) {
         <div className="dsy-navbar-end">
           {!session ? (
             <>
-              <Link href="/user/signup/register" className="dsy-btn-ghost dsy-btn">
+              <Link href="/signup/register" className="dsy-btn-ghost dsy-btn">
                 <FontAwesomeIcon icon={faUserPlus} />
                 <span className="max-[420px]:hidden">&nbsp;회원가입</span>
               </Link>
@@ -156,7 +156,7 @@ export default async function Layout(props: PropsWithChildren) {
                 <button
                   type="button"
                   tabIndex={0}
-                  className="dsy-btn-ghost dsy-btn-circle dsy-avatar dsy-btn duration-1000"
+                  className="dsy-btn-ghost dsy-btn dsy-btn-circle dsy-avatar duration-1000"
                 >
                   <figure className="w-10">
                     <Image
@@ -171,7 +171,7 @@ export default async function Layout(props: PropsWithChildren) {
                 </button>
                 <ul
                   tabIndex={0}
-                  className="dsy-dropdown-content dsy-menu rounded-box z-[1] mt-3 w-48 bg-base-100 p-2 shadow"
+                  className="dsy-dropdown-content dsy-menu z-[1] mt-3 w-48 rounded-box bg-base-100 p-2 shadow"
                 >
                   <li>
                     <Link href="/user">
@@ -218,49 +218,49 @@ export default async function Layout(props: PropsWithChildren) {
         </ul>
         <ul className="container m-auto flex flex-wrap items-center justify-center gap-2 sm:hidden">
           <li>
-            <DialogOpener target="#business-info" className="dsy-btn-sm dsy-btn bg-base-300">
+            <DialogOpener target="#business-info" className="dsy-btn dsy-btn-sm bg-base-300">
               대표자
             </DialogOpener>
           </li>
           <li className="text-gray-400">|</li>
           <li>
-            <DialogOpener target="#business-info" className="dsy-btn-sm dsy-btn bg-base-300">
+            <DialogOpener target="#business-info" className="dsy-btn dsy-btn-sm bg-base-300">
               주소
             </DialogOpener>
           </li>
           <li className="text-gray-400">|</li>
           <li>
-            <DialogOpener target="#business-info" className="dsy-btn-sm dsy-btn bg-base-300">
+            <DialogOpener target="#business-info" className="dsy-btn dsy-btn-sm bg-base-300">
               고객센터
             </DialogOpener>
           </li>
           <li className="text-gray-400">|</li>
           <li>
-            <DialogOpener target="#business-info" className="dsy-btn-sm dsy-btn bg-base-300">
+            <DialogOpener target="#business-info" className="dsy-btn dsy-btn-sm bg-base-300">
               계좌번호
             </DialogOpener>
           </li>
           <li className="text-gray-400">|</li>
           <li>
-            <DialogOpener target="#business-info" className="dsy-btn-sm dsy-btn bg-base-300">
+            <DialogOpener target="#business-info" className="dsy-btn dsy-btn-sm bg-base-300">
               사업자등록번호
             </DialogOpener>
           </li>
           <li className="text-gray-400">|</li>
           <li>
-            <DialogOpener target="#business-info" className="dsy-btn-sm dsy-btn bg-base-300">
+            <DialogOpener target="#business-info" className="dsy-btn dsy-btn-sm bg-base-300">
               통신판매업번호
             </DialogOpener>
           </li>
           <li className="text-gray-400">|</li>
           <li>
-            <DialogOpener target="#business-info" className="dsy-btn-sm dsy-btn bg-base-300">
+            <DialogOpener target="#business-info" className="dsy-btn dsy-btn-sm bg-base-300">
               이메일
             </DialogOpener>
           </li>
           <li className="text-gray-400">|</li>
           <li>
-            <DialogOpener target="#business-info" className="dsy-btn-sm dsy-btn bg-base-300">
+            <DialogOpener target="#business-info" className="dsy-btn dsy-btn-sm bg-base-300">
               카카오톡
             </DialogOpener>
           </li>

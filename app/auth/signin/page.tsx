@@ -6,7 +6,7 @@ import Image from "next/image";
 import { SignInBtn } from "./SignInBtn";
 
 export default function Page(props: PageProps<any, { callbackurl: string }>) {
-  const { callbackurl = "/user" } = props.searchParams;
+  const { callbackurl = "/" } = props.searchParams;
 
   return (
     <ul className="m-auto max-w-xs space-y-2 rounded-lg bg-white bg-opacity-60 p-6">

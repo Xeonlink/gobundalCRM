@@ -5,11 +5,11 @@ import { useDeleteProducts } from "@/api/products";
 import { AssetCreateDialog } from "@/components/Dialogs/AssetDialog/AssetCreateDialog";
 import { AssetUpdateDialog } from "@/components/Dialogs/AssetDialog/AssetUpdateDialog";
 import { ImgIcon } from "@/components/ImgIcon";
-import { ModalProps } from "@/extra/modal";
+import { ModalProps } from "@/extra/modal/modal";
 import { cn } from "@/extra/utils";
 import { useExcel } from "@/hooks/useExcel";
 import { useItemSelection } from "@/hooks/useItemSelection";
-import { useModal } from "@/extra/modal";
+import { useModal } from "@/extra/modal/modal";
 import IcoExcel from "@/public/icons/excel.png";
 import {
   faBoxesStacked,
@@ -89,29 +89,29 @@ export default function AssetSelector(props: Props) {
 
         <div className="dsy-modal-action">
           {/* Close */}
-          <button className="dsy-btn-sm dsy-btn">
+          <button className="dsy-btn dsy-btn-sm">
             <FontAwesomeIcon icon={faX} /> 닫기
           </button>
 
           {/* Create New Order */}
-          <button type="button" className="dsy-btn-sm dsy-btn" onClick={openAssetCreateDialog}>
+          <button type="button" className="dsy-btn dsy-btn-sm" onClick={openAssetCreateDialog}>
             <FontAwesomeIcon icon={faPlus} /> 에셋 추가하기
           </button>
 
           {/* Delete */}
-          <button type="button" className="dsy-btn-sm dsy-btn" onClick={onDeleteClick}>
+          <button type="button" className="dsy-btn dsy-btn-sm" onClick={onDeleteClick}>
             <FontAwesomeIcon icon={faTrashCan} /> 선택삭제
           </button>
 
           {/* 엑셀로 다운로드하기 */}
-          <button type="button" className="dsy-btn-sm dsy-btn" onClick={onExcelDownloadClick}>
+          <button type="button" className="dsy-btn dsy-btn-sm" onClick={onExcelDownloadClick}>
             <ImgIcon src={IcoExcel} alt="엑셀로 변환" fontSize={20} /> 엑셀로 변환
           </button>
 
           {/* 확인 */}
           <button
             type="button"
-            className="dsy-btn-sm dsy-btn"
+            className="dsy-btn dsy-btn-sm"
             onClick={onConfirmClick}
             disabled={selected.isEmpty}
           >

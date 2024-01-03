@@ -1,6 +1,6 @@
 "use client";
 
-import { ModalProps } from "@/extra/modal";
+import { ModalProps } from "@/extra/modal/modal";
 import { cn } from "@/extra/utils";
 
 type Props = ModalProps<{ src: string }>;

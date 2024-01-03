@@ -1,7 +1,7 @@
 "use client";
 
 import { defaultAsset, useCreateAsset } from "@/api/assets";
-import { ModalProps } from "@/extra/modal";
+import { ModalProps } from "@/extra/modal/modal";
 import { useTypeSafeReducer } from "@/hooks/useTypeSafeReducer";
 import {
   faFloppyDisk,
@@ -45,7 +45,7 @@ export function AssetCreateDialog(props: ModalProps) {
       <form method="dialog" className="dsy-modal-box w-96 bg-opacity-60 backdrop-blur-md">
         <button
           type="button"
-          className="dsy-btn-ghost dsy-btn-sm dsy-btn-circle dsy-btn absolute right-6 top-4"
+          className="dsy-btn-ghost dsy-btn dsy-btn-sm dsy-btn-circle absolute right-6 top-4"
           onClick={props.closeSelf}
         >
           ✕
@@ -114,7 +114,7 @@ export function AssetCreateDialog(props: ModalProps) {
           {/* Clear */}
           <button
             type="button"
-            className="dsy-btn-sm dsy-btn"
+            className="dsy-btn dsy-btn-sm"
             disabled={isCleared || isLoading}
             onClick={assetActions.reset}
           >
@@ -124,7 +124,7 @@ export function AssetCreateDialog(props: ModalProps) {
           {/* Save */}
           <button
             type="button"
-            className="dsy-btn-sm dsy-btn"
+            className="dsy-btn dsy-btn-sm"
             onClick={() => createItem.mutate()}
             disabled={!isValid || isLoading}
           >

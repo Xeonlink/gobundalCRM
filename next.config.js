@@ -14,8 +14,8 @@ module.exports = {
         permanent: true,
       },
       {
-        source: "/user/experience",
-        destination: "/user/experience/hello",
+        source: "/experience",
+        destination: "/experience/hello",
         permanent: false,
       },
     ];

@@ -11,7 +11,7 @@ export async function getCartProducts() {
   const session = await getServerSession(authOptions);
   if (!session) {
     const pathname = headers().get("x-pathname");
-    redirect("/user/signin" + (!pathname ? "" : `?callbackurl=${encodeURIComponent(pathname)}`));
+    redirect("/signin" + (!pathname ? "" : `?callbackurl=${encodeURIComponent(pathname)}`));
   }
 
   const userId = session!.user.id;
@@ -47,7 +47,7 @@ export async function setCartProductQuantity(productId: number, formData: FormDa
     },
   });
 
-  revalidatePath("/user/cart", "page");
+  revalidatePath("/cart", "page");
 }
 
 export async function deleteCartProduct(productId: number) {
@@ -63,7 +63,7 @@ export async function deleteCartProduct(productId: number) {
     },
   });
 
-  revalidatePath("/user/cart", "page");
+  revalidatePath("/cart", "page");
 }
 
 export async function resetCartProducts() {
@@ -76,6 +76,6 @@ export async function resetCartProducts() {
     },
   });
 
-  revalidatePath("/user/cart", "page");
-  redirect("/user/shop");
+  revalidatePath("/cart", "page");
+  redirect("/shop");
 }

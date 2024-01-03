@@ -1,4 +1,4 @@
-const 약관1 = `제1조 (목적) 
+제1조 (목적) 
 
 이 약관은 곱은달감귤체험농장(이하 "쇼핑몰"이라 칭함)이 운영하는 사이버 쇼핑몰(이하 "쇼핑몰"이라 함)에서 제공하는 인터넷 관련 서비스(이하 "서비스"라 한다)의 이용에 있어 쇼핑몰과 이용자의권리·의무 및 책임사항을 규정하여 고객 권익을 보호함을 목적으로 합니다.
  
@@ -186,90 +186,4 @@ const 약관1 = `제1조 (목적)
  
 1. "쇼핑몰"과 이용자간에 발생한 전자거래 분쟁에 관한 소송은 민사소송법상의 관할법원에 제기합니다.
 2. "쇼핑몰"과 이용자간에 제기된 전자거래 소송에는 한국법을 적용합니다.
- 2006년 6월 1일부터 시행합니다.`;
-
-const 약관2 = `1. 수집하는 개인정보의 항목 및 수집방법
- 회원가입, 비회원 구매, 상담, 불량이용의 방지 등을 위해 아래와 같은 개인정보를 수집하고 있습니다. 
- - 필수항목 : 성명, ID, 비밀번호, 생일/성별, 이메일, 연락처(휴대폰), 주소, 결제기록
- - 선택항목 : 개인맞춤 서비스를 제공하기 위하여 회사가 필요로 하는 정보
- - 수집방법 : 홈페이지
- 
- 2. 개인정보의 수집 및 이용목적
- 수집한 개인정보는 다음의 목적을 위해 활용합니다.
- 가. 서비스 제공에 관한 계약 이행 및 서비스 제공에 따른 요금정산, 콘텐츠 제공, 구매 및 요금 결제, 물품배송 또는 청구지 등 발송, 금융거래 본인 인증 및 금융서비스 
- 나. 성명 , 아이디, 비밀번호: 회원제 서비스 이용에 따른 본인 확인 절차에 이용
- - 개인 식별, 불량회원의 부정 이용 방지와 비인가 사용 방지, 가입 의사 확인, 연령확인, 불만처리 등 고객 민원처리, 고지사항 전달  
- 다. 서비스 및 이벤트 제공
- - 이메일주소, 전화번호 : 고지사항 전달, 불만처리, 부가서비스 등을 위한 원활한 의사소통 경로의 확보, 새로운 서비스 및 신상품이나 이벤트 정보 등의 안내       
- - 이름, 핸드폰번호 : 이벤트진행을 위해 이름, 핸드폰번호가 저장되어 이용됨.  
- 라. 결제처리
- - 은행계좌정보, 신용카드정보 : 서비스 및 부가 서비스 이용에 대한 요금 결제
- - 주소, 전화번호 : 청구서, 물품배송시 정확한 배송지의 확보 
- -기타 선택항목 : 개인맞춤 서비스를 제공하기 위한 자료
- 마. 부정이용 방지
- - IP Address : 불량회원의 부정 이용 방지와 비인가 사용 방지
- 
- 3. 개인정보의 보유 및 이용기간
- 회원탈퇴 또는 개인정보 수집 및 이용목적이 달성된 후에는 해당 정보를 지제 없이 파기합니다. 다만, 서비스의 부정/불량이용자의 재가입  방지를 위해 해지 후 3개월간 보유할 수 있으며 전자상거래에서의 소비자보호에 관한법률 등 타 법률에 의해 보존의무가 있는경우에는 볍령이 지정한 일정기간 보존합니다.                            `;
-
-export default function Page() {
-  return (
-    <main className="bg-base-100">
-      <form action="/user/signup/register_form">
-        {/* 타이틀 */}
-        <h2 className="py-6 text-center text-2xl font-bold">이용약관</h2>
-
-        {/* 회원가입약관 덩어리 */}
-        <section className="container m-auto mb-6 max-w-4xl px-2">
-          <h3 className="py-2 pl-4 font-bold">회원가입약관</h3>
-          <textarea
-            readOnly
-            rows={10}
-            className="w-full rounded-md border-[1px] bg-white p-4 text-xs"
-            defaultValue={약관1}
-          />
-          <div className="dsy-form-control flex-row items-center justify-end gap-1 pl-4">
-            <input
-              id="username"
-              type="checkbox"
-              autoFocus
-              className="dsy-checkbox dsy-checkbox-sm"
-              required
-            />
-            <label htmlFor="username" className="dsy-label">
-              <span className="dsy-label-text">회원가입약관을 읽었으며 내용에 동의합니다.</span>
-            </label>
-          </div>
-        </section>
-
-        {/* 개인정보처리방침 덩어리 */}
-        <section className="container m-auto mb-6 max-w-4xl px-2">
-          <h3 className="py-2 pl-4 font-bold">개인정보처리방침</h3>
-          <textarea
-            readOnly
-            rows={10}
-            className="w-full rounded-md border-[1px] bg-white p-4 text-xs"
-            defaultValue={약관2}
-          />
-          <div className="dsy-form-control flex-row items-center justify-end gap-1 pl-4">
-            <input
-              id="username"
-              type="checkbox"
-              className="dsy-checkbox dsy-checkbox-sm"
-              required
-            />
-            <label htmlFor="username" className="dsy-label">
-              <span className="dsy-label-text">개인정보처리방침을 읽었으며 내용에 동의합니다.</span>
-            </label>
-          </div>
-        </section>
-
-        <div className="m-auto mb-6 flex">
-          <button className="dsy-btn-wide dsy-btn mx-auto border-none bg-orange-200 shadow-lg">
-            다음
-          </button>
-        </div>
-      </form>
-    </main>
-  );
-}
+ 2006년 6월 1일부터 시행합니다.

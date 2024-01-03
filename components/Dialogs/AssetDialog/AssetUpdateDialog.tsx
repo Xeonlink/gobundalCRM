@@ -1,9 +1,9 @@
 "use client";
 
 import { useAsset, useDeleteAsset, useUpdateAsset } from "@/api/assets";
-import { ModalProps } from "@/extra/modal";
+import { ModalProps } from "@/extra/modal/modal";
 import { diff } from "@/extra/utils";
-import { useModal } from "@/extra/modal";
+import { useModal } from "@/extra/modal/modal";
 import { useTypeSafeReducer } from "@/hooks/useTypeSafeReducer";
 import {
   faFloppyDisk,
@@ -54,7 +54,7 @@ export function AssetUpdateDialog(props: ModalProps<{ assetId: string }>) {
       <form method="dialog" className="dsy-modal-box w-96 bg-opacity-60 backdrop-blur-md">
         <button
           type="button"
-          className="dsy-btn-ghost dsy-btn-sm dsy-btn-circle dsy-btn absolute right-6 top-4"
+          className="dsy-btn-ghost dsy-btn dsy-btn-sm dsy-btn-circle absolute right-6 top-4"
           onClick={props.closeSelf}
         >
           ✕
@@ -104,7 +104,7 @@ export function AssetUpdateDialog(props: ModalProps<{ assetId: string }>) {
           {/* Clear */}
           <button
             type="button"
-            className="dsy-btn-sm dsy-btn"
+            className="dsy-btn dsy-btn-sm"
             disabled={isCleared || isLoading}
             onClick={assetActions.reset}
           >
@@ -114,7 +114,7 @@ export function AssetUpdateDialog(props: ModalProps<{ assetId: string }>) {
           {/* Delete */}
           <button
             type="button"
-            className="dsy-btn-sm dsy-btn"
+            className="dsy-btn dsy-btn-sm"
             disabled={isLoading}
             onClick={() => deleteItem.mutate()}
           >
@@ -124,7 +124,7 @@ export function AssetUpdateDialog(props: ModalProps<{ assetId: string }>) {
           {/* Save */}
           <button
             type="button"
-            className="dsy-btn-sm dsy-btn"
+            className="dsy-btn dsy-btn-sm"
             onClick={() => updateItem.mutate()}
             disabled={!isValid || isLoading}
           >

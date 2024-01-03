@@ -3,6 +3,7 @@ import NextAuth from "next-auth/next";
 import GoogleProvider from "next-auth/providers/google";
 import KakaoProvider from "next-auth/providers/kakao";
 import NaverProvider from "next-auth/providers/naver";
+import CredentialsProvider from "next-auth/providers/credentials";
 import { db } from "../../utils";
 
 export const authOptions: NextAuthOptions = {

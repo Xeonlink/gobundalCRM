@@ -3,7 +3,7 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { db } from "@/app/api/utils";
 import { getServerSession } from "next-auth";
-import { revalidateTag } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 
 export async function getProductCategories() {
@@ -70,7 +70,7 @@ export async function createCartProduct(productId: number) {
     });
   }
 
-  redirect("/user/payment");
+  redirect("/payment");
 }
 
 export async function createCartProductByForm(productId: number, formData: FormData) {
@@ -107,4 +107,6 @@ export async function createCartProductByForm(productId: number, formData: FormD
       },
     });
   }
+
+  revalidatePath("/user/cart", "page");
 }

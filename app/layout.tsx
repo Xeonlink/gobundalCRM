@@ -1,5 +1,5 @@
 import { ClientSessionProvider } from "@/components/ClientSessionProvider";
-import { ModalPlacer } from "@/extra/modal";
+import { ModalPlacer } from "@/extra/modal/modal";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import type { Metadata } from "next";
@@ -12,7 +12,7 @@ config.autoAddCss = false;
 
 export const metadata: Metadata = {
   title: "GobundalCRM",
-  description: "곱은달 농장 소객관리 통합 플랫폼",
+  description: "곱은달 농장 고객관리 통합 플랫폼",
 };
 
 export default async function RootLayout(props: PropsWithChildren) {

@@ -28,7 +28,7 @@ export default async function Page() {
           <div className="max-w-md">
             <h1 className="mb-5 text-5xl font-bold">곱은달농장</h1>
             <p className="mb-5">곱은달농장은 농부의 마음으로 청정지역의 농산물을 선물합니다.</p>
-            <Link href="/user/shop" className="dsy-btn-primary dsy-btn">
+            <Link href="/shop" className="dsy-btn-primary dsy-btn">
               상품 둘러보기
             </Link>
           </div>
@@ -41,7 +41,7 @@ export default async function Page() {
           {recommandedProducts.map((item) => (
             <li className="dsy-carousel-item" key={item.id}>
               <Link
-                href={`/user/shop/${item.id}`}
+                href={`/shop/${item.id}`}
                 key={item.id}
                 className="dsy-card dsy-card-compact animate-scaleTo1 overflow-hidden rounded-lg bg-orange-100 bg-opacity-40"
               >
@@ -74,13 +74,13 @@ export default async function Page() {
                 <div className="dsy-join w-full rounded-none">
                   <button
                     type="button"
-                    className="dsy-join-item dsy-btn flex-1 border-none bg-orange-100"
+                    className="dsy-btn dsy-join-item flex-1 border-none bg-orange-100"
                   >
                     <FontAwesomeIcon icon={faCartPlus} /> 장바구니
                   </button>
                   <button
                     type="button"
-                    className="dsy-join-item dsy-btn flex-1 border-none bg-orange-200 max-sm:hidden"
+                    className="dsy-btn dsy-join-item flex-1 border-none bg-orange-200 max-sm:hidden"
                   >
                     <FontAwesomeIcon icon={faCreditCard} /> 구매
                   </button>
@@ -89,7 +89,7 @@ export default async function Page() {
             </li>
           ))}
         </ul>
-        <Link href="/user/shop" className="dsy-btn m-auto">
+        <Link href="/shop" className="dsy-btn m-auto">
           전체보기
         </Link>
       </div>
@@ -132,7 +132,7 @@ export default async function Page() {
             {randomCategory.products.map((item) => (
               <li className="dsy-carousel-item" key={item.id}>
                 <Link
-                  href={`/user/shop/${item.id}`}
+                  href={`/shop/${item.id}`}
                   key={item.id}
                   className="dsy-card dsy-card-compact animate-scaleTo1 overflow-hidden rounded-lg bg-orange-100 bg-opacity-40"
                 >
@@ -165,13 +165,13 @@ export default async function Page() {
                   <div className="dsy-join w-full rounded-none">
                     <button
                       type="button"
-                      className="dsy-join-item dsy-btn flex-1 border-none bg-orange-100"
+                      className="dsy-btn dsy-join-item flex-1 border-none bg-orange-100"
                     >
                       <FontAwesomeIcon icon={faCartPlus} /> 장바구니
                     </button>
                     <button
                       type="button"
-                      className="dsy-join-item dsy-btn flex-1 border-none bg-orange-200 max-sm:hidden"
+                      className="dsy-btn dsy-join-item flex-1 border-none bg-orange-200 max-sm:hidden"
                     >
                       <FontAwesomeIcon icon={faCreditCard} /> 구매
                     </button>
@@ -180,7 +180,7 @@ export default async function Page() {
               </li>
             ))}
           </ul>
-          <Link href={`/user/shop?category=${randomCategory.id}`} className="dsy-btn m-auto">
+          <Link href={`/shop?category=${randomCategory.id}`} className="dsy-btn m-auto">
             전체보기
           </Link>
         </div>

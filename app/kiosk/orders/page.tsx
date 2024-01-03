@@ -4,7 +4,7 @@ import { Product, useProducts } from "@/api/products";
 import { ColumnList } from "@/components/ColumnList";
 import { AssetPreviewDialog } from "@/components/Dialogs/AssetDialog/AssetPreviewDialog";
 import { Input } from "@/components/Input";
-import { useModal } from "@/extra/modal";
+import { useModal } from "@/extra/modal/modal";
 import { cn } from "@/extra/utils";
 import { useCart } from "@/hooks/useCart";
 import { useItemSelection } from "@/hooks/useItemSelection";
@@ -95,14 +95,14 @@ export default function Page() {
                   <div className="dsy-join w-full rounded-none">
                     <button
                       type="button"
-                      className="dsy-join-item dsy-btn flex-1 border-none bg-white"
+                      className="dsy-btn dsy-join-item flex-1 border-none bg-white"
                       onClick={() => onProductCartClick(item)}
                     >
                       <FontAwesomeIcon icon={faCartPlus} /> 장바구니
                     </button>
                     <button
                       type="button"
-                      className="dsy-join-item dsy-btn flex-1 border-none bg-orange-200 max-sm:hidden"
+                      className="dsy-btn dsy-join-item flex-1 border-none bg-orange-200 max-sm:hidden"
                     >
                       <FontAwesomeIcon icon={faCreditCard} /> 구매
                     </button>
@@ -120,7 +120,7 @@ export default function Page() {
         <Link
           href="cart"
           // htmlFor="cart"
-          className="dsy-drawer-button dsy-btn-md dsy-btn bg-white shadow-md"
+          className="dsy-btn dsy-drawer-button dsy-btn-md bg-white shadow-md"
         >
           <FontAwesomeIcon icon={faCartShopping} fontSize={16} />
         </Link>
@@ -135,7 +135,7 @@ export default function Page() {
           <div className="dsy-card-body">
             <button
               type="button"
-              className="dsy-btn-ghost dsy-btn-sm dsy-btn-circle dsy-btn absolute right-6 top-4"
+              className="dsy-btn-ghost dsy-btn dsy-btn-sm dsy-btn-circle absolute right-6 top-4"
               onClick={() => {
                 selected.clear();
                 setSelectedProductQuantity(1);
@@ -174,7 +174,7 @@ export default function Page() {
               <div className="dsy-join-item flex flex-1">
                 <button
                   type="button"
-                  className="dsy-join-item dsy-btn inline-block flex-1 border-none bg-white"
+                  className="dsy-btn dsy-join-item inline-block flex-1 border-none bg-white"
                   onClick={decreaseSelectedProductQuantity}
                 >
                   <FontAwesomeIcon icon={faMinus} />
@@ -185,7 +185,7 @@ export default function Page() {
                 />
                 <button
                   type="button"
-                  className="dsy-join-item dsy-btn inline-block flex-1 border-none bg-white"
+                  className="dsy-btn dsy-join-item inline-block flex-1 border-none bg-white"
                   onClick={increaseSelectedProductQuantity}
                 >
                   <FontAwesomeIcon icon={faPlus} />
@@ -194,7 +194,7 @@ export default function Page() {
 
               <button
                 type="button"
-                className="dsy-join-item dsy-btn flex-1 border-none bg-orange-200"
+                className="dsy-btn dsy-join-item flex-1 border-none bg-orange-200"
                 onClick={() => {
                   if (selectedProduct === undefined) return;
                   cart.addProduct(selectedProduct);
