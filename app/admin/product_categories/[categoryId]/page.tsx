@@ -14,7 +14,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import { updateProductCategory } from "./actions";
-import { useProductCategory } from "@/app/api/product_category/[categoryId]/acceessors";
+import { useProductCategory } from "@/app/api/product_category/accessors";
 
 export default function Page(props: PageProps<{ categoryId: string }>) {
   const id = props.params.categoryId;

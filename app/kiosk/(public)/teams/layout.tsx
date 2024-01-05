@@ -1,6 +1,6 @@
-import Image from "next/image";
-import IcoLogo from "@/public/icons/logo_transparent.png";
 import { LayoutProps } from "@/extra/type";
+import IcoLogo from "@/public/icons/logo_transparent.png";
+import Image from "next/image";
 
 export default function Layout(props: LayoutProps) {
   return (

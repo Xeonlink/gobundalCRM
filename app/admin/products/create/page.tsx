@@ -1,5 +1,6 @@
 "use client";
 
+import { useProductCategories } from "@/app/api/product_category/accessors";
 import { DialogOpener } from "@/components/DialogOpener";
 import { SelfValidateInput } from "@/components/Input/SelfValidateInput";
 import { ProductPrice } from "@/components/ProductCard/ProductPrice";
@@ -26,16 +27,14 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
-import { cache, use, useState } from "react";
+import { useState } from "react";
 import ImageSelector from "../ImageSelector";
-import { createProduct, getProductCategories } from "./actions";
+import { createProduct } from "./actions";
 
 type ImageRequired = { id: number; src: string; width: number; height: number };
 
-const getProductCategoriesCached = cache(getProductCategories);
-
 export default function Page() {
-  const productCategories = use(getProductCategoriesCached());
+  const { data: productCategories } = useProductCategories();
   const [images, setImages] = useState<ImageRequired[]>([]);
   const [name, setName] = useState("");
   const [isSale, setIsSale] = useState(false);

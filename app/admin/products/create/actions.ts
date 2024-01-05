@@ -27,7 +27,3 @@ export async function createProduct(formData: FormData) {
   revalidatePath("/admin/products");
   redirect("/admin/products", RedirectType.replace);
 }
-
-export async function getProductCategories() {
-  return await db.productCategory.findMany();
-}

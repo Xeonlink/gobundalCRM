@@ -1,4 +1,4 @@
-import { BackCountDown } from "@/app/kiosk/teams/complete/BackCountDown";
+import { BackCountDown } from "@/app/kiosk/(public)/teams/complete/BackCountDown";
 import { PageProps } from "@/extra/type";
 import { faPeopleRoof } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

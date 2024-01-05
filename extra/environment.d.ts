@@ -30,5 +30,8 @@ namespace NodeJS {
     IAMGE_BUCKET_SECRET_ACCESS_KEY: string;
     IAMGE_BUCKET_REGION: string;
     IMAGE_BUCKET_NAME: string;
+    // KIOSK
+    KIOSK_PASSWORD: string;
+    KIOSK_JWT_SECRET: string;
   }
 }
