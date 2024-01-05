@@ -71,11 +71,6 @@ export function diff<T extends object>(target1: T, target2: T): Partial<T> {
   return result;
 }
 
-export function innerLog<T>(a: T) {
-  console.log(a);
-  return a;
-}
-
 export function csrOnly<T>(importPromise: LoaderComponent<T>) {
   return dynamic<T>(() => importPromise, { ssr: false });
 }
@@ -96,9 +91,6 @@ export class CognitoUserAttributeBuilder extends Map<string, string> {
 }
 
 export function formDataToJson<T extends { [key: string]: any }>(formData: FormData) {
-  console.log(formData.entries());
-  console.log(Object.entries(formData.entries()));
-
   return Object.entries(formData.entries()).reduce(
     (acc, [key, value]) => {
       acc[key] = value;

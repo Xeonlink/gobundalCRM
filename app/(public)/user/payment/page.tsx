@@ -5,6 +5,7 @@ import { SelfValidateInput } from "@/components/Input/SelfValidateInput";
 import { ProductPrice } from "@/components/ProductCard/ProductPrice";
 import { ProductSalePercentage } from "@/components/ProductCard/ProductSalePercentage";
 import { PortTwo } from "@/extra/PortOne";
+import { useModal } from "@/extra/modal/modal";
 import { useToggle } from "@/hooks/useToggle";
 import ImgKakaoPay from "@/public/icons/kakao_pay.png";
 import ImgNaverPay from "@/public/icons/naver_pay.png";
@@ -27,17 +28,11 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { PgProvider } from "@portone/browser-sdk/dist/v2/entity";
 import * as PortOne from "@portone/browser-sdk/v2";
-import axios from "axios";
 import Image from "next/image";
 import { useState } from "react";
 import { createOrder } from "./actions";
-import { useModal } from "@/extra/modal/modal";
-
-const validatePayment = async (paymentId: string | undefined) => {
-  return await axios.post<{ data: string }>("/api/payment/check", {
-    paymentId,
-  });
-};
+import { verifyPayment } from "@/app/api/payment/accessors";
+import { DialogMessage } from "@/components/Dialogs/DialogMessage";
 
 export default function Page() {
   const cartProducts = useCartProducts();
@@ -93,19 +88,44 @@ export default function Page() {
         locale: "KO_KR",
         currency: "CURRENCY_KRW",
         payMethod: "EASY_PAY",
+        channelKey: "channel-key-739285b4-c7da-4d04-a42c-39c3253ddd4f",
         isTestChannel: true,
       });
     }
 
     if (!response) {
-      alert("결제에 실패하였습니다. 잠시후 다시 시도해주세요. 에러코드: 87234");
+      modalCtrl.open(
+        <DialogMessage
+          type="error"
+          title="결제실패"
+          message="결제에 실패하였습니다. 잠시후 다시 시도해주세요. 87234"
+        />,
+      );
       setIsLoading(false);
       return;
     }
 
-    const paymentValidationResponse = await validatePayment(response.paymentId);
+    if (!!response.code) {
+      modalCtrl.open(
+        <DialogMessage
+          type="error"
+          title="결제취소"
+          message="결제가 취소되었습니다. 잠시후 다시 시도해주세요. 34972"
+        />,
+      );
+      setIsLoading(false);
+      return;
+    }
+
+    const paymentValidationResponse = await verifyPayment(response.paymentId);
     if (paymentValidationResponse.data.data !== "OK") {
-      alert("결제에 실패하였습니다. 잠시후 다시 시도해주세요. 에러코드: 7341");
+      modalCtrl.open(
+        <DialogMessage
+          type="error"
+          title="결제실패"
+          message="결제에 실패하였습니다. 잠시후 다시 시도해주세요. 73412"
+        />,
+      );
       setIsLoading(false);
       return;
     }

@@ -9,13 +9,10 @@ export function usePortOne() {
     IMP.init(process.env.NEXT_PUBLIC_IAMPORT_IMP);
   }, []);
 
-  const callback = async (response) => {
-    console.log(response);
-  };
+  const callback = async (response) => {};
 
   const requestPayment = async () => {
     const IMP = window.IMP;
-    console.log("usePortOne hook, NEXT_PUBLIC_IAMPORT_IMP: ", process.env.NEXT_PUBLIC_IAMPORT_IMP);
 
     const paymentData = {
       pg: "kakaopay.TC0ONETIME",
@@ -24,8 +21,6 @@ export function usePortOne() {
       amount: 1000,
       isTest,
     };
-
-    console.log("crypto.randomUUID : ", crypto.randomUUID());
 
     IMP.request_pay(paymentData, callback);
   };

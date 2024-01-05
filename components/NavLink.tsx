@@ -6,7 +6,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { PropsWithChildren } from "react";
 
 export function NavLink(props: PropsWithChildren<LinkProps & { check?: string }>) {
-  const { href, children, check } = props;
+  const { href, children, check, scroll } = props;
 
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -20,6 +20,7 @@ export function NavLink(props: PropsWithChildren<LinkProps & { check?: string }>
       className={cn("hover:text-orange-400", {
         "text-orange-400": isMyLink,
       })}
+      scroll={scroll}
     >
       {children}
     </Link>

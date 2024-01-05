@@ -16,8 +16,9 @@ import Link from "next/link";
 import { PropsWithChildren } from "react";
 import { getProductCategories } from "./action";
 import { authOptions } from "../api/auth/[...nextauth]/route";
+import { LayoutProps } from "@/extra/type";
 
-export default async function Layout(props: PropsWithChildren) {
+export default async function Layout(props: LayoutProps<{}, { reservation: React.ReactNode }>) {
   const productCategories = await getProductCategories();
   const session = await getServerSession(authOptions);
 
@@ -50,7 +51,7 @@ export default async function Layout(props: PropsWithChildren) {
                     <NavLink href="/experience/guide">체험안내</NavLink>
                   </li>
                   <li>
-                    <NavLink href="https://pcmap.place.naver.com/place/1545445251/ticket">
+                    <NavLink href="/reservation" scroll={false}>
                       체험예약
                     </NavLink>
                   </li>
@@ -80,7 +81,7 @@ export default async function Layout(props: PropsWithChildren) {
             </ul>
           </div>
           {/* 메인로고 */}
-          <Link href="/user" className="dsy-btn-ghost dsy-btn py-2 text-xl normal-case">
+          <Link href="/" className="dsy-btn-ghost dsy-btn py-2 text-xl normal-case">
             <Image src={ImgLogo} priority alt="곱은달농장로고" className="h-full w-full" />
           </Link>
         </div>
@@ -101,7 +102,7 @@ export default async function Layout(props: PropsWithChildren) {
                     <NavLink href="/experience/guide">체험안내</NavLink>
                   </li>
                   <li>
-                    <NavLink href="https://pcmap.place.naver.com/place/1545445251/ticket">
+                    <NavLink href="/reservation" scroll={false}>
                       체험예약
                     </NavLink>
                   </li>
@@ -304,6 +305,8 @@ export default async function Layout(props: PropsWithChildren) {
           <button>Close</button>
         </form>
       </dialog>
+
+      {props.reservation}
     </body>
   );
 }
