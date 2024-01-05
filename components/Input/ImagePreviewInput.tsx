@@ -4,7 +4,6 @@ import { getSizeFromImg } from "@/extra/utils";
 import { faImage } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
-import { useRef } from "react";
 
 type Props = {
   remove: () => void;
@@ -32,7 +31,7 @@ export function ImagePreviewInput(props: Props) {
         />
         <button
           type="button"
-          className="dsy-btn-sm dsy-btn absolute right-0 top-0 rounded-none rounded-bl-md border-none bg-white"
+          className="dsy-btn dsy-btn-sm absolute right-0 top-0 rounded-none rounded-bl-md border-none bg-white"
           onClick={() => props.remove()}
         >
           x

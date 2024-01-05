@@ -31,6 +31,7 @@ import axios from "axios";
 import Image from "next/image";
 import { useState } from "react";
 import { createOrder } from "./actions";
+import { useModal } from "@/extra/modal/modal";
 
 const validatePayment = async (paymentId: string | undefined) => {
   return await axios.post<{ data: string }>("/api/payment/check", {
@@ -49,6 +50,7 @@ export default function Page() {
 
   const sameAsSender = useToggle(false);
   const [isLoading, setIsLoading] = useState(false);
+  const modalCtrl = useModal();
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -97,14 +99,17 @@ export default function Page() {
 
     if (!response) {
       alert("결제에 실패하였습니다. 잠시후 다시 시도해주세요. 에러코드: 87234");
+      setIsLoading(false);
       return;
     }
 
     const paymentValidationResponse = await validatePayment(response.paymentId);
     if (paymentValidationResponse.data.data !== "OK") {
       alert("결제에 실패하였습니다. 잠시후 다시 시도해주세요. 에러코드: 7341");
+      setIsLoading(false);
       return;
     }
+
     setIsLoading(false);
   };
 
@@ -132,6 +137,7 @@ export default function Page() {
                 name="senderName"
                 placeholder="홍길동"
                 required
+                disabled={isLoading}
               />
             </div>
 
@@ -148,6 +154,7 @@ export default function Page() {
                 name="senderPhone"
                 placeholder="010-0000-0000"
                 required
+                disabled={isLoading}
               />
             </div>
 
@@ -157,7 +164,13 @@ export default function Page() {
                   <FontAwesomeIcon icon={faNoteSticky} /> 메모
                 </strong>
               </label>
-              <SelfValidateInput id="memo" type="text" name="memo" placeholder="메모" />
+              <SelfValidateInput
+                id="memo"
+                type="text"
+                name="memo"
+                placeholder="메모"
+                disabled={isLoading}
+              />
             </div>
           </fieldset>
 
@@ -178,6 +191,7 @@ export default function Page() {
                   className="dsy-toggle-success dsy-toggle"
                   checked={sameAsSender.isOn}
                   onChange={sameAsSender.toggle}
+                  disabled={isLoading}
                 />
               </label>
             </div>
@@ -195,7 +209,7 @@ export default function Page() {
                 name="receiverName"
                 placeholder="홍길동"
                 required
-                disabled={sameAsSender.isOn}
+                disabled={sameAsSender.isOn || isLoading}
               />
             </div>
 
@@ -212,7 +226,7 @@ export default function Page() {
                 name="receiverPhone"
                 placeholder="010-0000-0000"
                 required
-                disabled={sameAsSender.isOn}
+                disabled={sameAsSender.isOn || isLoading}
               />
             </div>
 
@@ -229,6 +243,7 @@ export default function Page() {
                 name="receiverAddress"
                 placeholder="남원월산로74번길 42"
                 required
+                disabled={isLoading}
               />
             </div>
 
@@ -245,6 +260,7 @@ export default function Page() {
                 name="receiverAddressDetail"
                 placeholder="단독주택, 1층 101호, ..."
                 required
+                disabled={isLoading}
               />
             </div>
           </fieldset>
@@ -367,6 +383,7 @@ export default function Page() {
                     value="PG_PROVIDER_KAKAOPAY"
                     className="peer dsy-radio dsy-radio-sm checked:bg-orange-200"
                     required
+                    disabled={isLoading}
                   />
                   <Image src={ImgKakaoPay} alt="카카오페이" width={50} />
                 </label>
@@ -380,6 +397,7 @@ export default function Page() {
                     value="PG_PROVIDER_NAVERPAY"
                     className="peer dsy-radio dsy-radio-sm checked:bg-orange-200"
                     required
+                    disabled={isLoading}
                   />
                   <Image src={ImgNaverPay} alt="네이버페이" width={50} />
                 </label>
@@ -393,6 +411,7 @@ export default function Page() {
                     value="PG_PROVIDER_TOSSPAY"
                     className="peer dsy-radio dsy-radio-sm checked:bg-orange-200"
                     required
+                    disabled={isLoading}
                   />
                   <Image src={ImgTossPay} alt="토스페이" width={50} className="scale-[1.8]" />
                 </label>
