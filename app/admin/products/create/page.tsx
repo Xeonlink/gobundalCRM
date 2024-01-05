@@ -60,13 +60,14 @@ export default function Page() {
         <ul className="flex w-full flex-wrap items-center justify-center bg-base-200 py-2 max-sm:flex-col">
           <li>
             {/* 활성화 */}
-            <label className="dst-btn-ghost dsy-btn disabled:bg-transparent">
+            <label className="dsy-btn-ghost dsy-btn disabled:bg-transparent">
               <FontAwesomeIcon icon={faEyeSlash} /> 비활성화
               <input
                 id="enabled"
                 type="checkbox"
                 name="enabled"
                 className="dsy-toggle-success dsy-toggle"
+                disabled={isPending}
               />
               활성화 <FontAwesomeIcon icon={faEye} />
             </label>
@@ -74,7 +75,7 @@ export default function Page() {
 
           <li>
             {/* 할인여부 */}
-            <label className="dst-btn-ghost dsy-btn disabled:bg-transparent">
+            <label className="dsy-btn-ghost dsy-btn disabled:bg-transparent">
               <FontAwesomeIcon icon={faHandshakeSlash} /> 정가
               <input
                 id="is-sale"
@@ -82,6 +83,7 @@ export default function Page() {
                 name="isSale"
                 className="dsy-toggle-success dsy-toggle"
                 onChange={(e) => setIsSale(e.target.checked)}
+                disabled={isPending}
               />
               할인 <FontAwesomeIcon icon={faHandshake} />
             </label>
@@ -89,13 +91,14 @@ export default function Page() {
 
           <li>
             {/* 재고무한여부 */}
-            <label className="dst-btn-ghost dsy-btn disabled:bg-transparent">
+            <label className="dsy-btn-ghost dsy-btn disabled:bg-transparent">
               <FontAwesomeIcon icon={faBoxes} /> 유한재고
               <input
                 id="is-remain-infinite"
                 type="checkbox"
                 name="isRemainInfinite"
                 className="dsy-toggle-success dsy-toggle"
+                disabled={isPending}
               />
               무한재고 <FontAwesomeIcon icon={faInfinity} />
             </label>
@@ -103,28 +106,35 @@ export default function Page() {
 
           <li>
             {/* 추천상품여부 */}
-            <label className="dst-btn-ghost dsy-btn disabled:bg-transparent">
+            <label className="dsy-btn-ghost dsy-btn disabled:bg-transparent">
               <FontAwesomeIcon icon={faStar} /> 추천상품
               <input
                 id="is-recommended"
                 type="checkbox"
                 name="isRecommended"
                 className="dsy-toggle-success dsy-toggle"
+                disabled={isPending}
               />
             </label>
           </li>
 
           <li>
             {/* Clear */}
-            <label className="dsy-btn-ghost dsy-btn disabled:bg-transparent max-sm:w-full max-sm:rounded-none">
-              <FontAwesomeIcon icon={faNotdef} rotation={90} />{" "}
-              <input type="reset" value="초기화" />
-            </label>
+            <button
+              type="reset"
+              className="dsy-btn-ghost dsy-btn disabled:bg-transparent max-sm:w-full max-sm:rounded-none"
+              disabled={isPending}
+            >
+              <FontAwesomeIcon icon={faNotdef} rotation={90} /> 초기화
+            </button>
           </li>
 
           <li>
             {/* Save */}
-            <button className="dst-btn-ghost dsy-btn disabled:bg-transparent max-sm:w-full max-sm:rounded-none">
+            <button
+              className="dsy-btn-ghost dsy-btn disabled:bg-transparent max-sm:w-full max-sm:rounded-none"
+              disabled={isPending}
+            >
               <FontAwesomeIcon icon={faFloppyDisk} /> 저장
             </button>
           </li>
@@ -146,6 +156,7 @@ export default function Page() {
                 required
                 title="상품명"
                 onChange={(e) => setName(e.target.value)}
+                disabled={isPending}
               />
             </div>
 
@@ -171,7 +182,7 @@ export default function Page() {
                     />
                     <button
                       type="button"
-                      className="dsy-btn-sm dsy-btn absolute right-0 top-0 rounded-none rounded-bl-md border-none bg-white"
+                      className="dsy-btn dsy-btn-sm absolute right-0 top-0 rounded-none rounded-bl-md border-none bg-white"
                       onClick={() => setImages((prev) => prev.filter((_, i) => i !== index))}
                     >
                       x
@@ -202,6 +213,7 @@ export default function Page() {
                 name="category"
                 className="dsy-select-bordered dsy-select w-full"
                 title="상품 카테고리"
+                disabled={isPending}
               >
                 {productCategories!.map((item) => (
                   <option key={item.id} value={item.id}>
@@ -229,6 +241,7 @@ export default function Page() {
                   value={price.toLocaleString()}
                   className="w-full"
                   onChange={(e) => setPrice(+e.target.value.replaceAll(",", ""))}
+                  disabled={isPending}
                 />
                 <div className="absolute bottom-1/2 right-4 translate-y-1/2">원</div>
               </div>
@@ -251,6 +264,7 @@ export default function Page() {
                   className="w-full"
                   value={salePrice.toLocaleString()}
                   onChange={(e) => setSalePrice(+e.target.value.replaceAll(",", ""))}
+                  disabled={isPending}
                 />
                 <div className="absolute bottom-1/2 right-4 translate-y-1/2">원</div>
               </div>
@@ -273,6 +287,7 @@ export default function Page() {
                   onChange={(e) => setRemain(+e.target.value.replaceAll(",", ""))}
                   required
                   className="w-full"
+                  disabled={isPending}
                 />
                 <div className="absolute bottom-1/2 right-4 translate-y-1/2">개</div>
               </div>
@@ -315,13 +330,13 @@ export default function Page() {
               <div className="dsy-join w-full rounded-none">
                 <button
                   type="button"
-                  className="dsy-join-item dsy-btn flex-1 border-none bg-orange-100"
+                  className="dsy-btn dsy-join-item flex-1 border-none bg-orange-100"
                 >
                   <FontAwesomeIcon icon={faCartPlus} /> 장바구니
                 </button>
                 <button
                   type="button"
-                  className="dsy-join-item dsy-btn flex-1 border-none bg-orange-200"
+                  className="dsy-btn dsy-join-item flex-1 border-none bg-orange-200"
                 >
                   <FontAwesomeIcon icon={faCreditCard} /> 구매
                 </button>

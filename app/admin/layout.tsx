@@ -24,14 +24,13 @@ import { RedirectType, redirect } from "next/navigation";
 import { authOptions } from "../api/auth/[...nextauth]/route";
 
 export default async function Layout(props: LayoutProps) {
-  const heads = headers();
-  const pathname = heads.get("x-pathname")!;
   const session = await getServerSession(authOptions);
   if (!session) {
+    const pathname = headers().get("x-pathname")!;
     redirect("/auth/signin?callbackurl=" + pathname, RedirectType.push);
   }
   if (session.user.role !== "ADMIN") {
-    redirect("/user", RedirectType.replace);
+    redirect("/", RedirectType.replace);
   }
 
   return (
@@ -45,7 +44,7 @@ export default async function Layout(props: LayoutProps) {
             </label>
             <ul
               tabIndex={0}
-              className="dsy-dropdown-content dsy-menu rounded-box dsy-menu-sm z-10 mt-3 w-52 bg-base-100 p-2 shadow"
+              className="dsy-dropdown-content dsy-menu dsy-menu-sm z-10 mt-3 w-52 rounded-box bg-base-100 p-2 shadow"
             >
               <li>
                 <Link href="/dashboard">대시보드</Link>

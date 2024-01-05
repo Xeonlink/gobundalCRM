@@ -26,7 +26,8 @@ module.exports = {
       // AWS S3 버킷 주소 - 상품이미지에 사용되는 에셋들을 받아는 주소
       {
         protocol: "https",
-        hostname: "gobundalcrmstack-crmbucket11d59937-zyxwpe9qg2xl.s3.ap-northeast-2.amazonaws.com",
+        hostname:
+          "gobundalserverv2stack-imagebucket6194e37c-y8obdbi9torr.s3.ap-northeast-2.amazonaws.com",
       },
       // 네이버 사용자 프로필 이미지 - 사용자가 아무것도 등록하지 않은 경우
       {

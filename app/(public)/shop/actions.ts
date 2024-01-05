@@ -3,7 +3,6 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { db } from "@/app/api/utils";
 import { getServerSession } from "next-auth";
-import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 
 export async function getProductCategories() {
@@ -71,42 +70,4 @@ export async function createCartProduct(productId: number) {
   }
 
   redirect("/payment");
-}
-
-export async function createCartProductByForm(productId: number, formData: FormData) {
-  const session = await getServerSession(authOptions);
-  const userId = session!.user.id;
-
-  const quantity = Number(formData.get("quantity"));
-
-  const cartProduct = await db.cartProduct.findFirst({
-    where: {
-      userId,
-      productId,
-    },
-  });
-
-  if (!cartProduct) {
-    await db.cartProduct.create({
-      data: {
-        userId,
-        quantity,
-        productId,
-      },
-    });
-  } else {
-    await db.cartProduct.update({
-      where: {
-        userId_productId: {
-          userId,
-          productId,
-        },
-      },
-      data: {
-        quantity: cartProduct.quantity + quantity,
-      },
-    });
-  }
-
-  revalidatePath("/user/cart", "page");
 }

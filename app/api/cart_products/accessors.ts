@@ -1,6 +1,6 @@
-import { GetResponse } from "@/api/utils";
+import { GetResponse } from "@/app/api/utils";
 import { CartProduct, Image, Product, ProductCategory } from "@prisma/client";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
 export async function getCartProducts() {
@@ -22,4 +22,22 @@ export function useCartProducts() {
   });
 
   return query.data!;
+}
+
+export async function postCartProduct(productId: number, quantity: number) {
+  const res = await axios.post<GetResponse<CartProduct>>("/api/cart_products", {
+    productId,
+    quantity,
+  });
+  return res.data.data;
+}
+export function useCreateCartProduct(options?: { onSuccess?: () => void }) {
+  return useMutation(
+    (variables: { productId: number; quantity: number }) => {
+      return postCartProduct(variables.productId, variables.quantity);
+    },
+    {
+      onSuccess: options?.onSuccess,
+    },
+  );
 }

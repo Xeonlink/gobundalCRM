@@ -1,6 +1,6 @@
 "use client";
 
-import { useAsset, useDeleteAsset, useUpdateAsset } from "@/api/assets";
+import { useAsset, useDeleteAsset, useUpdateAsset } from "@/app/api/images/upload/accessors";
 import { ModalProps } from "@/extra/modal/modal";
 import { diff } from "@/extra/utils";
 import { useModal } from "@/extra/modal/modal";

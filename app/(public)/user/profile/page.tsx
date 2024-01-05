@@ -26,7 +26,7 @@ export default async function Page() {
           <button
             type="button"
             role="link"
-            className="dst-btn-ghost dsy-btn disabled:bg-transparent max-sm:w-full max-sm:rounded-none"
+            className="dsy-btn-ghost dsy-btn disabled:bg-transparent max-sm:w-full max-sm:rounded-none"
             onClick={() => router.refresh()}
           >
             <FontAwesomeIcon icon={faFloppyDisk} /> 저장

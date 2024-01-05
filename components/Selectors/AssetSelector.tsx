@@ -1,6 +1,6 @@
 "use client";
 
-import { Asset, useAssets } from "@/api/assets";
+import { Asset, useAssets } from "@/app/api/images/upload/accessors";
 import { useDeleteProducts } from "@/api/products";
 import { AssetCreateDialog } from "@/components/Dialogs/AssetDialog/AssetCreateDialog";
 import { AssetUpdateDialog } from "@/components/Dialogs/AssetDialog/AssetUpdateDialog";

@@ -13,3 +13,7 @@ export function withHost(path: string) {
   }
   return path;
 }
+
+export type GetResponse<T = any> = {
+  data: T[];
+};

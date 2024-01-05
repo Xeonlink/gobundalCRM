@@ -1,10 +1,11 @@
 import { DialogOpener } from "@/components/DialogOpener";
+import { ProductToCartAmount } from "@/components/Dialogs/ProductToCartAmount";
+import { ModalOpener } from "@/components/ModalOpener";
 import { PageProps } from "@/extra/type";
 import { faCartPlus, faCreditCard, faExpand } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import { getProduct } from "./actions";
-import Link from "next/link";
 
 export default async function Page(props: PageProps<{ productId: string }>) {
   const id = props.params.productId;
@@ -55,13 +56,12 @@ export default async function Page(props: PageProps<{ productId: string }>) {
             </span>
           </p>
           <div className="dsy-join w-full max-sm:hidden">
-            <Link
-              href={`/shop/${product.id}/tocart`}
+            <ModalOpener
+              ui={<ProductToCartAmount product={product} />}
               className="dsy-btn dsy-join-item min-w-max flex-1 border-none bg-orange-100"
-              scroll={false}
             >
               <FontAwesomeIcon icon={faCartPlus} /> 장바구니
-            </Link>
+            </ModalOpener>
             <button
               type="button"
               className="dsy-btn dsy-join-item min-w-max flex-1 border-none bg-orange-200"

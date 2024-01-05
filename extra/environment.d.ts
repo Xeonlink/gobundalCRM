@@ -25,5 +25,10 @@ namespace NodeJS {
     // 결제연동 - client
     NEXT_PUBLIC_STORE_ID: string;
     NEXT_PUBLIC_IAMPORT_IMP: string;
+    // S3
+    IMAGE_BUCKET_ACCESS_KEY: string;
+    IAMGE_BUCKET_SECRET_ACCESS_KEY: string;
+    IAMGE_BUCKET_REGION: string;
+    IMAGE_BUCKET_NAME: string;
   }
 }

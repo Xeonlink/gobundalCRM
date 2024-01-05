@@ -1,6 +1,6 @@
 "use client";
 
-import { defaultAsset, useCreateAsset } from "@/api/assets";
+import { defaultAsset, useCreateAsset } from "@/app/api/images/upload/accessors";
 import { ModalProps } from "@/extra/modal/modal";
 import { useTypeSafeReducer } from "@/hooks/useTypeSafeReducer";
 import {

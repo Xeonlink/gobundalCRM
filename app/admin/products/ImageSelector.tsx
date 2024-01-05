@@ -1,13 +1,11 @@
 "use client";
 
+import { useImages } from "@/app/api/images/accessors";
 import { faArrowsRotate, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Image as PrismaImage } from "@prisma/client";
-import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
-import { getNotAssignedImages } from "./actions";
-import { useImages } from "@/app/api/images/accessors";
 
 type Props = {
   id?: string;
@@ -23,14 +21,18 @@ export default function ImageSelector(props: Props) {
         <ul className="flex w-full flex-wrap items-center justify-center bg-base-200 py-2 max-sm:flex-col">
           <li>
             {/* Refresh */}
-            <button type="button" className="dsy-btn" onClick={() => images.refetch()}>
+            <button
+              type="button"
+              className="dsy-btn-ghost dsy-btn"
+              onClick={() => images.refetch()}
+            >
               <FontAwesomeIcon icon={faArrowsRotate} /> 새로고침
             </button>
           </li>
 
           <li>
             {/* Create New Image */}
-            <Link href="images/create" className="dsy-btn" scroll={false}>
+            <Link href="images/create" className="dsy-btn-ghost dsy-btn" scroll={false}>
               <FontAwesomeIcon icon={faPlus} /> 이미지 추가하기
             </Link>
           </li>

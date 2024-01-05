@@ -42,28 +42,28 @@ export default async function Page(props: PageProps<{}, SearchParams>) {
 
           <li>
             {/* Refresh */}
-            <Refresh className="dsy-btn">
+            <Refresh className="dsy-btn-ghost dsy-btn">
               <FontAwesomeIcon icon={faArrowsRotate} /> 새로고침
             </Refresh>
           </li>
 
           <li>
             {/* Create New Order */}
-            <Link href="orders/create" className="dsy-btn">
+            <Link href="orders/create" className="dsy-btn-ghost dsy-btn">
               <FontAwesomeIcon icon={faPlus} /> 주문입력
             </Link>
           </li>
 
           <li>
             {/* 엑셀로 다운로드하기 */}
-            <DownloadExcel data={orders} filename="주문" className="dsy-btn">
+            <DownloadExcel data={orders} filename="주문" className="dsy-btn-ghost dsy-btn">
               <ImgIcon src={IcoExcel} alt="엑셀로 변환" fontSize={16} /> 엑셀로 변환
             </DownloadExcel>
           </li>
 
           <li>
             {/* Go To Kiosk */}
-            <Link href="/kiosk/orders" className="dsy-btn">
+            <Link href="/kiosk/orders" className="dsy-btn-ghost dsy-btn">
               <FontAwesomeIcon icon={faRobot} /> 키오스크로
             </Link>
           </li>
@@ -164,11 +164,11 @@ export default async function Page(props: PageProps<{}, SearchParams>) {
                     </span>
                   </td>
                   <td className="right-2 top-1 space-x-1 max-sm:absolute">
-                    <Link href={`orders/${item.id}`} className="dsy-btn-sm dsy-btn">
+                    <Link href={`orders/${item.id}`} className="dsy-btn dsy-btn-sm">
                       <FontAwesomeIcon icon={faPen} />
                     </Link>
                     <button
-                      className="dsy-btn-sm dsy-btn"
+                      className="dsy-btn dsy-btn-sm"
                       formAction={deleteOrder.bind(null, +item.id)}
                     >
                       <FontAwesomeIcon icon={faTrashCan} />

@@ -1,6 +1,6 @@
 "use client";
 
-import { uploadImage } from "@/api/assets";
+import { uploadImage } from "@/app/api/images/upload/accessors";
 import { SelfValidateInput } from "@/components/Input/SelfValidateInput";
 import { Back } from "@/components/Navigate/Back";
 import { useServerAction } from "@/hooks/useServerActions";
@@ -64,7 +64,7 @@ export default function Page() {
           <li>
             {/* Save */}
             <button
-              className="dst-btn-ghost dsy-btn disabled:bg-transparent max-sm:w-full max-sm:rounded-none"
+              className="dsy-btn-ghost dsy-btn disabled:bg-transparent max-sm:w-full max-sm:rounded-none"
               disabled={isLoading}
             >
               <FontAwesomeIcon icon={faFloppyDisk} /> 저장

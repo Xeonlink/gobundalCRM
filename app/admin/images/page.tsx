@@ -14,14 +14,14 @@ export default async function Page() {
       <ul className="flex w-full flex-wrap items-center justify-center bg-base-200 py-2 max-sm:flex-col">
         <li>
           {/* Refresh */}
-          <Refresh className="dsy-btn">
+          <Refresh className="dsy-btn-ghost dsy-btn">
             <FontAwesomeIcon icon={faArrowsRotate} /> 새로고침
           </Refresh>
         </li>
 
         <li>
           {/* Create New Image */}
-          <Link href="images/create" className="dsy-btn">
+          <Link href="images/create" className="dsy-btn-ghost dsy-btn">
             <FontAwesomeIcon icon={faPlus} /> 자료등록
           </Link>
         </li>

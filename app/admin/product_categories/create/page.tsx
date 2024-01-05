@@ -30,7 +30,7 @@ export default function Page() {
         <ul className="flex w-full flex-wrap items-center justify-center bg-base-200 py-2 max-sm:flex-col">
           <li>
             {/* 활성화 */}
-            <label className="dst-btn-ghost dsy-btn disabled:bg-transparent">
+            <label className="dsy-btn-ghost dsy-btn disabled:bg-transparent">
               <FontAwesomeIcon icon={faEyeSlash} /> 비활성화
               <input
                 id="enabled"
@@ -57,7 +57,7 @@ export default function Page() {
             {/* Save */}
             <Link
               href={{ pathname: "./preview", query: { name, description } }}
-              className="dst-btn-ghost dsy-btn disabled:bg-transparent max-sm:w-full max-sm:rounded-none"
+              className="dsy-btn-ghost dsy-btn disabled:bg-transparent max-sm:w-full max-sm:rounded-none"
               scroll={false}
             >
               <FontAwesomeIcon icon={faEye} /> 미리보기
@@ -66,7 +66,7 @@ export default function Page() {
 
           <li>
             {/* Save */}
-            <button className="dst-btn-ghost dsy-btn disabled:bg-transparent max-sm:w-full max-sm:rounded-none">
+            <button className="dsy-btn-ghost dsy-btn disabled:bg-transparent max-sm:w-full max-sm:rounded-none">
               <FontAwesomeIcon icon={faFloppyDisk} /> 저장
             </button>
           </li>

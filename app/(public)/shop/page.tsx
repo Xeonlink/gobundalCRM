@@ -8,6 +8,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { getProductCategories } from "../action";
 import { createCartProduct, getProductsByCategory } from "./actions";
+import { ModalOpener } from "@/components/ModalOpener";
+import { ProductToCartAmount } from "@/components/Dialogs/ProductToCartAmount";
 
 export default async function Page(props: PageProps<{}, { category: string }>) {
   const categoryId = props.searchParams.category;
@@ -69,13 +71,12 @@ export default async function Page(props: PageProps<{}, { category: string }>) {
               </div>
             </Link>
             <div className="dsy-join w-full rounded-none max-sm:hidden">
-              <Link
-                href={`/shop/${item.id}/tocart`}
+              <ModalOpener
+                ui={<ProductToCartAmount product={item} />}
                 className="dsy-btn dsy-join-item flex-1 border-none bg-orange-100"
-                scroll={false}
               >
                 <FontAwesomeIcon icon={faCartPlus} /> 장바구니
-              </Link>
+              </ModalOpener>
               <form className="contents">
                 <button
                   formAction={createCartProduct.bind(null, item.id)}

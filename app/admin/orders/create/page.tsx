@@ -77,7 +77,7 @@ export default function Page() {
 
           <li>
             {/* Save */}
-            <button className="dst-btn-ghost dsy-btn disabled:bg-transparent max-sm:w-full max-sm:rounded-none">
+            <button className="dsy-btn-ghost dsy-btn disabled:bg-transparent max-sm:w-full max-sm:rounded-none">
               <FontAwesomeIcon icon={faFloppyDisk} /> 저장
             </button>
           </li>
@@ -301,7 +301,7 @@ export default function Page() {
               </tbody>
             </table>
 
-            <DialogOpener target="#product-selector" className="dsy-join-item dsy-btn w-full">
+            <DialogOpener target="#product-selector" className="dsy-btn dsy-join-item w-full">
               <FontAwesomeIcon icon={faPlus} /> 추가하기
             </DialogOpener>
 

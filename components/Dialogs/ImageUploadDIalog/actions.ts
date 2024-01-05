@@ -1,6 +1,6 @@
 "use server";
 
-import { apiRoot } from "@/api/utils";
+import { apiRoot } from "@/app/api/utils";
 import { db } from "@/app/api/utils";
 import axios from "axios";
 

@@ -1,4 +1,4 @@
-import { GetResponse } from "@/api/utils";
+import { GetResponse } from "@/app/api/utils";
 import { Team } from "@prisma/client";
 import { withHost } from "../utils";
 

@@ -1,7 +1,7 @@
 import { LayoutProps } from "@/extra/type";
 import ImgBanner from "@/public/images/banner1.jpg";
 
-export default function Layout(props: LayoutProps<{}, { modal: React.ReactNode }>) {
+export default function Layout(props: LayoutProps) {
   return (
     <>
       <header
@@ -20,7 +20,6 @@ export default function Layout(props: LayoutProps<{}, { modal: React.ReactNode }
       </header>
 
       {props.children}
-      {props.modal}
 
       {/* <FloatingMenu /> */}
     </>

@@ -38,21 +38,21 @@ export default async function Page(props: PageProps<{}, SearchParams>) {
       <ul className="flex w-full flex-wrap items-center justify-center bg-base-200 py-2 max-sm:flex-col">
         <li>
           {/* Refresh */}
-          <Refresh className="dsy-btn">
+          <Refresh className="dsy-btn-ghost dsy-btn">
             <FontAwesomeIcon icon={faArrowsRotate} /> 새로고침
           </Refresh>
         </li>
 
         <li>
           {/* Create New Order */}
-          <Link href="products/create" className="dsy-btn">
+          <Link href="products/create" className="dsy-btn-ghost dsy-btn">
             <FontAwesomeIcon icon={faPlus} /> 상품 추가하기
           </Link>
         </li>
 
         <li>
           {/* 엑셀로 다운로드하기 */}
-          <DownloadExcel data={products} filename="상품" className="dsy-btn">
+          <DownloadExcel data={products} filename="상품" className="dsy-btn-ghost dsy-btn">
             <ImgIcon src={IcoExcel} alt="엑셀로 변환" fontSize={16} /> 엑셀로 변환
           </DownloadExcel>
         </li>
@@ -60,11 +60,11 @@ export default async function Page(props: PageProps<{}, SearchParams>) {
         <li>
           {/* 보기 설정 */}
           {view === "table" ? (
-            <Link href={{ query: { view: "card" } }} className="dsy-btn">
+            <Link href={{ query: { view: "card" } }} className="dsy-btn-ghost dsy-btn">
               <FontAwesomeIcon icon={faAddressCard} /> 카드로 보기
             </Link>
           ) : (
-            <Link href={{ query: { view: "table" } }} className="dsy-btn">
+            <Link href={{ query: { view: "table" } }} className="dsy-btn-ghost dsy-btn">
               <FontAwesomeIcon icon={faTableCellsLarge} /> 표로 보기
             </Link>
           )}
@@ -159,11 +159,11 @@ export default async function Page(props: PageProps<{}, SearchParams>) {
                     <span>{item.enabled ? "O" : "X"}</span>
                   </td>
                   <td className="right-2 top-1 space-x-1 max-sm:absolute">
-                    <Link href={`products/${item.id}`} className="dsy-btn-sm dsy-btn">
+                    <Link href={`products/${item.id}`} className="dsy-btn dsy-btn-sm">
                       <FontAwesomeIcon icon={faPen} />
                     </Link>
                     <button
-                      className="dsy-btn-sm dsy-btn"
+                      className="dsy-btn dsy-btn-sm"
                       formAction={deleteProduct.bind(null, +item.id)}
                     >
                       <FontAwesomeIcon icon={faTrashCan} />

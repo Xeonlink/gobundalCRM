@@ -28,21 +28,25 @@ export default async function Page() {
       <ul className="flex w-full flex-wrap items-center justify-center bg-base-200 py-2 max-sm:flex-col">
         <li>
           {/* Refresh */}
-          <Refresh className="dsy-btn">
+          <Refresh className="dsy-btn-ghost dsy-btn">
             <FontAwesomeIcon icon={faArrowsRotate} /> 새로고침
           </Refresh>
         </li>
 
         <li>
           {/* Create New Order */}
-          <Link href="product_categories/create" className="dsy-btn">
+          <Link href="product_categories/create" className="dsy-btn-ghost dsy-btn">
             <FontAwesomeIcon icon={faPlus} /> 카테고리 추가하기
           </Link>
         </li>
 
         <li>
           {/* 엑셀로 다운로드하기 */}
-          <DownloadExcel data={productCategories} filename="상품카테고리" className="dsy-btn">
+          <DownloadExcel
+            data={productCategories}
+            filename="상품카테고리"
+            className="dsy-btn-ghost dsy-btn"
+          >
             <ImgIcon src={IcoExcel} alt="엑셀로 변환" fontSize={16} /> 엑셀로 변환
           </DownloadExcel>
         </li>
@@ -108,11 +112,11 @@ export default async function Page() {
                   <td></td>
                 ) : (
                   <td className="right-2 top-1 space-x-1 max-sm:absolute">
-                    <Link href={`product_categories/${item.id}`} className="dsy-btn-sm dsy-btn">
+                    <Link href={`product_categories/${item.id}`} className="dsy-btn dsy-btn-sm">
                       <FontAwesomeIcon icon={faPen} />
                     </Link>
                     <button
-                      className="dsy-btn-sm dsy-btn"
+                      className="dsy-btn dsy-btn-sm"
                       formAction={deleteProductCategory.bind(null, +item.id)}
                     >
                       <FontAwesomeIcon icon={faTrashCan} />

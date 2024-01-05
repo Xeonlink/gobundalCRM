@@ -24,7 +24,7 @@ export default function Page() {
         <ul className="flex w-full flex-wrap items-center justify-center bg-base-200 py-2 max-sm:flex-col">
           <li>
             {/* 쿠폰 승인여부 */}
-            <label className="dst-btn-ghost dsy-btn disabled:bg-transparent max-sm:w-full max-sm:rounded-none">
+            <label className="dsy-btn-ghost dsy-btn disabled:bg-transparent max-sm:w-full max-sm:rounded-none">
               <FontAwesomeIcon icon={faHandshakeSlash} /> 비승인
               <input
                 id="is-approved"
@@ -38,7 +38,7 @@ export default function Page() {
 
           <li>
             {/* 손님이 나갔는가? */}
-            <label className="dst-btn-ghost dsy-btn disabled:bg-transparent max-sm:w-full max-sm:rounded-none">
+            <label className="dsy-btn-ghost dsy-btn disabled:bg-transparent max-sm:w-full max-sm:rounded-none">
               <FontAwesomeIcon icon={faDoorClosed} /> 안나감
               <input
                 id="is-leave"
@@ -60,7 +60,7 @@ export default function Page() {
 
           <li>
             {/* Save */}
-            <button className="dst-btn-ghost dsy-btn disabled:bg-transparent max-sm:w-full max-sm:rounded-none">
+            <button className="dsy-btn-ghost dsy-btn disabled:bg-transparent max-sm:w-full max-sm:rounded-none">
               <FontAwesomeIcon icon={faFloppyDisk} /> 저장
             </button>
           </li>
